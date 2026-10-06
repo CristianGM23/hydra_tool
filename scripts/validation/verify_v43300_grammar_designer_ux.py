@@ -1,0 +1,48 @@
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[2]
+checks=[]
+def check(label,cond):
+    checks.append((label,bool(cond)))
+def text(path): return (ROOT/path).read_text(encoding='utf-8')
+
+editor=text(Path('frontend/src/grammar-designer/GrammarMonacoEditor.tsx'))
+identity=text(Path('frontend/src/grammar-designer/GrammarIdentityForm.tsx'))
+meta=text(Path('frontend/src/grammar-designer/GrammarMetamodelField.tsx'))
+structure=text(Path('frontend/src/grammar-designer/GrammarStructureTree.tsx'))
+css=text(Path('frontend/src/grammar-designer/grammar-designer.css'))
+analyzer=text(Path('src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java'))
+controller=text(Path('src/main/java/com/example/editor/metamodel/importing/MetamodelImportController.java'))
+archive=text(Path('src/main/java/com/example/editor/metamodel/importing/MetamodelBrowserDirectoryArchiveService.java'))
+import_api=text(Path('frontend/src/metamodel-designer/importApi.ts'))
+catalog=text(Path('frontend/src/i18n/grammarSpanishCatalog.ts'))
+
+check('Monaco line numbers enabled', "lineNumbers:'on'" in editor and 'glyphMargin:true' in editor)
+check('Monaco diagnostics are model markers', 'setModelMarkers' in editor and "'hydra-grammar'" in editor)
+check('safe editor renders line-number gutter', 'grammar-safe-gutter' in editor and '{index+1}' in editor)
+check('safe editor highlights diagnostic ranges', 'grammar-source-diagnostic' in editor and 'renderHighlightedLine' in editor)
+check('form uses HYDRA form field', 'HydraFormField' in identity and identity.count('<HydraFormField') >= 6)
+check('all core grammar fields expose help', identity.count(' help=') >= 6)
+check('metamodel existing selector exists', 'HydraAdaptiveSelect' in meta and 'metamodels.map' in meta)
+check('metamodel file import exists', 'Import metamodel file' in meta and 'importAndSaveMetamodel' in meta)
+check('metamodel directory import exists', 'Import metamodel folder' in meta and 'webkitdirectory' in meta)
+check('directory endpoint exists', '/browser-directory' in controller and 'browserDirectoryArchive.archive' in controller)
+check('directory client API exists', 'importMetamodelBrowserDirectory' in import_api)
+check('directory import rejects traversal', "path.startsWith(\"../\")" in archive and 'path.contains("/../")' in archive)
+check('directory import checks actual stream bytes', 'copyBounded' in archive and 'copied > maximumBytes' in archive)
+check('regex/literals are masked by analyzer', 'lexicalIgnored' in analyzer and 'slashRegex' in analyzer)
+check('reference patterns honor lexical mask', 'ignored.get(cross.start(1))' in analyzer and 'ignored.get(assignment.start(3))' in analyzer)
+check('structure uses non-overlap row layout', 'grammar-symbol-row' in structure and 'grammar-symbol-main' in structure)
+check('structure has contextual tooltips', 'HydraTooltip' in structure and 'kindDescription' in structure)
+check('workbench stretches full width', 'width:100%' in css and 'max-width:none' in css)
+check('fallback diagnostics have error visual style', '.grammar-source-diagnostic.error' in css and 'text-decoration-style:wavy' in css)
+check('Spanish grammar catalog covers new UX', all(key in catalog for key in ['Modo de autoría','Importar archivo de metamodelo','Proveedor operativo','Documento de gramática','Hereda de']))
+check('permanent analyzer regression test exists', (ROOT/'src/test/java/com/example/editor/grammar/GrammarSourceAnalyzerLexicalIsolationTests.java').exists())
+check('permanent directory security test exists', (ROOT/'src/test/java/com/example/editor/metamodel/importing/MetamodelBrowserDirectoryArchiveServiceTests.java').exists())
+check('permanent safe-editor visual test exists', (ROOT/'frontend/src/grammar-designer/GrammarMonacoEditor.test.tsx').exists())
+check('permanent metamodel selector test exists', (ROOT/'frontend/src/grammar-designer/GrammarMetamodelField.test.tsx').exists())
+
+for label,ok in checks: print(('PASS' if ok else 'FAIL')+' - '+label)
+passed=sum(ok for _,ok in checks)
+print(f'V43300_GRAMMAR_DESIGNER_UX={passed}/{len(checks)}')
+raise SystemExit(0 if passed==len(checks) else 1)

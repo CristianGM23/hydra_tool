@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hydratest:Workflow xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:hydratest="https://hydra.example/sirius/fixture/1.0"
+    xsi:schemaLocation="https://hydra.example/sirius/fixture/1.0 platform:/resource/com.hydra.sirius.fixture.metamodel/model/hydratest.ecore"
+    name="BrokenWorkflow" version="1.0">
+  <nodes xsi:type="hydratest:StartNode" xmi:id="start" name="Start"/>
+  <nodes xsi:type="hydratest:Task" xmi:id="badTask" name="Duplicate" durationMinutes="0" progress="140" automated="true">
+    <ports name="p" direction="IN"/>
+    <ports name="p" direction="OUT"/>
+  </nodes>
+  <nodes xsi:type="hydratest:Task" xmi:id="dupTask" name="Duplicate" durationMinutes="-2" progress="-5" automated="false"/>
+  <nodes xsi:type="hydratest:DecisionNode" xmi:id="decision" name="Decision" expression=""/>
+  <nodes xsi:type="hydratest:EndNode" xmi:id="end" name="End"/>
+
+  <!-- deliberately invalid topology for EVL/Sirius validation -->
+  <connections name="selfLoop" kind="CONTROL" source="badTask" target="badTask"/>
+  <connections name="intoStart" kind="CONTROL" source="dupTask" target="start"/>
+  <connections name="outOfEnd" kind="CONTROL" source="end" target="decision"/>
+</hydratest:Workflow>

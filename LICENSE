@@ -1,0 +1,10 @@
+HYDRA first-party source notice
+
+No public license is granted for the first-party HYDRA source code by this repository.
+Copyright and other rights remain with their respective rightsholders.
+
+Third-party components, generated-project dependencies and referenced ecosystems remain
+subject to their own licenses. See the licensing and provenance documents under
+`docs/licensing/` and the generated SBOM for dependency-specific information.
+
+Nothing in this notice changes or overrides the license terms of third-party software.

@@ -1,0 +1,30 @@
+package com.example.editor.project;
+
+/** Capacidades independientes que pueden activarse incrementalmente en un HYDRA Project. */
+public enum ProjectCapability {
+    METAMODEL_DESIGN,
+    GRAMMAR_DESIGN,
+    MODEL_EDITING,
+    VISUAL_MODELING,
+    TEXTUAL_MODELING,
+    EDITOR_DEFINITIONS,
+    VISUAL_EDITOR,
+    TEXTUAL_EDITOR,
+    SYNTAX_STYLING,
+    CONTEXTUAL_INFORMATION,
+    VALIDATIONS,
+    QUICK_FIXES,
+    OPERATIONS,
+    EVENTS,
+    EVENT_FLOWS,
+    GAMIFICATION,
+    TRANSFORMATION_M2M,
+    TRANSFORMATION_M2T,
+    TRANSFORMATION_T2M,
+    EDITOR_GENERATION,
+    INTEGRATIONS,
+    REPOSITORY_INTEGRATION,
+    DRAWIO_EXPORT,
+    PLANTUML_EXPORT,
+    LOCAL_FILE_EDITING
+}

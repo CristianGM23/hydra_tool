@@ -1,0 +1,364 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://modeling-editor.local/schemas/validation-model-1.0.schema.json",
+  "title": "ValidationModel 1.0",
+  "description": "Reglas canónicas independientes de la tecnología que se utilice para importarlas o exportarlas.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "metamodelId",
+    "expressionModelId",
+    "ruleSets",
+    "rules",
+    "importedSources"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "metamodelId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "expressionModelId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "actionModelId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "ruleSets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ruleSet"
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    },
+    "importedSources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/importedSource"
+      }
+    },
+    "annotations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "default": {}
+    }
+  },
+  "$defs": {
+    "ruleSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "enabled",
+        "ruleIds"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "default": ""
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ruleIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+          },
+          "uniqueItems": true
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {}
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "CLASS",
+            "ATTRIBUTE",
+            "RELATION",
+            "OBJECT",
+            "MODEL",
+            "REPRESENTATION",
+            "SELECTION",
+            "PROJECT"
+          ]
+        },
+        "classId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "featureId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "elementId"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "CLASS",
+            "ATTRIBUTE",
+            "RELATION",
+            "OPERATION",
+            "MODEL"
+          ]
+        },
+        "elementId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "technology": {
+          "type": "string"
+        },
+        "sourceFile": {
+          "type": "string"
+        },
+        "sourceRule": {
+          "type": "string"
+        },
+        "sourceHash": {
+          "type": "string"
+        },
+        "importedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "originalFragment": {
+          "type": "string"
+        }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "code",
+        "enabled",
+        "context",
+        "severity",
+        "conditionExpressionId",
+        "messageTemplate",
+        "triggers",
+        "dependencies",
+        "quickFixIds",
+        "executionMode",
+        "authoritativeRepresentation",
+        "conversionStatus"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "description": {
+          "type": "string",
+          "default": ""
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "context": {
+          "$ref": "#/$defs/context"
+        },
+        "severity": {
+          "enum": [
+            "ERROR",
+            "WARNING",
+            "INFO"
+          ]
+        },
+        "conditionExpressionId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "messageTemplate": {
+          "type": "string",
+          "minLength": 1
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "ON_CREATE",
+              "ON_ATTRIBUTE_CHANGE",
+              "ON_RELATION_CHANGE",
+              "ON_DELETE",
+              "ON_OPEN",
+              "ON_SAVE",
+              "MANUAL",
+              "BEFORE_EXPORT",
+              "BACKGROUND",
+              "FULL_VALIDATION"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dependency"
+          }
+        },
+        "quickFixIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+          },
+          "uniqueItems": true
+        },
+        "executionMode": {
+          "enum": [
+            "INCREMENTAL",
+            "FULL_ONLY",
+            "MANUAL_ONLY",
+            "EXTERNAL"
+          ]
+        },
+        "authoritativeRepresentation": {
+          "enum": [
+            "CANONICAL",
+            "OCL",
+            "EVL",
+            "SIRIUS_AQL",
+            "JAVA",
+            "XTEXT",
+            "EXTERNAL"
+          ]
+        },
+        "conversionStatus": {
+          "enum": [
+            "FULL",
+            "PARTIAL",
+            "EXTERNAL",
+            "UNSUPPORTED"
+          ]
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {}
+        }
+      }
+    },
+    "importedSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "technology",
+        "fileName",
+        "contentHash",
+        "conversionStatus"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "technology": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contentHash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conversionStatus": {
+          "enum": [
+            "FULL",
+            "PARTIAL",
+            "EXTERNAL",
+            "UNSUPPORTED"
+          ]
+        },
+        "importedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {}
+        }
+      }
+    }
+  }
+}

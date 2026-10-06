@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.0",
+  "id": "library",
+  "metamodelId": "library",
+  "annotations": {},
+  "expressions": [
+    {
+      "id": "expression:book-pages-positive",
+      "name": "Book pages are positive",
+      "description": "Checks that a book has at least one page",
+      "declaredReturnType": {
+        "kind": "BOOLEAN"
+      },
+      "annotations": {},
+      "root": {
+        "kind": "BINARY",
+        "nodeId": "node:pages-positive",
+        "operator": "GREATER_OR_EQUAL",
+        "left": {
+          "kind": "ATTRIBUTE_ACCESS",
+          "nodeId": "node:pages",
+          "target": {
+            "kind": "SELF",
+            "nodeId": "node:self"
+          },
+          "attributeId": "attribute:class:Book:pages"
+        },
+        "right": {
+          "kind": "LITERAL",
+          "nodeId": "node:one",
+          "valueType": {
+            "kind": "INTEGER"
+          },
+          "value": 1
+        }
+      },
+      "contextClassId": "class:Book"
+    }
+  ]
+}

@@ -1,0 +1,923 @@
+.gamification-designer {
+    display:flex;
+    min-width:0;
+    min-height:0;
+    height:100%;
+    flex-direction:column;
+    gap:10px;
+    padding:12px;
+    overflow:hidden;
+    background:var(--hydra-bg-surface-muted)
+}
+.gamification-header {
+    display:flex;
+    justify-content:space-between;
+    gap:12px
+}
+.gamification-header h2,.gamification-header p {
+    margin:0
+}
+.gamification-header p {
+    color:var(--hydra-text-muted);
+    font-size:12px
+}
+.gamification-header>div:last-child {
+    display:flex;
+    gap:8px
+}
+.gamification-layout {
+    min-height:0
+}
+.gamification-sidebar-empty {
+    margin:0;
+    padding:8px 10px;
+    color:var(--hydra-text-muted);
+    font-size:11px
+}
+.gamification-document-settings {
+    padding-bottom:14px;
+    border-bottom:1px solid var(--hydra-border-default)
+}
+.gamification-document-settings h3,.gamification-document-settings p {
+    margin:0
+}
+.gamification-document-settings p {
+    color:var(--hydra-text-muted);
+    font-size:12px
+}
+.gamification-editor {
+    margin-top:18px
+}
+.gamification-editor input,.gamification-editor select,.gamification-editor textarea,.gamification-document-settings input,.gamification-source textarea {
+    box-sizing:border-box;
+    width:100%;
+    padding:7px 8px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:6px;
+    background:var(--hydra-bg-surface);
+    color:var(--hydra-text-primary);
+    font:inherit
+}
+.gamification-editor textarea {
+    min-height:78px;
+    resize:vertical
+}
+.gamification-editor.rule {
+    padding:0;
+    border:0;
+    background:transparent
+}
+.verified-evidence-note {
+    padding:10px;
+    border-left:4px solid var(--hydra-color-success-600);
+    border-radius:5px;
+    background:var(--hydra-color-success-50);
+    color:var(--hydra-color-success-600)
+}
+.gamification-diagram {
+    display:grid;
+    grid-template-columns:1fr auto 1fr auto 1fr;
+    align-items:start;
+    gap:12px;
+    min-height:0;
+    overflow:auto;
+    background:var(--hydra-bg-surface);
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    padding:16px
+}
+.gamification-diagram section {
+    display:grid;
+    gap:8px
+}
+.gamification-diagram h3 {
+    margin:0 0 5px
+}
+.gamification-diagram article {
+    display:grid;
+    gap:3px;
+    border:1px solid #a78bfa;
+    border-radius:8px;
+    padding:10px;
+    background:var(--hydra-color-violet-50)
+}
+.gamification-diagram article.invalid {
+    border-color:var(--hydra-color-danger-600);
+    background:var(--hydra-color-danger-50)
+}
+.gamification-diagram article.level {
+    border-color:#0ea5e9;
+    background:var(--hydra-color-sky-50)
+}
+.gamification-diagram article.reward {
+    border-color:var(--hydra-color-warning-500);
+    background:var(--hydra-color-warning-50)
+}
+.gamification-diagram article.ledger {
+    border-color:var(--hydra-text-muted);
+    background:var(--hydra-bg-surface-muted)
+}
+.gamification-diagram small {
+    color:var(--hydra-text-muted)
+}
+.gamification-arrows {
+    font-size:28px;
+    margin-top:80px
+}
+.gamification-source {
+    display:grid;
+    gap:8px;
+    min-height:0;
+    flex:1
+}
+.gamification-source textarea {
+    min-height:520px;
+    resize:vertical;
+    font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-size:12px
+}
+.gamification-source button {
+    justify-self:start
+}
+.gamification-ledger {
+    display:grid;
+    gap:12px;
+    min-height:0;
+    overflow:auto;
+    background:var(--hydra-bg-surface);
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    padding:14px
+}
+.gamification-ledger>header {
+    display:flex;
+    justify-content:space-between
+}
+.gamification-ledger>header>div {
+    display:flex;
+    gap:6px
+}
+.gamification-ledger h3 {
+    margin:0
+}
+.gamification-actor-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:8px
+}
+.gamification-actor-grid article {
+    display:grid;
+    gap:4px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    padding:10px
+}
+.gamification-ledger table {
+    border-collapse:collapse;
+    width:100%;
+    font-size:12px
+}
+.gamification-ledger th,.gamification-ledger td {
+    border:1px solid var(--hydra-border-default);
+    padding:7px;
+    text-align:left
+}
+@media(max-width:1000px) {
+    .gamification-diagram {
+        grid-template-columns:1fr
+    }
+    .gamification-arrows {
+        transform:rotate(90deg);
+        margin:0;
+        justify-self:center
+    }
+}
+.gamification-visual-editor {
+    display:grid;
+    grid-template-columns:230px minmax(420px,1fr) 360px;
+    min-height:0;
+    flex:1;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    overflow:hidden;
+    background:var(--hydra-bg-surface);
+    outline:none
+}
+.gamification-visual-palette,.gamification-visual-inspector {
+    min-width:0;
+    overflow:auto;
+    background:var(--hydra-bg-surface-muted)
+}
+.gamification-visual-palette {
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    padding:10px;
+    border-right:1px solid var(--hydra-border-default)
+}
+.gamification-visual-palette header {
+    display:grid;
+    gap:3px;
+    padding:3px 2px 8px
+}
+.gamification-visual-palette header small {
+    color:var(--hydra-text-muted);
+    font-size:11px;
+    line-height:1.35
+}
+.gamification-palette-item {
+    display:grid;
+    gap:2px;
+    text-align:left;
+    padding:9px 10px;
+    border:1px solid var(--hydra-border-default);
+    border-left-width:5px;
+    border-radius:7px;
+    background:var(--hydra-bg-surface);
+    cursor:grab
+}
+.gamification-palette-item:active {
+    cursor:grabbing
+}
+.gamification-palette-item small {
+    font-size:10px;
+    color:var(--hydra-text-muted);
+    line-height:1.3
+}
+.gamification-palette-item.kind-rule {
+    border-left-color:var(--hydra-color-violet-600)
+}
+.gamification-palette-item.kind-point {
+    border-left-color:#0ea5e9
+}
+.gamification-palette-item.kind-level {
+    border-left-color:var(--hydra-palette-sky-600)
+}
+.gamification-palette-item.kind-achievement {
+    border-left-color:var(--hydra-color-success-600)
+}
+.gamification-palette-item.kind-challenge {
+    border-left-color:#f97316
+}
+.gamification-palette-item.kind-reward {
+    border-left-color:var(--hydra-color-warning-500)
+}
+.gamification-visual-workspace {
+    display:flex;
+    min-width:0;
+    min-height:0;
+    flex-direction:column;
+    background:var(--hydra-bg-surface)
+}
+.gamification-visual-toolbar {
+    display:flex;
+    gap:6px;
+    align-items:center;
+    padding:7px 9px;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface-muted)
+}
+.gamification-visual-toolbar button {
+    font-size:11px
+}
+.gamification-visual-canvas {
+    min-height:520px;
+    flex:1
+}
+.gamification-visual-canvas .react-flow {
+    background:var(--hydra-bg-surface-muted)
+}
+.gamification-visual-inspector {
+    border-left:1px solid var(--hydra-border-default);
+    padding:12px
+}
+.gamification-visual-inspector .gamification-editor {
+    margin-top:0
+}
+.gamification-visual-inspector .hydra-designer-form-header {
+    align-items:flex-start
+}
+.gamification-visual-inspector .hydra-designer-fields {
+    grid-template-columns:1fr
+}
+.gamification-visual-inspector .hydra-designer-wide {
+    grid-column:auto
+}
+.gamification-visual-node {
+    border:0!important;
+    background:transparent!important;
+    padding:0!important;
+    box-shadow:none!important
+}
+.gamification-node-card {
+    position:relative;
+    display:grid;
+    box-sizing:border-box;
+    width:100%;
+    height:100%;
+    gap:4px;
+    min-width:150px;
+    min-height:70px;
+    padding:10px 12px;
+    border:2px solid var(--hydra-border-strong);
+    border-radius:9px;
+    background:var(--hydra-bg-surface);
+    box-shadow:0 3px 10px rgba(15,23,42,.11)
+}
+.gamification-node-card.selected {
+    box-shadow:0 0 0 3px rgba(37,99,235,.22),0 3px 10px rgba(15,23,42,.11)
+}
+.gamification-node-card.invalid {
+    border-color:var(--hydra-color-danger-600);
+    background:var(--hydra-color-danger-50)
+}
+.gamification-node-card strong {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
+.gamification-node-card small {
+    color:var(--hydra-text-muted);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
+.gamification-node-kind {
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.08em;
+    color:var(--hydra-text-secondary)
+}
+.gamification-node-card.kind-evidence {
+    border-color:var(--hydra-color-success-600);
+    background:var(--hydra-color-success-50)
+}
+.gamification-node-card.kind-rule {
+    border-color:var(--hydra-color-violet-600);
+    background:var(--hydra-color-violet-50)
+}
+.gamification-node-card.kind-point {
+    border-color:#0ea5e9;
+    background:var(--hydra-color-sky-50)
+}
+.gamification-node-card.kind-level {
+    border-color:var(--hydra-palette-sky-600);
+    background:var(--hydra-bg-selection)
+}
+.gamification-node-card.kind-achievement {
+    border-color:var(--hydra-color-success-600);
+    background:var(--hydra-color-success-50)
+}
+.gamification-node-card.kind-challenge {
+    border-color:#f97316;
+    background:var(--hydra-color-warning-50)
+}
+.gamification-node-card.kind-reward {
+    border-color:var(--hydra-color-warning-500);
+    background:var(--hydra-color-warning-50)
+}
+.gamification-node-card.kind-ledger {
+    border-color:var(--hydra-text-muted);
+    background:var(--hydra-bg-surface-muted)
+}
+.gamification-node-card .react-flow__handle {
+    width:9px;
+    height:9px;
+    border:2px solid var(--hydra-bg-surface);
+    background:var(--hydra-text-secondary)
+}
+.gamification-evidence-inspector,.gamification-edge-inspector,.gamification-ledger-inspector {
+    display:grid;
+    gap:12px
+}
+.gamification-evidence-inspector h3,.gamification-edge-inspector h3,.gamification-ledger-inspector h3 {
+    margin:0
+}
+.gamification-evidence-inspector p,.gamification-edge-inspector p,.gamification-ledger-inspector p {
+    margin:0;
+    color:var(--hydra-text-muted);
+    font-size:12px
+}
+.gamification-inspector-empty {
+    display:grid;
+    gap:5px;
+    place-content:center;
+    min-height:240px;
+    text-align:center;
+    color:var(--hydra-text-muted)
+}
+@media(max-width:1200px) {
+    .gamification-visual-editor {
+        grid-template-columns:200px minmax(380px,1fr) 300px
+    }
+}
+@media(max-width:900px) {
+    .gamification-visual-editor {
+        grid-template-columns:1fr
+    }
+    .gamification-visual-palette {
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        border-right:0;
+        border-bottom:1px solid var(--hydra-border-default)
+    }
+    .gamification-visual-palette header {
+        grid-column:1/-1
+    }
+    .gamification-visual-inspector {
+        border-left:0;
+        border-top:1px solid var(--hydra-border-default);
+        max-height:380px
+    }
+}
+.gamification-visual-canvas .react-flow__edge-path {
+    stroke:var(--hydra-text-secondary);
+    stroke-width:2.2
+}
+.gamification-visual-canvas .react-flow__edge.selected .react-flow__edge-path {
+    stroke:var(--hydra-color-primary-700);
+    stroke-width:3
+}
+.gamification-visual-canvas .react-flow__edge-textbg {
+    fill:var(--hydra-bg-surface);
+    fill-opacity:.94
+}
+.gamification-visual-canvas .react-flow__edge-text {
+    font-size:10px;
+    fill:var(--hydra-text-secondary)
+}
+.gamification-node-card small {
+    white-space:normal;
+    line-height:1.35
+}
+.gamification-palette-group {
+    display: grid;
+    gap: 6px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid var(--hydra-border-default);
+}
+.gamification-palette-group:last-child {
+    border-bottom: 0;
+}
+.gamification-palette-category {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+.gamification-palette-category h5 {
+    margin: 0;
+    color: var(--hydra-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+.gamification-connection-summary {
+    display:grid;
+    gap:8px;
+    margin-top:12px;
+    padding:12px;
+    border:1px solid var(--hydra-color-violet-200);
+    border-radius:8px;
+    background:var(--hydra-color-violet-50)
+}
+.gamification-connection-summary>header {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:8px
+}
+.gamification-connection-summary h4,.gamification-connection-summary p {
+    margin:0
+}
+.gamification-connection-summary>header>span {
+    display:grid;
+    min-width:24px;
+    height:24px;
+    place-items:center;
+    border-radius:999px;
+    background:var(--hydra-color-violet-50);
+    color:var(--hydra-color-primary-700);
+    font-weight:800
+}
+.gamification-connection-summary>div {
+    display:grid;
+    gap:6px
+}
+.gamification-connection-summary>div>button {
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr);
+    gap:2px 8px;
+    padding:8px;
+    text-align:left
+}
+.gamification-connection-summary>div>button small {
+    grid-column:2;
+    color:var(--hydra-text-muted)
+}
+.gamification-connection-tools {
+    border-top: 1px solid var(--hydra-border-default);
+    padding-top: 10px;
+}
+.gamification-designer .hydra-designer-fields input[type='number'] {
+    width: min(10rem, 100%);
+}
+
+.gamification-palette-item.kind-evidence {
+    border-left-color: var(--hydra-color-success-600);
+    background: var(--hydra-color-success-50);
+}
+.gamification-palette-item.kind-evidence.on-canvas, .gamification-palette-item.kind-evidence:disabled {
+    cursor: default;
+    opacity: .7;
+}
+.gamification-palette-item em {
+    color: var(--hydra-color-success-600);
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 700;
+}
+.gamification-palette-empty {
+    margin: 0;
+    padding: 8px;
+    border: 1px dashed var(--hydra-border-default);
+    border-radius: 7px;
+    color: var(--hydra-text-muted);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.gamification-visual-editor {
+    grid-template-columns: var(--gamification-palette-width, 250px) 7px minmax(360px, 1fr) 7px var(--gamification-inspector-width, 320px);
+}
+.gamification-column-resizer {
+    position: relative;
+    z-index: 6;
+    min-width: 7px;
+    cursor: col-resize;
+    touch-action: none;
+    background: linear-gradient(90deg, transparent 0 2px, #d4dce8 2px 5px, transparent 5px 7px);
+}
+.gamification-column-resizer::after {
+    position: absolute;
+    inset: 0 -3px;
+    content: '';
+}
+.gamification-column-resizer:hover, .gamification-column-resizer:focus-visible {
+    outline: 0;
+    background: linear-gradient(90deg, transparent 0 2px, var(--hydra-color-primary-600) 2px 5px, transparent 5px 7px);
+}
+.gamification-visual-palette {
+    container: gamification-palette / inline-size;
+    gap: 6px;
+    padding: 8px;
+}
+.gamification-visual-palette header {
+    padding: 2px 1px 6px;
+}
+.gamification-visual-palette header strong {
+    font-size: clamp(12px, calc(var(--app-diagram-font-size, 18px) * .78), 14px) !important;
+}
+.gamification-visual-palette header small, .gamification-visual-palette .gamification-palette-empty {
+    font-size: clamp(10px, calc(var(--app-diagram-font-size, 18px) * .64), 12px) !important;
+}
+.gamification-visual-palette .gamification-palette-group {
+    gap: 5px;
+    padding-bottom: 7px;
+}
+.gamification-visual-palette .gamification-palette-category h5 {
+    font-size: clamp(10px, calc(var(--app-diagram-font-size, 18px) * .66), 12px) !important;
+    line-height: 1.2;
+}
+.gamification-visual-palette .gamification-palette-item {
+    min-height: 0;
+    gap: 2px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    box-shadow: none;
+    font-size: clamp(11px, calc(var(--app-diagram-font-size, 18px) * .72), 13px) !important;
+    line-height: 1.22;
+}
+.gamification-visual-palette .gamification-palette-item small {
+    font-size: clamp(9px, calc(var(--app-diagram-font-size, 18px) * .59), 11px) !important;
+    line-height: 1.25;
+}
+.gamification-visual-palette .gamification-palette-item em {
+    font-size: 9px !important;
+}
+.gamification-visual-inspector {
+    container: gamification-inspector / inline-size;
+    padding: 10px;
+}
+/* Compact, readable connection summary instead of an oversized pill card. */
+.gamification-visual-inspector .gamification-connection-summary {
+    gap: 6px;
+    margin-top: 10px;
+    padding: 8px;
+    border-color: var(--hydra-border-default);
+    border-radius: 7px;
+    background: var(--hydra-bg-surface-muted);
+    box-shadow: none;
+    font-size: clamp(11px, calc(var(--app-diagram-font-size, 18px) * .72), 14px) !important;
+}
+.gamification-visual-inspector .gamification-connection-summary > header {
+    align-items: center;
+    gap: 6px;
+}
+.gamification-visual-inspector .gamification-connection-summary h4 {
+    font-size: clamp(12px, calc(var(--app-diagram-font-size, 18px) * .76), 14px) !important;
+    line-height: 1.2;
+}
+.gamification-visual-inspector .gamification-connection-summary p {
+    margin-top: 2px;
+    color: var(--hydra-text-muted);
+    font-size: clamp(10px, calc(var(--app-diagram-font-size, 18px) * .66), 12px) !important;
+    line-height: 1.3;
+}
+.gamification-visual-inspector .gamification-connection-summary > header > span {
+    min-width: 20px;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+}
+.gamification-visual-inspector .gamification-connection-summary > div {
+    gap: 5px;
+}
+.gamification-visual-inspector .gamification-connection-summary > div > button {
+    grid-template-columns: 58px minmax(0, 1fr);
+    min-height: 0;
+    padding: 6px 7px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface);
+    box-shadow: none;
+    font-size: clamp(10px, calc(var(--app-diagram-font-size, 18px) * .67), 12px) !important;
+    line-height: 1.25;
+}
+.gamification-visual-inspector .gamification-connection-summary > div > button:hover {
+    border-color: #93a4bd;
+    background: var(--hydra-bg-surface-muted);
+    transform: none;
+}
+.gamification-visual-inspector .gamification-connection-summary > div > button span, .gamification-visual-inspector .gamification-connection-summary > div > button small {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+.gamification-visual-inspector .gamification-connection-summary > div > button small {
+    color: var(--hydra-text-muted);
+    font-size: 10px !important;
+    line-height: 1.25;
+}
+/* Property actions stay compact even when the global form font is large. */
+.gamification-visual-inspector .hydra-designer-form-header {
+    gap: 8px;
+    padding-bottom: 8px;
+}
+.gamification-visual-inspector .hydra-designer-form-actions {
+    gap: 4px;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+}
+.gamification-visual-inspector .hydra-designer-form-actions .hydra-danger-button, .gamification-visual-inspector .gamification-edge-inspector .hydra-danger-button {
+    min-height: 30px;
+    padding: 4px 8px;
+    border-radius: 7px;
+    box-shadow: none;
+    font-size: 12px !important;
+    line-height: 1.15;
+    white-space: nowrap;
+}
+.gamification-visual-inspector .hydra-process-guide-button.compact {
+    font-size: 12px !important;
+}
+.gamification-visual-inspector .hydra-designer-form-actions button {
+    max-width: 100%;
+}
+.gamification-visual-toolbar button {
+    min-height: 28px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px !important;
+    line-height: 1.15;
+}
+@container gamification-inspector (max-width: 300px) {
+    .gamification-visual-inspector .hydra-designer-form-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .gamification-visual-inspector .hydra-designer-form-actions {
+        justify-content: flex-end;
+    }
+    .gamification-visual-inspector .gamification-connection-summary > div > button {
+        grid-template-columns: 1fr;
+    }
+    .gamification-visual-inspector .gamification-connection-summary > div > button small {
+        grid-column: 1;
+    }
+}
+@media(max-width:900px) {
+    .gamification-visual-editor {
+        grid-template-columns: 1fr;
+    }
+    .gamification-column-resizer {
+        display: none;
+    }
+}
+
+.gamification-designer {
+    box-sizing: border-box;
+    width: 100%;
+    flex: 1 1 auto;
+    align-self: stretch;
+}
+.gamification-layout {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+    align-self: stretch;
+}
+.gamification-designer > .event-subtabs, .gamification-designer > .gamification-source, .gamification-designer > .designer-structure-workspace, .gamification-designer > .gamification-visual-editor, .gamification-designer > .gamification-ledger {
+    width: 100%;
+    min-width: 0;
+    align-self: stretch;
+}
+
+.gamification-guided-workspace {
+    box-sizing:border-box;
+    width:100%;
+    padding:14px;
+    overflow:auto
+}
+.gamification-guided-block {
+    display:grid;
+    gap:12px
+}
+.gamification-guided-block>p {
+    margin:0;
+    color:var(--hydra-text-muted);
+    line-height:1.45
+}
+.gamification-guided-cards {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:7px
+}
+.gamification-guided-cards>header {
+    grid-column:1/-1;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:8px
+}
+.gamification-guided-cards>header h4,.gamification-guided-cards>header p {
+    margin:0
+}
+.gamification-guided-cards>header p {
+    margin-top:2px;
+    color:var(--hydra-text-muted);
+    font-size:11px
+}
+.gamification-guided-cards>button {
+    display:grid;
+    gap:3px;
+    padding:9px;
+    text-align:left
+}
+.gamification-guided-cards>button>span,.gamification-guided-cards>button>small {
+    color:var(--hydra-text-muted);
+    font-size:10px
+}
+.gamification-guided-category-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:8px
+}
+.gamification-guided-category-grid>section {
+    display:grid;
+    align-content:start;
+    gap:5px;
+    padding:9px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface)
+}
+.gamification-guided-category-grid header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:5px
+}
+.gamification-guided-category-grid header button {
+    padding:4px 7px;
+    font-size:10px
+}
+.gamification-guided-category-grid>section>button {
+    display:grid;
+    gap:2px;
+    text-align:left
+}
+.gamification-guided-category-grid small {
+    color:var(--hydra-text-muted)
+}
+.gamification-guided-visual>div {
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px
+}
+.gamification-source button {
+    align-self:start;
+    height:auto;
+    min-height:30px
+}
+.gamification-visual-canvas {
+    position:relative
+}
+
+.gamification-visual-editor,.gamification-visual-workspace,.gamification-visual-canvas {
+    min-width:0;
+    max-width:100%;
+    overflow:hidden
+}
+.gamification-visual-workspace>.hydra-diagram-toolbox {
+    min-width:0;
+    max-width:100%;
+    flex:0 0 auto
+}
+.gamification-visual-canvas>.react-flow {
+    min-width:0;
+    max-width:100%;
+    overflow:hidden
+}
+
+.gamification-visual-editor {
+    grid-template-columns:var(--gamification-palette-width,250px) 7px minmax(0,1fr) 7px minmax(270px,var(--gamification-inspector-width,320px));
+    overflow:hidden
+}
+.gamification-visual-palette {
+    min-width:0;
+    max-width:none;
+    resize:none;
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain
+}
+.gamification-visual-workspace,.gamification-visual-canvas,.gamification-visual-canvas>.react-flow {
+    overflow:hidden;
+    overscroll-behavior:none
+}
+.gamification-visual-palette .gamification-palette-item :is(strong,small,em) {
+    white-space:normal;
+    overflow:visible;
+    text-overflow:clip;
+    overflow-wrap:anywhere
+}
+.gamification-visual-palette .gamification-palette-item {
+    height:auto;
+    min-height:46px;
+    align-content:center
+}
+.gamification-visual-palette .gamification-palette-group {
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,135px),1fr))
+}
+.gamification-visual-palette .gamification-palette-category,.gamification-visual-palette .gamification-palette-empty {
+    grid-column:1/-1
+}
+
+
+.gamification-kind-heading {
+    display:flex;
+    min-width:0;
+    align-items:center;
+    gap:5px;
+}
+.gamification-kind-heading > strong {
+    min-width:0;
+}
+.gamification-kind-guidance {
+    display:grid;
+    gap:8px;
+    min-width:min(420px,70vw);
+}
+.gamification-kind-guidance p {
+    margin:0;
+    line-height:1.45;
+}
+.gamification-kind-guidance p > strong {
+    display:block;
+    margin-bottom:2px;
+}
+.gamification-dependency-blocked {
+    border-top:1px solid var(--hydra-border-default);
+    padding-top:8px;
+}
+.gamification-dependency-ready {
+    border-top:1px solid var(--hydra-border-default);
+    padding-top:8px;
+}
+.gamification-feedback-policy{margin-top:12px;padding-top:12px;border-top:1px solid var(--hydra-border-color,#d7dfeb)}
+.gamification-feedback-policy>header{margin-bottom:8px}.gamification-feedback-policy>header h4{margin:0}.gamification-feedback-policy>header p{margin:3px 0 0;color:var(--hydra-text-muted,#657086)}
+
+/* R5C13 Fix 11: canonical gamification feedback activity */
+.gamification-feedback-ledger{border:1px solid var(--hydra-border,#d7deea);border-radius:8px;padding:12px;display:grid;gap:10px;background:var(--hydra-surface,var(--hydra-palette-white))}
+.gamification-feedback-ledger>header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.gamification-feedback-ledger>header h4,.gamification-feedback-ledger>header p{margin:0}.gamification-feedback-ledger-list{display:grid;gap:8px;max-height:360px;overflow:auto}.gamification-feedback-ledger-list article{display:grid;grid-template-columns:minmax(180px,.8fr) minmax(240px,1.4fr) auto;gap:8px;align-items:center;border-left:4px solid var(--hydra-info,var(--hydra-palette-blue-600));padding:8px 10px;background:var(--hydra-surface-muted,#f8fafc);border-radius:6px}.gamification-feedback-ledger-list article.severity-success{border-left-color:var(--hydra-palette-green-700)}.gamification-feedback-ledger-list article.severity-warning{border-left-color:var(--hydra-palette-amber-600)}.gamification-feedback-ledger-list article.severity-error{border-left-color:var(--hydra-palette-red-600)}.gamification-feedback-ledger-list article progress{width:100%}@media(max-width:900px){.gamification-feedback-ledger-list article{grid-template-columns:1fr}}

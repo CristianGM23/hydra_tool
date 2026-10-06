@@ -1,0 +1,163 @@
+.roundtrip-center {
+    min-height:100%;
+    background:var(--hydra-bg-app,var(--hydra-color-slate-100))
+}
+.roundtrip-friendly-header {
+    align-items:center
+}
+.roundtrip-friendly-header>div {
+    max-width:900px
+}
+.roundtrip-eyebrow {
+    display:block;
+    margin-bottom:4px;
+    color:var(--hydra-color-primary-700);
+    font-size:.7rem;
+    font-weight:800;
+    letter-spacing:.06em;
+    text-transform:uppercase
+}
+.roundtrip-configuration {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,320px));
+    gap:10px;
+    align-items:end;
+    padding:12px 14px;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface)
+}
+.roundtrip-configuration :is(input,select),.roundtrip-rollback input {
+    box-sizing:border-box;
+    width:100%;
+    min-height:32px;
+    padding:5px 8px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:7px
+}
+.roundtrip-configuration .hydra-ui-form-field {
+    min-width:0
+}
+.roundtrip-plan {
+    display:grid;
+    gap:10px;
+    margin:12px;
+    padding:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px;
+    background:var(--hydra-bg-surface)
+}
+.roundtrip-plan>header {
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    min-width:0
+}
+.roundtrip-plan h3 {
+    margin:3px 0 0;
+    overflow-wrap:anywhere
+}
+.roundtrip-plan small {
+    color:var(--hydra-text-muted)
+}
+.roundtrip-change-list {
+    display:grid;
+    gap:5px;
+    max-height:300px;
+    overflow:auto
+}
+.roundtrip-change-list article {
+    display:grid;
+    grid-template-columns:minmax(90px,110px) minmax(150px,.8fr) minmax(200px,1fr);
+    gap:8px;
+    align-items:center;
+    padding:7px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px
+}
+.roundtrip-change-list code,.roundtrip-change-list p {
+    min-width:0;
+    overflow-wrap:anywhere
+}
+.roundtrip-change-list p {
+    margin:0;
+    color:var(--hydra-text-muted);
+    font-size:.76rem
+}
+.roundtrip-change-list span {
+    font-size:.64rem;
+    font-weight:800
+}
+.roundtrip-conflicts,.roundtrip-guided-conflicts {
+    display:grid;
+    gap:7px
+}
+.roundtrip-conflicts {
+    padding:10px;
+    border:1px solid var(--hydra-color-warning-600,var(--hydra-color-warning-500));
+    border-radius:8px;
+    background:var(--hydra-color-warning-50)
+}
+.roundtrip-conflicts h3 {
+    margin:0
+}
+.roundtrip-guided-conflicts article,.roundtrip-conflicts article {
+    display:grid;
+    grid-template-columns:minmax(220px,1fr) minmax(190px,280px);
+    gap:9px;
+    align-items:center;
+    padding:8px;
+    border-radius:7px;
+    background:var(--hydra-bg-surface)
+}
+.roundtrip-guided-conflicts article>div,.roundtrip-conflicts article>div {
+    display:grid;
+    gap:3px;
+    min-width:0
+}
+.roundtrip-guided-conflicts code,.roundtrip-conflicts code {
+    overflow-wrap:anywhere
+}
+.roundtrip-conflicts article span {
+    justify-self:start;
+    padding:2px 6px;
+    border-radius:999px;
+    background:var(--hydra-color-warning-50);
+    color:var(--hydra-color-warning-600);
+    font-size:.65rem
+}
+.roundtrip-actions {
+    display:flex;
+    justify-content:flex-end
+}
+.roundtrip-rollback {
+    margin:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px;
+    background:var(--hydra-bg-surface)
+}
+.roundtrip-rollback>summary {
+    cursor:pointer;
+    padding:10px 12px;
+    font-weight:700
+}
+.roundtrip-rollback-body {
+    display:grid;
+    grid-template-columns:minmax(220px,420px) auto;
+    gap:8px;
+    align-items:center;
+    padding:0 12px 12px
+}
+.change-manual_conflict,.change-orphan_native {
+    color:var(--hydra-color-danger-600)
+}
+.change-add,.change-regenerate {
+    color:var(--hydra-color-primary-700)
+}
+.change-unchanged {
+    color:var(--hydra-text-muted)
+}
+@media(max-width:900px) {
+    .roundtrip-configuration,.roundtrip-rollback-body,.roundtrip-change-list article,.roundtrip-guided-conflicts article,.roundtrip-conflicts article {
+        grid-template-columns:1fr
+    }
+}

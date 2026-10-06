@@ -1,0 +1,14 @@
+package com.example.editor.gamification.persistence;
+import java.util.Optional;
+import com.example.editor.gamification.GamificationLedger;
+import com.example.editor.gamification.GamificationRuntimeState;
+import com.example.editor.validation.persistence.StoredCanonicalDocument;
+public interface GamificationRuntimeRepository {
+    /** Descripción: Obtiene la información correspondiente a «findState» dentro de GamificationRuntimeRepository. Entradas: metamodelId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ Optional<StoredCanonicalDocument<GamificationRuntimeState>> findState(String metamodelId);
+    /** Descripción: Obtiene la información correspondiente a «findLedger» dentro de GamificationRuntimeRepository. Entradas: metamodelId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ Optional<StoredCanonicalDocument<GamificationLedger>> findLedger(String metamodelId);
+    /** Descripción: Actualiza el estado gestionado por GamificationRuntimeRepository mediante la operación «saveState». Entradas: state: dato de entrada necesario para la operación; etag: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ StoredCanonicalDocument<GamificationRuntimeState> saveState(GamificationRuntimeState state, String etag);
+    /** Descripción: Actualiza el estado gestionado por GamificationRuntimeRepository mediante la operación «saveLedger». Entradas: ledger: dato de entrada necesario para la operación; etag: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ StoredCanonicalDocument<GamificationLedger> saveLedger(GamificationLedger ledger, String etag);
+    /** Descripción: Elimina o libera el recurso gestionado por «deleteState» de forma controlada. Entradas: metamodelId: identificador que delimita el recurso objetivo; etag: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void deleteState(String metamodelId, String etag);
+    /** Descripción: Elimina o libera el recurso gestionado por «deleteLedger» de forma controlada. Entradas: metamodelId: identificador que delimita el recurso objetivo; etag: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void deleteLedger(String metamodelId, String etag);
+    /** Descripción: Ejecuta la operación «reset» correspondiente a la responsabilidad de GamificationRuntimeRepository. Entradas: metamodelId: identificador que delimita el recurso objetivo. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void reset(String metamodelId);
+}

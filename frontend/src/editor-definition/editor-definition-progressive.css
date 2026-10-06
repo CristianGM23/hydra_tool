@@ -1,0 +1,715 @@
+
+.editor-definition-designer {
+    --editor-compact-control-height: 32px;
+    --editor-compact-gap: 8px;
+}
+.editor-definition-designer .editor-definition-guided-workflow {
+    padding: 0 10px 10px;
+}
+.editor-definition-designer .editor-definition-guided-workflow > .hydra-guided-workflow {
+    gap: 9px;
+    margin: 8px 0 0;
+    padding: 10px 12px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-workflow-header {
+    gap: 10px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-workflow-header h4 {
+    font-size: 15px;
+    line-height: 1.2;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-workflow-header p, .editor-definition-designer .editor-definition-guided-workflow .hydra-guided-current-step p {
+    margin-top: 2px;
+    font-size: 11px;
+    line-height: 1.3;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-status-legend {
+    display: none;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-stepper {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 5px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-stepper > button {
+    min-height: 52px;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 6px;
+    padding: 7px 8px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-status-dot, .editor-definition-designer .editor-definition-guided-workflow .hydra-guided-check-dot {
+    width: 19px;
+    height: 19px;
+    min-width: 19px;
+    font-size: 10px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-stepper strong {
+    font-size: 10.5px;
+    line-height: 1.2;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-stepper small {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 9px;
+    line-height: 1.2;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-current-step {
+    gap: 7px;
+    padding: 9px 10px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-current-step h4 {
+    font-size: 15px;
+    line-height: 1.2;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-current-step > header span {
+    font-size: 9px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-checklist {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 5px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-checklist > div {
+    min-height: 38px;
+    grid-template-columns: 19px minmax(0, 1fr);
+    gap: 6px;
+    padding: 6px 7px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-checklist strong {
+    font-size: 10.5px;
+    line-height: 1.15;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-checklist small {
+    font-size: 9px;
+    line-height: 1.2;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-step-content {
+    gap: 8px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-workflow-actions {
+    gap: 7px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-workflow-actions button {
+    min-height: 32px;
+    padding: 5px 11px;
+    font-size: 11px;
+}
+.editor-definition-designer .editor-definition-guided-workflow .hydra-guided-workflow-actions > span {
+    font-size: 9px;
+}
+/* Forms: denser rhythm, predictable labels and less empty card space. */
+.editor-definition-designer .hydra-designer-fields, .editor-definition-designer .hydra-designer-row-fields, .editor-definition-designer .editor-definition-guided-fields, .editor-definition-designer .editor-guided-card-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    align-items: start;
+    gap: 8px 12px;
+}
+.editor-definition-designer .hydra-designer-wide {
+    grid-column: 1 / -1;
+}
+.editor-definition-designer :is(.hydra-helped-field, .hydra-ui-form-field) {
+    min-width: 0;
+    gap: 3px;
+}
+.editor-definition-designer .hydra-field-label-row {
+    min-height: 18px;
+    gap: 4px;
+}
+.editor-definition-designer .hydra-field-label-row > label, .editor-definition-designer .hydra-ui-form-field > label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11px;
+    line-height: 1.15;
+}
+.editor-definition-designer :is(input:not([type='checkbox']):not([type='radio']), select) {
+    box-sizing: border-box;
+    min-height: var(--editor-compact-control-height);
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.editor-definition-designer textarea {
+    min-height: 68px;
+    padding: 6px 8px;
+    line-height: 1.35;
+}
+.editor-definition-designer .hydra-field-info-button {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+}
+.editor-definition-designer .hydra-required-fields-legend {
+    margin: 0;
+    font-size: 10px;
+}
+.editor-definition-designer .hydra-designer-form, .editor-definition-designer .representation-editor, .editor-definition-designer .editor-document-settings {
+    gap: 9px;
+}
+.editor-definition-designer .hydra-designer-section, .editor-definition-designer .hydra-designer-row-card, .editor-definition-designer .editor-form-field {
+    gap: 7px;
+    padding: 9px 10px;
+}
+.editor-definition-designer .hydra-designer-form-header h3, .editor-definition-designer .hydra-designer-section h4, .editor-definition-designer .hydra-designer-row-card h4 {
+    margin: 0;
+}
+.editor-definition-designer .hydra-designer-form-header p, .editor-definition-designer .hydra-designer-section p {
+    margin: 2px 0 0;
+    line-height: 1.3;
+}
+/* Progressive settings blocks. */
+.editor-progressive-form {
+    display: grid;
+    gap: 9px;
+}
+.editor-progressive-header, .editor-progressive-context > header, .editor-progressive-advanced > header, .editor-document-disclosure, .editor-guided-representation-heading, .editor-form-section-card > header, .editor-form-field > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 9px;
+}
+.editor-progressive-header h3, .editor-progressive-header p, .editor-progressive-context header span, .editor-progressive-advanced header span, .editor-document-disclosure span, .editor-guided-representation-heading span {
+    margin: 0;
+}
+.editor-progressive-header p, .editor-progressive-context header span, .editor-progressive-advanced header span, .editor-document-disclosure span, .editor-guided-representation-heading span {
+    color: var(--hydra-text-muted);
+    font-size: 10px;
+    line-height: 1.3;
+}
+.editor-progressive-toggle, .editor-progressive-details > summary, .editor-document-disclosure > button {
+    flex: 0 0 auto;
+}
+.editor-progressive-context, .editor-progressive-advanced, .editor-progressive-details, .editor-context-note, .editor-document-disclosure {
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 7px;
+    background: var(--hydra-bg-surface-muted);
+}
+.editor-progressive-context, .editor-progressive-advanced {
+    display: grid;
+    gap: 7px;
+    padding: 8px 9px;
+}
+.editor-progressive-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 6px 10px;
+}
+.editor-progressive-details {
+    padding: 0;
+    overflow: hidden;
+}
+.editor-progressive-details > summary {
+    padding: 7px 9px;
+    cursor: pointer;
+    color: var(--hydra-text-secondary);
+    font-size: 10.5px;
+    font-weight: 700;
+}
+.editor-progressive-details[open] > summary {
+    border-bottom: 1px solid var(--hydra-border-default);
+}
+.editor-progressive-details > :not(summary) {
+    margin: 0;
+    padding: 8px 9px;
+}
+.editor-context-note {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 8px 9px;
+}
+.editor-context-note span {
+    color: var(--hydra-text-muted);
+    font-size: 10px;
+}
+.editor-document-disclosure {
+    display: flex;
+    align-items: center;
+    padding: 7px 9px;
+}
+.editor-document-disclosure > div {
+    display: grid;
+    min-width: 0;
+    gap: 1px;
+}
+.editor-selected-properties {
+    min-height: 0;
+}
+.editor-definition-form-surface {
+    align-content: start;
+}
+.compact-capabilities {
+    gap: 5px 10px !important;
+}
+.compact-capabilities .hydra-inline-checkbox {
+    min-height: 24px;
+    padding: 3px 5px;
+}
+/* Guided representations are directly editable without opening the full form. */
+.editor-guided-representations > div {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 7px;
+}
+.editor-guided-representation-card {
+    display: grid !important;
+    align-content: start;
+    gap: 7px !important;
+    min-width: 0;
+    padding: 8px 9px !important;
+}
+.editor-guided-representation-card > button {
+    justify-self: start;
+    min-height: 30px;
+    padding: 4px 8px;
+}
+.editor-guided-card-fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+/* Tree / structure high-level mode. */
+.editor-detail-level-switch {
+    display: inline-flex;
+    align-items: center;
+    align-self: stretch;
+    padding: 2px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 7px;
+    background: var(--hydra-bg-surface-muted);
+}
+.editor-detail-level-switch > button {
+    min-height: 27px;
+    padding: 3px 8px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--hydra-text-secondary);
+    font-size: 10px;
+}
+.editor-detail-level-switch > button.active {
+    background: var(--hydra-bg-surface);
+    color: var(--hydra-color-primary-700);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .12);
+}
+.editor-definition-designer .editor-definition-tree-row {
+    min-height: 27px;
+}
+.editor-definition-designer .editor-definition-tree-main {
+    min-height: 27px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+.editor-definition-designer .editor-definition-tree-text {
+    min-width: 0;
+}
+.editor-definition-designer .editor-definition-tree-text strong, .editor-definition-designer .editor-definition-tree-text small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.editor-definition-designer .editor-definition-tree-text small {
+    font-size: 9px;
+}
+.editor-definition-designer .editor-definition-tree-badge {
+    max-width: 92px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.editor-structure-header-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.editor-definition-designer .editor-structure-properties-scroll {
+    padding: 8px;
+}
+.editor-definition-designer .editor-structure-inspection-summary {
+    gap: 6px;
+    padding: 9px;
+}
+/* Forms: avoid cards that consume the full viewport for a handful of values. */
+.editor-form-builder {
+    display: grid;
+    gap: 8px;
+}
+.editor-form-section-card, .editor-form-field {
+    border-radius: 7px;
+}
+.editor-form-section-card > header small, .editor-form-field > header small {
+    color: var(--hydra-text-muted);
+    font-size: 9px;
+}
+.editor-section-essential {
+    grid-template-columns: minmax(220px, 520px);
+}
+.editor-field-essential {
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+}
+@media (max-width: 1180px) {
+    .editor-definition-designer .editor-definition-guided-workflow .hydra-guided-stepper {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .editor-guided-card-fields, .editor-field-essential {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 760px) {
+    .editor-definition-designer .editor-definition-guided-workflow .hydra-guided-stepper, .editor-guided-card-fields, .editor-field-essential, .editor-definition-designer .hydra-designer-fields, .editor-definition-designer .hydra-designer-row-fields, .editor-definition-designer .editor-definition-guided-fields {
+        grid-template-columns: 1fr;
+    }
+    .editor-definition-designer .hydra-field-label-row > label, .editor-definition-designer .hydra-ui-form-field > label {
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+    }
+    .editor-progressive-header, .editor-progressive-context > header, .editor-progressive-advanced > header, .editor-context-note, .editor-structure-header-controls {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .editor-guided-representations > div {
+        grid-template-columns: 1fr;
+    }
+}
+
+.editor-definition-designer .hydra-designer-fields, .editor-definition-designer .hydra-designer-row-fields, .editor-definition-designer .editor-definition-guided-fields {
+    grid-template-columns: repeat(auto-fit, minmax(190px, min(300px, 100%)));
+    justify-content: start;
+}
+.editor-definition-designer .hydra-designer-wide {
+    max-width: 100%;
+}
+.editor-definition-designer :is(.hydra-adaptive-select,.hydra-ui-form-control,input:not([type='checkbox']):not([type='radio']),select) {
+    min-width:0;
+    max-width:100%;
+}
+.editor-definition-designer .hydra-adaptive-select-control {
+    min-width:0;
+}
+.editor-definition-designer .hydra-adaptive-select-control > select {
+    width:100%;
+}
+.editor-definition-designer .hydra-ui-form-label-row > label, .editor-definition-designer .hydra-field-label-row > label {
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.editor-definition-designer .hydra-designer-section > header > div, .editor-definition-designer .hydra-designer-form-header > div {
+    min-width:0;
+}
+.editor-definition-designer .hydra-designer-section :is(h3,h4,p), .editor-definition-designer .hydra-designer-form-header :is(h3,p) {
+    overflow-wrap:anywhere;
+}
+
+.editor-definition-designer .editor-definition-form-surface, .editor-definition-designer .editor-structure-properties, .editor-definition-designer .editor-structure-properties-scroll, .editor-definition-designer .editor-selected-properties {
+    min-width: 0;
+    width: 100%;
+}
+.editor-definition-designer .editor-structure-properties-scroll > .representation-editor, .editor-definition-designer .editor-selected-properties > .representation-editor {
+    width: 100%;
+    max-width: none;
+}
+.editor-palette-purpose-card, .editor-tool-outcome-summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 14px;
+    border: 1px solid var(--hydra-color-blue-border);
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--hydra-color-sky-50), var(--hydra-bg-surface));
+}
+.editor-palette-purpose-card h4, .editor-palette-purpose-card p, .editor-tool-outcome-summary p {
+    margin: 0;
+}
+.editor-palette-purpose-card h4 {
+    margin-top: 2px;
+    font-size: 14px;
+}
+.editor-palette-purpose-card p, .editor-tool-outcome-summary p {
+    margin-top: 4px;
+    color: var(--hydra-text-muted);
+    font-size: 11px;
+    line-height: 1.4;
+}
+.editor-palette-purpose-kicker, .editor-tool-outcome-summary > div > span {
+    color: var(--hydra-color-primary-700);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+.editor-palette-purpose-stat {
+    display: grid;
+    min-width: 90px;
+    place-items: center;
+    padding: 8px 12px;
+    border-left: 1px solid var(--hydra-border-default);
+}
+.editor-palette-purpose-stat strong {
+    font-size: 22px;
+}
+.editor-palette-purpose-stat span {
+    color: var(--hydra-text-muted);
+    font-size: 9px;
+    text-align: center;
+}
+.editor-palette-action-starter {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 10px;
+    background: var(--hydra-bg-surface-muted);
+}
+.editor-palette-action-starter header h4, .editor-palette-action-starter header p {
+    margin: 0;
+}
+.editor-palette-action-starter header h4 {
+    margin-top: 2px;
+    font-size: 13px;
+}
+.editor-palette-action-starter header p {
+    margin-top: 3px;
+    color: var(--hydra-text-muted);
+    font-size: 10.5px;
+}
+.editor-palette-action-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+}
+.editor-palette-action-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: end;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 8px;
+    background: var(--hydra-bg-surface);
+}
+.editor-palette-action-card strong {
+    display: block;
+    font-size: 11px;
+}
+.editor-palette-action-card p {
+    margin: 4px 0;
+    color: var(--hydra-text-secondary);
+    font-size: 10px;
+    line-height: 1.35;
+}
+.editor-palette-action-card small {
+    color: var(--hydra-text-muted);
+    font-size: 9px;
+}
+.editor-palette-action-card.disabled {
+    opacity: .62;
+}
+.editor-palette-action-note {
+    margin: 0;
+    color: var(--hydra-text-muted);
+    font-size: 9.5px;
+}
+.editor-tool-outcome-summary {
+    align-items: start;
+}
+.editor-tool-outcome-summary > div > strong {
+    display: block;
+    margin-top: 2px;
+    font-size: 15px;
+}
+.editor-tool-outcome-summary dl {
+    display: grid;
+    min-width: min(360px, 42vw);
+    grid-template-columns: repeat(3, minmax(90px, 1fr));
+    gap: 8px;
+    margin: 0;
+}
+.editor-tool-outcome-summary dl > div {
+    padding: 7px 8px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 7px;
+    background: var(--hydra-bg-surface);
+}
+.editor-tool-outcome-summary dt {
+    color: var(--hydra-text-muted);
+    font-size: 8.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+.editor-tool-outcome-summary dd {
+    margin: 3px 0 0;
+    font-size: 10px;
+    line-height: 1.25;
+}
+.editor-image-file-selection {
+    display: grid;
+    gap: 6px;
+}
+.editor-image-file-selection > input[type='file'] {
+    display: none;
+}
+.editor-image-file-empty, .editor-image-file-selected {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 9px;
+    align-items: center;
+    min-height: 54px;
+    padding: 8px 10px;
+    border: 1px dashed var(--hydra-border-default);
+    border-radius: 8px;
+    background: var(--hydra-bg-surface-muted);
+}
+.editor-image-file-empty {
+    grid-template-columns: minmax(0,1fr) auto;
+}
+.editor-image-file-empty > div, .editor-image-file-selected > div {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+.editor-image-file-empty span, .editor-image-file-selected span {
+    color: var(--hydra-text-muted);
+    font-size: 9.5px;
+}
+.editor-image-file-selected img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface);
+}
+.editor-image-file-selected {
+    grid-template-columns: 44px minmax(0,1fr) auto auto;
+}
+@media (max-width: 1080px) {
+    .editor-palette-action-options {
+        grid-template-columns: 1fr;
+    }
+    .editor-tool-outcome-summary {
+        grid-template-columns: 1fr;
+    }
+    .editor-tool-outcome-summary dl {
+        min-width: 0;
+        width: 100%;
+    }
+}
+@media (max-width: 680px) {
+    .editor-palette-purpose-card {
+        grid-template-columns: 1fr;
+    }
+    .editor-palette-purpose-stat {
+        border-left: 0;
+        border-top: 1px solid var(--hydra-border-default);
+    }
+    .editor-tool-outcome-summary dl {
+        grid-template-columns: 1fr;
+    }
+    .editor-image-file-selected {
+        grid-template-columns: 44px 1fr;
+    }
+    .editor-image-file-selected button {
+        grid-column: span 1;
+    }
+}
+
+.editor-definition-designer .editor-definition-grid {
+    width:100%;
+    max-width:none;
+    align-self:stretch;
+    grid-template-columns:clamp(250px,var(--hydra-designer-sidebar-width,300px),460px) 10px minmax(0,1fr);
+}
+.editor-definition-designer .editor-definition-form-surface {
+    box-sizing:border-box;
+    width:100%;
+    max-width:none;
+    min-width:0;
+    padding:12px clamp(14px,1.7vw,24px) 22px;
+    overflow:auto;
+}
+.editor-definition-designer .editor-selected-properties, .editor-definition-designer .editor-selected-properties>*, .editor-definition-designer .representation-editor, .editor-definition-designer .editor-progressive-form {
+    box-sizing:border-box;
+    width:100%;
+    max-width:none;
+    min-width:0;
+}
+.editor-definition-designer .editor-progressive-details>.hydra-designer-fields>.editor-conditional-style-editor, .editor-definition-designer .editor-conditional-style-editor, .editor-definition-designer .editor-conditional-styles {
+    grid-column:1 / -1;
+    justify-self:stretch;
+    box-sizing:border-box;
+    width:100%;
+    max-width:none;
+    min-width:0;
+}
+.editor-definition-designer .editor-conditional-style-header {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:12px 18px;
+    align-items:start;
+}
+.editor-definition-designer .editor-conditional-style-header>div {
+    min-width:0
+}
+.editor-definition-designer .editor-conditional-style-header h4 {
+    font-size:1rem;
+    line-height:1.25
+}
+.editor-definition-designer .editor-conditional-style-header p, .editor-definition-designer .editor-conditional-styles-heading p {
+    max-width:90ch;
+    font-size:.82rem;
+    line-height:1.5
+}
+.editor-definition-designer .editor-conditional-style-guidance {
+    grid-template-columns:auto minmax(0,1fr) auto;
+    align-items:center
+}
+.editor-definition-designer .editor-conditional-style-guidance>span, .editor-definition-designer .editor-conditional-live-preview p {
+    font-size:.78rem;
+    line-height:1.5
+}
+.editor-definition-designer .editor-conditional-style-list, .editor-definition-designer .editor-conditional-style-card, .editor-definition-designer .editor-conditional-style-step, .editor-definition-designer .editor-conditional-style-overrides {
+    box-sizing:border-box;
+    width:100%;
+    max-width:none;
+    min-width:0
+}
+.editor-definition-designer .editor-conditional-style-grid {
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr))
+}
+/* Below the shared master/detail breakpoint, stack instead of squeezing the properties column. */
+@media(max-width:960px) {
+    .editor-definition-designer .editor-definition-grid {
+        grid-template-columns:1fr
+    }
+    .editor-definition-designer .editor-definition-grid>[role='separator'] {
+        display:none
+    }
+    .editor-definition-designer .editor-definition-grid>.hydra-designer-sidebar {
+        width:100%;
+        max-width:none;
+        max-height:min(38vh,320px);
+        border-radius:12px
+    }
+    .editor-definition-designer .editor-definition-form-surface {
+        padding:12px 14px 18px
+    }
+}
+@media(max-width:720px) {
+    .editor-definition-designer .editor-conditional-style-header {
+        grid-template-columns:1fr
+    }
+    .editor-definition-designer .editor-conditional-style-guidance {
+        grid-template-columns:1fr auto
+    }
+    .editor-definition-designer .editor-conditional-style-guidance>span {
+        grid-column:1/-1
+    }
+    .editor-definition-designer .editor-conditional-style-grid {
+        grid-template-columns:1fr
+    }
+}

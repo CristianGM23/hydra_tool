@@ -1,0 +1,229 @@
+/* Metamodel validation deliberately uses the shared HydraModal surface. */
+.metamodel-validation-dialog {
+    width: min(1120px, 100%);
+    height: min(860px, calc(100vh - 40px));
+    background: var(--hydra-color-surface, var(--hydra-bg-surface));
+    color: var(--hydra-color-text, var(--hydra-text-primary));
+}
+.metamodel-validation-dialog > .hydra-ui-modal-header {
+    flex: 0 0 auto;
+    background: var(--hydra-color-surface-muted, var(--hydra-bg-surface-muted));
+}
+.metamodel-validation-dialog > .hydra-ui-modal-content {
+    display: grid;
+    min-height: 0;
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px 18px 0;
+    overflow: hidden;
+    background: var(--hydra-color-surface, var(--hydra-bg-surface));
+}
+.metamodel-validation-state {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 12px 14px;
+    border: 1px solid var(--hydra-color-border, var(--hydra-border-default));
+    border-radius: var(--hydra-radius-medium, 9px);
+    background: var(--hydra-color-surface-muted, var(--hydra-bg-surface-muted));
+}
+.metamodel-validation-state > div:last-child {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+}
+.metamodel-validation-state span {
+    color: var(--hydra-color-text-muted, var(--hydra-text-muted));
+    line-height: 1.35;
+}
+.metamodel-validation-state-icon {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: 800;
+}
+.metamodel-validation-state.valid {
+    border-color: #86d8a4;
+    background: var(--hydra-color-success-50);
+}
+.metamodel-validation-state.valid .metamodel-validation-state-icon {
+    background: var(--hydra-color-success-50);
+    color: var(--hydra-color-success-600);
+}
+.metamodel-validation-state.invalid {
+    border-color: #f1a8a8;
+    background: var(--hydra-color-danger-50);
+}
+.metamodel-validation-state.invalid .metamodel-validation-state-icon {
+    background: var(--hydra-color-danger-50);
+    color: var(--hydra-color-danger-600);
+}
+.metamodel-validation-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+.metamodel-validation-summary article {
+    display: grid;
+    gap: 2px;
+    padding: 10px 12px;
+    border: 1px solid var(--hydra-color-border, var(--hydra-border-default));
+    border-radius: var(--hydra-radius-medium, 9px);
+    background: var(--hydra-color-surface-muted, var(--hydra-bg-surface-muted));
+}
+.metamodel-validation-summary article.error {
+    border-left: 4px solid var(--hydra-color-danger-600);
+}
+.metamodel-validation-summary article.warning {
+    border-left: 4px solid var(--hydra-color-warning-600);
+}
+.metamodel-validation-summary article.total {
+    border-left: 4px solid var(--hydra-color-primary-600, var(--hydra-color-primary-600));
+}
+.metamodel-validation-summary strong {
+    font-size: 1.4rem;
+    line-height: 1;
+}
+.metamodel-validation-summary span {
+    color: var(--hydra-color-text-muted, var(--hydra-text-muted));
+}
+.metamodel-validation-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-bottom: 2px;
+}
+.metamodel-validation-findings {
+    min-height: 0;
+    overflow: auto;
+    padding: 0 2px 18px 0;
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    scrollbar-gutter: stable;
+}
+.metamodel-validation-finding {
+    display: grid;
+    gap: 12px;
+    padding: 13px 14px;
+    border: 1px solid var(--hydra-color-border, var(--hydra-border-default));
+    border-radius: var(--hydra-radius-medium, 9px);
+    background: var(--hydra-color-surface, var(--hydra-bg-surface));
+    box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+}
+.metamodel-validation-finding.error {
+    border-left: 4px solid var(--hydra-color-danger-600);
+}
+.metamodel-validation-finding.warning {
+    border-left: 4px solid var(--hydra-color-warning-600);
+}
+.metamodel-validation-finding.info {
+    border-left: 4px solid var(--hydra-color-primary-600);
+}
+.metamodel-validation-finding > header {
+    display: flex;
+    gap: 10px;
+    align-items: start;
+}
+.metamodel-validation-finding > header > span {
+    padding: 3px 6px;
+    border-radius: 5px;
+    background: var(--hydra-color-surface-muted, var(--hydra-bg-surface-muted));
+    font-size: .78rem;
+    font-weight: 800;
+}
+.metamodel-validation-finding > header > div {
+    display: grid;
+    gap: 2px;
+}
+.metamodel-validation-finding > header small {
+    color: var(--hydra-color-text-muted, var(--hydra-text-muted));
+}
+.metamodel-validation-finding dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 18px;
+}
+.metamodel-validation-finding dl > div {
+    display: grid;
+    gap: 3px;
+    padding: 8px 10px;
+    border-radius: var(--hydra-radius-small, 6px);
+    background: var(--hydra-color-surface-muted, var(--hydra-bg-surface-muted));
+}
+.metamodel-validation-finding dt {
+    font-weight: 750;
+}
+.metamodel-validation-finding dd {
+    margin: 0;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+.metamodel-validation-finding ul {
+    margin: 0;
+    padding-left: 18px;
+}
+.metamodel-validation-empty {
+    display: grid;
+    min-height: 150px;
+    place-items: center;
+    align-content: center;
+    gap: 4px;
+    padding: 24px;
+    border: 1px dashed var(--hydra-color-border, var(--hydra-border-default));
+    border-radius: var(--hydra-radius-medium, 9px);
+    background: var(--hydra-color-surface-muted, var(--hydra-bg-surface-muted));
+    color: var(--hydra-color-text-muted, var(--hydra-text-muted));
+    text-align: center;
+}
+.metamodel-validation-empty strong {
+    color: var(--hydra-color-text, var(--hydra-text-primary));
+}
+.metamodel-validation-dialog > .hydra-ui-modal-footer {
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    background: var(--hydra-color-surface-muted, var(--hydra-bg-surface-muted));
+}
+.metamodel-validation-fingerprint {
+    margin-right: auto;
+    color: var(--hydra-color-text-muted, var(--hydra-text-muted));
+    font-size: .82rem;
+}
+.metamodel-validation-fingerprint code {
+    color: var(--hydra-color-text, var(--hydra-text-primary));
+}
+@media (max-width: 760px) {
+    .metamodel-validation-dialog {
+        height: calc(100vh - 16px);
+    }
+    .metamodel-validation-dialog > .hydra-ui-modal-content {
+        padding: 12px 12px 0;
+    }
+    .metamodel-validation-summary {
+        grid-template-columns: 1fr;
+    }
+    .metamodel-validation-finding dl {
+        grid-template-columns: 1fr;
+    }
+    .metamodel-validation-fingerprint {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+.metamodel-validation-elements {
+    display:flex;
+    min-width:0;
+    gap:5px;
+    flex-wrap:wrap
+}
+.metamodel-validation-elements code {
+    padding:2px 5px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:5px;
+    background:var(--hydra-bg-surface-muted)
+}

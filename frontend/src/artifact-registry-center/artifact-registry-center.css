@@ -1,0 +1,263 @@
+.artifact-registry-center {
+    display:grid;
+    align-content:start;
+    gap:10px;
+    padding:12px;
+    min-height:100%;
+    background:var(--hydra-bg-surface-muted,var(--hydra-bg-surface-muted))
+}
+.artifact-registry-overview {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:16px;
+    align-items:center;
+    padding:16px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:12px;
+    background:var(--hydra-bg-surface,var(--hydra-bg-surface))
+}
+.artifact-registry-overview.state-ready {
+    border-color:var(--hydra-color-green-300)
+}
+.artifact-registry-overview.state-review {
+    border-color:#fbbf24
+}
+.artifact-registry-overview-copy {
+    display:grid;
+    gap:4px;
+    min-width:0
+}
+.artifact-registry-overview-copy p,.artifact-registry-overview-copy h2,.artifact-registry-overview-copy span {
+    margin:0
+}
+.artifact-registry-overview-copy p {
+    font-size:.68rem;
+    font-weight:800;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    color:var(--hydra-color-primary-700,var(--hydra-palette-blue-700))
+}
+.artifact-registry-overview-copy h2 {
+    font-size:1.15rem
+}
+.artifact-registry-overview-copy span {
+    max-width:72ch;
+    color:var(--hydra-text-muted,var(--hydra-color-slate-500));
+    line-height:1.45
+}
+.artifact-registry-primary-action {
+    display:flex;
+    gap:7px;
+    align-items:center;
+    flex-wrap:wrap;
+    justify-content:flex-end
+}
+.artifact-registry-primary-action .hydra-ui-button[data-variant='primary'],.artifact-registry-primary-action .hydra-ui-button.primary {
+    color:var(--hydra-palette-white)!important;
+    background:var(--hydra-color-primary-600,var(--hydra-palette-blue-600))!important
+}
+.artifact-registry-compact-status {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(130px,1fr));
+    gap:8px
+}
+.artifact-registry-compact-status article {
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    padding:9px 11px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px;
+    background:var(--hydra-bg-surface,var(--hydra-bg-surface))
+}
+.artifact-registry-compact-status strong {
+    font-size:1rem
+}
+.artifact-registry-compact-status span {
+    min-width:0;
+    color:var(--hydra-text-muted,var(--hydra-color-slate-500));
+    font-size:.75rem
+}
+.artifact-registry-compact-status .needs-review,.artifact-registry-compact-status .overall-review {
+    border-color:#fbbf24;
+    background:var(--hydra-color-warning-50)
+}
+.artifact-registry-compact-status .overall-ready {
+    border-color:var(--hydra-color-green-300);
+    background:var(--hydra-color-success-50)
+}
+.artifact-registry-next-step {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:5px 12px;
+    align-items:center;
+    padding:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:10px;
+    background:var(--hydra-bg-surface,var(--hydra-bg-surface))
+}
+.artifact-registry-next-step strong {
+    grid-column:1
+}
+.artifact-registry-next-step p {
+    grid-column:1;
+    margin:0;
+    color:var(--hydra-text-muted,var(--hydra-color-slate-500));
+    line-height:1.4
+}
+.artifact-registry-next-step button {
+    grid-column:2;
+    grid-row:1/3
+}
+.artifact-registry-details {
+    display:grid;
+    gap:10px;
+    padding:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:10px;
+    background:var(--hydra-bg-surface,var(--hydra-bg-surface))
+}
+.artifact-registry-details>header {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(240px,420px);
+    gap:12px;
+    align-items:end
+}
+.artifact-registry-details h3,.artifact-registry-details p {
+    margin:0
+}
+.artifact-registry-details p {
+    margin-top:3px;
+    color:var(--hydra-text-muted,var(--hydra-color-slate-500));
+    font-size:.78rem
+}
+.artifact-registry-filter {
+    display:flex;
+    gap:6px;
+    align-items:center
+}
+.artifact-registry-filter>.hydra-select {
+    flex:1;
+    min-width:0
+}
+.artifact-registry-list {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:8px
+}
+.artifact-registry-card {
+    display:grid;
+    gap:8px;
+    padding:10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px;
+    background:var(--hydra-bg-surface-muted,var(--hydra-bg-surface-muted))
+}
+.artifact-registry-card>header {
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    align-items:flex-start
+}
+.artifact-registry-card>header>div {
+    display:grid;
+    min-width:0
+}
+.artifact-registry-card small {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:var(--hydra-text-muted,var(--hydra-color-slate-500))
+}
+.artifact-registry-card dl {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:6px;
+    margin:0
+}
+.artifact-registry-card dl>div {
+    min-width:0
+}
+.artifact-registry-card dt {
+    font-size:.68rem;
+    color:var(--hydra-text-muted,var(--hydra-color-slate-500))
+}
+.artifact-registry-card dd {
+    margin:1px 0 0;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
+.artifact-registry-card code {
+    font-size:.68rem
+}
+.artifact-registry-badge {
+    padding:3px 6px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:999px;
+    font-size:.64rem;
+    font-weight:800;
+    white-space:nowrap
+}
+.artifact-registry-diagnostics {
+    margin:0;
+    padding-left:18px;
+    color:var(--hydra-color-danger-700,var(--hydra-palette-red-700))
+}
+.artifact-registry-empty-state {
+    padding:20px;
+    text-align:center;
+    border:1px dashed var(--hydra-border-default);
+    border-radius:9px;
+    color:var(--hydra-text-muted,var(--hydra-color-slate-500))
+}
+.artifact-cycles {
+    display:grid;
+    gap:5px;
+    padding:10px;
+    border:1px solid #fbbf24;
+    border-radius:9px;
+    background:var(--hydra-color-warning-50)
+}
+.artifact-cycles h3 {
+    margin:0
+}
+.artifact-cycles code {
+    display:block;
+    overflow:auto
+}
+@media(max-width:900px) {
+    .artifact-registry-overview,.artifact-registry-details>header {
+        grid-template-columns:1fr
+    }
+    .artifact-registry-primary-action {
+        justify-content:flex-start
+    }
+    .artifact-registry-compact-status {
+        grid-template-columns:repeat(2,minmax(0,1fr))
+    }
+    .artifact-registry-next-step {
+        grid-template-columns:1fr
+    }
+    .artifact-registry-next-step button {
+        grid-column:1;
+        grid-row:auto;
+        justify-self:start
+    }
+}
+@media(max-width:560px) {
+    .artifact-registry-compact-status {
+        grid-template-columns:1fr
+    }
+    .artifact-registry-list {
+        grid-template-columns:1fr
+    }
+    .artifact-registry-card dl {
+        grid-template-columns:1fr
+    }
+}
+.artifact-registry-card {
+    content-visibility:auto;
+    contain-intrinsic-size:180px;
+}

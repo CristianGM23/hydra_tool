@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description:Group xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:description="http://www.eclipse.org/sirius/description/1.1.0"
+    xmlns:diagram="http://www.eclipse.org/sirius/diagram/description/1.1.0"
+    xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0"
+    xmlns:dtool="http://www.eclipse.org/sirius/diagram/description/tool/1.1.0"
+    xmlns:tool="http://www.eclipse.org/sirius/description/tool/1.1.0"
+    xmlns:validation="http://www.eclipse.org/sirius/description/validation/1.1.0"
+    xmlns:table="http://www.eclipse.org/sirius/table/description/1.1.0"
+    xmlns:tree="http://www.eclipse.org/sirius/tree/description/1.1.0"
+    name="HydraSiriusFixture" version="15.0.0">
+
+  <ownedViewpoints name="HydraFlow" label="HYDRA Flow" modelFileExtension="hydraflow">
+    <ownedJavaExtensions qualifiedClassName="com.hydra.sirius.fixture.design.Services"/>
+
+    <!-- Main diagram -->
+    <ownedRepresentations xsi:type="diagram:DiagramDescription"
+        name="Hydra Workflow Diagram" label="Hydra Workflow Diagram"
+        domainClass="hydratest::Workflow"
+        titleExpression="aql:'Workflow - ' + self.name"
+        enablePopupBars="true">
+      <metamodel href="platform:/resource/com.hydra.sirius.fixture.metamodel/model/hydratest.ecore#/"/>
+
+      <defaultLayer name="Default" label="Core notation">
+        <!-- Containers -->
+        <containerMappings name="GroupContainer" domainClass="hydratest::Group"
+            semanticCandidatesExpression="feature:groups">
+          <style xsi:type="style:FlatContainerStyleDescription" labelExpression="feature:name" showIcon="false">
+            <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_gray']"/>
+            <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+            <backgroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
+            <foregroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_gray']"/>
+          </style>
+        </containerMappings>
+
+        <!-- Simple node styles -->
+        <nodeMappings name="StartNode" domainClass="hydratest::StartNode" semanticCandidatesExpression="feature:nodes">
+          <style xsi:type="style:EllipseNodeDescription" labelExpression="feature:name" showIcon="false" sizeComputationExpression="2">
+            <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
+            <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+            <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
+          </style>
+        </nodeMappings>
+
+        <nodeMappings name="EndNode" domainClass="hydratest::EndNode" semanticCandidatesExpression="feature:nodes">
+          <style xsi:type="style:EllipseNodeDescription" labelExpression="feature:name" showIcon="false" sizeComputationExpression="2">
+            <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_red']"/>
+            <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+            <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_red']"/>
+          </style>
+        </nodeMappings>
+
+        <nodeMappings name="TaskSquare" domainClass="hydratest::Task" semanticCandidatesExpression="feature:nodes">
+          <borderedNodeMappings name="Port" domainClass="hydratest::Port" semanticCandidatesExpression="feature:ports">
+            <style xsi:type="style:SquareDescription" labelExpression="feature:name" labelPosition="border" showIcon="false" sizeComputationExpression="1">
+              <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+              <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+              <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='yellow']"/>
+            </style>
+          </borderedNodeMappings>
+          <style xsi:type="style:SquareDescription" labelExpression="service:safeLabel" showIcon="false" sizeComputationExpression="5" labelPosition="node" width="2" height="1">
+            <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='blue']"/>
+            <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+            <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_blue']"/>
+          </style>
+          <conditionnalStyles predicateExpression="aql:self.progress = 100">
+            <style xsi:type="style:SquareDescription" labelExpression="aql:self.name + ' ✓'" showIcon="false" sizeComputationExpression="5" labelPosition="node" width="2" height="1">
+              <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
+              <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+              <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
+            </style>
+          </conditionnalStyles>
+        </nodeMappings>
+
+        <nodeMappings name="DecisionDiamond" domainClass="hydratest::DecisionNode" semanticCandidatesExpression="feature:nodes">
+          <style xsi:type="style:LozengeNodeDescription" labelExpression="feature:name" showIcon="false" sizeComputationExpression="4">
+            <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_orange']"/>
+            <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+            <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_orange']"/>
+          </style>
+        </nodeMappings>
+
+        <nodeMappings name="DataStoreImage" domainClass="hydratest::DataStoreNode" semanticCandidatesExpression="feature:nodes">
+          <style xsi:type="style:WorkspaceImageDescription" labelExpression="feature:name" showIcon="false" workspacePath="/com.hydra.sirius.fixture.design/icons/datastore.svg" sizeComputationExpression="4"/>
+        </nodeMappings>
+
+        <nodeMappings name="AnnotationNote" domainClass="hydratest::Annotation" semanticCandidatesExpression="feature:annotations">
+          <style xsi:type="style:NoteDescription" labelExpression="feature:text" showIcon="false" sizeComputationExpression="4">
+            <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+            <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_yellow']"/>
+          </style>
+        </nodeMappings>
+
+        <!-- Gauge style mapping to exercise progress notation. Same semantic type, alternate mapping controlled by precondition. -->
+        <nodeMappings name="TaskGauge" domainClass="hydratest::Task" semanticCandidatesExpression="feature:nodes" preconditionExpression="aql:self.automated">
+          <style xsi:type="style:GaugeCompositeStyleDescription" labelExpression="aql:self.name + ' (' + self.progress + '%)'" showIcon="false" alignment="HORIZONTAL">
+            <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
+            <sections label="progress" minValueExpression="0" maxValueExpression="100" valueExpression="feature:progress">
+              <foregroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='blue']"/>
+              <backgroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_gray']"/>
+            </sections>
+          </style>
+        </nodeMappings>
+
+        <!-- Relation-based semantic edges -->
+        <edgeMappings name="ControlConnection" domainClass="hydratest::Connection"
+            semanticCandidatesExpression="feature:connections"
+            sourceMapping="//@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='StartNode'] //@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='EndNode'] //@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='TaskSquare'] //@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='DecisionDiamond'] //@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='DataStoreImage']"
+            targetMapping="//@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='StartNode'] //@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='EndNode'] //@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='TaskSquare'] //@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='DecisionDiamond'] //@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='DataStoreImage']"
+            sourceFinderExpression="feature:source" targetFinderExpression="feature:target">
+          <style sizeComputationExpression="2" routingStyle="manhattan" labelExpression="feature:name">
+            <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_gray']"/>
+          </style>
+        </edgeMappings>
+
+        <!-- Tools -->
+        <toolSections name="Creation" label="Create">
+          <ownedTools xsi:type="dtool:NodeCreationDescription" name="Create Task" label="Task" nodeMappings="//@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='TaskSquare']">
+            <variable name="container"/><viewVariable name="containerView"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool:ChangeContext" browseExpression="var:container">
+                <subModelOperations xsi:type="tool:CreateInstance" typeName="hydratest::Task" referenceName="nodes">
+                  <subModelOperations xsi:type="tool:SetValue" featureName="name" valueExpression="var:name"/>
+                  <subModelOperations xsi:type="tool:SetValue" featureName="durationMinutes" valueExpression="1"/>
+                </subModelOperations>
+              </firstModelOperations>
+            </initialOperation>
+          </ownedTools>
+          <ownedTools xsi:type="dtool:NodeCreationDescription" name="Create Decision" label="Decision" nodeMappings="//@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='DecisionDiamond']">
+            <variable name="container"/><viewVariable name="containerView"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool:ChangeContext" browseExpression="var:container">
+                <subModelOperations xsi:type="tool:CreateInstance" typeName="hydratest::DecisionNode" referenceName="nodes">
+                  <subModelOperations xsi:type="tool:SetValue" featureName="name" valueExpression="var:name"/>
+                  <subModelOperations xsi:type="tool:SetValue" featureName="expression" valueExpression="'true'"/>
+                </subModelOperations>
+              </firstModelOperations>
+            </initialOperation>
+          </ownedTools>
+          <ownedTools xsi:type="dtool:EdgeCreationDescription" name="Create Connection" label="Connection"
+              edgeMappings="//@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@edgeMappings[name='ControlConnection']">
+            <sourceVariable name="source"/><targetVariable name="target"/><sourceViewVariable name="sourceView"/><targetViewVariable name="targetView"/><element name="element"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool:ChangeContext" browseExpression="aql:source.eContainer()">
+                <subModelOperations xsi:type="tool:CreateInstance" typeName="hydratest::Connection" referenceName="connections">
+                  <subModelOperations xsi:type="tool:SetValue" featureName="name" valueExpression="'flow'"/>
+                  <subModelOperations xsi:type="tool:SetValue" featureName="source" valueExpression="var:source"/>
+                  <subModelOperations xsi:type="tool:SetValue" featureName="target" valueExpression="var:target"/>
+                  <subModelOperations xsi:type="tool:SetValue" featureName="kind" valueExpression="'CONTROL'"/>
+                </subModelOperations>
+              </firstModelOperations>
+            </initialOperation>
+          </ownedTools>
+        </toolSections>
+
+        <toolSections name="Edition" label="Edit">
+          <ownedTools xsi:type="dtool:DirectEditLabel" name="Rename" label="Rename" mask="{0}">
+            <inputLabelExpression>feature:name</inputLabelExpression>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool:SetValue" featureName="name" valueExpression="var:arg0"/>
+            </initialOperation>
+          </ownedTools>
+          <ownedTools xsi:type="dtool:DeleteElementDescription" name="Delete Element" label="Delete">
+            <element name="element"/><elementView name="elementView"/><containerView name="containerView"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool:DeleteView"/>
+            </initialOperation>
+          </ownedTools>
+        </toolSections>
+      </defaultLayer>
+
+      <!-- Optional layer and filter -->
+      <additionalLayers name="Diagnostics" label="Diagnostics" activeByDefault="false">
+        <nodeMappings name="DisabledTaskMarker" domainClass="hydratest::Task" semanticCandidatesExpression="feature:nodes" preconditionExpression="aql:not self.enabled">
+          <style xsi:type="style:NoteDescription" labelExpression="aql:'DISABLED: ' + self.name" showIcon="false" sizeComputationExpression="3">
+            <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_red']"/>
+            <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_red']"/>
+          </style>
+        </nodeMappings>
+      </additionalLayers>
+      <filters xsi:type="diagram:CompositeFilterDescription" name="Hide completed tasks">
+        <filters xsi:type="diagram:MappingFilter" mappings="//@ownedViewpoints[name='HydraFlow']/@ownedRepresentations[name='Hydra Workflow Diagram']/@defaultLayer/@nodeMappings[name='TaskSquare']" semanticConditionExpression="aql:self.progress = 100"/>
+      </filters>
+
+      <!-- Native Sirius validation + quick-fix bodies -->
+      <validation>
+        <ownedRules xsi:type="validation:SemanticValidationRule" name="NonEmptyName" level="ERROR" targetClass="hydratest::NamedElement" message="aql:'Name is required for ' + self.eClass().name">
+          <audits auditExpression="aql:not self.name.oclIsUndefined() and self.name.trim().size() > 0"/>
+          <fixes name="Set generated name">
+            <initialOperation>
+              <firstModelOperations xsi:type="tool:SetValue" featureName="name" valueExpression="aql:self.eClass().name.toLowerFirst() + '_1'"/>
+            </initialOperation>
+          </fixes>
+        </ownedRules>
+        <ownedRules xsi:type="validation:SemanticValidationRule" name="ProgressRange" level="ERROR" targetClass="hydratest::Task" message="aql:'Progress must be between 0 and 100: ' + self.name">
+          <audits auditExpression="aql:self.progress >= 0 and self.progress &lt;= 100"/>
+          <fixes name="Clamp progress to 100">
+            <initialOperation><firstModelOperations xsi:type="tool:SetValue" featureName="progress" valueExpression="aql:if self.progress &lt; 0 then 0 else 100 endif"/></initialOperation>
+          </fixes>
+        </ownedRules>
+        <ownedRules xsi:type="validation:SemanticValidationRule" name="NoSelfLoop" level="WARNING" targetClass="hydratest::Connection" message="aql:'A connection cannot target its own source: ' + self.name">
+          <audits auditExpression="aql:self.source &lt;> self.target"/>
+        </ownedRules>
+      </validation>
+    </ownedRepresentations>
+
+    <!-- Edition table -->
+    <ownedRepresentations xsi:type="table:EditionTableDescription" name="Workflow Elements Table" label="Workflow Elements Table" domainClass="hydratest::Workflow">
+      <metamodel href="platform:/resource/com.hydra.sirius.fixture.metamodel/model/hydratest.ecore#/"/>
+      <ownedLineMappings name="NodeLine" domainClass="hydratest::FlowNode" semanticCandidatesExpression="feature:nodes" headerLabelExpression="feature:name"/>
+      <ownedColumnMappings name="NameColumn" featureName="name" headerLabelExpression="Name"/>
+      <ownedColumnMappings name="TypeColumn" featureName="*" headerLabelExpression="Type" labelExpression="aql:self.eClass().name"/>
+      <ownedColumnMappings name="EnabledColumn" featureName="enabled" headerLabelExpression="Enabled"/>
+    </ownedRepresentations>
+
+    <!-- Tree representation -->
+    <ownedRepresentations xsi:type="tree:TreeDescription" name="Workflow Tree" label="Workflow Tree" domainClass="hydratest::Workflow">
+      <metamodel href="platform:/resource/com.hydra.sirius.fixture.metamodel/model/hydratest.ecore#/"/>
+      <subItemMappings name="Nodes" domainClass="hydratest::FlowNode" semanticCandidatesExpression="feature:nodes" labelExpression="service:safeLabel">
+        <subItemMappings name="Ports" domainClass="hydratest::Port" semanticCandidatesExpression="feature:ports" labelExpression="feature:name"/>
+      </subItemMappings>
+      <subItemMappings name="Connections" domainClass="hydratest::Connection" semanticCandidatesExpression="feature:connections" labelExpression="feature:name"/>
+    </ownedRepresentations>
+  </ownedViewpoints>
+</description:Group>

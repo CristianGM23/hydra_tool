@@ -1,0 +1,47 @@
+package com.example.editor.transformation;
+
+import java.nio.file.Path;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Component
+@ConfigurationProperties(prefix = "dsl.transformation")
+public class TransformationProperties {
+    private boolean enabled = true;
+    private Path directory = Path.of("./data/transformations");
+    private String fileSuffix = ".transformation.json";
+    private Path testDirectory = Path.of("./data/transformation-tests");
+    private String testFileSuffix = ".transformation-test.json";
+    private Path synchronizationSessionDirectory = Path.of("./data/transformation-sync-sessions");
+    private String synchronizationSessionFileSuffix = ".transformation-sync-session.json";
+    private Path synchronizationHistoryDirectory = Path.of("./data/transformation-sync-history");
+    private String synchronizationCheckpointFileSuffix = ".transformation-sync-checkpoint.json";
+    private int maximumSynchronizationHistory = 25;
+    private boolean useEtag = true;
+    private int maximumDiagnostics = 500;
+
+    /** Descripción: Evalúa la condición «isEnabled» sin modificar el estado externo. Entradas: no requiere parámetros de entrada. Salida: devuelve un indicador que expresa el resultado de la condición. */ public boolean isEnabled() { return enabled; }
+    /** Descripción: Actualiza el estado gestionado por TransformationProperties mediante la operación «setEnabled». Entradas: enabled: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    /** Descripción: Obtiene la información correspondiente a «getDirectory» dentro de TransformationProperties. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public Path getDirectory() { return directory; }
+    /** Descripción: Actualiza el estado gestionado por TransformationProperties mediante la operación «setDirectory». Entradas: directory: ruta o ubicación utilizada por la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void setDirectory(Path directory) { this.directory = directory; }
+    /** Descripción: Obtiene la información correspondiente a «getFileSuffix» dentro de TransformationProperties. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public String getFileSuffix() { return fileSuffix; }
+    /** Descripción: Actualiza el estado gestionado por TransformationProperties mediante la operación «setFileSuffix». Entradas: fileSuffix: archivo o contenido que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void setFileSuffix(String fileSuffix) { this.fileSuffix = fileSuffix; }
+    /** Descripción: Obtiene el directorio persistente de casos de prueba de transformación. Entradas: no requiere parámetros. Salida: devuelve la ruta configurada. */ public Path getTestDirectory() { return testDirectory; }
+    /** Descripción: Actualiza el directorio persistente de casos de prueba de transformación. Entradas: testDirectory: ruta configurada. Salida: no devuelve valor. */ public void setTestDirectory(Path testDirectory) { this.testDirectory = testDirectory == null ? Path.of("./data/transformation-tests") : testDirectory; }
+    /** Descripción: Obtiene el sufijo de los casos de prueba persistidos. Entradas: no requiere parámetros. Salida: devuelve el sufijo configurado. */ public String getTestFileSuffix() { return testFileSuffix; }
+    /** Descripción: Actualiza el sufijo de los casos de prueba persistidos. Entradas: testFileSuffix: sufijo de archivo. Salida: no devuelve valor. */ public void setTestFileSuffix(String testFileSuffix) { this.testFileSuffix = testFileSuffix == null || testFileSuffix.isBlank() ? ".transformation-test.json" : testFileSuffix; }
+    /** Descripción: Obtiene la información correspondiente a «getSynchronizationSessionDirectory» dentro de TransformationProperties. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public Path getSynchronizationSessionDirectory() { return synchronizationSessionDirectory; }
+    /** Descripción: Actualiza el estado gestionado por TransformationProperties mediante la operación «setSynchronizationSessionDirectory». Entradas: value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void setSynchronizationSessionDirectory(Path value) { synchronizationSessionDirectory = value == null ? Path.of("./data/transformation-sync-sessions") : value; }
+    /** Descripción: Obtiene la información correspondiente a «getSynchronizationSessionFileSuffix» dentro de TransformationProperties. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public String getSynchronizationSessionFileSuffix() { return synchronizationSessionFileSuffix; }
+    /** Descripción: Actualiza el estado gestionado por TransformationProperties mediante la operación «setSynchronizationSessionFileSuffix». Entradas: value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void setSynchronizationSessionFileSuffix(String value) { synchronizationSessionFileSuffix = value == null || value.isBlank() ? ".transformation-sync-session.json" : value; }
+    /** Descripción: Obtiene la información correspondiente a «getSynchronizationHistoryDirectory» dentro de TransformationProperties. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public Path getSynchronizationHistoryDirectory() { return synchronizationHistoryDirectory; }
+    /** Descripción: Actualiza el estado gestionado por TransformationProperties mediante la operación «setSynchronizationHistoryDirectory». Entradas: value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void setSynchronizationHistoryDirectory(Path value) { synchronizationHistoryDirectory = value == null ? Path.of("./data/transformation-sync-history") : value; }
+    /** Descripción: Obtiene la información correspondiente a «getSynchronizationCheckpointFileSuffix» dentro de TransformationProperties. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public String getSynchronizationCheckpointFileSuffix() { return synchronizationCheckpointFileSuffix; }
+    /** Descripción: Actualiza el estado gestionado por TransformationProperties mediante la operación «setSynchronizationCheckpointFileSuffix». Entradas: value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void setSynchronizationCheckpointFileSuffix(String value) { synchronizationCheckpointFileSuffix = value == null || value.isBlank() ? ".transformation-sync-checkpoint.json" : value; }
+    /** Descripción: Obtiene la información correspondiente a «getMaximumSynchronizationHistory» dentro de TransformationProperties. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public int getMaximumSynchronizationHistory() { return maximumSynchronizationHistory; }
+    /** Descripción: Actualiza el estado gestionado por TransformationProperties mediante la operación «setMaximumSynchronizationHistory». Entradas: value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void setMaximumSynchronizationHistory(int value) { maximumSynchronizationHistory = Math.max(2, Math.min(value, 200)); }
+    /** Descripción: Evalúa la condición «isUseEtag» sin modificar el estado externo. Entradas: no requiere parámetros de entrada. Salida: devuelve un indicador que expresa el resultado de la condición. */ public boolean isUseEtag() { return useEtag; }
+    /** Descripción: Actualiza el estado gestionado por TransformationProperties mediante la operación «setUseEtag». Entradas: useEtag: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void setUseEtag(boolean useEtag) { this.useEtag = useEtag; }
+    /** Descripción: Obtiene la información correspondiente a «getMaximumDiagnostics» dentro de TransformationProperties. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public int getMaximumDiagnostics() { return maximumDiagnostics; }
+    /** Descripción: Actualiza el estado gestionado por TransformationProperties mediante la operación «setMaximumDiagnostics». Entradas: value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void setMaximumDiagnostics(int value) { maximumDiagnostics = Math.max(50, Math.min(value, 5000)); }
+}

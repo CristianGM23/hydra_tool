@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/project/modeling-project-1.0.schema.json",
+  "title": "Modeling Project 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "name", "createdAt", "updatedAt", "storageMode", "layout", "enabledCapabilities", "annotations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._:-]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "storageMode": { "enum": ["LOCAL_DIRECTORY", "IMPORTED_ARCHIVE"] },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["internal", "metamodels", "editors", "representations", "palettes", "forms", "notations", "expressions", "validations", "actions", "operations", "eventDefinitions", "eventBindings", "eventFlows", "gamificationDefinitions", "gamificationBindings", "semanticModels", "modelDiagrams", "integrations", "generated", "assets", "tests", "docs"],
+      "properties": {
+        "internal": { "$ref": "#/$defs/path" },
+        "metamodels": { "$ref": "#/$defs/path" },
+        "editors": { "$ref": "#/$defs/path" },
+        "representations": { "$ref": "#/$defs/path" },
+        "palettes": { "$ref": "#/$defs/path" },
+        "forms": { "$ref": "#/$defs/path" },
+        "notations": { "$ref": "#/$defs/path" },
+        "expressions": { "$ref": "#/$defs/path" },
+        "validations": { "$ref": "#/$defs/path" },
+        "actions": { "$ref": "#/$defs/path" },
+        "operations": { "$ref": "#/$defs/path" },
+        "eventDefinitions": { "$ref": "#/$defs/path" },
+        "eventBindings": { "$ref": "#/$defs/path" },
+        "eventFlows": { "$ref": "#/$defs/path" },
+        "gamificationDefinitions": { "$ref": "#/$defs/path" },
+        "gamificationBindings": { "$ref": "#/$defs/path" },
+        "semanticModels": { "$ref": "#/$defs/path" },
+        "modelDiagrams": { "$ref": "#/$defs/path" },
+        "integrations": { "$ref": "#/$defs/path" },
+        "generated": { "$ref": "#/$defs/path" },
+        "assets": { "$ref": "#/$defs/path" },
+        "tests": { "$ref": "#/$defs/path" },
+        "docs": { "$ref": "#/$defs/path" }
+      }
+    },
+    "enabledCapabilities": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+    "annotations": { "type": "object", "additionalProperties": { "type": "string" } }
+  },
+  "$defs": {
+    "path": { "type": "string", "minLength": 1, "not": { "pattern": "(^/|^[A-Za-z]:|(^|/)\\.\\.(/|$))" } }
+  }
+}

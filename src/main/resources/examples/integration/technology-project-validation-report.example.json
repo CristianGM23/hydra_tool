@@ -1,0 +1,10 @@
+{
+  "technology": "LANGIUM",
+  "status": "PASSED",
+  "workspaceDirectory": "data/integration-validation/langium-example",
+  "steps": [{
+    "id": "langium-grammar", "description": "Validate Langium grammar", "status": "PASSED", "command": [], "exitCode": 0,
+    "durationMillis": 5, "stdout": "", "stderr": "", "diagnostics": []
+  }],
+  "metadata": {"validationMode": "STRUCTURAL"}
+}

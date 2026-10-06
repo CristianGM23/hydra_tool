@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.1",
+  "applicationId": "people-editor",
+  "name": "People editor",
+  "metamodelId": "people",
+  "editorId": "people-editor",
+  "port": 4173,
+  "runtimeMode": "EMBEDDED_LOCAL",
+  "runtimeBaseUrl": "http://localhost:8081",
+  "capabilityPackagePath": "capabilities/people-editor.hydra-cap",
+  "capabilityContentHash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "metamodelDocumentPath": "frontend/config/canonical/people.metamodel.json",
+  "editorDocumentPath": "frontend/config/canonical/people.editor-plan.json",
+  "capabilities": [
+    "METAMODEL",
+    "VISUAL_REPRESENTATION",
+    "VALIDATIONS",
+    "QUICK_FIXES"
+  ],
+  "settings": {
+    "maximumModelBytes": "10485760",
+    "includeAllCanonicalDocuments": "true"
+  },
+  "annotations": {
+    "generatedBy": "HYDRA",
+    "delivery": "STANDALONE_WEB_SOURCE",
+    "designerIncluded": "false",
+    "embeddedPersistence": "true"
+  },
+  "semanticScopeId": "people"
+}

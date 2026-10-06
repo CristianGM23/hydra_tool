@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "releaseVersion": "4.32.107",
+  "candidate": "RC1",
+  "requiredFixes": [
+    "101",
+    "102",
+    "103",
+    "104",
+    "105",
+    "106",
+    "107"
+  ],
+  "requiredPhases": [
+    "fix100-release-qualification",
+    "reference-projects",
+    "product-e2e-contract",
+    "ux-audit",
+    "scale-required",
+    "installation-matrix",
+    "onboarding-contract",
+    "package-requalification"
+  ],
+  "fullOnlyPhases": [
+    "product-e2e-live",
+    "scale-50000",
+    "frontend-playwright"
+  ],
+  "certificate": "target/release/rc1-certificate.json"
+}

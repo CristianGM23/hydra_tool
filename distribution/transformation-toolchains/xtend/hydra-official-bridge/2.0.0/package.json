@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "packageId": "hydra-official-bridge",
+  "packageVersion": "2.0.0",
+  "language": "XTEND",
+  "bridgeName": "HYDRA Official Xtend Bridge",
+  "bridgeVersion": "2.0.0",
+  "toolchainName": "Eclipse Xtend",
+  "toolchainVersion": "",
+  "sha256": {
+    "HydraOfficialBridge.java": "e77c69ca8eb04f790d45be571ed8a3daaf8070df93e12a688de1907bb4ba51eb",
+    "bridge.properties": "423c521483e10663913fb9761e78db83cc07b4863d68752a5b5ac63b2b0410e5",
+    "toolchain.json": "72827847ef45c9229986833edd368df6873f6b283d481bddd3ad908ae3548f7b"
+  }
+}

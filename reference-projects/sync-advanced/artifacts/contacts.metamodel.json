@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "2.1",
+  "id": "rc1-contacts",
+  "name": "RC1 Contacts",
+  "classes": [
+    {
+      "id": "class:Contact",
+      "name": "Contact",
+      "kind": "CLASS",
+      "attributes": [
+        {
+          "id": "attribute:class:Contact:displayName",
+          "name": "displayName",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "STRING",
+            "externalName": ""
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "ordered": true,
+          "unique": true,
+          "defaultValue": "",
+          "annotations": {}
+        }
+      ],
+      "annotations": {},
+      "operations": []
+    }
+  ],
+  "enums": [],
+  "dataTypes": [],
+  "relations": [],
+  "annotations": {}
+}

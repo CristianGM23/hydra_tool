@@ -1,0 +1,87 @@
+/* Shared form-density utilities for screens that use HydraFormField outside designer-ui. */
+.hydra-form-grid, .hydra-ui-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+    gap: 10px 12px;
+    align-items: start;
+}
+.hydra-form-grid.dense, .hydra-ui-form-grid.dense {
+    grid-template-columns: repeat(auto-fit, minmax(min(10.5rem, 100%), 1fr));
+}
+.hydra-ui-form-field.hydra-field-compact {
+    max-width: 14rem;
+}
+.hydra-ui-form-field.hydra-field-wide {
+    grid-column: span 2;
+}
+.hydra-ui-form-field.hydra-field-full {
+    grid-column: 1 / -1;
+}
+.hydra-ui-form-field :is(input, select, textarea) {
+    min-width: 0;
+    max-width: 100%;
+}
+.hydra-ui-form-field input[type='number'] {
+    width: min(9rem, 100%);
+}
+@media (max-width: 720px) {
+    .hydra-ui-form-field.hydra-field-wide, .hydra-ui-form-field.hydra-field-full {
+        grid-column: auto;
+    }
+}
+/* Browser-side validation feedback shared by native inputs and design-system controls. */
+:is(input, textarea)[data-hydra-input-rejected='true'] {
+    border-color: var(--hydra-color-danger-600, var(--hydra-palette-danger-700)) !important;
+    box-shadow: 0 0 0 2px rgba(217, 45, 32, .08);
+}
+
+/* R5C13 Fix10 — every HydraFormField uses the same visual control contract, including
+   capability screens (Update Site, Distribution and Publication) that are not hosted
+   inside designer-ui. Keep this here instead of duplicating literal styles per module. */
+.hydra-ui-form-control > :is(input:not([type='checkbox']):not([type='radio']):not([type='color']), select, textarea),
+.hydra-ui-form-control > .hydra-adaptive-select,
+.hydra-ui-form-control > .hydra-adaptive-select > select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: var(--hydra-control-height, 36px);
+    padding: 7px 10px;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: var(--hydra-radius-small, 6px);
+    background: var(--hydra-input-bg);
+    color: var(--hydra-text-primary);
+    font: inherit;
+    line-height: 1.25;
+}
+.hydra-ui-form-control > textarea {
+    min-height: 76px;
+    resize: vertical;
+}
+.hydra-ui-form-control > :is(input:not([type='checkbox']):not([type='radio']), select, textarea):focus-visible,
+.hydra-ui-form-control > .hydra-adaptive-select:focus-within {
+    outline: none;
+    border-color: var(--hydra-color-primary-600);
+    box-shadow: var(--hydra-focus);
+}
+
+/* Some advanced Update Site panels still contain native controls outside HydraFormField.
+   They intentionally consume the same tokens so those legacy/advanced surfaces do not
+   fall back to raw browser boxes. */
+.update-site-import-center :is(input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='color']), select, textarea),
+.standalone-distribution-center :is(input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='color']), select, textarea),
+.publication-center :is(input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='color']), select, textarea) {
+    box-sizing: border-box;
+    min-height: var(--hydra-control-height, 36px);
+    padding: 7px 10px;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: var(--hydra-radius-small, 6px);
+    background: var(--hydra-input-bg);
+    color: var(--hydra-text-primary);
+    font: inherit;
+}
+.update-site-import-center :is(input:not([type='checkbox']):not([type='radio']):not([type='file']), select, textarea):focus-visible,
+.standalone-distribution-center :is(input:not([type='checkbox']):not([type='radio']):not([type='file']), select, textarea):focus-visible,
+.publication-center :is(input:not([type='checkbox']):not([type='radio']):not([type='file']), select, textarea):focus-visible {
+    outline: none;
+    border-color: var(--hydra-color-primary-600);
+    box-shadow: var(--hydra-focus);
+}

@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://hydra.local/schemas/integration/technology-injection-preview-1.0.schema.json",
+  "title":"TechnologyInjectionPreview 1.0",
+  "type":"object",
+  "required":["plan","unchangedFiles","manualConflictFiles","generatedBytes"],
+  "properties":{
+    "plan":{"$ref":"injection-plan-1.0.schema.json"},
+    "unchangedFiles":{"type":"array","items":{"type":"string"}},
+    "manualConflictFiles":{"type":"array","items":{"type":"string"}},
+    "generatedBytes":{"type":"integer","minimum":0}
+  },
+  "additionalProperties":false
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0",
+  "id": "library-basic",
+  "level": "BASIC",
+  "title": "Biblioteca básica",
+  "description": "Proyecto de referencia para metamodelo, modelo, expresiones, validaciones y quick fixes.",
+  "capabilities": [
+    "METAMODEL",
+    "MODEL",
+    "EXPRESSIONS",
+    "VALIDATION",
+    "QUICK_FIX"
+  ],
+  "expectedArtifacts": [
+    {
+      "path": "artifacts/library.metamodel.json",
+      "kind": "METAMODEL",
+      "required": true
+    },
+    {
+      "path": "artifacts/library.model.json",
+      "kind": "MODEL",
+      "required": true
+    },
+    {
+      "path": "artifacts/library.expressions.json",
+      "kind": "EXPRESSIONS",
+      "required": true
+    },
+    {
+      "path": "artifacts/library.actions.json",
+      "kind": "ACTIONS",
+      "required": true
+    },
+    {
+      "path": "artifacts/library.validations.json",
+      "kind": "VALIDATIONS",
+      "required": true
+    }
+  ],
+  "acceptance": [
+    "all-json-parse",
+    "metamodel-id-consistency",
+    "no-secret-files"
+  ]
+}

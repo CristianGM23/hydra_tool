@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/canonical-event-1.0.schema.json",
+  "title": "CanonicalEvent 1.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "eventTypeId", "eventTypeVersion", "occurredAt", "source", "context", "payload", "metadata"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "id": { "$ref": "#/$defs/elementId" },
+    "eventTypeId": { "$ref": "#/$defs/elementId" },
+    "eventTypeVersion": { "type": "string", "minLength": 1 },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "source": { "$ref": "#/$defs/source" },
+    "context": { "$ref": "#/$defs/context" },
+    "actor": { "$ref": "#/$defs/actor" },
+    "subject": { "$ref": "#/$defs/subject" },
+    "transactionId": { "$ref": "#/$defs/optionalElementId" },
+    "correlationId": { "$ref": "#/$defs/optionalElementId" },
+    "causationId": { "$ref": "#/$defs/optionalElementId" },
+    "payload": { "type": "object" },
+    "metadata": { "type": "object", "additionalProperties": { "type": "string" } }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "documentId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$" },
+    "elementId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$" },
+    "optionalElementId": { "type": "string", "pattern": "^$|^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$" },
+    "source": {
+      "type": "object",
+      "required": ["component", "module", "instanceId", "version"],
+      "properties": {
+        "component": { "type": "string", "minLength": 1 },
+        "module": { "type": "string" },
+        "instanceId": { "type": "string" },
+        "version": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "context": {
+      "type": "object",
+      "required": ["kind", "workspaceId", "projectId", "metamodelId", "modelId", "editorId", "sessionId"],
+      "properties": {
+        "kind": { "enum": ["METAMODEL_DESIGN", "MODEL_EDITING", "VALIDATION", "QUICK_FIX", "OPERATION", "IMPORT_EXPORT", "EVENT_FLOW", "GAMIFICATION", "SYSTEM"] },
+        "workspaceId": { "type": "string" },
+        "projectId": { "type": "string" },
+        "metamodelId": { "type": "string" },
+        "modelId": { "type": "string" },
+        "editorId": { "type": "string" },
+        "sessionId": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "actor": {
+      "type": "object",
+      "required": ["id", "kind", "displayName"],
+      "properties": {
+        "id": { "$ref": "#/$defs/elementId" },
+        "kind": { "enum": ["USER", "SYSTEM", "IMPORTER", "QUICK_FIX", "OPERATION", "AUTOMATION", "EXTERNAL_SERVICE"] },
+        "displayName": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "subject": {
+      "type": "object",
+      "required": ["kind", "documentId", "elementId", "typeId", "featureId", "path"],
+      "properties": {
+        "kind": { "enum": ["METAMODEL", "META_CLASS", "META_ATTRIBUTE", "META_REFERENCE", "META_OPERATION", "MODEL", "MODEL_ELEMENT", "MODEL_FEATURE", "VALIDATION_RULE", "VALIDATION_DIAGNOSTIC", "QUICK_FIX", "ACTION", "EVENT_DEFINITION", "EVENT_FLOW", "EDITOR"] },
+        "documentId": { "$ref": "#/$defs/documentId" },
+        "elementId": { "$ref": "#/$defs/optionalElementId" },
+        "typeId": { "$ref": "#/$defs/optionalElementId" },
+        "featureId": { "$ref": "#/$defs/optionalElementId" },
+        "path": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,94 @@
+// HYDRA Sirius fixture - EVL validation and quick-fixes
+
+context NamedElement {
+    constraint HasName {
+        check : self.name.isDefined() and self.name.trim().length() > 0
+        message : self.eClass().name + ' must have a non-empty name'
+        fix {
+            title : 'Generate a default name'
+            do {
+                self.name := self.eClass().name.toLowerCase() + '_1';
+            }
+        }
+    }
+}
+
+context Workflow {
+    constraint UniqueNodeNames {
+        check : self.nodes.collect(n | n.name).excluding(null).asSet().size() =
+                self.nodes.collect(n | n.name).excluding(null).size()
+        message : 'Workflow ' + self.name + ' contains duplicate node names'
+    }
+
+    critique HasStartAndEnd {
+        check : self.nodes.select(n | n.isTypeOf(StartNode)).size() >= 1 and
+                self.nodes.select(n | n.isTypeOf(EndNode)).size() >= 1
+        message : 'Workflow ' + self.name + ' should contain at least one StartNode and one EndNode'
+    }
+}
+
+context Task {
+    constraint PositiveDuration {
+        check : self.durationMinutes > 0
+        message : 'Task ' + self.name + ' must have a positive duration'
+        fix {
+            title : 'Set duration to 1 minute'
+            do { self.durationMinutes := 1; }
+        }
+    }
+
+    constraint ProgressRange {
+        check : self.progress >= 0 and self.progress <= 100
+        message : 'Task ' + self.name + ' has progress outside [0,100]'
+        fix {
+            title : 'Clamp progress into [0,100]'
+            do {
+                if (self.progress < 0) self.progress := 0;
+                else if (self.progress > 100) self.progress := 100;
+            }
+        }
+    }
+
+    constraint UniquePortNames {
+        check : self.ports.collect(p | p.name).asSet().size() = self.ports.size()
+        message : 'Task ' + self.name + ' contains duplicate port names'
+    }
+}
+
+context DecisionNode {
+    constraint HasExpression {
+        check : self.expression.isDefined() and self.expression.trim().length() > 0
+        message : 'Decision ' + self.name + ' requires a non-empty expression'
+        fix {
+            title : 'Use a safe default expression'
+            do { self.expression := 'true'; }
+        }
+    }
+}
+
+context Connection {
+    constraint HasEndpoints {
+        check : self.source.isDefined() and self.target.isDefined()
+        message : 'Connection ' + self.name + ' must define both source and target'
+    }
+
+    constraint NoSelfLoop {
+        guard : self.source.isDefined() and self.target.isDefined()
+        check : self.source <> self.target
+        message : 'Connection ' + self.name + ' cannot connect a node to itself'
+    }
+}
+
+context StartNode {
+    constraint NoIncomingConnections {
+        check : Connection.all.select(c | c.target = self).isEmpty()
+        message : 'Start node ' + self.name + ' cannot have incoming connections'
+    }
+}
+
+context EndNode {
+    constraint NoOutgoingConnections {
+        check : Connection.all.select(c | c.source = self).isEmpty()
+        message : 'End node ' + self.name + ' cannot have outgoing connections'
+    }
+}

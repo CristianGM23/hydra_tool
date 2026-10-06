@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/gamification/gamification-ledger-1.0.schema.json",
+  "title": "HYDRA GamificationLedger 1.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "metamodelId", "updatedAt", "entries"],
+  "properties": { "schemaVersion": { "const": "1.0" }, "id": { "type": "string" }, "metamodelId": { "type": "string" }, "updatedAt": { "type": "string", "format": "date-time" }, "entries": { "type": "array", "items": { "type": "object", "required": ["id", "metamodelId", "actorId", "sourceEventId", "ruleId", "occurredAt", "pointsDelta", "status"], "properties": { "id": { "type": "string" }, "metamodelId": { "type": "string" }, "actorId": { "type": "string" }, "sourceEventId": { "type": "string" }, "ruleId": { "type": "string" }, "occurredAt": { "type": "string", "format": "date-time" }, "pointsTypeId": { "type": "string" }, "pointsDelta": { "type": "integer" }, "achievementId": { "type": "string" }, "challengeId": { "type": "string" }, "rewardId": { "type": "string" }, "status": { "enum": ["ACTIVE","REJECTED","COMPENSATED"] }, "compensationOf": { "type": "string" }, "correlationId": { "type": "string" }, "metadata": { "type": "object", "additionalProperties": { "type": "string" } } }, "additionalProperties": false } } },
+  "additionalProperties": false
+}

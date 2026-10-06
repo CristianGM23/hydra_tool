@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0",
+  "id": "people-plantuml",
+  "metamodelId": "people",
+  "name": "People event and gamification diagrams",
+  "target": {
+    "technology": "PLANTUML",
+    "kind": "DIAGRAM_PROJECTION",
+    "technologyVersion": "1.2026.x",
+    "projectId": "people-docs",
+    "moduleName": "",
+    "buildSystem": "NONE",
+    "sourceRoots": ["docs/diagrams"],
+    "configurationFiles": [],
+    "endpoint": "",
+    "settings": { "format": "puml", "render": "svg" }
+  },
+  "deliveryMode": "PROJECTION_ONLY",
+  "features": ["EVENT_DEFINITION_PROJECTION", "EVENT_FLOW_PROJECTION", "GAMIFICATION_PROJECTION", "PROJECT_EXPORT"],
+  "artifacts": [
+    { "kind": "METAMODEL", "documentId": "people", "required": true },
+    { "kind": "EVENT_DEFINITIONS", "documentId": "people-events", "required": true },
+    { "kind": "EVENT_FLOWS", "documentId": "people-event-flows", "required": false },
+    { "kind": "GAMIFICATION_DEFINITIONS", "documentId": "people-gamification", "required": false }
+  ],
+  "mappings": [
+    {
+      "id": "mapping:person-alias",
+      "kind": "TYPE",
+      "canonicalDocumentId": "people",
+      "canonicalElementId": "class:Person",
+      "hostReference": {
+        "strategy": "PLANTUML_ALIAS",
+        "documentUri": "docs/diagrams/people-events.puml",
+        "namespace": "",
+        "qualifiedName": "Person",
+        "externalId": "Person",
+        "featureName": "",
+        "path": "",
+        "attributes": {}
+      },
+      "required": false,
+      "annotations": {}
+    }
+  ],
+  "injectionPolicy": {
+    "strategy": "GENERATE_PROJECTION",
+    "generatedRoot": "docs/diagrams",
+    "moduleName": "",
+    "previewRequired": true,
+    "rollbackRequired": true,
+    "preserveCustomCode": true,
+    "allowModifyExistingFiles": false,
+    "allowModifyGeneratedFiles": false,
+    "failOnPartialMappings": false
+  },
+  "requiredCapabilities": ["DIAGRAM_RENDERING", "TEXTUAL_SOURCE_GENERATION", "EVENT_DEFINITION_PROJECTION", "EVENT_FLOW_PROJECTION", "GAMIFICATION_PROJECTION"],
+  "annotations": {}
+}

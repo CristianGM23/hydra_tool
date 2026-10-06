@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1.0",
+  "cssLineBudget": 1500,
+  "exceptions": [],
+  "maxLiteralColors": 346,
+  "maxImportantDeclarations": 263
+}

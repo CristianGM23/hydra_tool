@@ -1,0 +1,117 @@
+[
+  {
+    "path": "README.md",
+    "size": 3438,
+    "sha256": "f717dfa763e34be1e9e48dda4c2a4d04f42922ccecf38fb539529730b12db22d"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.design/.project",
+    "size": 276,
+    "sha256": "e68d2bad52b16b4a4108faba98f93d939d7b5e5ac75324a8cbb02e87a39940b6"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.design/META-INF/MANIFEST.MF",
+    "size": 616,
+    "sha256": "6fcff05cb5977360198c31cb01a45086aed14439fe7e431ae27c7e4d29bb8943"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.design/build.properties",
+    "size": 129,
+    "sha256": "96ddc6192f8efa89c5a37da5ee18ab727c8f33349cfb46be87eba9a8d2e002ab"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.design/description/hydratest.odesign",
+    "size": 19102,
+    "sha256": "c5eab6802192149f5ce71bd1fea33d81ba2f41ebf4510d78e9d552c9946db073"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.design/icons/datastore.svg",
+    "size": 405,
+    "sha256": "46ed9eb77a84944674dc8ba78e074730cdfc797944163e2afde267038b058732"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.design/src/com/hydra/sirius/fixture/design/Services.java",
+    "size": 1500,
+    "sha256": "cf3a67fd08ceaa0ba47e458b95c5b4cab675bd59acc54474e76cf94122453171"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.metamodel/.project",
+    "size": 279,
+    "sha256": "8b566a08a1fcf2d740c467b72abcd5be9f3902a56c0ddf460cd38bf6344a4892"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.metamodel/META-INF/MANIFEST.MF",
+    "size": 272,
+    "sha256": "7f8393f13f57997f3eec08271938cc639cefbbdd3fcd113481b3ac46cf95021b"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.metamodel/build.properties",
+    "size": 49,
+    "sha256": "7170720fc87e566ce2a745407c21bd7cd647e2eb45dcb240e4782503f07029ad"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.metamodel/model/hydratest.ecore",
+    "size": 4981,
+    "sha256": "39239c539d49c60df9d5530ec31877a3601f2baa6105006d755051d15bc6a317"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.metamodel/model/hydratest.genmodel",
+    "size": 628,
+    "sha256": "bd0d6cc268f5abcac90b5b4642a1dcb64d9706b9ef276e7cc11b8e6bce1e15d2"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.sample/.project",
+    "size": 289,
+    "sha256": "5b646d3b6697b9b143e28d7aad15186ab24ce87346c05121bc189440195049ae"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.sample/model/invalid.hydraflow",
+    "size": 1311,
+    "sha256": "ea2913260636f28f31d5d61ef1f6f8393e3d42b2c9cb4f380e1a1cee1afe4959"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.sample/model/valid.hydraflow",
+    "size": 1736,
+    "sha256": "96863e77410ec235486b359d26d98db2975f5f3b96730410e529103ae5309973"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.sample/representations.aird",
+    "size": 330,
+    "sha256": "8475e06bfc2cfd40988e1d7858544def441daa2270629e8db73b0960fb534159"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.validation/.project",
+    "size": 280,
+    "sha256": "cf708ece0dea151c83a6afa4e9ee376396070e4349b44086c5ffa6219ae34a41"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.validation/META-INF/MANIFEST.MF",
+    "size": 471,
+    "sha256": "eaf5fc38009011eaccf1a7f5da65b93fed604947de7c4616545e73b455ceb38d"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.validation/build.properties",
+    "size": 82,
+    "sha256": "3c9708cbbdc7d4b5351b848244965f585f63ee16a36ef2f7b3cb9790243a3220"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.validation/plugin.xml",
+    "size": 640,
+    "sha256": "2bd07a07409ea17210d488e23a935849d99c74d612d5b63d73d0ac25fc4c25b7"
+  },
+  {
+    "path": "com.hydra.sirius.fixture.validation/validation/hydratest.evl",
+    "size": 3107,
+    "sha256": "4e9477f0e3107bcebbfbbe9d12486685a067d914d5eb4ea6c3bdf16bed0ffaee"
+  },
+  {
+    "path": "expected/STATIC_VALIDATION_REPORT.md",
+    "size": 653,
+    "sha256": "18fe02f18c63743f3c99cdddf8a829eca5af9ad0fc017addaeaf55179ef2cb05"
+  },
+  {
+    "path": "expected/hydra-import-expectations.json",
+    "size": 3549,
+    "sha256": "13d1227e85a7f57b0e4fcff478a153e398f802dc0de098abe8be042e0c2e5920"
+  }
+]

@@ -1,0 +1,329 @@
+:root {
+    --hydra-palette-min-width: 15rem;
+    --hydra-palette-default-width: clamp(15.5rem, 18vw, 21rem);
+    --hydra-palette-max-width: min(38rem, 42vw);
+    --hydra-palette-resize-accent: rgba(59, 130, 246, 0.16);
+}
+/* Shared second-pass visual treatment for designer palettes and workbench sidecars. */
+.palette, [class$='-visual-palette'], [class*='-visual-palette '], [class$='-palette-panel'], [class*='-palette-panel '], [class$='-tool-palette'], [class*='-tool-palette '], [class$='-structure-tree'], [class*='-structure-tree '], [class$='-properties-panel'], [class*='-properties-panel '] {
+    min-inline-size: var(--hydra-palette-min-width);
+    inline-size: var(--hydra-palette-default-width);
+    max-inline-size: var(--hydra-palette-max-width);
+    resize: horizontal;
+    overflow: auto;
+    position: relative;
+    scrollbar-width: thin;
+}
+.palette::after, [class$='-visual-palette']::after, [class*='-visual-palette ']::after, [class$='-palette-panel']::after, [class*='-palette-panel ']::after, [class$='-tool-palette']::after, [class*='-tool-palette ']::after, [class$='-structure-tree']::after, [class*='-structure-tree ']::after, [class$='-properties-panel']::after, [class*='-properties-panel ']::after {
+    content: '↔';
+    position: sticky;
+    inset-inline-start: calc(100% - 1.6rem);
+    inset-block-end: .5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    border: 1px solid var(--hydra-border-default, var(--hydra-color-gray-300));
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--hydra-color-primary-700, var(--hydra-palette-blue-700));
+    font-size: .72rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+    pointer-events: none;
+}
+.palette:hover, [class$='-visual-palette']:hover, [class*='-visual-palette ']:hover, [class$='-palette-panel']:hover, [class*='-palette-panel ']:hover, [class$='-tool-palette']:hover, [class*='-tool-palette ']:hover, [class$='-structure-tree']:hover, [class*='-structure-tree ']:hover, [class$='-properties-panel']:hover, [class*='-properties-panel ']:hover {
+    box-shadow: inset 0 0 0 1px var(--hydra-palette-resize-accent);
+}
+/* Normalize content density inside common side palettes. */
+.palette header, [class$='-visual-palette'] > header, [class*='-visual-palette '] > header, [class$='-palette-panel'] > header, [class*='-palette-panel '] > header, [class$='-tool-palette'] > header, [class*='-tool-palette '] > header {
+    display: grid;
+    gap: .25rem;
+    margin-bottom: .85rem;
+}
+.palette header strong, [class$='-visual-palette'] > header strong, [class*='-visual-palette '] > header strong, [class$='-palette-panel'] > header strong, [class*='-palette-panel '] > header strong, [class$='-tool-palette'] > header strong, [class*='-tool-palette '] > header strong {
+    font-size: .95rem;
+}
+.palette header small, [class$='-visual-palette'] > header small, [class*='-visual-palette '] > header small, [class$='-palette-panel'] > header small, [class*='-palette-panel '] > header small, [class$='-tool-palette'] > header small, [class*='-tool-palette '] > header small {
+    color: var(--hydra-text-muted, var(--hydra-color-slate-500));
+    line-height: 1.45;
+}
+@media (max-width: 960px) {
+    .palette, [class$='-visual-palette'], [class*='-visual-palette '], [class$='-palette-panel'], [class*='-palette-panel '], [class$='-tool-palette'], [class*='-tool-palette '], [class$='-structure-tree'], [class*='-structure-tree '], [class$='-properties-panel'], [class*='-properties-panel '] {
+        resize: none;
+        min-inline-size: 0;
+        inline-size: 100%;
+        max-inline-size: none;
+    }
+    .palette::after, [class$='-visual-palette']::after, [class*='-visual-palette ']::after, [class$='-palette-panel']::after, [class*='-palette-panel ']::after, [class$='-tool-palette']::after, [class*='-tool-palette ']::after, [class$='-structure-tree']::after, [class*='-structure-tree ']::after, [class$='-properties-panel']::after, [class*='-properties-panel ']::after {
+        display: none;
+    }
+}
+
+.hydra-designer-master-detail {
+    --hydra-designer-sidebar-min: 15rem;
+    --hydra-designer-sidebar-max: min(42rem, 44vw);
+    min-width: 0;
+}
+.hydra-designer-master-detail > .hydra-designer-sidebar {
+    min-width: var(--hydra-designer-sidebar-min);
+    max-width: var(--hydra-designer-sidebar-max);
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid var(--hydra-border-default, var(--hydra-color-gray-300));
+    border-radius: 12px 0 0 12px;
+    background: var(--hydra-bg-surface, var(--hydra-bg-surface));
+}
+.hydra-designer-master-detail > .hydra-designer-sidebar .hydra-sidebar-scroll {
+    min-height: 0;
+    overflow: auto;
+    scrollbar-width: thin;
+}
+.hydra-designer-master-detail > [role='separator'][aria-orientation='vertical'], .metamodel-palette-resizer {
+    position: relative;
+    z-index: 4;
+    width: 10px;
+    min-width: 10px;
+    cursor: col-resize;
+    background: transparent;
+    outline: none;
+    touch-action: none;
+}
+.hydra-designer-master-detail > [role='separator'][aria-orientation='vertical']::before, .metamodel-palette-resizer::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: 4px;
+    width: 2px;
+    border-radius: 999px;
+    background: var(--hydra-border-default, var(--hydra-color-gray-300));
+    transition: width 120ms ease, left 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+.hydra-designer-master-detail > [role='separator'][aria-orientation='vertical']:hover::before, .hydra-designer-master-detail > [role='separator'][aria-orientation='vertical']:focus-visible::before, .metamodel-palette-resizer:hover::before, .metamodel-palette-resizer:focus-visible::before {
+    left: 3px;
+    width: 4px;
+    background: var(--hydra-color-primary-500, var(--hydra-color-blue-500));
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, .12);
+}
+.hydra-designer-master-detail > .hydra-designer-form {
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
+}
+.hydra-sidebar-heading {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    gap: .65rem;
+    padding: .9rem;
+    border-bottom: 1px solid var(--hydra-border-default, var(--hydra-color-gray-300));
+    background: color-mix(in srgb, var(--hydra-bg-surface, var(--hydra-bg-surface)) 94%, transparent);
+    backdrop-filter: blur(8px);
+}
+.hydra-sidebar-heading h3 {
+    margin: 0;
+    font-size: .95rem;
+}
+.hydra-sidebar-heading small {
+    color: var(--hydra-text-muted, var(--hydra-color-slate-500));
+    line-height: 1.35;
+}
+.hydra-sidebar-filter {
+    padding: .65rem .9rem;
+    border-bottom: 1px solid var(--hydra-border-default, var(--hydra-color-gray-300));
+    background: var(--hydra-bg-surface, var(--hydra-bg-surface));
+}
+.hydra-sidebar-filter input {
+    width: 100%;
+    min-width: 0;
+}
+.hydra-designer-list-item {
+    border-radius: 9px;
+    transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+.hydra-designer-list-item:hover {
+    background: var(--hydra-bg-selection, var(--hydra-bg-selection));
+}
+.hydra-designer-list-item.selected {
+    box-shadow: inset 3px 0 0 var(--hydra-color-primary-500, var(--hydra-color-blue-500));
+}
+.gamification-visual-palette, .event-visual-palette, .event-flow-visual-palette, .editor-definition-visual-palette, .integration-visual-palette {
+    min-width: 15rem;
+    max-width: min(42rem, 44vw);
+}
+.gamification-visual-palette > header, .event-visual-palette > header, .event-flow-visual-palette > header, .editor-definition-visual-palette > header, .integration-visual-palette > header {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    padding-bottom: .75rem;
+    border-bottom: 1px solid var(--hydra-border-default, var(--hydra-color-gray-300));
+    background: inherit;
+}
+.model-editor-workbench .workspace {
+    grid-template-columns: max-content minmax(0, 1fr) clamp(300px, 24vw, 380px);
+}
+.model-editor-workbench .palette {
+    width: var(--hydra-palette-default-width);
+    min-width: 220px;
+    max-width: min(38rem, 42vw);
+    resize: horizontal;
+}
+.model-editor-workbench .palette:focus-within, .model-editor-workbench .palette:hover {
+    border-color: color-mix(in srgb, var(--hydra-color-primary-500, var(--hydra-color-blue-500)) 55%, var(--hydra-border-default, var(--hydra-color-gray-300)));
+}
+.designer-structure-workspace, .designer-structure-direct-layout {
+    min-width: 0;
+    gap: 10px;
+}
+.designer-structure-tree-pane, .designer-structure-properties-pane {
+    min-width: 0;
+    border: 1px solid var(--hydra-border-default, var(--hydra-color-gray-300));
+    border-radius: 12px;
+    background: var(--hydra-bg-surface, var(--hydra-bg-surface));
+    overflow: auto;
+}
+.designer-structure-tree-pane > header, .designer-structure-properties-pane > header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--hydra-bg-surface, var(--hydra-bg-surface));
+    border-bottom: 1px solid var(--hydra-border-default, var(--hydra-color-gray-300));
+}
+@media (max-width: 1180px) {
+    .hydra-designer-master-detail > .hydra-designer-sidebar {
+        min-width: 13.5rem;
+        max-width: min(34rem, 46vw);
+    }
+}
+@media (max-width: 960px) {
+    .hydra-designer-master-detail > .hydra-designer-sidebar {
+        min-width: 0;
+        max-width: none;
+        width: 100%;
+        border-radius: 12px;
+    }
+    .hydra-designer-master-detail > [role='separator'][aria-orientation='vertical'], .metamodel-palette-resizer {
+        display: none;
+    }
+    .model-editor-workbench .workspace {
+        grid-template-columns: 1fr;
+    }
+    .model-editor-workbench .palette {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        resize: none;
+    }
+}
+
+.model-editor-workbench .palette, .event-flow-visual-palette, .event-flow-visual-inspector {
+    resize:none !important;
+}
+.model-editor-workbench .palette::after, .event-flow-visual-palette::after, .event-flow-visual-inspector::after {
+    display:none !important;
+    content:none !important;
+}
+
+.hydra-unified-workbench-toolbar {
+    gap:5px;
+    padding:5px 6px;
+    background:var(--hydra-bg-surface-muted,var(--hydra-bg-surface-muted));
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px;
+    overflow:visible
+}
+.hydra-unified-workbench-toolbar>.hydra-designer-command-primary-row {
+    padding:3px 5px;
+    border:0;
+    border-radius:6px;
+    background:transparent;
+    grid-template-columns:minmax(260px,1fr) auto auto
+}
+.hydra-unified-workbench-toolbar>.hydra-designer-command-actions-row,.hydra-unified-workbench-toolbar>.hydra-designer-command-view-row {
+    grid-template-columns:auto minmax(0,1fr);
+    gap:5px;
+    padding:0;
+    border:0;
+    background:transparent
+}
+.hydra-unified-workbench-toolbar .hydra-designer-command-actions,.hydra-unified-workbench-toolbar .hydra-designer-command-views {
+    gap:5px
+}
+.hydra-unified-workbench-toolbar .hydra-designer-command-group>div,.hydra-unified-workbench-toolbar .event-subtabs {
+    padding:3px 4px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px;
+    background:var(--hydra-bg-surface,var(--hydra-bg-surface))
+}
+.hydra-unified-workbench-toolbar :is(button,.hydra-ui-button,.designer-dropdown-trigger,select) {
+    box-sizing:border-box;
+    height:32px;
+    min-height:32px;
+    padding:5px 10px;
+    border-radius:7px;
+    font-size:min(var(--app-tab-font-size,13px),14px);
+    line-height:1.15;
+    font-weight:650
+}
+.hydra-unified-workbench-toolbar .event-subtabs {
+    display:flex;
+    min-width:0;
+    gap:3px;
+    flex-wrap:wrap;
+    align-items:center
+}
+.hydra-unified-workbench-toolbar .event-subtabs>button,.hydra-unified-workbench-toolbar .event-subtabs>span {
+    flex:0 0 auto
+}
+@media(max-width:900px) {
+    .hydra-unified-workbench-toolbar>.hydra-designer-command-primary-row {
+        grid-template-columns:1fr
+    }
+    .hydra-unified-workbench-toolbar>.hydra-designer-command-actions-row,.hydra-unified-workbench-toolbar>.hydra-designer-command-view-row {
+        grid-template-columns:1fr
+    }
+    .hydra-unified-workbench-toolbar .hydra-designer-command-actions,.hydra-unified-workbench-toolbar .hydra-designer-command-views {
+        overflow-x:auto;
+        flex-wrap:nowrap
+    }
+    .hydra-unified-workbench-toolbar .event-subtabs {
+        flex-wrap:nowrap
+    }
+}
+
+.hydra-unified-workbench-toolbar {
+    min-width:0;
+    max-width:100%;
+    overflow:hidden
+}
+.hydra-unified-workbench-toolbar>.hydra-designer-command-actions-row, .hydra-unified-workbench-toolbar>.hydra-designer-command-view-row {
+    min-width:0;
+    max-width:100%;
+    overflow:hidden
+}
+.hydra-unified-workbench-toolbar .hydra-designer-command-actions, .hydra-unified-workbench-toolbar .hydra-designer-command-views, .hydra-unified-workbench-toolbar .event-subtabs {
+    max-width:100%;
+    min-width:0;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overflow-y:hidden;
+    overscroll-behavior-inline:contain;
+    scrollbar-width:thin
+}
+.hydra-unified-workbench-toolbar .hydra-designer-command-actions>*, .hydra-unified-workbench-toolbar .hydra-designer-command-views>*, .hydra-unified-workbench-toolbar .event-subtabs>* {
+    flex:0 0 auto
+}
+
+.model-editor-workspace>.palette, .event-flow-visual-editor>.event-flow-visual-palette, .gamification-visual-editor>.gamification-visual-palette {
+    inline-size:auto;
+    min-inline-size:0;
+    max-inline-size:none;
+    resize:none;
+    overflow-x:hidden
+}
+.model-editor-workspace>.palette::after, .event-flow-visual-editor>.event-flow-visual-palette::after, .gamification-visual-editor>.gamification-visual-palette::after {
+    display:none;
+    content:none
+}

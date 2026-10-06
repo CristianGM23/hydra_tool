@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/event/event-flow-runtime-snapshot-1.0.schema.json",
+  "title": "HYDRA EventFlowRuntimeSnapshot 1.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "metamodelId", "updatedAt", "waitingContinuations", "retryContinuations", "traces", "runtimeState"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "id": { "type": "string", "minLength": 1 },
+    "metamodelId": { "type": "string", "minLength": 1 },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "waitingContinuations": { "type": "array", "items": { "$ref": "#/$defs/wait" } },
+    "retryContinuations": { "type": "array", "items": { "$ref": "#/$defs/retry" } },
+    "traces": { "type": "array", "items": { "type": "object" } },
+    "runtimeState": {
+      "type": "object",
+      "required": ["deduplication", "windows", "aggregates", "sums", "joins", "sequences", "patterns", "absenceWatches"],
+      "properties": {
+        "deduplication": { "type": "object" },
+        "windows": { "type": "object" },
+        "aggregates": { "type": "object", "additionalProperties": { "type": "integer" } },
+        "sums": { "type": "object", "additionalProperties": { "type": "number" } },
+        "joins": { "type": "object" },
+        "sequences": { "type": "object", "additionalProperties": { "type": "integer" } },
+        "patterns": { "type": "object" },
+        "absenceWatches": { "type": "array", "items": { "type": "object" } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "wait": {
+      "type": "object",
+      "required": ["id", "flowId", "waitNodeId", "awaitedEventTypeId", "groupKey", "createdAt", "sourceEvent", "variables", "compensableNodeIds"],
+      "properties": {
+        "id": { "type": "string" }, "flowId": { "type": "string" }, "waitNodeId": { "type": "string" },
+        "awaitedEventTypeId": { "type": "string" }, "groupKey": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }, "deadline": { "type": ["string", "null"], "format": "date-time" },
+        "sourceEvent": { "type": "object" }, "variables": { "type": "object" },
+        "compensableNodeIds": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "retry": {
+      "type": "object",
+      "required": ["id", "flowId", "nodeId", "attempt", "maximumAttempts", "dueAt", "startedAt", "sourceEvent", "currentEvent", "variables", "compensableNodeIds", "executions"],
+      "properties": {
+        "id": { "type": "string" }, "flowId": { "type": "string" }, "nodeId": { "type": "string" },
+        "attempt": { "type": "integer", "minimum": 1 }, "maximumAttempts": { "type": "integer", "minimum": 1 },
+        "dueAt": { "type": "string", "format": "date-time" }, "startedAt": { "type": "string", "format": "date-time" },
+        "sourceEvent": { "type": "object" }, "currentEvent": { "type": "object" }, "variables": { "type": "object" },
+        "compensableNodeIds": { "type": "array", "items": { "type": "string" } },
+        "executions": { "type": "array", "items": { "type": "object" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

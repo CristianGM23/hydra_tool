@@ -1,0 +1,1107 @@
+.hydra-layer-io-dialog>header p {
+    margin-top:6px;
+    color:var(--hydra-text-muted);
+    font-size:17px;
+    line-height:1.55
+}
+.hydra-layer-io-dialog>header>div:last-child {
+    display:flex;
+    align-items:flex-start;
+    gap:10px
+}
+.hydra-layer-io-dialog>.hydra-guided-workflow {
+    margin:20px 24px
+}
+.hydra-layer-io-dialog>footer {
+    display:flex;
+    justify-content:flex-end;
+    padding:16px 24px;
+    border-top:1px solid #dfe5ef
+}
+.hydra-layer-io-dialog .hydra-guided-workflow {
+    padding:18px 20px;
+    gap:16px
+}
+.hydra-layer-io-dialog .hydra-guided-workflow-header h4 {
+    font-size:24px;
+    line-height:1.2
+}
+.hydra-layer-io-dialog .hydra-guided-workflow-header p {
+    font-size:17px;
+    line-height:1.55
+}
+.hydra-layer-io-dialog .hydra-guided-workflow-header>span {
+    font-size:13px;
+    padding:5px 10px
+}
+.hydra-layer-io-dialog .hydra-guided-stepper {
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:10px
+}
+.hydra-layer-io-dialog .hydra-guided-stepper>button {
+    grid-template-columns:28px minmax(0,1fr);
+    gap:10px;
+    padding:12px 14px
+}
+.hydra-layer-io-dialog .hydra-guided-stepper strong {
+    font-size:14px
+}
+.hydra-layer-io-dialog .hydra-guided-stepper small {
+    font-size:12px;
+    line-height:1.45
+}
+.hydra-layer-io-dialog .hydra-guided-status-dot,.hydra-layer-io-dialog .hydra-guided-check-dot {
+    width:25px;
+    height:25px;
+    min-width:25px;
+    font-size:13px
+}
+.hydra-layer-io-dialog .hydra-guided-current-step {
+    gap:14px;
+    padding:16px
+}
+.hydra-layer-io-dialog .hydra-guided-current-step>header span {
+    font-size:11px
+}
+.hydra-layer-io-dialog .hydra-guided-current-step h4 {
+    font-size:28px;
+    line-height:1.2
+}
+.hydra-layer-io-dialog .hydra-guided-current-step p {
+    font-size:18px;
+    line-height:1.6
+}
+.hydra-layer-io-dialog .hydra-guided-checklist {
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:10px
+}
+.hydra-layer-io-dialog .hydra-guided-checklist>div {
+    grid-template-columns:25px minmax(0,1fr);
+    gap:10px;
+    padding:12px
+}
+.hydra-layer-io-dialog .hydra-guided-checklist strong {
+    font-size:14px
+}
+.hydra-layer-io-dialog .hydra-guided-checklist small,.hydra-layer-io-dialog .hydra-guided-check-empty,.hydra-layer-io-dialog .hydra-guided-workflow-actions>span {
+    font-size:13px;
+    line-height:1.45
+}
+.hydra-layer-io-dialog .hydra-guided-workflow-actions {
+    padding-top:4px
+}
+.hydra-layer-io-dialog .hydra-guided-workflow-actions button {
+    font-size:17px;
+    min-height:44px;
+    padding:0 16px
+}
+.hydra-layer-io-format-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:12px
+}
+.hydra-layer-io-format-grid>label {
+    display:grid;
+    grid-template-columns:22px minmax(0,1fr);
+    gap:12px;
+    padding:14px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:10px;
+    background:var(--hydra-bg-surface)
+}
+.hydra-layer-io-format-grid>label.selected {
+    border-color:var(--hydra-color-primary-600);
+    background:var(--hydra-color-primary-soft)
+}
+.hydra-layer-io-format-grid input {
+    transform:translateY(3px)
+}
+.hydra-layer-io-format-grid span {
+    display:grid;
+    gap:6px
+}
+.hydra-layer-io-format-grid strong {
+    font-size:15px;
+    line-height:1.3
+}
+.hydra-layer-io-format-grid small {
+    color:var(--hydra-text-muted);
+    line-height:1.55;
+    font-size:15px
+}
+.hydra-layer-io-format-grid code {
+    font-size:13px;
+    color:var(--hydra-text-secondary)
+}
+.hydra-layer-io-source {
+    display:grid;
+    gap:16px
+}
+.hydra-layer-io-source,.hydra-layer-io-review {
+    font-size:17px
+}
+.hydra-layer-io-source>label {
+    display:grid;
+    gap:8px
+}
+.hydra-layer-io-source>label strong,.hydra-layer-io-source fieldset legend,.hydra-layer-io-review strong {
+    font-size:16px
+}
+.hydra-layer-io-source input[type="file"] {
+    font-size:16px
+}
+.hydra-layer-io-source fieldset {
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:10px;
+    padding:14px
+}
+.hydra-layer-io-source fieldset label {
+    display:flex;
+    align-items:center;
+    gap:8px
+}
+.hydra-layer-io-note {
+    margin:0;
+    padding:12px 14px;
+    border-left:4px solid var(--hydra-color-primary-600);
+    background:var(--hydra-color-primary-soft);
+    color:var(--hydra-text-secondary);
+    font-size:16px;
+    line-height:1.55
+}
+.hydra-layer-io-review {
+    display:grid;
+    gap:12px
+}
+.hydra-layer-io-review dl {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:10px;
+    margin:0
+}
+.hydra-layer-io-review dl>div {
+    padding:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px
+}
+.hydra-layer-io-review dt {
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    color:var(--hydra-text-muted)
+}
+.hydra-layer-io-review dd {
+    margin:4px 0 0;
+    font-size:16px
+}
+.hydra-layer-io-error,.hydra-layer-io-result {
+    padding:14px;
+    border-radius:10px;
+    font-size:16px
+}
+.hydra-layer-io-error {
+    border:1px solid #f0a4a4;
+    background:var(--hydra-color-danger-50)
+}
+.hydra-layer-io-result {
+    border:1px solid var(--hydra-color-green-300);
+    background:var(--hydra-color-success-50)
+}
+.hydra-layer-io-result ul,.hydra-layer-io-error p {
+    margin:8px 0 0
+}
+.hydra-layer-io-result h5 {
+    margin:12px 0 0;
+    font-size:15px
+}
+@media(max-width:1100px) {
+    .hydra-layer-io-dialog {
+        width:calc(100vw - 20px);
+        max-height:calc(100vh - 20px);
+        font-size:17px
+    }
+    .hydra-layer-io-dialog>.hydra-guided-workflow {
+        margin:16px 18px
+    }
+    .hydra-layer-io-dialog>header,.hydra-layer-io-dialog>footer {
+        padding-left:18px;
+        padding-right:18px
+    }
+}
+@media(max-width:760px) {
+    .hydra-layer-io-backdrop {
+        padding:8px
+    }
+    .hydra-layer-io-dialog {
+        width:calc(100vw - 16px);
+        max-height:calc(100vh - 16px);
+        font-size:16px
+    }
+    .hydra-layer-io-dialog>header {
+        padding:16px
+    }
+    .hydra-layer-io-dialog>header h3 {
+        font-size:24px
+    }
+    .hydra-layer-io-dialog>header p,.hydra-layer-io-dialog .hydra-guided-workflow-header p,.hydra-layer-io-dialog .hydra-guided-current-step p,.hydra-layer-io-source,.hydra-layer-io-review {
+        font-size:16px
+    }
+    .hydra-layer-io-dialog>.hydra-guided-workflow {
+        margin:14px 16px;
+        padding:14px
+    }
+    .hydra-layer-io-dialog .hydra-guided-stepper {
+        grid-template-columns:1fr
+    }
+    .hydra-layer-io-dialog .hydra-guided-checklist {
+        grid-template-columns:1fr
+    }
+    .hydra-layer-io-format-grid {
+        grid-template-columns:1fr
+    }
+    .hydra-layer-io-dialog>footer {
+        padding:14px 16px
+    }
+}
+.hydra-guided-status-legend {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 14px;
+    align-items:center;
+    color:var(--hydra-text-muted);
+    font-size:10px
+}
+.hydra-guided-status-legend>span {
+    display:inline-flex;
+    align-items:center;
+    gap:5px
+}
+.hydra-guided-status-legend i {
+    display:inline-grid;
+    place-items:center;
+    width:17px;
+    height:17px;
+    border-radius:50%;
+    font-style:normal;
+    font-size:10px;
+    font-weight:900;
+    line-height:1
+}
+.hydra-guided-status-legend i.pending {
+    border:2px solid var(--hydra-border-strong);
+    background:var(--hydra-bg-surface);
+    color:var(--hydra-text-muted)
+}
+.hydra-guided-status-legend i.ready {
+    background:var(--hydra-color-primary-600);
+    color:var(--hydra-bg-surface)
+}
+.hydra-guided-status-legend i.error {
+    background:var(--hydra-color-danger-600,var(--hydra-palette-red-600));
+    color:var(--hydra-bg-surface)
+}
+.hydra-guided-status-legend i.complete {
+    background:var(--hydra-color-success-600,var(--hydra-palette-green-700));
+    color:var(--hydra-bg-surface)
+}
+
+.hydra-creation-mode-switch button {
+    min-height:36px;
+    padding:7px 14px;
+    font-size:15px;
+    line-height:1.25;
+}
+.hydra-guided-workflow {
+    gap:16px;
+    padding:18px;
+    font-size:16px;
+    line-height:1.5;
+}
+.hydra-guided-workflow-header {
+    gap:16px
+}
+.hydra-guided-workflow-header h4 {
+    font-size:21px;
+    line-height:1.25;
+}
+.hydra-guided-workflow-header p {
+    margin-top:5px;
+    font-size:16px;
+    line-height:1.55;
+}
+.hydra-guided-workflow-header>span {
+    padding:5px 10px;
+    font-size:13px;
+}
+.hydra-guided-status-legend {
+    gap:10px 18px;
+    font-size:13px;
+    line-height:1.35;
+}
+.hydra-guided-status-legend i {
+    width:20px;
+    height:20px;
+    font-size:11px;
+}
+.hydra-guided-stepper {
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:10px;
+}
+.hydra-guided-stepper>button {
+    grid-template-columns:27px minmax(0,1fr);
+    gap:10px;
+    min-height:78px;
+    padding:12px 13px;
+}
+.hydra-guided-stepper strong {
+    font-size:14px;
+    line-height:1.35;
+}
+.hydra-guided-stepper small {
+    font-size:12.5px;
+    line-height:1.45;
+}
+.hydra-guided-status-dot,.hydra-guided-check-dot {
+    width:25px;
+    height:25px;
+    min-width:25px;
+    font-size:13px;
+}
+.hydra-guided-current-step {
+    gap:14px;
+    padding:16px;
+}
+.hydra-guided-current-step>header span {
+    font-size:12px;
+    line-height:1.3;
+}
+.hydra-guided-current-step h4 {
+    margin-top:3px;
+    font-size:23px;
+    line-height:1.25;
+}
+.hydra-guided-current-step p {
+    margin-top:5px;
+    font-size:16px;
+    line-height:1.6;
+}
+.hydra-guided-checklist {
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:9px;
+}
+.hydra-guided-checklist>div {
+    grid-template-columns:25px minmax(0,1fr);
+    gap:10px;
+    padding:11px;
+}
+.hydra-guided-checklist strong {
+    font-size:14px;
+    line-height:1.4;
+}
+.hydra-guided-checklist small {
+    font-size:12.5px;
+    line-height:1.45;
+}
+.hydra-guided-check-empty {
+    font-size:13.5px;
+    line-height:1.5;
+}
+.hydra-guided-step-content {
+    gap:15px;
+    font-size:16px;
+    line-height:1.55;
+}
+.hydra-guided-step-content :where(label,input,select,textarea,button) {
+    font-size:max(15px,1em);
+}
+.hydra-guided-workflow-actions {
+    gap:12px;
+    padding-top:5px;
+}
+.hydra-guided-workflow-actions>span {
+    font-size:13.5px;
+    line-height:1.45;
+}
+.hydra-guided-workflow-actions button {
+    min-height:40px;
+    padding:7px 14px;
+    font-size:15px;
+}
+/* New behaviour-layer controls use the same readable scale. */
+.hydra-multiselect-chip-field {
+    min-height:44px;
+    padding:7px 8px;
+}
+.hydra-multiselect-empty {
+    font-size:13px
+}
+.hydra-multiselect-chip {
+    padding:5px 5px 5px 9px;
+    font-size:13px;
+}
+.hydra-multiselect-options-toggle {
+    font-size:13px
+}
+.hydra-multiselect-option-panel {
+    gap:10px;
+    padding:11px
+}
+.hydra-multiselect-toolbar {
+    grid-template-columns:minmax(180px,1fr) auto auto;
+    gap:8px
+}
+.hydra-multiselect-toolbar :where(input,button) {
+    font-size:13px
+}
+.hydra-multiselect-groups {
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:9px
+}
+.hydra-multiselect-groups fieldset {
+    padding:10px
+}
+.hydra-multiselect-groups legend {
+    font-size:12px
+}
+.hydra-multiselect-groups label {
+    gap:8px;
+    padding:7px
+}
+.hydra-multiselect-groups label strong {
+    font-size:13.5px;
+    line-height:1.35
+}
+.hydra-multiselect-groups label small {
+    font-size:12px;
+    line-height:1.4
+}
+.hydra-multiselect-no-results {
+    font-size:13px
+}
+.hydra-multiselect-custom {
+    padding-top:9px
+}
+.hydra-multiselect-custom summary {
+    font-size:13px
+}
+.hydra-multiselect-custom p {
+    font-size:12.5px;
+    line-height:1.45
+}
+
+.hydra-layer-io-dialog {
+    width:min(1520px,calc(100vw - 20px));
+    min-height:min(720px,calc(100vh - 20px));
+    max-height:calc(100vh - 20px);
+}
+.hydra-layer-io-dialog>header h3 {
+    font-size:30px
+}
+.hydra-layer-io-dialog>header p {
+    font-size:18px
+}
+.hydra-layer-io-dialog .hydra-guided-stepper>button {
+    min-height:84px
+}
+.hydra-layer-io-format-grid>label {
+    min-height:150px;
+    align-content:start;
+    padding:16px;
+}
+.hydra-layer-io-format-grid strong {
+    font-size:17px
+}
+.hydra-layer-io-format-grid small {
+    font-size:16px
+}
+.hydra-layer-io-format-grid code {
+    font-size:14px;
+    margin-top:4px
+}
+.hydra-layer-io-source,.hydra-layer-io-review {
+    font-size:18px
+}
+.hydra-layer-io-dialog>footer button, .hydra-layer-io-dialog>header>div:last-child>button {
+    min-height:40px;
+    padding:7px 14px;
+    font-size:16px;
+}
+@media(max-width:1000px) {
+    .hydra-guided-workflow {
+        padding:15px;
+        font-size:15px
+    }
+    .hydra-guided-workflow-header h4 {
+        font-size:19px
+    }
+    .hydra-guided-workflow-header p,.hydra-guided-current-step p,.hydra-guided-step-content {
+        font-size:15px
+    }
+    .hydra-guided-current-step h4 {
+        font-size:21px
+    }
+    .hydra-guided-stepper {
+        grid-template-columns:repeat(auto-fit,minmax(205px,1fr))
+    }
+    .hydra-guided-stepper strong,.hydra-guided-checklist strong {
+        font-size:13.5px
+    }
+    .hydra-guided-stepper small,.hydra-guided-checklist small {
+        font-size:12px
+    }
+}
+@media(max-width:760px) {
+    .hydra-creation-mode-switch {
+        width:100%;
+        border-radius:12px
+    }
+    .hydra-creation-mode-switch button {
+        flex:1;
+        font-size:14px
+    }
+    .hydra-guided-workflow {
+        gap:13px;
+        padding:13px
+    }
+    .hydra-guided-workflow-header {
+        flex-direction:column
+    }
+    .hydra-guided-workflow-header h4 {
+        font-size:18px
+    }
+    .hydra-guided-workflow-header p,.hydra-guided-current-step p,.hydra-guided-step-content {
+        font-size:14.5px
+    }
+    .hydra-guided-current-step h4 {
+        font-size:20px
+    }
+    .hydra-guided-stepper {
+        grid-template-columns:1fr
+    }
+    .hydra-guided-stepper>button {
+        min-height:70px
+    }
+    .hydra-guided-checklist {
+        grid-template-columns:1fr
+    }
+    .hydra-guided-status-legend {
+        font-size:12px
+    }
+    .hydra-guided-workflow-actions button {
+        font-size:14px
+    }
+    .hydra-layer-io-dialog {
+        min-height:0;
+        width:calc(100vw - 12px);
+        max-height:calc(100vh - 12px)
+    }
+    .hydra-layer-io-format-grid>label {
+        min-height:0
+    }
+}
+
+.hydra-layer-io-analysis-action {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    padding:14px 16px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:10px;
+    background:var(--hydra-bg-surface-muted)
+}
+.hydra-layer-io-analysis-action>div {
+    display:grid;
+    gap:4px
+}
+.hydra-layer-io-analysis-action strong {
+    font-size:17px
+}
+.hydra-layer-io-analysis-action p {
+    margin:0;
+    color:var(--hydra-text-secondary);
+    font-size:15px;
+    line-height:1.5
+}
+.hydra-layer-io-analysis-action button {
+    flex:0 0 auto;
+    min-height:42px;
+    padding:0 16px;
+    font-size:16px
+}
+.hydra-layer-io-analysis-summary {
+    display:grid;
+    gap:12px;
+    padding:14px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:10px;
+    background:var(--hydra-bg-surface-muted)
+}
+.hydra-layer-io-analysis-summary>header {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px
+}
+.hydra-layer-io-analysis-summary>header>div {
+    display:grid;
+    gap:3px
+}
+.hydra-layer-io-analysis-summary>header strong {
+    font-size:18px
+}
+.hydra-layer-io-analysis-summary>header p {
+    margin:0;
+    color:var(--hydra-text-muted);
+    font-size:15px;
+    line-height:1.5
+}
+.hydra-layer-io-metrics {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:10px
+}
+.hydra-layer-io-metrics article {
+    display:grid;
+    gap:3px;
+    min-height:82px;
+    padding:11px 12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px;
+    background:var(--hydra-bg-surface)
+}
+.hydra-layer-io-metrics article>span {
+    color:var(--hydra-text-secondary);
+    font-size:13px;
+    font-weight:750
+}
+.hydra-layer-io-metrics article>strong {
+    font-size:26px;
+    line-height:1.05
+}
+.hydra-layer-io-metrics article>small {
+    color:var(--hydra-text-muted);
+    font-size:12px;
+    line-height:1.35
+}
+.hydra-layer-io-metrics article.good {
+    border-color:var(--hydra-color-green-300);
+    background:var(--hydra-color-success-50)
+}
+.hydra-layer-io-metrics article.warning {
+    border-color:#f2c56b;
+    background:var(--hydra-color-warning-50)
+}
+.hydra-layer-io-metrics article.error {
+    border-color:#ef9a9a;
+    background:var(--hydra-color-danger-50)
+}
+.hydra-layer-io-metrics article.error>strong {
+    color:var(--hydra-color-danger-600)
+}
+.hydra-layer-io-metrics article.warning>strong {
+    color:var(--hydra-color-warning-600)
+}
+.hydra-layer-io-metrics article.good>strong {
+    color:var(--hydra-color-success-600)
+}
+.hydra-layer-io-diagnostics {
+    display:grid;
+    gap:8px
+}
+.hydra-layer-io-diagnostics h5 {
+    margin:0;
+    font-size:16px
+}
+.hydra-layer-io-diagnostics ul {
+    display:grid;
+    gap:7px;
+    margin:0;
+    padding:0;
+    list-style:none
+}
+.hydra-layer-io-diagnostics li {
+    display:grid;
+    gap:2px;
+    padding:9px 11px;
+    border-left:4px solid var(--hydra-border-strong);
+    border-radius:6px;
+    background:var(--hydra-bg-surface-muted)
+}
+.hydra-layer-io-diagnostics li.error {
+    border-left-color:var(--hydra-color-danger-600);
+    background:var(--hydra-color-danger-50)
+}
+.hydra-layer-io-diagnostics li.warning {
+    border-left-color:#d89500;
+    background:var(--hydra-color-warning-50)
+}
+.hydra-layer-io-diagnostics li.info {
+    border-left-color:var(--hydra-color-primary-600);
+    background:var(--hydra-color-primary-soft)
+}
+.hydra-layer-io-diagnostics li strong {
+    font-size:13px
+}
+.hydra-layer-io-diagnostics li span {
+    font-size:14px;
+    line-height:1.45
+}
+.hydra-layer-io-selection {
+    display:grid;
+    gap:12px;
+    padding:14px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:10px;
+    background:var(--hydra-bg-surface)
+}
+.hydra-layer-io-selection>header {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px
+}
+.hydra-layer-io-selection>header>div {
+    display:grid;
+    gap:3px
+}
+.hydra-layer-io-selection>header strong {
+    font-size:18px
+}
+.hydra-layer-io-selection>header p {
+    margin:0;
+    color:var(--hydra-text-muted);
+    font-size:15px;
+    line-height:1.5
+}
+.hydra-layer-io-category-filter {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px
+}
+.hydra-layer-io-category-filter label {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 10px;
+    border:1px solid #cdd6e6;
+    border-radius:999px;
+    background:var(--hydra-bg-surface-muted);
+    font-size:14px
+}
+.hydra-layer-io-category-filter label small {
+    display:inline-grid;
+    min-width:22px;
+    place-items:center;
+    padding:2px 6px;
+    border-radius:999px;
+    background:var(--hydra-bg-surface-muted);
+    font-size:11px
+}
+.hydra-layer-io-selection-list {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(310px,1fr));
+    gap:8px;
+    max-height:310px;
+    overflow:auto;
+    padding-right:4px
+}
+.hydra-layer-io-selection-list>label {
+    display:grid;
+    grid-template-columns:22px minmax(0,1fr);
+    gap:9px;
+    padding:11px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface)
+}
+.hydra-layer-io-selection-list>label.selected {
+    border-color:#6f97ee;
+    background:var(--hydra-color-primary-soft)
+}
+.hydra-layer-io-selection-list>label>span {
+    display:grid;
+    gap:3px
+}
+.hydra-layer-io-selection-list strong {
+    font-size:15px
+}
+.hydra-layer-io-selection-list small {
+    color:var(--hydra-text-muted);
+    font-size:12px;
+    font-weight:750
+}
+.hydra-layer-io-selection-list p {
+    margin:0;
+    color:var(--hydra-text-secondary);
+    font-size:13px;
+    line-height:1.4
+}
+.hydra-layer-io-selection-list em {
+    color:var(--hydra-color-warning-600);
+    font-size:12px;
+    font-style:normal;
+    line-height:1.35
+}
+.hydra-layer-io-selection-actions {
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    gap:7px
+}
+.hydra-layer-io-selection-actions>span {
+    padding:5px 9px;
+    border-radius:999px;
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-color-primary-600);
+    font-size:13px;
+    font-weight:800
+}
+.hydra-layer-io-selection-actions button {
+    min-height:34px;
+    padding:0 10px;
+    font-size:13px
+}
+@media(max-width:760px) {
+    .hydra-layer-io-analysis-action,.hydra-layer-io-selection>header,.hydra-layer-io-analysis-summary>header {
+        align-items:stretch;
+        flex-direction:column
+    }
+    .hydra-layer-io-metrics {
+        grid-template-columns:repeat(2,minmax(0,1fr))
+    }
+    .hydra-layer-io-selection-list {
+        grid-template-columns:1fr;
+        max-height:260px
+    }
+}
+
+.hydra-layer-io-backdrop {
+    padding:6px;
+}
+.hydra-layer-io-dialog {
+    width:min(1780px,calc(100vw - 12px));
+    min-width:min(1180px,calc(100vw - 12px));
+    min-height:min(780px,calc(100vh - 12px));
+    max-height:calc(100vh - 12px);
+    font-size:20px;
+    line-height:1.55;
+}
+.hydra-layer-io-dialog>header {
+    padding:22px 28px;
+}
+.hydra-layer-io-dialog>header h3 {
+    font-size:36px;
+    line-height:1.15;
+}
+.hydra-layer-io-dialog>header p {
+    margin-top:8px;
+    font-size:21px;
+    line-height:1.55;
+}
+.hydra-layer-io-dialog>.hydra-guided-workflow {
+    margin:18px 20px;
+}
+.hydra-layer-io-dialog .hydra-guided-workflow {
+    gap:18px;
+    padding:20px 22px;
+    font-size:20px;
+}
+.hydra-layer-io-dialog .hydra-guided-workflow-header h4 {
+    font-size:29px;
+    line-height:1.2;
+}
+.hydra-layer-io-dialog .hydra-guided-workflow-header p {
+    font-size:20px;
+    line-height:1.55;
+}
+.hydra-layer-io-dialog .hydra-guided-workflow-header>span {
+    padding:6px 11px;
+    font-size:15px;
+}
+.hydra-layer-io-dialog .hydra-guided-status-legend {
+    font-size:16px;
+}
+.hydra-layer-io-dialog .hydra-guided-stepper {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:12px;
+}
+.hydra-layer-io-dialog .hydra-guided-stepper>button {
+    min-height:96px;
+    padding:14px 16px;
+}
+.hydra-layer-io-dialog .hydra-guided-stepper strong {
+    font-size:18px;
+    line-height:1.35;
+}
+.hydra-layer-io-dialog .hydra-guided-stepper small {
+    font-size:16px;
+    line-height:1.45;
+}
+.hydra-layer-io-dialog .hydra-guided-current-step {
+    gap:16px;
+    padding:18px 20px;
+}
+.hydra-layer-io-dialog .hydra-guided-current-step>header span {
+    font-size:14px;
+}
+.hydra-layer-io-dialog .hydra-guided-current-step h4 {
+    font-size:32px;
+    line-height:1.2;
+}
+.hydra-layer-io-dialog .hydra-guided-current-step p {
+    font-size:20px;
+    line-height:1.6;
+}
+.hydra-layer-io-dialog .hydra-guided-checklist {
+    grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
+    gap:11px;
+}
+.hydra-layer-io-dialog .hydra-guided-checklist>div {
+    padding:13px 14px;
+}
+.hydra-layer-io-dialog .hydra-guided-checklist strong {
+    font-size:17px;
+}
+.hydra-layer-io-dialog .hydra-guided-checklist small, .hydra-layer-io-dialog .hydra-guided-check-empty, .hydra-layer-io-dialog .hydra-guided-workflow-actions>span {
+    font-size:15.5px;
+    line-height:1.5;
+}
+.hydra-layer-io-dialog .hydra-guided-step-content {
+    font-size:20px;
+    line-height:1.6;
+}
+.hydra-layer-io-dialog .hydra-guided-step-content :where(label,input,select,textarea,button) {
+    font-size:max(18px,1em);
+}
+.hydra-layer-io-dialog .hydra-guided-workflow-actions button {
+    min-height:48px;
+    padding:8px 18px;
+    font-size:19px;
+}
+.hydra-layer-io-format-grid {
+    grid-template-columns:repeat(auto-fit,minmax(235px,1fr));
+    gap:14px;
+}
+.hydra-layer-io-format-grid>label {
+    min-height:185px;
+    grid-template-columns:24px minmax(0,1fr);
+    gap:13px;
+    padding:18px;
+}
+.hydra-layer-io-format-grid strong {
+    font-size:21px;
+    line-height:1.25;
+}
+.hydra-layer-io-format-grid small {
+    font-size:18px;
+    line-height:1.55;
+}
+.hydra-layer-io-format-grid code {
+    margin-top:6px;
+    font-size:16px;
+    line-height:1.4;
+}
+.hydra-layer-io-source,.hydra-layer-io-review {
+    font-size:20px;
+}
+.hydra-layer-io-source>label strong, .hydra-layer-io-source fieldset legend, .hydra-layer-io-review strong {
+    font-size:19px;
+}
+.hydra-layer-io-source input[type="file"] {
+    font-size:18px;
+}
+.hydra-layer-io-note {
+    padding:14px 16px;
+    font-size:19px;
+    line-height:1.6;
+}
+.hydra-layer-io-review dt {
+    font-size:14px;
+}
+.hydra-layer-io-review dd {
+    font-size:19px;
+}
+.hydra-layer-io-error,.hydra-layer-io-result {
+    font-size:19px;
+}
+.hydra-layer-io-dialog>footer button, .hydra-layer-io-dialog>header>div:last-child>button {
+    min-height:46px;
+    padding:8px 16px;
+    font-size:19px;
+}
+
+.hydra-layer-io-analysis-action {
+    gap:20px;
+    padding:16px 18px;
+}
+.hydra-layer-io-analysis-action strong {
+    font-size:21px;
+}
+.hydra-layer-io-analysis-action p {
+    font-size:18px;
+    line-height:1.55;
+}
+.hydra-layer-io-analysis-action button {
+    min-height:48px;
+    padding:0 18px;
+    font-size:19px;
+}
+.hydra-layer-io-analysis-summary {
+    gap:14px;
+    padding:16px;
+}
+.hydra-layer-io-analysis-summary>header strong, .hydra-layer-io-selection>header strong {
+    font-size:22px;
+}
+.hydra-layer-io-analysis-summary>header p, .hydra-layer-io-selection>header p {
+    font-size:18px;
+    line-height:1.55;
+}
+.hydra-layer-io-metrics {
+    grid-template-columns:repeat(auto-fit,minmax(185px,1fr));
+    gap:12px;
+}
+.hydra-layer-io-metrics article {
+    min-height:104px;
+    padding:13px 14px;
+}
+.hydra-layer-io-metrics article>span {
+    font-size:16px;
+}
+.hydra-layer-io-metrics article>strong {
+    font-size:32px;
+}
+
+/* V4.32.74: guided steps must remain readable at every supported width. */
+.hydra-guided-stepper > button {
+    min-width: 0;
+    height: auto;
+    white-space: normal;
+    text-align: left;
+    align-items: flex-start;
+    overflow: hidden;
+}
+.hydra-guided-stepper > button > span:not(.hydra-guided-status-icon) {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+}
+.hydra-guided-stepper strong,
+.hydra-guided-stepper small {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+@media (max-width: 1180px) {
+    .hydra-guided-stepper {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+}

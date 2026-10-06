@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0",
+  "metamodelId": "library",
+  "bindings": [
+    {
+      "operationId": "operation:class:Book:isLong",
+      "implementationKind": "EXPRESSION",
+      "expressionId": "expression:book-pages-positive",
+      "actionId": "",
+      "externalReference": "",
+      "annotations": {
+        "example": "The final parameter-aware expression will be completed in the operation runtime block"
+      }
+    }
+  ],
+  "annotations": {}
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/editor/editor-session-diagram-1.0.schema.json",
+  "title": "HYDRA EditorSessionDiagram 1.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "metamodelId", "editorId", "representationId", "nodes", "edges"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "id": { "type": "string", "minLength": 1 },
+    "metamodelId": { "type": "string", "minLength": 1 },
+    "editorId": { "type": "string", "minLength": 1 },
+    "representationId": { "type": "string" },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["elementId", "x", "y", "width", "height"],
+        "properties": {
+          "elementId": { "type": "string", "minLength": 1 },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number", "exclusiveMinimum": 0 },
+          "height": { "type": "number", "exclusiveMinimum": 0 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["relationInstanceId", "points"],
+        "properties": {
+          "relationInstanceId": { "type": "string", "minLength": 1 },
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": { "x": { "type": "number" }, "y": { "type": "number" } },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

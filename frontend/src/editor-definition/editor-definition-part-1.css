@@ -1,0 +1,1293 @@
+.editor-definition-designer {
+    display:flex;
+    min-width:0;
+    min-height:0;
+    height:100%;
+    flex-direction:column;
+    gap:10px;
+    padding:12px;
+    overflow:hidden;
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-definition-header {
+    display:flex;
+    justify-content:space-between;
+    gap:12px
+}
+.editor-definition-header h2,.editor-definition-header p {
+    margin:0
+}
+.editor-definition-header p {
+    color:var(--hydra-text-muted);
+    font-size:12px
+}
+.editor-definition-grid {
+    min-height:0
+}
+.editor-document-settings {
+    padding-bottom:14px;
+    border-bottom:1px solid var(--hydra-border-default)
+}
+.editor-document-settings h3,.editor-document-settings p {
+    margin:0
+}
+.editor-document-settings p {
+    color:var(--hydra-text-muted);
+    font-size:12px
+}
+.editor-definition-designer input,.editor-definition-designer select,.editor-definition-designer textarea {
+    box-sizing:border-box;
+    width:100%;
+    padding:7px 8px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:6px;
+    background:var(--hydra-bg-surface);
+    color:var(--hydra-text-primary);
+    font:inherit
+}
+.editor-definition-designer textarea {
+    min-height:75px;
+    resize:vertical
+}
+.representation-editor {
+    margin-top:18px
+}
+.class-tool-list {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px
+}
+.editor-capabilities,.representation-root-classes,.editor-tool-representations {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 14px;
+    padding:10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-capabilities>strong,.representation-root-classes>strong,.editor-tool-representations>strong {
+    width:100%;
+    color:var(--hydra-text-secondary)
+}
+.representation-root-classes>p {
+    width:100%;
+    margin:0
+}
+.representation-root-classes small {
+    color:var(--hydra-text-muted);
+    font-family:monospace
+}
+.editor-form-field {
+    display:grid;
+    gap:9px;
+    margin-top:10px;
+    padding:10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px;
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-form-field>header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center
+}
+.hydra-designer-row-card>header>div {
+    display:flex;
+    gap:5px
+}
+.editor-definition-header-actions {
+    display:flex;
+    align-items:flex-start;
+    gap:7px
+}
+.editor-definition-subtabs {
+    display:flex;
+    gap:4px;
+    border-bottom:1px solid var(--hydra-border-default)
+}
+.editor-definition-subtabs button {
+    padding:7px 11px;
+    border:1px solid transparent;
+    border-bottom:0;
+    border-radius:7px 7px 0 0;
+    background:transparent
+}
+.editor-definition-subtabs button.active {
+    border-color:var(--hydra-border-default);
+    background:var(--hydra-bg-surface);
+    font-weight:700
+}
+.editor-runtime-preview {
+    display:flex;
+    min-height:0;
+    flex:1;
+    flex-direction:column;
+    gap:10px;
+    overflow:hidden;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface)
+}
+.editor-runtime-preview-header {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-runtime-preview-header h3,.editor-runtime-preview-header p {
+    margin:0
+}
+.editor-runtime-preview-header p {
+    font-size:12px;
+    color:var(--hydra-text-muted)
+}
+.editor-runtime-metadata {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:0 12px
+}
+.editor-runtime-metadata span {
+    padding:5px 8px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:999px;
+    background:var(--hydra-bg-surface-muted);
+    font-size:11px
+}
+.editor-runtime-grid {
+    display:grid;
+    grid-template-columns:240px minmax(0,1fr) 250px;
+    min-height:0;
+    flex:1;
+    overflow:hidden;
+    border-top:1px solid var(--hydra-border-default)
+}
+.editor-runtime-palette-preview,.editor-runtime-index-preview {
+    min-height:0;
+    overflow:auto;
+    padding:12px;
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-runtime-palette-preview {
+    border-right:1px solid var(--hydra-border-default)
+}
+.editor-runtime-index-preview {
+    border-left:1px solid var(--hydra-border-default)
+}
+.editor-runtime-palette-preview header,.editor-runtime-palette-preview section {
+    display:grid;
+    gap:5px;
+    margin-bottom:12px
+}
+.editor-runtime-palette-preview h4,.editor-runtime-index-preview h4 {
+    margin:0 0 8px
+}
+.editor-runtime-palette-preview article {
+    display:grid;
+    gap:2px;
+    padding:8px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px;
+    background:var(--hydra-bg-surface)
+}
+.editor-runtime-palette-preview small,.editor-runtime-canvas-preview small {
+    color:var(--hydra-text-muted)
+}
+.editor-runtime-canvas-preview {
+    min-width:0;
+    min-height:0;
+    overflow:auto;
+    padding:14px
+}
+.editor-runtime-canvas-preview>header {
+    display:grid;
+    gap:3px;
+    margin-bottom:12px
+}
+.editor-runtime-node-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:12px
+}
+.editor-runtime-node-grid article {
+    display:grid;
+    gap:4px;
+    min-height:88px;
+    padding:12px;
+    border:2px solid var(--hydra-color-blue-400);
+    border-radius:8px;
+    background:var(--hydra-bg-selection)
+}
+.editor-runtime-node-grid article>span {
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    color:var(--hydra-text-secondary)
+}
+.editor-runtime-node-grid article.shape-ellipse {
+    border-radius:999px;
+    text-align:center
+}
+.editor-runtime-node-grid article.shape-diamond {
+    transform:rotate(1deg)
+}
+.editor-runtime-edge-list {
+    margin-top:18px
+}
+.editor-runtime-edge-list article {
+    display:grid;
+    grid-template-columns:minmax(130px,1fr) minmax(170px,2fr) auto;
+    gap:8px;
+    padding:7px 0;
+    border-bottom:1px solid var(--hydra-border-default)
+}
+.editor-runtime-index-preview dl {
+    display:grid;
+    gap:9px;
+    margin:0
+}
+.editor-runtime-index-preview dl>div {
+    display:grid;
+    gap:2px
+}
+.editor-runtime-index-preview dt {
+    font-size:11px;
+    font-weight:700;
+    color:var(--hydra-text-secondary)
+}
+.editor-runtime-index-preview dd {
+    margin:0;
+    overflow-wrap:anywhere
+}
+.editor-runtime-preview>.hydra-empty-state {
+    margin:auto
+}
+@media(max-width:1100px) {
+    .editor-runtime-grid {
+        grid-template-columns:210px minmax(0,1fr)
+    }
+    .editor-runtime-index-preview {
+        grid-column:1/-1;
+        border-left:0;
+        border-top:1px solid var(--hydra-border-default)
+    }
+}
+.editor-runtime-representation-tabs {
+    display:flex;
+    gap:6px;
+    padding:0 12px;
+    overflow-x:auto
+}
+.editor-runtime-representation-tabs button {
+    display:grid;
+    gap:1px;
+    min-width:130px;
+    padding:7px 10px;
+    text-align:left;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px;
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-runtime-representation-tabs button.active {
+    border-color:var(--hydra-color-blue-500);
+    background:var(--hydra-bg-selection)
+}
+.editor-runtime-representation-tabs small {
+    font-size:10px;
+    color:var(--hydra-text-muted)
+}
+.editor-neutral-session-launcher,.editor-neutral-session {
+    margin:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px;
+    background:var(--hydra-bg-surface);
+    overflow:hidden
+}
+.editor-neutral-session-launcher>header,.editor-neutral-session>header {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px 14px;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-neutral-session-launcher h4,.editor-neutral-session-launcher p,.editor-neutral-session h4,.editor-neutral-session p {
+    margin:0
+}
+.editor-neutral-session-launcher p,.editor-neutral-session p {
+    color:var(--hydra-text-muted)
+}
+.editor-neutral-import {
+    display:grid;
+    grid-template-columns:minmax(180px,1fr) minmax(220px,2fr) auto;
+    gap:8px;
+    align-items:end;
+    padding:14px
+}
+.editor-neutral-import label {
+    font-weight:700
+}
+.editor-neutral-import input {
+    min-height:40px;
+    padding:7px 9px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:6px
+}
+.editor-neutral-session-actions,.editor-neutral-representations {
+    display:flex;
+    gap:6px
+}
+.editor-neutral-representations {
+    padding:9px 12px;
+    border-bottom:1px solid var(--hydra-border-default);
+    overflow-x:auto
+}
+.editor-neutral-representations button.active {
+    border-color:var(--hydra-color-primary-600);
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-color-blue-900)
+}
+.editor-neutral-session-grid {
+    display:grid;
+    grid-template-columns:auto 6px minmax(0,1fr) 6px auto;
+    min-height:clamp(580px,calc(100vh - 270px),860px);
+    min-width:0
+}
+.editor-neutral-session-grid>.hydra-ui-panel-resizer {
+    width:6px;
+    min-width:6px;
+    flex-basis:6px;
+    align-self:stretch;
+    min-height:100%
+}
+.editor-neutral-toolbox,.editor-neutral-form {
+    padding:12px;
+    overflow:auto;
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-neutral-toolbox {
+    border-right:1px solid var(--hydra-border-default)
+}
+.editor-neutral-form {
+    border-left:1px solid var(--hydra-border-default)
+}
+.editor-neutral-toolbox h5,.editor-neutral-form h5,.editor-neutral-edges h5 {
+    margin:0 0 10px
+}
+.editor-neutral-toolbox section {
+    display:grid;
+    gap:6px;
+    margin-bottom:13px
+}
+.editor-neutral-toolbox section>button {
+    display:grid;
+    gap:2px;
+    text-align:left
+}
+.editor-neutral-toolbox small,.editor-neutral-form small {
+    color:var(--hydra-text-muted)
+}
+.editor-neutral-canvas {
+    padding:14px;
+    overflow:auto;
+    background-image:radial-gradient(#d6deeb 1px,transparent 1px);
+    background-size:18px 18px
+}
+.editor-neutral-node-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:12px
+}
+.editor-neutral-node-grid>button {
+    display:grid;
+    gap:4px;
+    min-height:94px;
+    padding:12px;
+    text-align:left;
+    border:2px solid var(--hydra-color-blue-400);
+    border-radius:9px;
+    background:var(--hydra-bg-selection)
+}
+.editor-neutral-node-grid>button.selected {
+    outline:3px solid var(--hydra-color-primary-700);
+    outline-offset:2px
+}
+.editor-neutral-node-grid span {
+    color:var(--hydra-text-secondary);
+    font-size:.8em;
+    text-transform:uppercase
+}
+.editor-neutral-edges {
+    margin-top:18px;
+    padding:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface)
+}
+.editor-neutral-edges>div {
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:6px 0;
+    border-bottom:1px solid var(--hydra-border-default)
+}
+.editor-neutral-form section {
+    display:grid;
+    gap:8px;
+    margin:12px 0
+}
+.editor-neutral-form h6 {
+    margin:0
+}
+.editor-neutral-form label {
+    display:grid;
+    gap:4px
+}
+.editor-neutral-form input {
+    min-height:38px;
+    padding:7px 8px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:6px
+}
+.editor-neutral-checkbox {
+    display:flex!important;
+    grid-template-columns:none;
+    align-items:center
+}
+.editor-neutral-checkbox input {
+    min-height:auto
+}
+.editor-neutral-form .danger {
+    margin-top:8px;
+    border-color:var(--hydra-color-danger-600);
+    color:var(--hydra-color-danger-600)
+}
+@media(max-width:760px) {
+    .editor-neutral-session-grid {
+        grid-template-columns:minmax(0,1fr);
+        min-height:560px
+    }
+    .editor-neutral-session-grid>.hydra-ui-panel-resizer {
+        display:none
+    }
+    .editor-neutral-toolbox,.editor-neutral-form {
+        max-width:100%;
+        border:0;
+        border-bottom:1px solid var(--hydra-border-default)
+    }
+    .editor-neutral-form {
+        border-top:1px solid var(--hydra-border-default)
+    }
+    .editor-neutral-import {
+        grid-template-columns:1fr
+    }
+}
+.editor-runtime-flow {
+    height:100%;
+    min-height:440px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    overflow:hidden;
+    background:var(--hydra-bg-surface)
+}
+.editor-runtime-model-node {
+    display:grid;
+    gap:4px;
+    min-width:180px;
+    min-height:86px;
+    padding:12px;
+    border:2px solid var(--hydra-color-blue-400);
+    border-radius:9px;
+    background:var(--hydra-bg-selection);
+    box-shadow:0 4px 12px var(--hydra-palette-slate-900)1a
+}
+.editor-runtime-model-node.selected {
+    outline:3px solid var(--hydra-color-primary-700);
+    outline-offset:2px
+}
+.editor-runtime-model-node>span {
+    font-size:.82em;
+    text-transform:uppercase;
+    color:var(--hydra-text-secondary)
+}
+.editor-runtime-model-node>small {
+    color:var(--hydra-text-muted)
+}
+.editor-runtime-model-node.shape-ellipse {
+    border-radius:50%
+}
+.editor-runtime-model-node.shape-rounded_rectangle {
+    border-radius:20px
+}
+.editor-neutral-canvas {
+    padding:10px;
+    overflow:hidden
+}
+.editor-neutral-tool-result {
+    padding:9px;
+    border:1px solid var(--hydra-color-primary-200);
+    border-radius:7px;
+    background:var(--hydra-bg-selection)
+}
+.editor-neutral-tool-result pre {
+    max-height:130px;
+    overflow:auto;
+    font-size:.82em;
+    white-space:pre-wrap
+}
+.editor-neutral-tool-arguments {
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:10px;
+    padding:10px;
+    border:1px solid var(--hydra-border,var(--hydra-border-default));
+    border-radius:8px;
+    background:var(--hydra-panel,var(--hydra-bg-surface))
+}
+.editor-neutral-tool-arguments header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between
+}
+.editor-neutral-tool-arguments label {
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    font-weight:600
+}
+.editor-neutral-tool-arguments textarea {
+    min-height:110px;
+    resize:vertical;
+    font-family:monospace
+}
+.editor-neutral-representation-entry {
+    display:flex;
+    align-items:stretch;
+    gap:2px;
+    flex:none
+}
+.editor-neutral-representation-entry>button:first-child {
+    border-radius:999px 4px 4px 999px
+}
+.editor-neutral-representation-entry>button.secondary {
+    min-width:34px;
+    padding-inline:8px;
+    border-radius:4px 999px 999px 4px
+}
+.editor-neutral-canvas.split {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:10px;
+    overflow:auto
+}
+.editor-runtime-view {
+    display:flex;
+    min-width:0;
+    min-height:520px;
+    flex-direction:column;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface);
+    overflow:hidden
+}
+.editor-runtime-view>header {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 10px;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-runtime-view>header small {
+    margin-right:auto;
+    color:var(--hydra-text-muted)
+}
+.editor-runtime-view>.editor-runtime-flow {
+    flex:1;
+    border:0;
+    border-radius:0
+}
+.editor-runtime-tree,.editor-runtime-table-wrap,.editor-runtime-form-view,.editor-runtime-dashboard {
+    min-height:0;
+    flex:1;
+    overflow:auto;
+    padding:12px
+}
+.editor-runtime-tree ul {
+    display:grid;
+    gap:6px;
+    margin:0;
+    padding-left:24px;
+    list-style:none
+}
+.editor-runtime-tree>ul {
+    padding-left:0
+}
+.editor-runtime-tree button {
+    display:grid;
+    gap:2px;
+    min-width:180px;
+    text-align:left
+}
+.editor-runtime-tree button.selected,.editor-runtime-form-view button.selected,.editor-runtime-table-wrap tr.selected,.editor-runtime-dashboard .selected {
+    outline:2px solid var(--hydra-color-primary-600);
+    outline-offset:1px
+}
+.editor-runtime-table-wrap table {
+    width:100%;
+    border-collapse:collapse;
+    background:var(--hydra-bg-surface)
+}
+.editor-runtime-table-wrap th,.editor-runtime-table-wrap td {
+    max-width:220px;
+    padding:7px 9px;
+    border:1px solid var(--hydra-border-default);
+    text-align:left;
+    overflow-wrap:anywhere
+}
+.editor-runtime-table-wrap tbody tr {
+    cursor:pointer
+}
+.editor-runtime-table-wrap tbody tr:hover {
+    background:var(--hydra-bg-selection)
+}
+.editor-runtime-form-view {
+    display:grid;
+    grid-template-columns:minmax(160px,240px) minmax(0,1fr);
+    gap:12px
+}
+.editor-runtime-form-view nav {
+    display:flex;
+    flex-direction:column;
+    gap:5px
+}
+.editor-runtime-form-view nav button {
+    text-align:left
+}
+.editor-runtime-form-view article {
+    padding:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px
+}
+.editor-runtime-form-view dl>div {
+    display:grid;
+    grid-template-columns:minmax(120px,1fr) 2fr;
+    gap:8px;
+    padding:5px 0;
+    border-bottom:1px solid #eef2f6
+}
+.editor-runtime-form-view dd {
+    margin:0;
+    overflow-wrap:anywhere
+}
+.editor-runtime-matrix th {
+    max-width:120px
+}
+.editor-runtime-matrix td {
+    text-align:center
+}
+.editor-runtime-dashboard {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    align-content:start;
+    gap:10px
+}
+.editor-runtime-dashboard>article,.editor-runtime-dashboard>button {
+    display:grid;
+    gap:4px;
+    min-height:90px;
+    place-content:center;
+    text-align:center;
+    border:1px solid var(--hydra-border-default);
+    border-radius:10px;
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-runtime-dashboard strong {
+    font-size:1.6em
+}
+.editor-session-problems {
+    margin-top:18px;
+    padding-top:12px;
+    border-top:1px solid var(--hydra-border-default)
+}
+.editor-session-problems>header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between
+}
+.editor-session-problems>button {
+    display:grid;
+    width:100%;
+    grid-template-columns:auto 1fr;
+    gap:7px;
+    margin:4px 0;
+    text-align:left;
+    border-radius:7px
+}
+.editor-session-problems>button.selected {
+    border-color:var(--hydra-color-primary-600);
+    background:var(--hydra-bg-selection)
+}
+.editor-session-quickfixes {
+    display:grid;
+    gap:6px;
+    margin-top:8px;
+    padding:8px;
+    border:1px solid var(--hydra-color-primary-200);
+    border-radius:8px;
+    background:var(--hydra-bg-selection)
+}
+.editor-session-quickfixes>div {
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    align-items:center;
+    gap:4px
+}
+.editor-neutral-form textarea,.editor-neutral-form select {
+    box-sizing:border-box;
+    width:100%;
+    min-height:38px;
+    padding:7px 8px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:6px
+}
+.editor-neutral-form textarea {
+    min-height:90px;
+    resize:vertical
+}
+@media(max-width:1280px) {
+    .editor-neutral-canvas.split {
+        grid-template-columns:1fr
+    }
+    .editor-runtime-view {
+        min-height:360px
+    }
+}
+@media(max-width:800px) {
+    .editor-runtime-form-view {
+        grid-template-columns:1fr
+    }
+}
+.editor-runtime-header-actions {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:8px
+}
+.editor-runtime-header-actions button {
+    max-width:100%;
+    white-space:normal
+}
+
+.editor-definition-palette-policy {
+    margin:0 10px 8px;
+    padding:8px 10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted);
+    color:var(--hydra-text-secondary);
+    font-size:.78rem;
+    line-height:1.35
+}
+.editor-definition-tree {
+    display:grid;
+    gap:2px;
+    margin:0;
+    padding:4px 0;
+    list-style:none
+}
+.editor-definition-tree ul {
+    display:grid;
+    gap:2px;
+    margin:0;
+    padding:0;
+    list-style:none
+}
+.editor-definition-tree-row {
+    display:flex;
+    align-items:stretch;
+    min-width:0
+}
+.editor-definition-tree-main {
+    display:grid;
+    min-width:0;
+    flex:1;
+    grid-template-columns:15px 20px minmax(0,1fr) auto;
+    align-items:center;
+    gap:5px;
+    padding:5px 7px;
+    border:1px solid transparent;
+    border-radius:6px;
+    background:transparent;
+    text-align:left;
+    color:inherit
+}
+.editor-definition-tree-main:hover {
+    border-color:var(--hydra-border-default);
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-definition-tree-row.selected>.editor-definition-tree-main {
+    border-color:var(--hydra-color-blue-400);
+    background:var(--hydra-bg-selection)
+}
+.editor-definition-tree-expander {
+    font-size:.78rem;
+    color:var(--hydra-text-muted)
+}
+.editor-definition-tree-icon {
+    display:grid;
+    width:19px;
+    height:19px;
+    place-items:center;
+    border-radius:5px;
+    background:var(--hydra-border-default);
+    color:var(--hydra-text-secondary);
+    font-size:.68rem;
+    font-weight:800
+}
+.editor-definition-tree-text {
+    display:grid;
+    min-width:0
+}
+.editor-definition-tree-text strong,.editor-definition-tree-text small {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
+.editor-definition-tree-text strong {
+    font-size:.82rem
+}
+.editor-definition-tree-text small {
+    font-size:.68rem;
+    color:var(--hydra-text-muted)
+}
+.editor-definition-tree-badge {
+    max-width:110px;
+    padding:2px 5px;
+    border-radius:999px;
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-color-primary-700);
+    font-size:.58rem;
+    font-weight:800;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
+.editor-definition-tree-add {
+    align-self:center;
+    min-width:28px;
+    min-height:28px;
+    margin-right:4px;
+    padding:2px;
+    border-radius:6px
+}
+.editor-definition-tree-actions {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,7.5rem),1fr));
+    gap:5px;
+    padding:0 8px 8px;
+    container-type:inline-size
+}
+.editor-definition-tree-actions button {
+    width:100%;
+    min-width:0;
+    height:auto;
+    white-space:normal;
+    overflow-wrap:anywhere
+}
+.editor-definition-editor-select {
+    padding:0 8px 8px
+}
+.editor-definition-subtab-entry {
+    display:flex;
+    align-items:stretch
+}
+.editor-definition-subtab-entry>button:first-child {
+    border-radius:6px 0 0 6px
+}
+.editor-definition-subtab-close {
+    min-width:30px;
+    padding-inline:7px;
+    border-left:0;
+    border-radius:0 6px 6px 0
+}
+.editor-definition-subtab-entry.active .editor-definition-subtab-close {
+    border-color:var(--hydra-color-blue-400);
+    background:var(--hydra-bg-selection)
+}
+.editor-structure-panel {
+    display:flex;
+    min-height:420px;
+    flex-direction:column;
+    margin:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:10px;
+    background:var(--hydra-bg-surface);
+    overflow:hidden
+}
+.editor-structure-panel>header {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px 14px;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-structure-panel>header h3,.editor-structure-panel>header p {
+    margin:0
+}
+.editor-structure-panel>header p {
+    color:var(--hydra-text-muted)
+}
+.editor-structure-panel>header>div:last-child {
+    display:flex;
+    align-items:center;
+    gap:8px
+}
+.editor-structure-panel.collapsed {
+    min-height:0
+}
+.editor-structure-tree-scroll {
+    flex:1;
+    padding:10px;
+    overflow:auto
+}
+.representation-root-suggestion {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin:0 0 12px;
+    padding:10px 12px;
+    border:1px solid var(--hydra-color-blue-border);
+    border-radius:9px;
+    background:var(--hydra-color-sky-50)
+}
+.representation-root-suggestion>div {
+    display:grid;
+    gap:2px
+}
+.representation-root-suggestion span {
+    color:var(--hydra-text-secondary);
+    font-size:.82rem
+}
+.representation-root-classes {
+    display:grid;
+    gap:5px;
+    max-height:260px;
+    padding:8px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px;
+    overflow:auto;
+    background:var(--hydra-bg-surface)
+}
+.representation-root-classes label {
+    display:flex;
+    align-items:center;
+    gap:6px
+}
+.representation-root-classes small {
+    margin-left:auto;
+    color:var(--hydra-text-muted)
+}
+.representation-root-classes em {
+    margin-left:auto;
+    padding:2px 5px;
+    border-radius:999px;
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-color-primary-700);
+    font-size:.65rem;
+    font-style:normal;
+    font-weight:700
+}
+.editor-image-asset-field {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:7px
+}
+.editor-image-asset-preview {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted)
+}
+.editor-image-asset-preview img {
+    width:80px;
+    height:58px;
+    object-fit:contain;
+    border:1px solid var(--hydra-border-default);
+    border-radius:6px;
+    background:var(--hydra-bg-surface)
+}
+.editor-image-asset-preview span {
+    min-width:0;
+    overflow-wrap:anywhere
+}
+.editor-asset-picker-backdrop {
+    position:fixed;
+    inset:0;
+    z-index:1200;
+    display:grid;
+    place-items:center;
+    padding:24px;
+    background:var(--hydra-palette-slate-900)80
+}
+
+/* Model editor workspace inspector and resizable runtime geometry. */
+.editor-runtime-inspector {
+    display:flex;
+    min-width:0;
+    flex-direction:column;
+    padding:0;
+    overflow:hidden
+}
+.editor-runtime-inspector-tabs {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:3px;
+    padding:7px;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface)
+}
+.editor-runtime-inspector-tabs button {
+    display:flex;
+    min-width:0;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    padding:7px 6px;
+    white-space:normal
+}
+.editor-runtime-inspector-tabs button.active {
+    border-color:var(--hydra-color-primary-600);
+    background:var(--hydra-bg-selection)
+}
+.editor-runtime-inspector-tabs button small {
+    min-width:18px;
+    padding:1px 5px;
+    border-radius:999px;
+    background:var(--hydra-bg-surface-muted);
+    text-align:center
+}
+.editor-runtime-inspector-panel {
+    min-height:0;
+    padding:12px;
+    overflow:auto
+}
+.editor-runtime-inspector-panel>h5 {
+    margin:0 0 10px
+}
+.editor-runtime-inspector .editor-session-problems {
+    margin-top:0;
+    padding-top:12px;
+    border-top:0
+}
+.editor-runtime-operations {
+    display:grid;
+    align-content:start;
+    gap:8px
+}
+.editor-runtime-operations>article {
+    display:grid;
+    gap:6px;
+    padding:9px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface)
+}
+.editor-runtime-operations>article>header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px
+}
+.editor-runtime-operations>article p {
+    margin:0;
+    color:var(--hydra-text-muted)
+}
+.editor-runtime-resize-handle {
+    width:10px;
+    height:10px;
+    border:2px solid var(--hydra-bg-surface);
+    border-radius:2px;
+    background:var(--hydra-color-primary-600)
+}
+.editor-runtime-resize-line {
+    border-color:var(--hydra-color-primary-500)
+}
+
+/* V4.32.89 — the configured Model Editor uses the same full-height viewport contract as the Metamodel Editor. */
+.model-editor-workbench>.contextual-model-editor {
+    grid-row:1 / -1
+}
+.contextual-model-editor {
+    display:flex;
+    min-width:0;
+    min-height:0;
+    width:100%;
+    height:100%;
+    flex:1 1 auto;
+    flex-direction:column;
+    overflow:hidden
+}
+.contextual-model-editor>.editor-neutral-session {
+    display:flex;
+    min-height:0;
+    height:0;
+    flex:1 1 auto;
+    flex-direction:column
+}
+.contextual-model-editor .editor-neutral-session-grid {
+    min-height:0;
+    height:0;
+    flex:1 1 auto;
+    grid-template-rows:minmax(0,1fr);
+    overflow:hidden
+}
+.contextual-model-editor .editor-neutral-toolbox,
+.contextual-model-editor .editor-neutral-canvas,
+.contextual-model-editor .editor-runtime-inspector {
+    box-sizing:border-box;
+    min-height:0;
+    height:100%
+}
+.contextual-model-editor .editor-neutral-canvas {
+    min-width:0;
+    overflow:hidden
+}
+.contextual-model-editor .editor-runtime-view {
+    min-height:0;
+    height:100%
+}
+.contextual-model-editor .editor-runtime-flow {
+    min-height:0;
+    height:100%
+}
+.contextual-model-editor-profile {
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(220px,360px);
+    align-items:center;
+    gap:12px;
+    margin:10px 12px 0;
+    padding:10px 12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted)
+}
+.contextual-model-editor-profile>div {
+    display:grid;
+    min-width:0;
+    gap:3px
+}
+.contextual-model-editor-profile small {
+    color:var(--hydra-text-muted);
+    overflow-wrap:anywhere
+}
+.contextual-model-editor-profile-name {
+    min-width:0;
+    padding:7px 10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:6px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
+.contextual-model-editor-status {
+    margin:10px 12px;
+    padding:10px 12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px;
+    color:var(--hydra-text-muted)
+}
+.editor-runtime-launch-options {
+    display:grid;
+    grid-template-columns:minmax(180px,1fr) minmax(260px,2fr);
+    gap:8px;
+    align-items:end;
+    padding:14px 14px 0
+}
+.editor-runtime-launch-options>label {
+    font-weight:700
+}
+.editor-runtime-representation-selectors {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    min-width:0;
+    max-width:720px
+}
+.editor-runtime-representation-selectors>.hydra-ui-select {
+    min-width:180px;
+    max-width:300px
+}
+@media(max-width:780px) {
+    .contextual-model-editor-profile,
+    .editor-runtime-launch-options {
+        grid-template-columns:1fr
+    }
+    .editor-runtime-representation-selectors {
+        flex-wrap:wrap;
+        max-width:100%
+    }
+    .editor-runtime-representation-selectors>.hydra-ui-select {
+        min-width:min(100%,220px);
+        max-width:100%
+    }
+}
+
+/* V4.32.96 · Inspector tabs stay readable inside the resizable right panel. */
+.editor-runtime-inspector-tabs {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:4px;
+    padding:6px
+}
+.editor-runtime-inspector-tabs .hydra-ui-button {
+    position:relative;
+    box-sizing:border-box;
+    width:100%;
+    min-width:0;
+    min-height:36px;
+    padding:7px 19px 7px 5px;
+    overflow:hidden;
+    border-radius:6px;
+    white-space:nowrap
+}
+.editor-runtime-inspector-tabs .hydra-ui-button-label,
+.editor-runtime-inspector-tabs .editor-runtime-inspector-tab-label {
+    display:block;
+    min-width:0;
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:.76rem
+}
+.editor-runtime-inspector-tabs .hydra-ui-button small {
+    position:absolute;
+    top:3px;
+    right:3px;
+    display:grid;
+    min-width:15px;
+    min-height:15px;
+    padding:0 3px;
+    place-items:center;
+    border-radius:999px;
+    font-size:.62rem;
+    line-height:1
+}
+.editor-runtime-inspector-tabs .hydra-ui-button.active {
+    border-color:var(--hydra-color-primary-600);
+    background:var(--hydra-bg-selection);
+    box-shadow:inset 0 -2px 0 var(--hydra-color-primary-600)
+}

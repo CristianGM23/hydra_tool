@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0",
+  "metamodelId": "library",
+  "metamodelEtag": "etag-meta-1",
+  "validationModelId": "library-validations",
+  "validationModelEtag": "etag-validation-1",
+  "compiledRules": [
+    {
+      "ruleId": "rule:book-pages-positive",
+      "contextKind": "ATTRIBUTE",
+      "severity": "ERROR",
+      "triggerSet": [
+        "ON_CREATE",
+        "ON_ATTRIBUTE_CHANGE",
+        "ON_SAVE"
+      ],
+      "dependencyIds": [
+        "attribute:class:Book:pages"
+      ],
+      "executable": true,
+      "compilationErrors": []
+    }
+  ]
+}

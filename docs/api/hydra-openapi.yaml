@@ -1,0 +1,4943 @@
+openapi: 3.1.0
+info:
+  title: HYDRA API
+  version: 4.32.107
+  description: Generated from Spring MVC controller mappings.
+servers:
+  - url: /
+paths:
+  /api/artifact-registry/:
+    get:
+      operationId: HydraArtifactRegistryController_snapshot_get
+      tags: [HydraArtifactRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: HydraArtifactRegistryController_register_post
+      tags: [HydraArtifactRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/artifact-registry/compatibility/{id}:
+    get:
+      operationId: HydraArtifactRegistryController_compatibility_get
+      tags: [HydraArtifactRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/artifact-registry/graph:
+    get:
+      operationId: HydraArtifactRegistryController_graph_get
+      tags: [HydraArtifactRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/artifact-registry/impact/{id}:
+    get:
+      operationId: HydraArtifactRegistryController_impact_get
+      tags: [HydraArtifactRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/artifact-registry/scan:
+    post:
+      operationId: HydraArtifactRegistryController_scan_post
+      tags: [HydraArtifactRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/artifact-registry/scan/jobs:
+    post:
+      operationId: HydraArtifactRegistryController_scanAsync_post
+      tags: [HydraArtifactRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/artifact-transactions/pending:
+    get:
+      operationId: HydraArtifactTransactionController_pending_get
+      tags: [HydraArtifactTransactionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/artifact-transactions/{id}:
+    delete:
+      operationId: HydraArtifactTransactionController_abort_delete
+      tags: [HydraArtifactTransactionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/audit-log/:
+    get:
+      operationId: AuditLogController_query_get
+      tags: [AuditLogController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/audit-log/activities:
+    post:
+      operationId: AuditLogController_captureClientActivity_post
+      tags: [AuditLogController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/audit-log/descriptors:
+    get:
+      operationId: AuditLogController_descriptors_get
+      tags: [AuditLogController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/audit-log/export:
+    get:
+      operationId: AuditLogController_export_get
+      tags: [AuditLogController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/audit-log/maintenance/delete:
+    post:
+      operationId: AuditLogController_delete_post
+      tags: [AuditLogController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/audit-log/maintenance/run:
+    post:
+      operationId: AuditLogController_runMaintenance_post
+      tags: [AuditLogController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/audit-log/maintenance/storage:
+    get:
+      operationId: AuditLogController_storageStatus_get
+      tags: [AuditLogController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/audit-log/statistics:
+    get:
+      operationId: AuditLogController_statistics_get
+      tags: [AuditLogController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/audit-log/status:
+    get:
+      operationId: AuditLogController_status_get
+      tags: [AuditLogController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/:
+    get:
+      operationId: CanonicalMetamodelController_list_get
+      tags: [CanonicalMetamodelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CanonicalMetamodelController_create_post
+      tags: [CanonicalMetamodelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/actions:
+    get:
+      operationId: CanonicalActionController_list_get
+      tags: [CanonicalActionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/event-flows:
+    get:
+      operationId: CanonicalEventFlowController_list_get
+      tags: [CanonicalEventFlowController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/events:
+    get:
+      operationId: CanonicalEventModelController_list_get
+      tags: [CanonicalEventModelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/events/reserved-types:
+    get:
+      operationId: CanonicalEventModelController_reservedTypes_get
+      tags: [CanonicalEventModelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/expressions:
+    get:
+      operationId: CanonicalExpressionController_list_get
+      tags: [CanonicalExpressionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/gamification:
+    get:
+      operationId: CanonicalGamificationController_list_get
+      tags: [CanonicalGamificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/operation-behaviors:
+    get:
+      operationId: CanonicalOperationBehaviorController_list_get
+      tags: [CanonicalOperationBehaviorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/validation/analyze:
+    post:
+      operationId: MetamodelValidationController_analyzeDraft_post
+      tags: [MetamodelValidationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/validations:
+    get:
+      operationId: CanonicalValidationController_list_get
+      tags: [CanonicalValidationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{id}:
+    delete:
+      operationId: CanonicalMetamodelController_delete_delete
+      tags: [CanonicalMetamodelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: CanonicalMetamodelController_find_get
+      tags: [CanonicalMetamodelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: CanonicalMetamodelController_replace_put
+      tags: [CanonicalMetamodelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{id}/projections:
+    get:
+      operationId: CanonicalMetamodelProjectionController_projections_get
+      tags: [CanonicalMetamodelProjectionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{id}/projections/ecore:
+    post:
+      operationId: CanonicalMetamodelProjectionController_regenerateEcore_post
+      tags: [CanonicalMetamodelProjectionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{id}/targets:
+    get:
+      operationId: CanonicalMetamodelProjectionController_targets_get
+      tags: [CanonicalMetamodelProjectionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{id}/targets/ecore:
+    put:
+      operationId: CanonicalMetamodelProjectionController_updateEcore_put
+      tags: [CanonicalMetamodelProjectionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{id}/validate:
+    post:
+      operationId: CanonicalMetamodelController_validate_post
+      tags: [CanonicalMetamodelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{id}/validation/run:
+    post:
+      operationId: MetamodelValidationController_validateStored_post
+      tags: [MetamodelValidationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{id}/validation/status:
+    get:
+      operationId: MetamodelValidationController_status_get
+      tags: [MetamodelValidationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/actions:
+    delete:
+      operationId: CanonicalActionController_delete_delete
+      tags: [CanonicalActionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: CanonicalActionController_find_get
+      tags: [CanonicalActionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CanonicalActionController_create_post
+      tags: [CanonicalActionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: CanonicalActionController_replace_put
+      tags: [CanonicalActionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/actions/check:
+    post:
+      operationId: CanonicalActionController_check_post
+      tags: [CanonicalActionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/deletion-impact:
+    get:
+      operationId: MetamodelLifecycleController_analyzeDeletion_get
+      tags: [MetamodelLifecycleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/deletion-recovery:
+    post:
+      operationId: MetamodelLifecycleController_retryPendingCleanup_post
+      tags: [MetamodelLifecycleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/diagram/:
+    delete:
+      operationId: MetamodelDiagramController_delete_delete
+      tags: [MetamodelDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: MetamodelDiagramController_load_get
+      tags: [MetamodelDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: MetamodelDiagramController_save_put
+      tags: [MetamodelDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/:
+    get:
+      operationId: CanonicalEditorDefinitionController_list_get
+      tags: [CanonicalEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CanonicalEditorDefinitionController_create_post
+      tags: [CanonicalEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/imports/commit-associations:
+    post:
+      operationId: VisualDefinitionImportController_commitAssociations_post
+      tags: [VisualDefinitionImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/imports/drawio:
+    post:
+      operationId: VisualDefinitionImportController_drawio_post
+      tags: [VisualDefinitionImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/imports/gmf:
+    post:
+      operationId: VisualDefinitionImportController_gmf_post
+      tags: [VisualDefinitionImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/imports/sirius:
+    post:
+      operationId: VisualDefinitionImportController_sirius_post
+      tags: [VisualDefinitionImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/imports/sirius-web:
+    post:
+      operationId: VisualDefinitionImportController_siriusWeb_post
+      tags: [VisualDefinitionImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}:
+    delete:
+      operationId: CanonicalEditorDefinitionController_delete_delete
+      tags: [CanonicalEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: CanonicalEditorDefinitionController_find_get
+      tags: [CanonicalEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: CanonicalEditorDefinitionController_replace_put
+      tags: [CanonicalEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/check:
+    post:
+      operationId: CanonicalEditorDefinitionController_check_post
+      tags: [CanonicalEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/:
+    get:
+      operationId: EditorRuntimeController_find_get
+      tags: [EditorRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/cache:
+    delete:
+      operationId: EditorRuntimeController_invalidate_delete
+      tags: [EditorRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/cache/metrics:
+    get:
+      operationId: EditorRuntimeController_metrics_get
+      tags: [EditorRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/compile:
+    post:
+      operationId: EditorRuntimeController_compile_post
+      tags: [EditorRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/:
+    post:
+      operationId: EditorModelSessionController_create_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/import-emf:
+    post:
+      operationId: EditorModelSessionController_importEmf_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}:
+    delete:
+      operationId: EditorModelSessionController_delete_delete
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: EditorModelSessionController_find_get
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/code-generation/targets:
+    get:
+      operationId: EditorSessionCodeGenerationController_targets_get
+      tags: [EditorSessionCodeGenerationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/code-generation/{targetId}:
+    post:
+      operationId: EditorSessionCodeGenerationController_generate_post
+      tags: [EditorSessionCodeGenerationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/code-generation/{targetId}/preview:
+    post:
+      operationId: EditorSessionCodeGenerationController_preview_post
+      tags: [EditorSessionCodeGenerationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/diagram/:
+    delete:
+      operationId: EditorSessionDiagramController_delete_delete
+      tags: [EditorSessionDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: EditorSessionDiagramController_find_get
+      tags: [EditorSessionDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: EditorSessionDiagramController_save_put
+      tags: [EditorSessionDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/discard:
+    post:
+      operationId: EditorModelSessionController_discard_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/elements/delete:
+    post:
+      operationId: EditorModelSessionController_deleteElements_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/elements/{elementId}:
+    delete:
+      operationId: EditorModelSessionController_deleteElement_delete
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: EditorModelSessionController_updateElement_put
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/elements/{elementId}/appearance:
+    put:
+      operationId: EditorModelSessionController_changeElementAppearance_put
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/elements/{elementId}/containment:
+    put:
+      operationId: EditorModelSessionController_reparentElement_put
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/problems/{diagnosticId}/quick-fixes:
+    get:
+      operationId: EditorModelSessionController_quickFixes_get
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/problems/{diagnosticId}/quick-fixes/{actionId}/apply:
+    post:
+      operationId: EditorModelSessionController_applyQuickFix_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/problems/{diagnosticId}/quick-fixes/{actionId}/preview:
+    post:
+      operationId: EditorModelSessionController_previewQuickFix_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/redo:
+    post:
+      operationId: EditorModelSessionController_redo_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/relations/{relationInstanceId}:
+    delete:
+      operationId: EditorModelSessionController_deleteRelation_delete
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/representation:
+    post:
+      operationId: EditorModelSessionController_representation_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/representations/{representationId}:
+    delete:
+      operationId: EditorModelSessionController_closeRepresentation_delete
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: EditorModelSessionController_representationView_get
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/save:
+    post:
+      operationId: EditorModelSessionController_save_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/tools/{toolId}/edges:
+    post:
+      operationId: EditorModelSessionController_createEdge_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/tools/{toolId}/execute:
+    post:
+      operationId: EditorModelSessionController_executeTool_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/tools/{toolId}/nodes:
+    post:
+      operationId: EditorModelSessionController_createNode_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/undo:
+    post:
+      operationId: EditorModelSessionController_undo_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/validation:
+    post:
+      operationId: EditorModelSessionController_validate_post
+      tags: [EditorModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-architecture/exports/{format}:
+    get:
+      operationId: EventArchitectureExportController_export_get
+      tags: [EventArchitectureExportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows:
+    delete:
+      operationId: CanonicalEventFlowController_delete_delete
+      tags: [CanonicalEventFlowController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: CanonicalEventFlowController_find_get
+      tags: [CanonicalEventFlowController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CanonicalEventFlowController_create_post
+      tags: [CanonicalEventFlowController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: CanonicalEventFlowController_replace_put
+      tags: [CanonicalEventFlowController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/check:
+    post:
+      operationId: CanonicalEventFlowController_checkDraft_post
+      tags: [CanonicalEventFlowController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/check-saved:
+    post:
+      operationId: CanonicalEventFlowController_check_post
+      tags: [CanonicalEventFlowController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/diagram/:
+    delete:
+      operationId: EventFlowDiagramController_delete_delete
+      tags: [EventFlowDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: EventFlowDiagramController_find_get
+      tags: [EventFlowDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: EventFlowDiagramController_save_put
+      tags: [EventFlowDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/optional:
+    get:
+      operationId: CanonicalEventFlowController_findOptional_get
+      tags: [CanonicalEventFlowController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/runtime/compile:
+    post:
+      operationId: EventFlowRuntimeController_compile_post
+      tags: [EventFlowRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/runtime/events:
+    post:
+      operationId: EventFlowRuntimeController_process_post
+      tags: [EventFlowRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/runtime/refresh:
+    post:
+      operationId: EventFlowRuntimeController_refresh_post
+      tags: [EventFlowRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/runtime/start:
+    post:
+      operationId: EventFlowRuntimeController_start_post
+      tags: [EventFlowRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/runtime/state:
+    delete:
+      operationId: EventFlowRuntimeController_clearState_delete
+      tags: [EventFlowRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: EventFlowRuntimeController_state_get
+      tags: [EventFlowRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/runtime/status:
+    get:
+      operationId: EventFlowRuntimeController_status_get
+      tags: [EventFlowRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/runtime/stop:
+    post:
+      operationId: EventFlowRuntimeController_stop_post
+      tags: [EventFlowRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/runtime/tick:
+    post:
+      operationId: EventFlowRuntimeController_tick_post
+      tags: [EventFlowRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/event-flows/runtime/traces:
+    get:
+      operationId: EventFlowRuntimeController_traces_get
+      tags: [EventFlowRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/events:
+    delete:
+      operationId: CanonicalEventModelController_delete_delete
+      tags: [CanonicalEventModelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: CanonicalEventModelController_find_get
+      tags: [CanonicalEventModelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CanonicalEventModelController_create_post
+      tags: [CanonicalEventModelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: CanonicalEventModelController_replace_put
+      tags: [CanonicalEventModelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/events/check:
+    post:
+      operationId: CanonicalEventModelController_check_post
+      tags: [CanonicalEventModelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/events/diagram/:
+    delete:
+      operationId: EventArchitectureDiagramController_delete_delete
+      tags: [EventArchitectureDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: EventArchitectureDiagramController_find_get
+      tags: [EventArchitectureDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: EventArchitectureDiagramController_save_put
+      tags: [EventArchitectureDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/expressions:
+    delete:
+      operationId: CanonicalExpressionController_delete_delete
+      tags: [CanonicalExpressionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: CanonicalExpressionController_find_get
+      tags: [CanonicalExpressionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CanonicalExpressionController_create_post
+      tags: [CanonicalExpressionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: CanonicalExpressionController_replace_put
+      tags: [CanonicalExpressionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/expressions/check:
+    post:
+      operationId: CanonicalExpressionController_check_post
+      tags: [CanonicalExpressionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/expressions/{expressionId}/evaluate:
+    post:
+      operationId: CanonicalExpressionController_evaluate_post
+      tags: [CanonicalExpressionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/gamification:
+    delete:
+      operationId: CanonicalGamificationController_delete_delete
+      tags: [CanonicalGamificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: CanonicalGamificationController_find_get
+      tags: [CanonicalGamificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CanonicalGamificationController_create_post
+      tags: [CanonicalGamificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: CanonicalGamificationController_replace_put
+      tags: [CanonicalGamificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/gamification/check:
+    post:
+      operationId: CanonicalGamificationController_checkDraft_post
+      tags: [CanonicalGamificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/gamification/check-saved:
+    post:
+      operationId: CanonicalGamificationController_check_post
+      tags: [CanonicalGamificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/gamification/diagram/:
+    delete:
+      operationId: GamificationDiagramController_delete_delete
+      tags: [GamificationDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: GamificationDiagramController_find_get
+      tags: [GamificationDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: GamificationDiagramController_save_put
+      tags: [GamificationDiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/gamification/exports/{format}:
+    get:
+      operationId: GamificationExportController_export_get
+      tags: [GamificationExportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/gamification/runtime/:
+    delete:
+      operationId: GamificationRuntimeController_reset_delete
+      tags: [GamificationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: GamificationRuntimeController_state_get
+      tags: [GamificationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/gamification/runtime/events:
+    post:
+      operationId: GamificationRuntimeController_process_post
+      tags: [GamificationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/gamification/runtime/feedback:
+    get:
+      operationId: GamificationRuntimeController_feedback_get
+      tags: [GamificationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/:
+    get:
+      operationId: CanonicalIntegrationProfileController_list_get
+      tags: [CanonicalIntegrationProfileController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CanonicalIntegrationProfileController_create_post
+      tags: [CanonicalIntegrationProfileController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/check:
+    post:
+      operationId: CanonicalIntegrationProfileController_checkDraft_post
+      tags: [CanonicalIntegrationProfileController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/technologies:
+    get:
+      operationId: CanonicalIntegrationProfileController_technologies_get
+      tags: [CanonicalIntegrationProfileController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}:
+    delete:
+      operationId: CanonicalIntegrationProfileController_delete_delete
+      tags: [CanonicalIntegrationProfileController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: CanonicalIntegrationProfileController_find_get
+      tags: [CanonicalIntegrationProfileController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: CanonicalIntegrationProfileController_replace_put
+      tags: [CanonicalIntegrationProfileController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/check:
+    post:
+      operationId: CanonicalIntegrationProfileController_check_post
+      tags: [CanonicalIntegrationProfileController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/projections/{format}/export:
+    post:
+      operationId: CanonicalProjectionController_export_post
+      tags: [CanonicalProjectionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/projections/{format}/import:
+    post:
+      operationId: CanonicalProjectionController_importProjection_post
+      tags: [CanonicalProjectionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/apply:
+    post:
+      operationId: TechnologyIntegrationController_apply_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/compile:
+    post:
+      operationId: TechnologyIntegrationController_compile_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/preview:
+    post:
+      operationId: TechnologyIntegrationController_preview_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/rollback/{manifestId}:
+    post:
+      operationId: TechnologyIntegrationController_rollback_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/sync/apply:
+    post:
+      operationId: TechnologyIntegrationController_syncApply_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/sync/preview:
+    post:
+      operationId: TechnologyIntegrationController_syncPreview_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/sync/resolve:
+    post:
+      operationId: TechnologyIntegrationController_resolve_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/sync/resolve/apply:
+    post:
+      operationId: TechnologyIntegrationController_resolveAndApply_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/sync/resolve/rollback/{operationId}:
+    post:
+      operationId: TechnologyIntegrationController_rollbackResolved_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/validate:
+    post:
+      operationId: TechnologyIntegrationController_validate_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/lifecycle:
+    delete:
+      operationId: MetamodelLifecycleController_delete_delete
+      tags: [MetamodelLifecycleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/operation-behaviors:
+    delete:
+      operationId: CanonicalOperationBehaviorController_delete_delete
+      tags: [CanonicalOperationBehaviorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: CanonicalOperationBehaviorController_find_get
+      tags: [CanonicalOperationBehaviorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CanonicalOperationBehaviorController_create_post
+      tags: [CanonicalOperationBehaviorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: CanonicalOperationBehaviorController_replace_put
+      tags: [CanonicalOperationBehaviorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/operation-behaviors/check:
+    post:
+      operationId: CanonicalOperationBehaviorController_check_post
+      tags: [CanonicalOperationBehaviorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/operation-behaviors/export:
+    get:
+      operationId: CanonicalOperationBehaviorController_export_get
+      tags: [CanonicalOperationBehaviorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/operation-runtime:
+    get:
+      operationId: OperationRuntimeController_catalog_get
+      tags: [OperationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/validations:
+    delete:
+      operationId: CanonicalValidationController_delete_delete
+      tags: [CanonicalValidationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: CanonicalValidationController_find_get
+      tags: [CanonicalValidationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CanonicalValidationController_create_post
+      tags: [CanonicalValidationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: CanonicalValidationController_replace_put
+      tags: [CanonicalValidationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/validations/check:
+    post:
+      operationId: CanonicalValidationController_check_post
+      tags: [CanonicalValidationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/validations/runtime/compile:
+    post:
+      operationId: ValidationRuntimeController_compile_post
+      tags: [ValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/validations/runtime/drawio/definition:
+    get:
+      operationId: ValidationRuntimeController_definitionDrawio_get
+      tags: [ValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/validations/runtime/drawio/plan:
+    get:
+      operationId: ValidationRuntimeController_planDrawio_get
+      tags: [ValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/validations/runtime/drawio/report:
+    post:
+      operationId: ValidationRuntimeController_reportDrawio_post
+      tags: [ValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/validations/runtime/orchestrate:
+    post:
+      operationId: ValidationRuntimeController_orchestrate_post
+      tags: [ValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/validations/runtime/validate:
+    post:
+      operationId: ValidationRuntimeController_validate_post
+      tags: [ValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/archives/:
+    get:
+      operationId: CapabilityPackageArchiveController_cached_get
+      tags: [CapabilityPackageArchiveController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CapabilityPackageArchiveController_exportPackage_post
+      tags: [CapabilityPackageArchiveController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/archives/import:
+    post:
+      operationId: CapabilityPackageArchiveController_importPackage_post
+      tags: [CapabilityPackageArchiveController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/check:
+    post:
+      operationId: CapabilityPackageController_check_post
+      tags: [CapabilityPackageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/compatibility:
+    get:
+      operationId: CapabilityPackageController_compatibility_get
+      tags: [CapabilityPackageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/orchestration/apply:
+    post:
+      operationId: CapabilityOrchestrationController_apply_post
+      tags: [CapabilityOrchestrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/orchestration/preview:
+    post:
+      operationId: CapabilityOrchestrationController_preview_post
+      tags: [CapabilityOrchestrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/orchestration/{orchestrationId}:
+    get:
+      operationId: CapabilityOrchestrationController_find_get
+      tags: [CapabilityOrchestrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/orchestration/{orchestrationId}/replay:
+    post:
+      operationId: CapabilityOrchestrationController_replay_post
+      tags: [CapabilityOrchestrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/semantic-merge/apply:
+    post:
+      operationId: CapabilitySemanticMergeController_apply_post
+      tags: [CapabilitySemanticMergeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/semantic-merge/preview:
+    post:
+      operationId: CapabilitySemanticMergeController_preview_post
+      tags: [CapabilitySemanticMergeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/semantic-merge/rollback:
+    post:
+      operationId: CapabilitySemanticMergeController_rollback_post
+      tags: [CapabilitySemanticMergeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/transactions/apply:
+    post:
+      operationId: CapabilityLayerTransactionController_apply_post
+      tags: [CapabilityLayerTransactionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/transactions/preview:
+    post:
+      operationId: CapabilityLayerTransactionController_preview_post
+      tags: [CapabilityLayerTransactionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/capability-packages/transactions/rollback:
+    post:
+      operationId: CapabilityLayerTransactionController_rollback_post
+      tags: [CapabilityLayerTransactionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/code-generation/targets:
+    get:
+      operationId: ModelCodeGenerationCatalogController_targets_get
+      tags: [ModelCodeGenerationCatalogController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/compatibility/:
+    get:
+      operationId: HydraApiCompatibilityController_compatibility_get
+      tags: [HydraApiCompatibilityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/diagrams/{modelFileName:.+}:
+    delete:
+      operationId: DiagramController_delete_delete
+      tags: [DiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: DiagramController_find_get
+      tags: [DiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: DiagramController_save_put
+      tags: [DiagramController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-provenance/:
+    get:
+      operationId: HydraDistributionProvenanceController_reports_get
+      tags: [HydraDistributionProvenanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: HydraDistributionProvenanceController_evaluate_post
+      tags: [HydraDistributionProvenanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-provenance/{reportId}:
+    get:
+      operationId: HydraDistributionProvenanceController_find_get
+      tags: [HydraDistributionProvenanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-provenance/{reportId}/html:
+    get:
+      operationId: HydraDistributionProvenanceController_html_get
+      tags: [HydraDistributionProvenanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-provenance/{reportId}/sbom:
+    get:
+      operationId: HydraDistributionProvenanceController_export_get
+      tags: [HydraDistributionProvenanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-registry/entries:
+    post:
+      operationId: HydraDistributionRegistryController_register_post
+      tags: [HydraDistributionRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-registry/federation/reports:
+    get:
+      operationId: HydraCatalogFederationController_reports_get
+      tags: [HydraCatalogFederationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-registry/federation/reports/{reportId}:
+    get:
+      operationId: HydraCatalogFederationController_report_get
+      tags: [HydraCatalogFederationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-registry/federation/sources:
+    get:
+      operationId: HydraCatalogFederationController_sources_get
+      tags: [HydraCatalogFederationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: HydraCatalogFederationController_saveSource_post
+      tags: [HydraCatalogFederationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-registry/federation/synchronize:
+    post:
+      operationId: HydraCatalogFederationController_synchronize_post
+      tags: [HydraCatalogFederationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-registry/index:
+    get:
+      operationId: HydraDistributionRegistryController_index_get
+      tags: [HydraDistributionRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-registry/index/import:
+    post:
+      operationId: HydraDistributionRegistryController_importIndex_post
+      tags: [HydraDistributionRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/distribution-registry/search:
+    post:
+      operationId: HydraDistributionRegistryController_search_post
+      tags: [HydraDistributionRegistryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/editor-assets/:
+    get:
+      operationId: EditorVisualAssetController_visual_get
+      tags: [EditorVisualAssetController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/editor/bootstrap/{metamodelId}:
+    get:
+      operationId: EditorBootstrapController_bootstrap_get
+      tags: [EditorBootstrapController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/external-project-recovery/analyze:
+    post:
+      operationId: ExternalProjectRecoveryController_analyze_post
+      tags: [ExternalProjectRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/external-project-recovery/import:
+    post:
+      operationId: ExternalProjectRecoveryController_importProject_post
+      tags: [ExternalProjectRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/generated-projects/:
+    get:
+      operationId: GeneratedProjectLifecycleController_registry_get
+      tags: [GeneratedProjectLifecycleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: GeneratedProjectLifecycleController_register_post
+      tags: [GeneratedProjectLifecycleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/generated-projects/execute:
+    post:
+      operationId: GeneratedProjectLifecycleController_execute_post
+      tags: [GeneratedProjectLifecycleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/generated-projects/profiles:
+    get:
+      operationId: GeneratedProjectLifecycleController_profiles_get
+      tags: [GeneratedProjectLifecycleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammar-compilations/{snapshotId}:
+    get:
+      operationId: GrammarCompilationController_find_get
+      tags: [GrammarCompilationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammar-compilations/{snapshotId}/activate:
+    post:
+      operationId: GrammarCompilationController_activate_post
+      tags: [GrammarCompilationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammar-compilations/{snapshotId}/generated-project.zip:
+    get:
+      operationId: GrammarCompilationController_generatedProject_get
+      tags: [GrammarCompilationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/:
+    get:
+      operationId: GrammarController_list_get
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: GrammarController_create_post
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/analysis/status:
+    get:
+      operationId: GrammarController_analysisStatus_get
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/analysis/{requestId}/cancel:
+    post:
+      operationId: GrammarController_cancel_post
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/analyze-draft:
+    post:
+      operationId: GrammarController_analyzeDraft_post
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/class-diagram-draft:
+    post:
+      operationId: GrammarController_classDiagramDraft_post
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/conversion-preview:
+    post:
+      operationId: GrammarController_conversionPreview_post
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/providers:
+    get:
+      operationId: GrammarController_providers_get
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/providers/{providerId}/reset:
+    post:
+      operationId: GrammarController_resetProvider_post
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/toolchain-profiles:
+    get:
+      operationId: GrammarController_profiles_get
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/{grammarId}:
+    delete:
+      operationId: GrammarController_delete_delete
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: GrammarController_find_get
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: GrammarController_replace_put
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/{grammarId}/active-compilation:
+    get:
+      operationId: GrammarCompilationController_active_get
+      tags: [GrammarCompilationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/{grammarId}/analyze:
+    post:
+      operationId: GrammarController_analyze_post
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/{grammarId}/class-diagram:
+    post:
+      operationId: GrammarController_classDiagram_post
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/{grammarId}/code-actions:
+    post:
+      operationId: GrammarController_codeActions_post
+      tags: [GrammarController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/{grammarId}/compilations:
+    get:
+      operationId: GrammarCompilationController_list_get
+      tags: [GrammarCompilationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/{grammarId}/compile:
+    post:
+      operationId: GrammarCompilationController_compile_post
+      tags: [GrammarCompilationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/{grammarId}/compile-progress/{requestId}:
+    get:
+      operationId: GrammarCompilationController_progress_get
+      tags: [GrammarCompilationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/grammars/{grammarId}/compile/jobs:
+    post:
+      operationId: GrammarCompilationController_compileAsync_post
+      tags: [GrammarCompilationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/hydra/capabilities/grammar/{grammarId}:
+    get:
+      operationId: HydraCapabilityReadinessController_summarizeGrammar_get
+      tags: [HydraCapabilityReadinessController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/hydra/capabilities/metamodel/{metamodelId}:
+    get:
+      operationId: HydraCapabilityReadinessController_summarizeMetamodel_get
+      tags: [HydraCapabilityReadinessController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/jobs/:
+    get:
+      operationId: HydraJobController_list_get
+      tags: [HydraJobController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/jobs/{jobId}:
+    get:
+      operationId: HydraJobController_find_get
+      tags: [HydraJobController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/jobs/{jobId}/cancel:
+    post:
+      operationId: HydraJobController_cancel_post
+      tags: [HydraJobController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-imports/:
+    post:
+      operationId: MetamodelImportController_importAndSave_post
+      tags: [MetamodelImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-imports/analysis-jobs:
+    post:
+      operationId: MetamodelImportController_startAnalysis_post
+      tags: [MetamodelImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-imports/analysis-jobs/{jobId}:
+    get:
+      operationId: MetamodelImportController_getAnalysis_get
+      tags: [MetamodelImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-imports/analysis-jobs/{jobId}/import:
+    post:
+      operationId: MetamodelImportController_importPrepared_post
+      tags: [MetamodelImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-imports/analysis-jobs/{jobId}/logs:
+    get:
+      operationId: MetamodelImportController_downloadCombinedLog_get
+      tags: [MetamodelImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-imports/analysis-jobs/{jobId}/stages/{stageId}/log:
+    get:
+      operationId: MetamodelImportController_downloadStageLog_get
+      tags: [MetamodelImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-imports/browser-directory:
+    post:
+      operationId: MetamodelImportController_importBrowserDirectory_post
+      tags: [MetamodelImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-imports/formats:
+    get:
+      operationId: MetamodelImportController_listFormats_get
+      tags: [MetamodelImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-imports/preview:
+    post:
+      operationId: MetamodelImportController_preview_post
+      tags: [MetamodelImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-layouts/:
+    post:
+      operationId: MetamodelLayoutController_layout_post
+      tags: [MetamodelLayoutController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodel-layouts/algorithms:
+    get:
+      operationId: MetamodelLayoutController_algorithms_get
+      tags: [MetamodelLayoutController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/:
+    get:
+      operationId: MetamodelController_list_get
+      tags: [MetamodelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/reload:
+    post:
+      operationId: MetamodelController_reload_post
+      tags: [MetamodelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/runtime-status:
+    get:
+      operationId: MetamodelController_runtimeStatuses_get
+      tags: [MetamodelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/{id}:
+    get:
+      operationId: MetamodelController_find_get
+      tags: [MetamodelController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/{metamodelId}/dependent-artifacts:cleanup:
+    post:
+      operationId: MetamodelDependentArtifactCleanupController_cleanup_post
+      tags: [MetamodelDependentArtifactCleanupController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/{metamodelId}/export-formats:
+    get:
+      operationId: MetamodelExportController_listFormats_get
+      tags: [MetamodelExportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/{metamodelId}/exports:
+    post:
+      operationId: MetamodelExportController_exportConfigured_post
+      tags: [MetamodelExportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/{metamodelId}/exports/bundle:
+    post:
+      operationId: MetamodelExportController_exportBundle_post
+      tags: [MetamodelExportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/{metamodelId}/exports/{format}:
+    get:
+      operationId: MetamodelExportController_export_get
+      tags: [MetamodelExportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/{metamodelId}/project-export-artifacts:
+    get:
+      operationId: MetamodelProjectExportController_artifacts_get
+      tags: [MetamodelProjectExportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/{metamodelId}/project-export-formats:
+    get:
+      operationId: MetamodelProjectExportController_list_get
+      tags: [MetamodelProjectExportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/metamodels/{metamodelId}/project-exports/{kind}:
+    post:
+      operationId: MetamodelProjectExportController_export_post
+      tags: [MetamodelProjectExportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/:
+    post:
+      operationId: ModelDocumentController_create_post
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/files:
+    get:
+      operationId: ModelDocumentController_listSavedModels_get
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/files/download:
+    get:
+      operationId: ModelDocumentController_download_get
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/files/{fileName:.+}:
+    delete:
+      operationId: ModelDocumentController_deleteSavedModel_delete
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/open:
+    post:
+      operationId: ModelDocumentController_open_post
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}:
+    get:
+      operationId: ModelDocumentController_find_get
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/attributes:
+    put:
+      operationId: ModelDocumentController_setAttribute_put
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/code-generation/targets:
+    get:
+      operationId: ModelCodeGenerationController_targets_get
+      tags: [ModelCodeGenerationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/code-generation/{targetId}:
+    post:
+      operationId: ModelCodeGenerationController_generate_post
+      tags: [ModelCodeGenerationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/code-generation/{targetId}/preview:
+    post:
+      operationId: ModelCodeGenerationController_preview_post
+      tags: [ModelCodeGenerationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/elements:
+    post:
+      operationId: ModelDocumentController_addElement_post
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/elements/delete:
+    post:
+      operationId: ModelDocumentController_deleteElements_post
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/elements/{elementId}:
+    delete:
+      operationId: ModelDocumentController_deleteElement_delete
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/operations/undo:
+    post:
+      operationId: OperationRuntimeController_undo_post
+      tags: [OperationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/operations/{operationId}:
+    post:
+      operationId: OperationRuntimeController_invoke_post
+      tags: [OperationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/references:
+    put:
+      operationId: ModelDocumentController_setReference_put
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/save:
+    post:
+      operationId: ModelDocumentController_save_post
+      tags: [ModelDocumentController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/validation-runtime/latest:
+    get:
+      operationId: ModelValidationRuntimeController_latest_get
+      tags: [ModelValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/validation-runtime/problems/{diagnosticId}/quick-fixes:
+    get:
+      operationId: ModelValidationRuntimeController_quickFixes_get
+      tags: [ModelValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/validation-runtime/problems/{diagnosticId}/quick-fixes/{actionId}/apply:
+    post:
+      operationId: ModelValidationRuntimeController_apply_post
+      tags: [ModelValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/validation-runtime/problems/{diagnosticId}/quick-fixes/{actionId}/preview:
+    post:
+      operationId: ModelValidationRuntimeController_preview_post
+      tags: [ModelValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/validation-runtime/quick-fixes/redo:
+    post:
+      operationId: ModelValidationRuntimeController_redo_post
+      tags: [ModelValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/validation-runtime/quick-fixes/undo:
+    post:
+      operationId: ModelValidationRuntimeController_undo_post
+      tags: [ModelValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/models/{modelId}/validation-runtime/validate:
+    post:
+      operationId: ModelValidationRuntimeController_validate_post
+      tags: [ModelValidationRuntimeController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/notations/:
+    get:
+      operationId: NotationController_list_get
+      tags: [NotationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: NotationController_upload_post
+      tags: [NotationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/notations/reload:
+    post:
+      operationId: NotationController_reload_post
+      tags: [NotationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/notations/{id}:
+    get:
+      operationId: NotationController_find_get
+      tags: [NotationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/observability/traces/:
+    get:
+      operationId: HydraOperationTraceController_find_get
+      tags: [HydraOperationTraceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/observability/traces/recent:
+    get:
+      operationId: HydraOperationTraceController_recent_get
+      tags: [HydraOperationTraceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/performance/capabilities/automation/:
+    get:
+      operationId: CapabilityPerformanceAutomationController_reports_get
+      tags: [CapabilityPerformanceAutomationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CapabilityPerformanceAutomationController_run_post
+      tags: [CapabilityPerformanceAutomationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/performance/capabilities/automation/baselines/{capabilityId}/{scenarioId}:
+    get:
+      operationId: CapabilityPerformanceAutomationController_baseline_get
+      tags: [CapabilityPerformanceAutomationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/performance/capabilities/automation/{reportId}:
+    get:
+      operationId: CapabilityPerformanceAutomationController_find_get
+      tags: [CapabilityPerformanceAutomationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/performance/capabilities/automation/{reportId}/approve:
+    post:
+      operationId: CapabilityPerformanceAutomationController_approve_post
+      tags: [CapabilityPerformanceAutomationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/performance/capabilities/automation/{reportId}/html:
+    get:
+      operationId: CapabilityPerformanceAutomationController_html_get
+      tags: [CapabilityPerformanceAutomationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/performance/capabilities/budgets:
+    get:
+      operationId: CapabilityPerformanceController_budgets_get
+      tags: [CapabilityPerformanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/performance/capabilities/reports:
+    get:
+      operationId: CapabilityPerformanceController_reports_get
+      tags: [CapabilityPerformanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: CapabilityPerformanceController_evaluate_post
+      tags: [CapabilityPerformanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/performance/capabilities/reports/compare:
+    get:
+      operationId: CapabilityPerformanceController_compare_get
+      tags: [CapabilityPerformanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/performance/capabilities/reports/{reportId}:
+    get:
+      operationId: CapabilityPerformanceController_report_get
+      tags: [CapabilityPerformanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/performance/capabilities/reports/{reportId}.html:
+    get:
+      operationId: CapabilityPerformanceController_html_get
+      tags: [CapabilityPerformanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/policies/bundles/:
+    get:
+      operationId: HydraPolicyBundleController_bundles_get
+      tags: [HydraPolicyBundleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: HydraPolicyBundleController_save_post
+      tags: [HydraPolicyBundleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/policies/bundles/channels/{channel}/active:
+    get:
+      operationId: HydraPolicyBundleController_active_get
+      tags: [HydraPolicyBundleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/policies/bundles/simulations:
+    get:
+      operationId: HydraPolicyBundleController_simulations_get
+      tags: [HydraPolicyBundleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/policies/bundles/{bundleId}/{version}/activate:
+    post:
+      operationId: HydraPolicyBundleController_activate_post
+      tags: [HydraPolicyBundleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/policies/bundles/{bundleId}/{version}/revoke:
+    post:
+      operationId: HydraPolicyBundleController_revoke_post
+      tags: [HydraPolicyBundleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/policies/bundles/{bundleId}/{version}/simulate:
+    post:
+      operationId: HydraPolicyBundleController_simulate_post
+      tags: [HydraPolicyBundleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/policies/evaluate:
+    post:
+      operationId: HydraPolicyController_evaluate_post
+      tags: [HydraPolicyController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/policies/revocations:
+    get:
+      operationId: HydraPolicyController_revocations_get
+      tags: [HydraPolicyController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: HydraPolicyController_revoke_post
+      tags: [HydraPolicyController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/policies/rules:
+    get:
+      operationId: HydraPolicyController_rules_get
+      tags: [HydraPolicyController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: HydraPolicyController_saveRule_post
+      tags: [HydraPolicyController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/:
+    post:
+      operationId: ProjectController_create_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active:
+    delete:
+      operationId: ProjectController_deleteActiveProject_delete
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/changes:
+    get:
+      operationId: ProjectController_changes_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/configuration:
+    put:
+      operationId: ProjectController_configure_put
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/deletion-impact:
+    get:
+      operationId: ProjectController_deletionImpact_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/download:
+    get:
+      operationId: ProjectController_download_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/drawio/descriptor:
+    get:
+      operationId: ProjectController_descriptorDrawio_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/drawio/sync-plan:
+    post:
+      operationId: ProjectController_syncPlanDrawio_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/drawio/tree:
+    get:
+      operationId: ProjectController_treeDrawio_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/duplicate:
+    post:
+      operationId: ProjectController_duplicate_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/entries:
+    delete:
+      operationId: ProjectController_delete_delete
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: ProjectController_createEntry_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/export:
+    get:
+      operationId: ProjectController_exportProject_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/export-selection:
+    post:
+      operationId: ProjectController_exportSelection_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/file:
+    get:
+      operationId: ProjectController_read_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: ProjectController_write_put
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/local-path:
+    get:
+      operationId: ProjectController_localPath_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/move:
+    post:
+      operationId: ProjectController_move_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/search:
+    get:
+      operationId: ProjectController_search_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/sync:
+    post:
+      operationId: ProjectController_synchronize_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/sync/preview:
+    post:
+      operationId: ProjectController_preview_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/tabs:
+    put:
+      operationId: ProjectController_saveTabs_put
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/tree:
+    get:
+      operationId: ProjectController_tree_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/upload:
+    post:
+      operationId: ProjectController_upload_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/active/visual:
+    get:
+      operationId: ProjectController_visual_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/catalog:
+    get:
+      operationId: ProjectController_catalog_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/close:
+    post:
+      operationId: ProjectController_close_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/import:
+    post:
+      operationId: ProjectController_importProject_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/import-browser-directory:
+    post:
+      operationId: ProjectController_importBrowserDirectory_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/import-directory:
+    post:
+      operationId: ProjectController_importProjectDirectory_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/open:
+    post:
+      operationId: ProjectController_open_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/path-picker:
+    post:
+      operationId: ProjectController_pickPath_post
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/portable/export:
+    post:
+      operationId: ProjectPortablePackageController_exportPortable_post
+      tags: [ProjectPortablePackageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/portable/import:
+    post:
+      operationId: ProjectPortablePackageController_importPortable_post
+      tags: [ProjectPortablePackageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/recent:
+    get:
+      operationId: ProjectController_recent_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/projects/session:
+    get:
+      operationId: ProjectController_session_get
+      tags: [ProjectController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/publications/check:
+    post:
+      operationId: DistributionPublicationController_check_post
+      tags: [DistributionPublicationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/publications/final-verified/publish:
+    post:
+      operationId: HydraFinalVerifiedPublicationController_publish_post
+      tags: [HydraFinalVerifiedPublicationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/publications/provenance-verified/publish:
+    post:
+      operationId: ProvenanceVerifiedPublicationController_publish_post
+      tags: [ProvenanceVerifiedPublicationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/publications/publish:
+    post:
+      operationId: DistributionPublicationController_publish_post
+      tags: [DistributionPublicationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/publications/validate:
+    post:
+      operationId: DistributionPublicationController_validate_post
+      tags: [DistributionPublicationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/publications/verified/publish:
+    post:
+      operationId: VerifiedDistributionPublicationController_publish_post
+      tags: [VerifiedDistributionPublicationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/recovery/backups:
+    post:
+      operationId: HydraRecoveryController_backup_post
+      tags: [HydraRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/recovery/backups/{backupId}/verify:
+    get:
+      operationId: HydraRecoveryController_verify_get
+      tags: [HydraRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/recovery/continuity/compare:
+    get:
+      operationId: HydraContinuityController_compare_get
+      tags: [HydraContinuityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/recovery/continuity/plans:
+    get:
+      operationId: HydraContinuityController_plans_get
+      tags: [HydraContinuityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: HydraContinuityController_save_post
+      tags: [HydraContinuityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/recovery/continuity/plans/due:
+    get:
+      operationId: HydraContinuityController_duePlans_get
+      tags: [HydraContinuityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/recovery/continuity/runs:
+    get:
+      operationId: HydraContinuityController_reports_get
+      tags: [HydraContinuityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: HydraContinuityController_run_post
+      tags: [HydraContinuityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/recovery/drills:
+    post:
+      operationId: HydraRecoveryController_drill_post
+      tags: [HydraRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/release-gates/:
+    get:
+      operationId: HydraReleaseGateController_reports_get
+      tags: [HydraReleaseGateController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: HydraReleaseGateController_evaluate_post
+      tags: [HydraReleaseGateController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/release-gates/{reportId}:
+    get:
+      operationId: HydraReleaseGateController_find_get
+      tags: [HydraReleaseGateController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/release-gates/{reportId}/candidate-readiness:
+    get:
+      operationId: HydraReleaseCandidateController_candidateReadiness_get
+      tags: [HydraReleaseCandidateController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/release-gates/{reportId}/html:
+    get:
+      operationId: HydraReleaseGateController_html_get
+      tags: [HydraReleaseGateController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-auth/callback:
+    get:
+      operationId: RemoteAuthController_callback_get
+      tags: [RemoteAuthController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-auth/connection:
+    delete:
+      operationId: RemoteAuthController_disconnect_delete
+      tags: [RemoteAuthController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-auth/device-poll:
+    post:
+      operationId: RemoteAuthController_poll_post
+      tags: [RemoteAuthController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-auth/profiles:
+    get:
+      operationId: RemoteAuthController_profiles_get
+      tags: [RemoteAuthController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-auth/provider-setups:
+    get:
+      operationId: RemoteAuthController_providerSetups_get
+      tags: [RemoteAuthController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-auth/provider-setups/{provider}:
+    delete:
+      operationId: RemoteAuthController_resetProviderSetup_delete
+      tags: [RemoteAuthController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: RemoteAuthController_updateProviderSetup_put
+      tags: [RemoteAuthController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-auth/provider-setups/{provider}/registration-kit:
+    get:
+      operationId: RemoteAuthController_providerRegistrationKit_get
+      tags: [RemoteAuthController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-auth/security-context:
+    get:
+      operationId: RemoteAuthController_securityContext_get
+      tags: [RemoteAuthController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-auth/start:
+    post:
+      operationId: RemoteAuthController_start_post
+      tags: [RemoteAuthController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-git/conflicts/resolve:
+    post:
+      operationId: RemoteGitController_resolveConflict_post
+      tags: [RemoteGitController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-git/conflicts/{profileId}:
+    get:
+      operationId: RemoteGitController_conflictView_get
+      tags: [RemoteGitController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-git/repository-tree/{profileId}:
+    get:
+      operationId: RemoteGitController_repositoryTree_get
+      tags: [RemoteGitController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-git/{operation}:
+    post:
+      operationId: RemoteGitController_execute_post
+      tags: [RemoteGitController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-storage/layers/export:
+    post:
+      operationId: RemoteStorageController_exportLayer_post
+      tags: [RemoteStorageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-storage/layers/import:
+    get:
+      operationId: RemoteStorageController_importLayer_get
+      tags: [RemoteStorageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-storage/profile-configurations:
+    get:
+      operationId: RemoteStorageController_profileConfigurations_get
+      tags: [RemoteStorageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-storage/profiles:
+    get:
+      operationId: RemoteStorageController_profiles_get
+      tags: [RemoteStorageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-storage/profiles/{profileId}:
+    delete:
+      operationId: RemoteStorageController_deleteProfile_delete
+      tags: [RemoteStorageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: RemoteStorageController_saveProfile_put
+      tags: [RemoteStorageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-storage/profiles/{profileId}/test:
+    post:
+      operationId: RemoteStorageController_testProfile_post
+      tags: [RemoteStorageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-storage/projects/export:
+    post:
+      operationId: RemoteStorageController_exportProject_post
+      tags: [RemoteStorageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-storage/projects/import:
+    post:
+      operationId: RemoteStorageController_importProject_post
+      tags: [RemoteStorageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/remote-storage/resolve-location:
+    post:
+      operationId: RemoteStorageController_resolveLocation_post
+      tags: [RemoteStorageController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/representable-imports/apply:
+    post:
+      operationId: RepresentableImportController_apply_post
+      tags: [RepresentableImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/representable-imports/preview:
+    post:
+      operationId: RepresentableImportController_preview_post
+      tags: [RepresentableImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/representable-imports/technologies:
+    get:
+      operationId: RepresentableImportController_technologies_get
+      tags: [RepresentableImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/runtime-caches/:
+    get:
+      operationId: HydraCacheInventoryController_list_get
+      tags: [HydraCacheInventoryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/runtime-capacity/:
+    get:
+      operationId: RuntimeCapacityController_capacity_get
+      tags: [RuntimeCapacityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/schema-evolution/plan:
+    get:
+      operationId: HydraSchemaEvolutionController_plan_get
+      tags: [HydraSchemaEvolutionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/standalone-distributions/materialize:
+    post:
+      operationId: StandaloneDistributionController_materialize_post
+      tags: [StandaloneDistributionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/standalone-distributions/package:
+    post:
+      operationId: StandaloneDistributionController_packageEditor_post
+      tags: [StandaloneDistributionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/standalone-distributions/plan:
+    post:
+      operationId: StandaloneDistributionController_plan_post
+      tags: [StandaloneDistributionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/standalone-distributions/validate:
+    post:
+      operationId: StandaloneDistributionController_validate_post
+      tags: [StandaloneDistributionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/standalone-editors/generate:
+    post:
+      operationId: StandaloneEditorController_generate_post
+      tags: [StandaloneEditorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/system/observability/:
+    get:
+      operationId: HydraObservabilityController_status_get
+      tags: [HydraObservabilityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/system/observability/rendering:
+    post:
+      operationId: HydraObservabilityController_rendering_post
+      tags: [HydraObservabilityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/system/readiness:
+    get:
+      operationId: SystemReadinessController_readiness_get
+      tags: [SystemReadinessController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/system/runtime-resources:
+    get:
+      operationId: RuntimeResourceDiagnosticsController_status_get
+      tags: [RuntimeResourceDiagnosticsController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/system/status:
+    get:
+      operationId: SystemStatusController_status_get
+      tags: [SystemStatusController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/system/technical-settings/:
+    get:
+      operationId: HydraTechnicalSettingsController_get_get
+      tags: [HydraTechnicalSettingsController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    patch:
+      operationId: HydraTechnicalSettingsController_update_patch
+      tags: [HydraTechnicalSettingsController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-editor-definitions/:
+    get:
+      operationId: TextualEditorDefinitionController_list_get
+      tags: [TextualEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: TextualEditorDefinitionController_create_post
+      tags: [TextualEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-editor-definitions/runtime-check:
+    post:
+      operationId: TextualEditorDefinitionController_runtimeCheck_post
+      tags: [TextualEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-editor-definitions/shared-layer-options:
+    post:
+      operationId: TextualEditorDefinitionController_sharedLayerOptions_post
+      tags: [TextualEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-editor-definitions/{id}:
+    delete:
+      operationId: TextualEditorDefinitionController_delete_delete
+      tags: [TextualEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: TextualEditorDefinitionController_find_get
+      tags: [TextualEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: TextualEditorDefinitionController_replace_put
+      tags: [TextualEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-editor-definitions/{id}/runtime:
+    get:
+      operationId: TextualEditorDefinitionController_runtime_get
+      tags: [TextualEditorDefinitionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/:
+    post:
+      operationId: TextualModelSessionController_create_post
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}:
+    get:
+      operationId: TextualModelSessionController_find_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/parse:
+    post:
+      operationId: TextualModelSessionController_parse_post
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/save:
+    post:
+      operationId: TextualModelSessionController_save_post
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/semantic-at:
+    get:
+      operationId: TextualModelSessionController_semanticAt_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/validation:
+    post:
+      operationId: TextualModelSessionController_validate_post
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/validation/{diagnosticId}/quick-fixes:
+    get:
+      operationId: TextualModelSessionController_quickFixes_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/validation/{diagnosticId}/quick-fixes/{actionId}/apply:
+    post:
+      operationId: TextualModelSessionController_applyQuickFix_post
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/validation/{diagnosticId}/quick-fixes/{actionId}/preview:
+    post:
+      operationId: TextualModelSessionController_previewQuickFix_post
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{sessionId}/perspectives/targets:
+    get:
+      operationId: TextualModelSessionCodeGenerationController_targets_get
+      tags: [TextualModelSessionCodeGenerationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{sessionId}/perspectives/{targetId}:
+    post:
+      operationId: TextualModelSessionCodeGenerationController_generate_post
+      tags: [TextualModelSessionCodeGenerationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{sessionId}/perspectives/{targetId}/preview:
+    post:
+      operationId: TextualModelSessionCodeGenerationController_preview_post
+      tags: [TextualModelSessionCodeGenerationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-syntax-styles/:
+    get:
+      operationId: TextualSyntaxStyleController_list_get
+      tags: [TextualSyntaxStyleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: TextualSyntaxStyleController_create_post
+      tags: [TextualSyntaxStyleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-syntax-styles/{id}:
+    delete:
+      operationId: TextualSyntaxStyleController_delete_delete
+      tags: [TextualSyntaxStyleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: TextualSyntaxStyleController_find_get
+      tags: [TextualSyntaxStyleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: TextualSyntaxStyleController_replace_put
+      tags: [TextualSyntaxStyleController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/toolchain-compatibility/catalog:
+    get:
+      operationId: NativeToolchainCompatibilityController_catalog_get
+      tags: [NativeToolchainCompatibilityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/toolchain-compatibility/latest:
+    get:
+      operationId: NativeToolchainCompatibilityController_latest_get
+      tags: [NativeToolchainCompatibilityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/toolchain-compatibility/run:
+    post:
+      operationId: NativeToolchainCompatibilityController_run_post
+      tags: [NativeToolchainCompatibilityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/:
+    get:
+      operationId: TransformationController_list_get
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: TransformationController_create_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/check:
+    post:
+      operationId: TransformationController_check_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/export:
+    post:
+      operationId: TransformationController_export_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/export-languages:
+    get:
+      operationId: TransformationController_exportLanguages_get
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/parity/native/execute:
+    post:
+      operationId: TransformationNativeParityController_execute_post
+      tags: [TransformationNativeParityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/parity/native/runtimes:
+    get:
+      operationId: TransformationNativeParityController_runtimes_get
+      tags: [TransformationNativeParityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/parity/native/runtimes/{language}/diagnose:
+    post:
+      operationId: TransformationNativeParityController_diagnose_post
+      tags: [TransformationNativeParityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/parity/native/toolchains:
+    get:
+      operationId: TransformationToolchainProvisioningController_catalog_get
+      tags: [TransformationToolchainProvisioningController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/parity/native/toolchains/{language}/install:
+    post:
+      operationId: TransformationToolchainProvisioningController_install_post
+      tags: [TransformationToolchainProvisioningController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/parity/native/toolchains/{language}/install/jobs:
+    post:
+      operationId: TransformationToolchainProvisioningController_installAsync_post
+      tags: [TransformationToolchainProvisioningController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/parity/native/toolchains/{language}/uninstall:
+    post:
+      operationId: TransformationToolchainProvisioningController_uninstall_post
+      tags: [TransformationToolchainProvisioningController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/parity/native/toolchains/{language}/uninstall/jobs:
+    post:
+      operationId: TransformationToolchainProvisioningController_uninstallAsync_post
+      tags: [TransformationToolchainProvisioningController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/parity/verify:
+    post:
+      operationId: TransformationParityController_verify_post
+      tags: [TransformationParityController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/preview:
+    post:
+      operationId: TransformationController_preview_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/preview-model-to-text:
+    post:
+      operationId: TransformationController_previewModelToText_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/preview-synchronize:
+    post:
+      operationId: TransformationController_previewSynchronize_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/preview-text-to-model:
+    post:
+      operationId: TransformationController_previewTextToModel_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/quick-fixes/:
+    post:
+      operationId: TransformationQuickFixController_suggest_post
+      tags: [TransformationQuickFixController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{id}:
+    delete:
+      operationId: TransformationController_delete_delete
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: TransformationController_find_get
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: TransformationController_replace_put
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{id}/check:
+    get:
+      operationId: TransformationController_checkStored_get
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{id}/execute:
+    post:
+      operationId: TransformationController_execute_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{id}/execute/{direction}:
+    post:
+      operationId: TransformationController_executeDirectional_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{id}/model-to-text:
+    post:
+      operationId: TransformationController_modelToText_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{id}/synchronize:
+    post:
+      operationId: TransformationController_synchronize_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{id}/text-to-model:
+    post:
+      operationId: TransformationController_textToModel_post
+      tags: [TransformationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{transformationId}/synchronization-sessions/:
+    get:
+      operationId: TransformationSynchronizationSessionController_list_get
+      tags: [TransformationSynchronizationSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: TransformationSynchronizationSessionController_create_post
+      tags: [TransformationSynchronizationSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{transformationId}/synchronization-sessions/{sessionId}:
+    delete:
+      operationId: TransformationSynchronizationSessionController_delete_delete
+      tags: [TransformationSynchronizationSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: TransformationSynchronizationSessionController_find_get
+      tags: [TransformationSynchronizationSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{transformationId}/synchronization-sessions/{sessionId}/history:
+    get:
+      operationId: TransformationSynchronizationSessionController_history_get
+      tags: [TransformationSynchronizationSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{transformationId}/synchronization-sessions/{sessionId}/rebase:
+    post:
+      operationId: TransformationSynchronizationSessionController_rebase_post
+      tags: [TransformationSynchronizationSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{transformationId}/synchronization-sessions/{sessionId}/restore/{revision}:
+    post:
+      operationId: TransformationSynchronizationSessionController_restore_post
+      tags: [TransformationSynchronizationSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{transformationId}/synchronization-sessions/{sessionId}/synchronize:
+    post:
+      operationId: TransformationSynchronizationSessionController_synchronize_post
+      tags: [TransformationSynchronizationSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{transformationId}/tests/:
+    get:
+      operationId: TransformationTestController_list_get
+      tags: [TransformationTestController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: TransformationTestController_create_post
+      tags: [TransformationTestController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{transformationId}/tests/run:
+    post:
+      operationId: TransformationTestController_runAll_post
+      tags: [TransformationTestController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{transformationId}/tests/{testCaseId}:
+    delete:
+      operationId: TransformationTestController_delete_delete
+      tags: [TransformationTestController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: TransformationTestController_find_get
+      tags: [TransformationTestController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    put:
+      operationId: TransformationTestController_replace_put
+      tags: [TransformationTestController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/transformations/{transformationId}/tests/{testCaseId}/run:
+    post:
+      operationId: TransformationTestController_runOne_post
+      tags: [TransformationTestController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/analyses/{analysisId}/compact:
+    get:
+      operationId: UpdateSiteAnalysisPagingController_compact_get
+      tags: [UpdateSiteAnalysisPagingController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/analyses/{analysisId}/evidence:
+    get:
+      operationId: UpdateSiteAnalysisPagingController_evidence_get
+      tags: [UpdateSiteAnalysisPagingController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/analyses/{analysisId}/files:
+    get:
+      operationId: UpdateSiteAnalysisPagingController_files_get
+      tags: [UpdateSiteAnalysisPagingController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/analyses/{analysisId}/logs:
+    get:
+      operationId: UpdateSiteAnalysisPagingController_logs_get
+      tags: [UpdateSiteAnalysisPagingController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/analyze:
+    post:
+      operationId: UpdateSiteImportController_analyze_post
+      tags: [UpdateSiteImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters:
+    get:
+      operationId: UpdateSiteAdapterController_extensionAdapters_get
+      tags: [UpdateSiteAdapterController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/bench/:
+    get:
+      operationId: UpdateSiteAdapterBenchController_reports_get
+      tags: [UpdateSiteAdapterBenchController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: UpdateSiteAdapterBenchController_run_post
+      tags: [UpdateSiteAdapterBenchController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/bench/compare:
+    get:
+      operationId: UpdateSiteAdapterBenchController_compare_get
+      tags: [UpdateSiteAdapterBenchController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/bench/{reportId}:
+    get:
+      operationId: UpdateSiteAdapterBenchController_find_get
+      tags: [UpdateSiteAdapterBenchController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/bench/{reportId}/html:
+    get:
+      operationId: UpdateSiteAdapterBenchController_html_get
+      tags: [UpdateSiteAdapterBenchController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/documents:
+    get:
+      operationId: UpdateSiteAdapterController_documents_get
+      tags: [UpdateSiteAdapterController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/import:
+    post:
+      operationId: UpdateSiteAdapterController_importAdapter_post
+      tags: [UpdateSiteAdapterController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/preview:
+    post:
+      operationId: UpdateSiteAdapterController_previewAdapter_post
+      tags: [UpdateSiteAdapterController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/test:
+    post:
+      operationId: UpdateSiteAdapterController_testAdapter_post
+      tags: [UpdateSiteAdapterController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/verification/:
+    get:
+      operationId: UpdateSiteAdapterVerificationController_reports_get
+      tags: [UpdateSiteAdapterVerificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: UpdateSiteAdapterVerificationController_verify_post
+      tags: [UpdateSiteAdapterVerificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/verification/{reportId}:
+    get:
+      operationId: UpdateSiteAdapterVerificationController_find_get
+      tags: [UpdateSiteAdapterVerificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/verification/{reportId}/html:
+    get:
+      operationId: UpdateSiteAdapterVerificationController_html_get
+      tags: [UpdateSiteAdapterVerificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/{adapterId}:
+    delete:
+      operationId: UpdateSiteAdapterController_deleteAdapter_delete
+      tags: [UpdateSiteAdapterController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/{adapterId}/activation:
+    post:
+      operationId: UpdateSiteAdapterController_activateAdapter_post
+      tags: [UpdateSiteAdapterController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/{adapterId}/export:
+    get:
+      operationId: UpdateSiteAdapterController_exportAdapter_get
+      tags: [UpdateSiteAdapterController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/{adapterId}/versions:
+    get:
+      operationId: UpdateSiteAdapterController_adapterVersions_get
+      tags: [UpdateSiteAdapterController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/extension-adapters/{adapterId}/versions/{version}/export:
+    get:
+      operationId: UpdateSiteAdapterController_exportAdapterVersion_get
+      tags: [UpdateSiteAdapterController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/import:
+    post:
+      operationId: UpdateSiteRecoveryController_importAndSave_post
+      tags: [UpdateSiteRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/materialize:
+    post:
+      operationId: UpdateSiteMaterializationController_materialize_post
+      tags: [UpdateSiteMaterializationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/materialize/rollback:
+    post:
+      operationId: UpdateSiteMaterializationController_rollback_post
+      tags: [UpdateSiteMaterializationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/merge:
+    post:
+      operationId: UpdateSiteMaterializationController_merge_post
+      tags: [UpdateSiteMaterializationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/merge/rollback:
+    post:
+      operationId: UpdateSiteMaterializationController_rollbackMerge_post
+      tags: [UpdateSiteMaterializationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/mirror-updates/:
+    get:
+      operationId: UpdateSiteMirrorUpdateController_reports_get
+      tags: [UpdateSiteMirrorUpdateController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    post:
+      operationId: UpdateSiteMirrorUpdateController_evaluate_post
+      tags: [UpdateSiteMirrorUpdateController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/mirror-updates/channels/{channel}:
+    get:
+      operationId: UpdateSiteMirrorUpdateController_channel_get
+      tags: [UpdateSiteMirrorUpdateController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/mirror-updates/channels/{channel}/rollback:
+    post:
+      operationId: UpdateSiteMirrorUpdateController_rollback_post
+      tags: [UpdateSiteMirrorUpdateController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/mirror-updates/{reportId}:
+    get:
+      operationId: UpdateSiteMirrorUpdateController_find_get
+      tags: [UpdateSiteMirrorUpdateController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/mirrors/{mirrorId}:
+    get:
+      operationId: UpdateSiteP2MirrorController_find_get
+      tags: [UpdateSiteP2MirrorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/mirrors/{mirrorId}/export:
+    get:
+      operationId: UpdateSiteP2MirrorController_export_get
+      tags: [UpdateSiteP2MirrorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/mirrors/{mirrorId}/validate:
+    post:
+      operationId: UpdateSiteP2MirrorController_validate_post
+      tags: [UpdateSiteP2MirrorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/performance/cache:
+    delete:
+      operationId: UpdateSitePerformanceController_clearCache_delete
+      tags: [UpdateSitePerformanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+    get:
+      operationId: UpdateSitePerformanceController_cacheMetrics_get
+      tags: [UpdateSitePerformanceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/reconcile:
+    post:
+      operationId: UpdateSiteRecoveryController_reconcile_post
+      tags: [UpdateSiteRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/analyze:
+    post:
+      operationId: UpdateSiteSourceController_analyzeRemote_post
+      tags: [UpdateSiteSourceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots:
+    post:
+      operationId: UpdateSiteSourceController_createRemoteSnapshot_post
+      tags: [UpdateSiteSourceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/analyze:
+    post:
+      operationId: UpdateSiteAnalysisController_analyzeRemoteSnapshot_post
+      tags: [UpdateSiteAnalysisController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/import:
+    post:
+      operationId: UpdateSiteImportController_importRemoteSnapshot_post
+      tags: [UpdateSiteImportController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/{snapshotId}:
+    get:
+      operationId: UpdateSiteSourceController_remoteSnapshot_get
+      tags: [UpdateSiteSourceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/{snapshotId}/drift:
+    post:
+      operationId: UpdateSiteSourceController_checkRemoteSnapshotDrift_post
+      tags: [UpdateSiteSourceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/{snapshotId}/export:
+    get:
+      operationId: UpdateSiteSourceController_exportRemoteSnapshot_get
+      tags: [UpdateSiteSourceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/{snapshotId}/import:
+    post:
+      operationId: UpdateSiteRecoveryController_importRemoteSnapshot_post
+      tags: [UpdateSiteRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/{snapshotId}/licenses:
+    post:
+      operationId: UpdateSiteSourceController_reviewRemoteSnapshotLicenses_post
+      tags: [UpdateSiteSourceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/{snapshotId}/materialize:
+    post:
+      operationId: UpdateSiteMaterializationController_materializeRemoteSnapshot_post
+      tags: [UpdateSiteMaterializationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/{snapshotId}/merge:
+    post:
+      operationId: UpdateSiteMaterializationController_mergeRemoteSnapshot_post
+      tags: [UpdateSiteMaterializationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/{snapshotId}/mirror:
+    post:
+      operationId: UpdateSiteP2MirrorController_create_post
+      tags: [UpdateSiteP2MirrorController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/remote/snapshots/{snapshotId}/reconcile:
+    post:
+      operationId: UpdateSiteRecoveryController_reconcileRemoteSnapshot_post
+      tags: [UpdateSiteRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/repository/analyze:
+    post:
+      operationId: UpdateSiteSourceController_analyzeRepository_post
+      tags: [UpdateSiteSourceController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/repository/snapshots/{snapshotId}/analyze:
+    post:
+      operationId: UpdateSiteAnalysisController_analyzeRepositorySnapshot_post
+      tags: [UpdateSiteAnalysisController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/repository/snapshots/{snapshotId}/import:
+    post:
+      operationId: UpdateSiteRecoveryController_importRepositorySnapshot_post
+      tags: [UpdateSiteRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/repository/snapshots/{snapshotId}/materialize:
+    post:
+      operationId: UpdateSiteMaterializationController_materializeRepositorySnapshot_post
+      tags: [UpdateSiteMaterializationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/repository/snapshots/{snapshotId}/merge:
+    post:
+      operationId: UpdateSiteMaterializationController_mergeRepositorySnapshot_post
+      tags: [UpdateSiteMaterializationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/update-site-imports/repository/snapshots/{snapshotId}/reconcile:
+    post:
+      operationId: UpdateSiteRecoveryController_reconcileRepositorySnapshot_post
+      tags: [UpdateSiteRecoveryController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response

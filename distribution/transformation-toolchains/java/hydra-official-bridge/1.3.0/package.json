@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "packageId": "hydra-official-bridge",
+  "packageVersion": "1.3.0",
+  "language": "JAVA",
+  "bridgeName": "HYDRA Official Java Bridge",
+  "bridgeVersion": "1.3.0",
+  "toolchainName": "Java JDK",
+  "toolchainVersion": "",
+  "sha256": {
+    "HydraJavaNativeRuntime.java": "4685a3315c394e74e14b56b79b672b54ee3197b147d35775ea1cd8447d0046cc",
+    "HydraOfficialBridge.java": "e77c69ca8eb04f790d45be571ed8a3daaf8070df93e12a688de1907bb4ba51eb",
+    "bridge.properties": "00b257fbca33e296cec260ac868b34134fddcf74b00659c86cae4b3a78173132",
+    "toolchain.json": "b58064402c63bc2b81dc1d0965e7141d5d197ef880e4698c24c714dce16eb042"
+  }
+}

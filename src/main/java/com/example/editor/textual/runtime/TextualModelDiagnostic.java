@@ -1,0 +1,4 @@
+package com.example.editor.textual.runtime;
+import java.util.Map;
+import com.example.editor.grammar.core.*;
+public record TextualModelDiagnostic(String code,GrammarSeverity severity,String title,String message,String consequence,String solution,String documentId,TextRange range,Map<String,String>metadata){public TextualModelDiagnostic{code=text(code);severity=severity==null?GrammarSeverity.ERROR:severity;title=text(title);message=text(message);consequence=text(consequence);solution=text(solution);documentId=text(documentId);range=range==null?new TextRange(null,null):range;metadata=metadata==null?Map.of():Map.copyOf(metadata);}/** Descripción: Ejecuta la operación «text» correspondiente a la responsabilidad de TextualModelDiagnostic. Entradas: v: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static String text(String v){return v==null?"":v.trim();}}

@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/portability/hydra-capability-package-1.0.schema.json",
+  "title": "HYDRA Capability Package 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest",
+    "canonicalDocuments",
+    "resources"
+  ],
+  "properties": {
+    "manifest": {
+      "$ref": "#/$defs/manifest"
+    },
+    "canonicalDocuments": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "stringMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "id",
+        "name",
+        "packageVersion",
+        "metamodelOrigin",
+        "capabilities",
+        "dependencies",
+        "compatibility",
+        "checksums",
+        "annotations"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "packageVersion": {
+          "type": "string"
+        },
+        "metamodelId": {
+          "type": "string"
+        },
+        "metamodelOrigin": {
+          "$ref": "#/$defs/origin"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dependency"
+          }
+        },
+        "compatibility": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/compatibility"
+          }
+        },
+        "checksums": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "annotations": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "semanticScopeId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "metamodelId"
+          ],
+          "properties": {
+            "metamodelId": {
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "required": [
+            "semanticScopeId"
+          ]
+        }
+      ]
+    },
+    "origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "sourceUri",
+        "sourceRevision",
+        "sourceChecksum",
+        "importedAt",
+        "synchronizedAt",
+        "elementMappings",
+        "annotations"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "OWNED",
+            "IMPORTED",
+            "EXTERNAL",
+            "SYNCHRONIZED"
+          ]
+        },
+        "technology": {
+          "enum": [
+            "EMF",
+            "SIRIUS_DESKTOP",
+            "XTEXT",
+            "LANGIUM",
+            "BESSER_SDK",
+            "BESSER_WEB_MODELING_EDITOR",
+            "ECLIPSE_GLSP",
+            "PLANTUML",
+            null
+          ]
+        },
+        "sourceUri": {
+          "type": "string"
+        },
+        "sourceRevision": {
+          "type": "string"
+        },
+        "sourceChecksum": {
+          "type": "string"
+        },
+        "importedAt": {
+          "type": "string"
+        },
+        "synchronizedAt": {
+          "type": "string"
+        },
+        "elementMappings": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "annotations": {
+          "$ref": "#/$defs/stringMap"
+        }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "documentId",
+        "schemaVersion",
+        "required",
+        "compiled",
+        "annotations"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "$ref": "#/$defs/capabilityKind"
+        },
+        "documentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schemaVersion": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "compiled": {
+          "type": "boolean"
+        },
+        "annotations": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "executionMode": {
+          "enum": [
+            "EMBEDDED",
+            "REMOTE",
+            "HYBRID",
+            "PASSIVE"
+          ]
+        }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceCapabilityId",
+        "targetCapabilityId",
+        "required",
+        "versionRange",
+        "reason"
+      ],
+      "properties": {
+        "sourceCapabilityId": {
+          "type": "string"
+        },
+        "targetCapabilityId": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "versionRange": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "technology",
+        "capability",
+        "fidelity",
+        "deliveryMode",
+        "nativeLanguage",
+        "generatedArtifacts",
+        "limitations"
+      ],
+      "properties": {
+        "technology": {
+          "enum": [
+            "EMF",
+            "SIRIUS_DESKTOP",
+            "XTEXT",
+            "LANGIUM",
+            "BESSER_SDK",
+            "BESSER_WEB_MODELING_EDITOR",
+            "ECLIPSE_GLSP",
+            "PLANTUML"
+          ]
+        },
+        "capability": {
+          "$ref": "#/$defs/capabilityKind"
+        },
+        "fidelity": {
+          "enum": [
+            "EXACT",
+            "SEMANTIC",
+            "STRUCTURAL",
+            "PARTIAL",
+            "PROJECTION_ONLY",
+            "UNSUPPORTED"
+          ]
+        },
+        "deliveryMode": {
+          "enum": [
+            "EMBEDDED",
+            "REMOTE",
+            "HYBRID",
+            "GENERATED_MODULE",
+            "PROJECTION_ONLY"
+          ]
+        },
+        "nativeLanguage": {
+          "type": "string"
+        },
+        "generatedArtifacts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "capabilityKind": {
+      "enum": [
+        "METAMODEL",
+        "VISUAL_REPRESENTATION",
+        "PALETTE",
+        "FORMS",
+        "EXPRESSIONS",
+        "VALIDATIONS",
+        "QUICK_FIXES",
+        "ACTIONS",
+        "OPERATIONS",
+        "EVENT_DEFINITIONS",
+        "EVENT_BINDINGS",
+        "EVENT_FLOW",
+        "GAMIFICATION",
+        "ASSETS",
+        "PERSISTENCE",
+        "INTEGRATION_PROFILE",
+        "GRAMMAR",
+        "TEXTUAL_EDITOR_DEFINITION",
+        "TEXTUAL_SYNTAX_STYLE"
+      ]
+    }
+  }
+}

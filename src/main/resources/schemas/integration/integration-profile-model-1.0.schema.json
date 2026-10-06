@@ -1,0 +1,533 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/integration-profile-model-1.0.schema.json",
+  "title": "IntegrationProfileModel 1.0",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "target",
+    "deliveryMode",
+    "features",
+    "artifacts",
+    "mappings",
+    "injectionPolicy",
+    "requiredCapabilities",
+    "annotations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "id": {
+      "$ref": "#/$defs/documentId"
+    },
+    "metamodelId": {
+      "type": "string",
+      "pattern": "^$|^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target": {
+      "$ref": "#/$defs/target"
+    },
+    "deliveryMode": {
+      "enum": [
+        "EMBEDDED",
+        "REMOTE",
+        "HYBRID",
+        "GENERATED_MODULE",
+        "PROJECTION_ONLY"
+      ]
+    },
+    "features": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/feature"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mapping"
+      }
+    },
+    "injectionPolicy": {
+      "$ref": "#/$defs/injectionPolicy"
+    },
+    "requiredCapabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/capability"
+      }
+    },
+    "annotations": {
+      "$ref": "#/$defs/stringMap"
+    },
+    "semanticScopeId": {
+      "$ref": "#/$defs/documentId"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "documentId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "elementId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+    },
+    "stringMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "technology": {
+      "enum": [
+        "EMF",
+        "SIRIUS_DESKTOP",
+        "XTEXT",
+        "LANGIUM",
+        "BESSER_SDK",
+        "BESSER_WEB_MODELING_EDITOR",
+        "ECLIPSE_GLSP",
+        "PLANTUML"
+      ]
+    },
+    "targetKind": {
+      "enum": [
+        "MODELING_RUNTIME",
+        "GRAPHICAL_MODELING_EDITOR",
+        "TEXTUAL_LANGUAGE_TOOLING",
+        "LOW_CODE_PLATFORM",
+        "DIAGRAM_PROJECTION"
+      ]
+    },
+    "buildSystem": {
+      "enum": [
+        "MAVEN",
+        "GRADLE",
+        "TYCHO",
+        "NPM",
+        "PNPM",
+        "YARN",
+        "PIP",
+        "POETRY",
+        "UV",
+        "NONE",
+        "OTHER"
+      ]
+    },
+    "feature": {
+      "enum": [
+        "VALIDATION_RUNTIME",
+        "QUICK_FIX_RUNTIME",
+        "OPERATION_RUNTIME",
+        "EVENT_PUBLICATION",
+        "EVENT_CONSUMPTION",
+        "EVENT_FLOW_RUNTIME",
+        "GAMIFICATION_RUNTIME",
+        "GAMIFICATION_UI",
+        "EDITOR_UI_CONTRIBUTION",
+        "NOTATION_CONTRIBUTION",
+        "PALETTE_CONTRIBUTION",
+        "VALIDATION_PROJECTION",
+        "EVENT_DEFINITION_PROJECTION",
+        "EVENT_FLOW_PROJECTION",
+        "GAMIFICATION_PROJECTION",
+        "PROJECT_IMPORT",
+        "PROJECT_EXPORT"
+      ]
+    },
+    "capability": {
+      "enum": [
+        "MODEL_READ",
+        "MODEL_WRITE",
+        "MODEL_CHANGE_NOTIFICATIONS",
+        "TRANSACTIONS",
+        "UNDO_REDO",
+        "VALIDATION_BRIDGE",
+        "QUICK_FIX_BRIDGE",
+        "OPERATION_BRIDGE",
+        "EVENT_PUBLISH",
+        "EVENT_CONSUME",
+        "EVENT_FLOW_RUNTIME",
+        "GAMIFICATION_RUNTIME",
+        "UI_CONTRIBUTION",
+        "NOTATION_CONTRIBUTION",
+        "PALETTE_CONTRIBUTION",
+        "CODE_GENERATION",
+        "PROJECT_IMPORT",
+        "PROJECT_EXPORT",
+        "ROUND_TRIP",
+        "DIAGRAM_RENDERING",
+        "TEXTUAL_SOURCE_GENERATION",
+        "VALIDATION_PROJECTION",
+        "EVENT_DEFINITION_PROJECTION",
+        "EVENT_FLOW_PROJECTION",
+        "GAMIFICATION_PROJECTION"
+      ]
+    },
+    "artifactKind": {
+      "enum": [
+        "METAMODEL",
+        "EXPRESSIONS",
+        "VALIDATIONS",
+        "ACTIONS",
+        "OPERATION_BEHAVIORS",
+        "EVENT_DEFINITIONS",
+        "EVENT_BINDINGS",
+        "EVENT_FLOWS",
+        "GAMIFICATION_DEFINITIONS",
+        "GAMIFICATION_BINDINGS",
+        "EDITOR_DEFINITION",
+        "NOTATION",
+        "GRAMMAR",
+        "TEXTUAL_EDITOR_DEFINITION",
+        "TEXTUAL_SYNTAX_STYLE",
+        "CODE_GENERATION"
+      ]
+    },
+    "mappingKind": {
+      "enum": [
+        "METAMODEL",
+        "TYPE",
+        "FEATURE",
+        "RELATION",
+        "OPERATION",
+        "VALIDATION_RULE",
+        "QUICK_FIX",
+        "EVENT_TYPE",
+        "EVENT_FLOW",
+        "GAMIFICATION_ELEMENT",
+        "EDITOR",
+        "REPRESENTATION",
+        "TOOL"
+      ]
+    },
+    "locatorStrategy": {
+      "enum": [
+        "NS_URI_AND_CLASSIFIER",
+        "URI_FRAGMENT",
+        "QUALIFIED_NAME",
+        "DOCUMENT_PATH",
+        "AST_PATH",
+        "BESSER_ELEMENT_ID",
+        "GLSP_DIAGRAM_TYPE",
+        "GLSP_ELEMENT_ID",
+        "PLANTUML_ALIAS",
+        "CUSTOM"
+      ]
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "technology",
+        "kind",
+        "technologyVersion",
+        "projectId",
+        "moduleName",
+        "buildSystem",
+        "sourceRoots",
+        "configurationFiles",
+        "endpoint",
+        "settings"
+      ],
+      "properties": {
+        "technology": {
+          "$ref": "#/$defs/technology"
+        },
+        "kind": {
+          "$ref": "#/$defs/targetKind"
+        },
+        "technologyVersion": {
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/documentId"
+        },
+        "moduleName": {
+          "type": "string"
+        },
+        "buildSystem": {
+          "$ref": "#/$defs/buildSystem"
+        },
+        "sourceRoots": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "configurationFiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "settings": {
+          "$ref": "#/$defs/stringMap"
+        }
+      },
+      "additionalProperties": false
+    },
+    "artifact": {
+      "type": "object",
+      "required": [
+        "kind",
+        "documentId",
+        "required"
+      ],
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/artifactKind"
+        },
+        "documentId": {
+          "$ref": "#/$defs/documentId"
+        },
+        "required": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "hostReference": {
+      "type": "object",
+      "required": [
+        "strategy",
+        "documentUri",
+        "namespace",
+        "qualifiedName",
+        "externalId",
+        "featureName",
+        "path",
+        "attributes"
+      ],
+      "properties": {
+        "strategy": {
+          "$ref": "#/$defs/locatorStrategy"
+        },
+        "documentUri": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "qualifiedName": {
+          "type": "string"
+        },
+        "externalId": {
+          "type": "string"
+        },
+        "featureName": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "attributes": {
+          "$ref": "#/$defs/stringMap"
+        }
+      },
+      "anyOf": [
+        {
+          "properties": {
+            "documentUri": {
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "namespace": {
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "qualifiedName": {
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "externalId": {
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "path": {
+              "minLength": 1
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "mapping": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "canonicalDocumentId",
+        "canonicalElementId",
+        "hostReference",
+        "required",
+        "annotations"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "kind": {
+          "$ref": "#/$defs/mappingKind"
+        },
+        "canonicalDocumentId": {
+          "$ref": "#/$defs/documentId"
+        },
+        "canonicalElementId": {
+          "type": "string",
+          "pattern": "^$|^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "hostReference": {
+          "$ref": "#/$defs/hostReference"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "annotations": {
+          "$ref": "#/$defs/stringMap"
+        }
+      },
+      "additionalProperties": false
+    },
+    "injectionPolicy": {
+      "type": "object",
+      "required": [
+        "strategy",
+        "generatedRoot",
+        "moduleName",
+        "previewRequired",
+        "rollbackRequired",
+        "preserveCustomCode",
+        "allowModifyExistingFiles",
+        "allowModifyGeneratedFiles",
+        "failOnPartialMappings"
+      ],
+      "properties": {
+        "strategy": {
+          "enum": [
+            "ADD_MODULE",
+            "ADD_PLUGIN",
+            "ADD_PACKAGE",
+            "GENERATE_SIDECAR",
+            "GENERATE_PROJECTION",
+            "PATCH_EXISTING"
+          ]
+        },
+        "generatedRoot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "moduleName": {
+          "type": "string"
+        },
+        "previewRequired": {
+          "type": "boolean",
+          "const": true
+        },
+        "rollbackRequired": {
+          "type": "boolean",
+          "const": true
+        },
+        "preserveCustomCode": {
+          "type": "boolean"
+        },
+        "allowModifyExistingFiles": {
+          "type": "boolean"
+        },
+        "allowModifyGeneratedFiles": {
+          "type": "boolean"
+        },
+        "failOnPartialMappings": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "strategy": {
+                "const": "PATCH_EXISTING"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "allowModifyExistingFiles": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "allowModifyGeneratedFiles": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "allowModifyExistingFiles": {
+                "const": true
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "metamodelId"
+      ],
+      "properties": {
+        "metamodelId": {
+          "minLength": 1
+        }
+      }
+    },
+    {
+      "required": [
+        "semanticScopeId"
+      ]
+    }
+  ]
+}

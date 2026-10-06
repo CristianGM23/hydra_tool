@@ -1,0 +1,100 @@
+{
+  "definitions": {
+    "schemaVersion": "1.0",
+    "id": "people-events",
+    "metamodelId": "people",
+    "namespace": "course.people",
+    "eventTypes": [
+      {
+        "id": "course.people.problem-resolved",
+        "name": "ProblemResolved",
+        "namespace": "course.people",
+        "description": "A model problem has been resolved.",
+        "category": "VALIDATION",
+        "version": "1.0",
+        "fields": [
+          {
+            "id": "field:ruleId",
+            "name": "ruleId",
+            "type": "ELEMENT_ID",
+            "required": true,
+            "many": false,
+            "enumTypeId": "",
+            "objectTypeId": "",
+            "description": "Resolved rule."
+          }
+        ],
+        "allowedSources": [
+          "VALIDATION_ENGINE"
+        ],
+        "allowedSubjects": [
+          "MODEL_ELEMENT"
+        ],
+        "persistencePolicy": "GAMIFICATION",
+        "abstractType": false,
+        "deprecated": false,
+        "enabled": true,
+        "annotations": {}
+      },
+      {
+        "id": "course.people.quality-evidence",
+        "name": "QualityEvidence",
+        "namespace": "course.people",
+        "description": "Verified evidence produced by an EventFlow after deduplication and validation.",
+        "category": "QUALITY",
+        "version": "1.0",
+        "fields": [
+          {
+            "id": "field:diagnosticId",
+            "name": "diagnosticId",
+            "type": "ELEMENT_ID",
+            "required": false,
+            "many": false,
+            "enumTypeId": "",
+            "objectTypeId": "",
+            "description": "Resolved diagnostic used as verified evidence."
+          }
+        ],
+        "allowedSources": [
+          "EVENT_FLOW_RUNTIME"
+        ],
+        "allowedSubjects": [
+          "MODEL_ELEMENT"
+        ],
+        "persistencePolicy": "GAMIFICATION",
+        "abstractType": false,
+        "deprecated": false,
+        "enabled": true,
+        "annotations": {}
+      }
+    ],
+    "annotations": {}
+  },
+  "bindings": {
+    "schemaVersion": "1.0",
+    "id": "people-event-bindings",
+    "metamodelId": "people",
+    "eventDefinitionModelId": "people-events",
+    "expressionModelId": "",
+    "bindings": [
+      {
+        "id": "binding:problem-resolved",
+        "name": "Problem resolved",
+        "sourceEventTypeId": "core.validation.violation-resolved",
+        "targetEventTypeId": "course.people.problem-resolved",
+        "conditionExpressionId": "",
+        "payloadMappings": [
+          {
+            "targetFieldId": "field:ruleId",
+            "sourcePath": "payload.ruleId",
+            "expressionId": ""
+          }
+        ],
+        "enabled": true,
+        "errorPolicy": "REPORT",
+        "annotations": {}
+      }
+    ],
+    "annotations": {}
+  }
+}

@@ -1,0 +1,92 @@
+.operation-runtime-panel {
+    padding: 14px;
+    overflow-y: auto;
+    background: var(--hydra-bg-surface);
+    border-left: 1px solid var(--hydra-color-gray-300);
+}
+.operation-runtime-panel > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.operation-runtime-panel h2, .operation-runtime-panel h3 {
+    margin: 0;
+}
+.operation-runtime-panel header span, .operation-runtime-form > span {
+    color: var(--hydra-text-muted);
+    font-size: 12px;
+}
+.operation-runtime-panel header a {
+    font-size: 12px;
+}
+.operation-runtime-button, .operation-runtime-palette {
+    margin: 14px 0;
+}
+.operation-runtime-button > button, .operation-runtime-palette > button {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    margin-top: 7px;
+    padding: 9px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface-muted);
+    cursor: pointer;
+}
+.operation-runtime-button button span, .operation-runtime-palette button span {
+    color: var(--hydra-text-muted);
+    font-size: 11px;
+}
+.operation-runtime-menu, .operation-runtime-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 10px 0;
+    font-size: 13px;
+}
+.operation-runtime-menu select, .operation-runtime-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 5px;
+}
+.operation-runtime-form {
+    margin-top: 14px;
+    padding: 12px;
+    border: 1px solid var(--hydra-bg-selection);
+    border-radius: 7px;
+    background: var(--hydra-bg-selection);
+}
+.operation-runtime-form button, .operation-runtime-undo {
+    width: 100%;
+    padding: 9px;
+    border: 0;
+    border-radius: 5px;
+    background: var(--hydra-color-primary-600);
+    color: var(--hydra-bg-surface);
+    cursor: pointer;
+}
+.operation-runtime-result {
+    display: block;
+    margin: 12px 0;
+    padding: 10px;
+    border-radius: 6px;
+    background: var(--hydra-color-slate-100);
+}
+.operation-runtime-result code {
+    display: block;
+    margin-top: 6px;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+.operation-runtime-undo {
+    margin-top: 12px;
+    background: var(--hydra-text-secondary);
+}
+.operation-runtime-panel button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}

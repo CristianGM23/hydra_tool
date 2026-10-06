@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "language": "EGL",
+  "bridgeName": "HYDRA Official EGL Bridge",
+  "bridgeVersion": "1.1.0",
+  "toolchainName": "Epsilon EGL",
+  "toolchainVersion": "",
+  "command": [
+    "${java}",
+    "${bundle}/HydraOfficialBridge.java",
+    "${bundle}/bridge.properties"
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "fixtureId": "hydra-sirius-complete-fixture-1",
+  "metamodel": {
+    "nsURI": "https://hydra.example/sirius/fixture/1.0",
+    "root": "Workflow",
+    "classes": [
+      "NamedElement",
+      "Workflow",
+      "FlowNode",
+      "StartNode",
+      "EndNode",
+      "Task",
+      "DecisionNode",
+      "DataStoreNode",
+      "Port",
+      "Connection",
+      "Group",
+      "Annotation"
+    ],
+    "abstractClasses": [
+      "NamedElement",
+      "FlowNode"
+    ],
+    "enums": [
+      "PortDirection",
+      "ConnectionKind",
+      "DataStoreKind"
+    ]
+  },
+  "sirius": {
+    "viewpoints": [
+      "HydraFlow"
+    ],
+    "representations": [
+      {
+        "name": "Hydra Workflow Diagram",
+        "kind": "diagram",
+        "domainClass": "hydratest::Workflow"
+      },
+      {
+        "name": "Workflow Elements Table",
+        "kind": "editionTable",
+        "domainClass": "hydratest::Workflow"
+      },
+      {
+        "name": "Workflow Tree",
+        "kind": "tree",
+        "domainClass": "hydratest::Workflow"
+      }
+    ],
+    "diagramMappings": {
+      "containers": [
+        "GroupContainer"
+      ],
+      "nodes": [
+        "StartNode",
+        "EndNode",
+        "TaskSquare",
+        "DecisionDiamond",
+        "DataStoreImage",
+        "AnnotationNote",
+        "TaskGauge"
+      ],
+      "borderedNodes": [
+        "Port"
+      ],
+      "edges": [
+        "ControlConnection"
+      ],
+      "layers": [
+        "Default",
+        "Diagnostics"
+      ],
+      "filters": [
+        "Hide completed tasks"
+      ]
+    },
+    "styles": [
+      "EllipseNodeDescription",
+      "SquareDescription",
+      "LozengeNodeDescription",
+      "WorkspaceImageDescription",
+      "NoteDescription",
+      "GaugeCompositeStyleDescription",
+      "FlatContainerStyleDescription"
+    ],
+    "tools": [
+      "Create Task",
+      "Create Decision",
+      "Create Connection",
+      "Rename",
+      "Delete Element"
+    ],
+    "nativeValidationRules": [
+      "NonEmptyName",
+      "ProgressRange",
+      "NoSelfLoop"
+    ],
+    "javaServices": [
+      "com.hydra.sirius.fixture.design.Services"
+    ]
+  },
+  "evl": {
+    "file": "com.hydra.sirius.fixture.validation/validation/hydratest.evl",
+    "contexts": [
+      "NamedElement",
+      "Workflow",
+      "Task",
+      "DecisionNode",
+      "Connection",
+      "StartNode",
+      "EndNode"
+    ],
+    "quickFixRules": [
+      "HasName",
+      "PositiveDuration",
+      "ProgressRange",
+      "HasExpression"
+    ]
+  },
+  "samples": {
+    "valid": "com.hydra.sirius.fixture.sample/model/valid.hydraflow",
+    "invalid": "com.hydra.sirius.fixture.sample/model/invalid.hydraflow",
+    "aird": "com.hydra.sirius.fixture.sample/representations.aird"
+  },
+  "hydraAssertions": [
+    "Keep all project resources in inventory, including SVG and Java services",
+    "Associate the odesign with the Ecore metamodel through its platform:/resource metamodel href",
+    "Recognize diagram, edition table and tree as separate Sirius representations",
+    "Recover node/container/bordered-node/edge mappings without flattening their roles",
+    "Recover default and conditional styles independently",
+    "Recover palette tools and their model operations",
+    "Recover native Sirius validation rules and fixes",
+    "Recover EVL constraints/critiques/fixes as a second validation source",
+    "Associate representations.aird with model/valid.hydraflow",
+    "Do not materialize abstract EClasses as palette-creatable semantic elements",
+    "Preserve source file paths and cross-project references"
+  ]
+}

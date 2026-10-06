@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "language": "PYTHON",
+  "bridgeName": "HYDRA Official Python Bridge",
+  "bridgeVersion": "1.0.0",
+  "toolchainName": "Python",
+  "toolchainVersion": "",
+  "command": [
+    "${java}",
+    "${bundle}/HydraOfficialBridge.java",
+    "${bundle}/bridge.properties"
+  ]
+}

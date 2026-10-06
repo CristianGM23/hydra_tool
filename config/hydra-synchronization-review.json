@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "reviewedFiles": [
+    {
+      "path": "src/main/java/com/example/editor/audit/AuditClientActivityService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 1,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/definition/runtime/EditorRuntimeApplicationService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 4,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/definition/runtime/session/EditorSessionHistoryStore.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 11,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/definition/runtime/session/EditorSessionPendingEventBuffer.java",
+      "scope": "STRIPED_RESOURCE",
+      "occurrences": 4,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/definition/runtime/session/EditorSessionWorkingCopyStore.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 1,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/diagram/DiagramStorageService.java",
+      "scope": "LOCAL_STORAGE_SERIALIZATION",
+      "occurrences": 3,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeDeploymentRegistry.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 2,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeJournalService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 3,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeService.java",
+      "scope": "RESOURCE_STATE",
+      "occurrences": 6,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/gamification/GamificationCorruptDocumentRecovery.java",
+      "scope": "STRIPED_RESOURCE",
+      "occurrences": 1,
+      "review": "accepted; 64 fixed stripes serialize quarantine only per resource without unbounded lock growth"
+    },
+    {
+      "path": "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+      "scope": "STRIPED_RESOURCE",
+      "occurrences": 5,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/grammar/application/GrammarAnalysisCache.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 4,
+      "review": "accepted; synchronized LRU operations protect maximumAnalysisCacheEntries entries with TTL expiry and no dynamic lock growth"
+    },
+    {
+      "path": "src/main/java/com/example/editor/grammar/application/GrammarCompilationProgressService.java",
+      "scope": "BOUNDED_EPHEMERAL_PROGRESS_REGISTRY",
+      "occurrences": 11,
+      "review": "accepted; one service-local monitor protects an access-ordered registry bounded by maximumCompilationProgressEntries; no per-request locks or unbounded lock growth"
+    },
+    {
+      "path": "src/main/java/com/example/editor/grammar/runtime/GrammarProviderHealthService.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 6,
+      "review": "accepted; synchronized circuit-breaker state is capped by maximumProviderHealthEntries and evicts oldest state"
+    },
+    {
+      "path": "src/main/java/com/example/editor/integration/adapter/eclipse/EclipseModelingDistributionTechnologyAdapter.java",
+      "scope": "GENERATED_SOURCE_TEMPLATE",
+      "occurrences": 2,
+      "review": "accepted; synchronized appears inside generated Eclipse runtime activation/handler source and serializes low-frequency enable-disable-toggle state"
+    },
+    {
+      "path": "src/main/java/com/example/editor/integration/adapter/emf/EmfTechnologyAdapter.java",
+      "scope": "GENERATED_SOURCE_TEMPLATE",
+      "occurrences": 2,
+      "review": "accepted; synchronization appears only in generated EMF per-resource WeakHashMap runtime ownership and low-frequency engine installation/lookup; entries follow Resource/root lifecycle without a permanent strong-key registry."
+    },
+    {
+      "path": "src/main/java/com/example/editor/integration/adapter/glsp/EclipseGlspTechnologyAdapter.java",
+      "scope": "GENERATED_SOURCE_TEMPLATE",
+      "occurrences": 1,
+      "review": "accepted; synchronized appears inside generated per-session runtime installation source and serializes rare engine replacement only"
+    },
+    {
+      "path": "src/main/java/com/example/editor/integration/adapter/sirius/SiriusDesktopTechnologyAdapter.java",
+      "scope": "GENERATED_SOURCE_TEMPLATE",
+      "occurrences": 3,
+      "review": "accepted; synchronized appears in generated Sirius per-root runtime lookup/listener attachment paths backed by WeakHashMap ownership, so entries follow host object/domain lifecycle and synchronization is confined to low-frequency installation/lookup."
+    },
+    {
+      "path": "src/main/java/com/example/editor/integration/compiler/TechnologyAdapterGenerationSupport.java",
+      "scope": "GENERATED_SOURCE_TEMPLATE",
+      "occurrences": 2,
+      "review": "accepted; synchronized appears only inside generated activation-helper source and protects a single persisted activation state"
+    },
+    {
+      "path": "src/main/java/com/example/editor/integration/compiler/TechnologyAdapterRuntimeLifecycleSupport.java",
+      "scope": "GENERATED_RUNTIME_STATE",
+      "occurrences": 10,
+      "review": "accepted; generated runtime serializes one session-local bounded lifecycle state (baseline, diagnostics, <= configured event history, gamification and checkpoints) without dynamic lock growth"
+    },
+    {
+      "path": "src/main/java/com/example/editor/integration/verification/ExternalToolCircuitBreaker.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 1,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java",
+      "scope": "LEXICAL_ONLY",
+      "occurrences": 1,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/design/MetamodelDiagramStorageService.java",
+      "scope": "LOCAL_STORAGE_SERIALIZATION",
+      "occurrences": 2,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/importing/MetamodelImportAnalysisJobService.java",
+      "scope": "PER_JOB_STATE",
+      "occurrences": 16,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteAnalysisCache.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 5,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteExtensionAdapterCatalog.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 1,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteMirrorUpdateService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 3,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRemoteRepositoryService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 1,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteSourceMetamodelDeriver.java",
+      "scope": "LEXICAL_ONLY",
+      "occurrences": 1,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/registry/MetamodelRegistryService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 5,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/validation/MetamodelValidationReceiptStore.java",
+      "scope": "LOCAL_STORAGE_SERIALIZATION",
+      "occurrences": 3,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/notation/NotationRegistryService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 4,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/observability/HydraOperationTraceRegistry.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 3,
+      "review": "accepted; fixed 2048-event diagnostic deque with short in-memory critical sections and no blocking I/O"
+    },
+    {
+      "path": "src/main/java/com/example/editor/performance/CapabilityPerformanceAutomationService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 2,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/policy/HydraPolicyService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 2,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/policy/bundle/HydraPolicyBundleService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 3,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/portability/orchestration/CapabilityOrchestrationService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 2,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/project/storage/ProjectChangeTracker.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 2,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/project/storage/ProjectIndexService.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 1,
+      "review": "accepted; bounded hash cache synchronization protects a fixed 20000-entry metadata cache and has no dynamic lock growth"
+    },
+    {
+      "path": "src/main/java/com/example/editor/provenance/HydraDistributionProvenanceService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 1,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/recovery/HydraRecoveryService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 3,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/recovery/continuity/HydraContinuityService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 2,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/registry/HydraDistributionRegistryService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 2,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/registry/federation/HydraCatalogFederationService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 2,
+      "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
+    },
+    {
+      "path": "src/main/java/com/example/editor/remote/auth/EncryptedFileRemoteCredentialVault.java",
+      "scope": "FILE_RESOURCE",
+      "occurrences": 4,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/remote/auth/RemoteAuthFlowStore.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 3,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/remote/auth/RemoteAuthOutcomeStore.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 4,
+      "review": "accepted; callback outcomes are bounded by maximumPendingFlows, expire after flowTtl, contain no OAuth token material, and serialize only bounded map maintenance"
+    },
+    {
+      "path": "src/main/java/com/example/editor/remote/auth/RemoteOAuthProviderSetupService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 5,
+      "review": "accepted-local-mode; synchronized setup initialization/list/update/reset keeps one bounded five-provider configuration coherent; replace with transactional storage CAS before multi-node writes"
+    },
+    {
+      "path": "src/main/java/com/example/editor/remote/auth/RemoteOAuthProviderSetupStore.java",
+      "scope": "FILE_RESOURCE",
+      "occurrences": 3,
+      "review": "accepted; one private lock serializes bounded OAuth setup file read/write/reset operations and atomic replace, without dynamic lock growth"
+    },
+    {
+      "path": "src/main/java/com/example/editor/remote/storage/RemoteStorageProfileManager.java",
+      "scope": "FILE_RESOURCE",
+      "occurrences": 4,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/runtime/BoundedHistoryStore.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 5,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/runtime/instance/HydraInstanceLock.java",
+      "scope": "PROCESS_WIDE_FILE_LOCK",
+      "occurrences": 3,
+      "review": "accepted; synchronization protects acquisition/release of one process-wide FileLock and contains no dynamic lock growth"
+    },
+    {
+      "path": "src/main/java/com/example/editor/runtime/job/HydraJobOrchestrator.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 4,
+      "review": "accepted; per-entry synchronization protects a registry bounded by maximumRetained and terminal eviction"
+    },
+    {
+      "path": "src/main/java/com/example/editor/security/process/HydraProcessTreeTerminator.java",
+      "scope": "PER_PROCESS_TRACKER",
+      "occurrences": 3,
+      "review": "accepted; synchronization is confined to one bounded tracker map per live native process, uses a virtual observer, and is released when tracking stops"
+    },
+    {
+      "path": "src/main/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 2,
+      "review": "accepted-local-mode; synchronized install/uninstall serialize trusted managed-toolchain publication so backup/replace/rollback remains atomic within one HYDRA process; use a distributed installation lock before multi-node provisioning"
+    },
+    {
+      "path": "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrator.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 2,
+      "review": "accepted"
+    },
+    {
+      "path": "src/main/java/com/example/editor/validation/runtime/ValidationPlanCache.java",
+      "scope": "BOUNDED_COLLECTION",
+      "occurrences": 2,
+      "review": "accepted"
+    }
+  ]
+}

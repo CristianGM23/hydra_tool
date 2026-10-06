@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0",
+  "metamodelId": "people",
+  "metamodelEtag": "m1",
+  "validationModelId": "people-validations",
+  "validationModelEtag": "v1",
+  "compiledRules": [],
+  "id": "people-validations-plan",
+  "expressionModelId": "people-expressions",
+  "actionModelId": "people-actions",
+  "sourceFingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+  "sourceVersions": {
+    "metamodelEtag": "m1",
+    "expressionModelEtag": "e1",
+    "actionModelEtag": "a1",
+    "validationModelEtag": "v1",
+    "operationBehaviorEtag": "o1"
+  },
+  "dependencyIndex": {
+    "classRules": {},
+    "attributeRules": {},
+    "relationRules": {},
+    "operationRules": {},
+    "triggerRules": {},
+    "modelRules": []
+  },
+  "diagnostics": []
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0",
+  "profileId": "profile-langium",
+  "technology": "LANGIUM",
+  "generatorVersion": "HYDRA",
+  "createdAt": "1970-01-01T00:00:00Z",
+  "mappings": [{
+    "canonicalDocumentId": "people",
+    "artifactKind": "METAMODEL",
+    "nativePath": "generated/people-langium/src/language/people.langium",
+    "sourceElementIds": ["class:Person"],
+    "generatedSha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "ownership": "GENERATED",
+    "metadata": {"source": "MetaModel 2.1"}
+  }],
+  "annotations": {"canonicalMetamodelId": "people"}
+}

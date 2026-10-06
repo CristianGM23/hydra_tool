@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "language": "JAVA",
+  "bridgeName": "HYDRA Official Java Bridge",
+  "bridgeVersion": "2.0.0",
+  "toolchainName": "Java JDK",
+  "toolchainVersion": "",
+  "command": [
+    "${java}",
+    "${bundle}/HydraOfficialBridge.java",
+    "${bundle}/bridge.properties"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "language": "XTEND",
+  "bridgeName": "HYDRA Official Xtend Bridge",
+  "bridgeVersion": "2.1.0",
+  "toolchainName": "Eclipse Xtend",
+  "toolchainVersion": "",
+  "command": [
+    "${java}",
+    "${bundle}/HydraOfficialBridge.java",
+    "${bundle}/bridge.properties"
+  ]
+}

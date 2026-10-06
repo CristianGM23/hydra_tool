@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "1.1",
+  "id": "rc1-people-contacts",
+  "name": "People ↔ Contacts",
+  "kind": "M2M",
+  "directionality": "BIDIRECTIONAL",
+  "synchronizationPolicy": {
+    "conflictPolicy": "FAIL_ON_CONFLICT",
+    "propagateDeletions": true,
+    "requireTraceForUpdates": true
+  },
+  "sources": [
+    {
+      "id": "people",
+      "role": "SOURCE",
+      "metamodelId": "rc1-people",
+      "metamodelFingerprint": "reference",
+      "alias": "people",
+      "required": true,
+      "annotations": {}
+    }
+  ],
+  "targets": [
+    {
+      "id": "contacts",
+      "role": "TARGET",
+      "metamodelId": "rc1-contacts",
+      "metamodelFingerprint": "reference",
+      "alias": "contacts",
+      "required": true,
+      "annotations": {}
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule:person-contact:forward",
+      "name": "Person to Contact",
+      "enabled": true,
+      "sourceEndpointId": "people",
+      "sourceTypeId": "class:Person",
+      "sourceAlias": "person",
+      "targets": [
+        {
+          "id": "target:contact",
+          "endpointId": "contacts",
+          "typeId": "class:Contact",
+          "alias": "contact",
+          "annotations": {}
+        }
+      ],
+      "bindings": [
+        {
+          "id": "binding:name:forward",
+          "targetAlias": "contact",
+          "targetFeatureId": "attribute:class:Contact:displayName",
+          "kind": "DIRECT",
+          "sourceFeatureId": "attribute:class:Person:name",
+          "literalValue": null,
+          "expression": null,
+          "valuePolicy": null,
+          "annotations": {}
+        }
+      ],
+      "annotations": {},
+      "direction": "FORWARD",
+      "correspondenceId": "person-contact"
+    },
+    {
+      "id": "rule:person-contact:reverse",
+      "name": "Contact to Person",
+      "enabled": true,
+      "sourceEndpointId": "contacts",
+      "sourceTypeId": "class:Contact",
+      "sourceAlias": "contact",
+      "targets": [
+        {
+          "id": "target:person",
+          "endpointId": "people",
+          "typeId": "class:Person",
+          "alias": "person",
+          "annotations": {}
+        }
+      ],
+      "bindings": [
+        {
+          "id": "binding:name:reverse",
+          "targetAlias": "person",
+          "targetFeatureId": "attribute:class:Person:name",
+          "kind": "DIRECT",
+          "sourceFeatureId": "attribute:class:Contact:displayName",
+          "literalValue": null,
+          "expression": null,
+          "valuePolicy": null,
+          "annotations": {}
+        }
+      ],
+      "annotations": {},
+      "direction": "REVERSE",
+      "correspondenceId": "person-contact"
+    }
+  ],
+  "generationRules": [],
+  "textToModel": null,
+  "executionPolicy": {
+    "mode": "INCREMENTAL",
+    "deterministic": true,
+    "failOnBindingError": true
+  },
+  "tracePolicy": {
+    "enabled": true,
+    "retainBindingDetails": true
+  },
+  "annotations": {
+    "hydra.referenceProject": "sync-advanced"
+  }
+}

@@ -1,0 +1,559 @@
+.textual-model-editor {
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    height: 100%;
+    min-height: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: var(--hydra-bg-app);
+    color: var(--hydra-text-primary);
+    scrollbar-gutter: stable;
+}
+.textual-model-editor > header {
+    display: flex;
+    min-width: 0;
+    justify-content: space-between;
+    gap: 16px;
+}
+.textual-model-editor > header > div:first-child {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+.textual-model-editor > header h2 {
+    margin: 3px 0;
+}
+.textual-model-editor > header p {
+    max-width: 900px;
+    margin: 0;
+    color: var(--hydra-text-muted);
+}
+.textual-model-editor > header > div:last-child {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+}
+.textual-model-editor button {
+    font: inherit;
+}
+.textual-definition {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(180px, .85fr) minmax(180px, .8fr) minmax(240px, 1.1fr) minmax(300px, 1.45fr);
+    gap: 10px;
+}
+.textual-definition label {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--hydra-text-muted);
+    font-size: .78rem;
+}
+.textual-definition input,
+.textual-definition select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 7px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 5px;
+    background: var(--hydra-input-bg);
+    color: var(--hydra-text-primary);
+}
+.textual-message,
+.textual-runtime-status {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface);
+}
+.textual-runtime-status {
+    display: flex;
+    min-width: 0;
+    gap: 10px 24px;
+    flex-wrap: wrap;
+}
+.textual-runtime-status > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.textual-language-services {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 8px;
+    background: var(--hydra-bg-surface);
+    box-sizing: border-box;
+}
+.textual-language-services > header {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+.textual-language-services > header > div {
+    display: grid;
+    min-width: 0;
+    gap: 4px;
+}
+.textual-language-services > header p {
+    max-width: 980px;
+    margin: 0;
+    color: var(--hydra-text-muted);
+    font-size: .8rem;
+    line-height: 1.4;
+}
+.textual-runtime-badge {
+    flex: 0 0 auto;
+    padding: 4px 8px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 999px;
+    background: var(--hydra-bg-surface-muted);
+    color: var(--hydra-text-secondary);
+    font-size: .72rem;
+}
+.textual-runtime-warning {
+    display: grid;
+    gap: 3px;
+    padding: 8px 10px;
+    border-left: 4px solid var(--hydra-color-warning-600);
+    background: var(--hydra-bg-surface-muted);
+}
+.textual-runtime-warning span {
+    color: var(--hydra-text-muted);
+    font-size: .78rem;
+}
+.textual-language-service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 7px;
+}
+.textual-language-service {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+    padding: 8px 9px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface-muted);
+}
+.textual-language-service strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .76rem;
+}
+.textual-language-service span {
+    color: var(--hydra-text-muted);
+    font-size: .68rem;
+    line-height: 1.3;
+}
+.textual-language-service.supported {
+    border-left: 4px solid var(--hydra-color-success-600);
+}
+.textual-language-service.unavailable {
+    border-left: 4px solid var(--hydra-color-warning-600);
+}
+.textual-generated-project-summary {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 9px;
+    border-top: 1px solid var(--hydra-border-default);
+}
+.textual-generated-project-summary > div {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+}
+.textual-generated-project-summary span,
+.textual-generated-project-summary small {
+    overflow-wrap: anywhere;
+    color: var(--hydra-text-muted);
+}
+.textual-workbench {
+    box-sizing: border-box;
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    min-height: clamp(480px, 58vh, 760px);
+    grid-template-columns: minmax(0, 4fr) minmax(250px, 1fr);
+    border: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface);
+}
+.textual-editor {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+.textual-editor > .grammar-editor-stack {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 auto;
+}
+.textual-editor-loading-fallback {
+    box-sizing: border-box;
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px;
+}
+.textual-editor-loading-copy {
+    display: grid;
+    gap: 4px;
+}
+.textual-editor-loading-copy span {
+    color: var(--hydra-text-muted);
+    font-size: .8rem;
+    line-height: 1.4;
+}
+.textual-editor-fallback-textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 340px;
+    padding: 12px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 8px;
+    background: var(--hydra-input-bg);
+    color: var(--hydra-text-primary);
+    font: inherit;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    resize: vertical;
+}
+.textual-editor .grammar-monaco-host,
+.textual-editor .grammar-safe-editor,
+.textual-editor .grammar-textarea-fallback {
+    min-height: 0;
+}
+.textual-semantic-panel {
+    min-width: 0;
+    min-height: 0;
+    padding: 10px;
+    overflow: auto;
+    border-left: 1px solid var(--hydra-border-default);
+}
+.textual-workbench pre {
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+.textual-outline header,
+.textual-outline > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 6px;
+    padding: 6px;
+}
+.textual-outline > div {
+    border-top: 1px solid var(--hydra-border-default);
+}
+.textual-problems {
+    box-sizing: border-box;
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface);
+}
+.textual-problems > header {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+}
+.textual-problems > header > div {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+}
+.textual-problems > header > div > span {
+    color: var(--hydra-text-muted);
+    font-size: .75rem;
+    line-height: 1.35;
+}
+.textual-problem-count {
+    flex: 0 0 auto;
+    font-weight: 700;
+}
+.textual-problems-empty {
+    display: grid;
+    gap: 3px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--hydra-border-default);
+}
+.textual-problems-empty span {
+    color: var(--hydra-text-muted);
+}
+.textual-problems article {
+    display: grid;
+    min-width: 0;
+    gap: 8px;
+    padding: 11px 12px;
+    border-top: 1px solid var(--hydra-border-default);
+    border-left: 4px solid transparent;
+}
+.textual-problems article.error {
+    border-left-color: var(--hydra-color-danger-600);
+}
+.textual-problems article.warning {
+    border-left-color: var(--hydra-color-warning-600);
+}
+.textual-problems article > header {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+.textual-problems article > header > div:first-child {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+}
+.textual-problems article > header > div:first-child > span:last-child {
+    color: var(--hydra-text-muted);
+    font-size: .72rem;
+}
+.textual-problem-severity {
+    width: max-content;
+    font-size: .67rem;
+    font-weight: 800;
+    letter-spacing: .05em;
+}
+.textual-problem-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.textual-problem-summary {
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.4;
+}
+.textual-problem-guidance {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+.textual-problem-guidance > div,
+.textual-problem-details > div {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+    padding: 8px 9px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface-muted);
+}
+.textual-problem-guidance span,
+.textual-problem-details span {
+    color: var(--hydra-text-secondary);
+    font-size: .78rem;
+    line-height: 1.4;
+}
+.textual-problem-details {
+    display: grid;
+    gap: 8px;
+}
+.textual-problem-details details {
+    padding: 7px 9px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 6px;
+}
+.textual-problem-details dl {
+    display: grid;
+    grid-template-columns: minmax(90px, max-content) minmax(0, 1fr);
+    gap: 5px 9px;
+    margin: 8px 0 0;
+    font-size: .74rem;
+}
+.textual-problem-details dd {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+@media (max-width: 1100px) {
+    .textual-definition {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .textual-workbench {
+        grid-template-columns: minmax(0, 3fr) minmax(230px, 1fr);
+    }
+}
+@media (max-width: 820px) {
+    .textual-model-editor > header,
+    .textual-language-services > header,
+    .textual-generated-project-summary,
+    .textual-problems article > header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .textual-definition,
+    .textual-problem-guidance {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .textual-workbench {
+        display: flex;
+        flex-direction: column;
+    }
+    .textual-semantic-panel {
+        max-height: 320px;
+        border-top: 1px solid var(--hydra-border-default);
+        border-left: 0;
+    }
+}
+
+/* R11 — actionable syntax diagnostics. */
+.textual-problem-guidance>div small{
+    display:block;
+    margin-top:5px;
+    color:var(--hydra-text-muted);
+    font-size:.72rem;
+    line-height:1.35;
+}
+.textual-problem-guidance>div .hydra-ui-button,
+.textual-problem-guidance>div button{
+    justify-self:start;
+    margin-top:8px;
+}
+
+.textual-semantic-panel {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+}
+.textual-semantic-panel-header {
+    display: grid;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hydra-border-default);
+}
+.textual-semantic-panel-header > div:first-child {
+    display: grid;
+    gap: 4px;
+}
+.textual-semantic-panel-header > div:first-child > span {
+    color: var(--hydra-text-muted);
+    font-size: .78rem;
+    line-height: 1.4;
+}
+.textual-semantic-panel-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+}
+.textual-semantic-panel-controls label {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    font-size: .75rem;
+    color: var(--hydra-text-muted);
+}
+.textual-semantic-panel-controls select {
+    width: 100%;
+    min-width: 0;
+    padding: 7px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 6px;
+    background: var(--hydra-input-bg);
+    color: var(--hydra-text-primary);
+    font: inherit;
+}
+.textual-generated-preview {
+    display: grid;
+    gap: 10px;
+}
+.textual-generated-preview-meta,
+.textual-generated-preview-empty {
+    display: grid;
+    gap: 4px;
+    padding: 10px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 8px;
+    background: var(--hydra-bg-surface-muted);
+}
+.textual-generated-preview-meta span,
+.textual-generated-preview-meta small,
+.textual-generated-preview-empty span {
+    color: var(--hydra-text-muted);
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+.hydra-button-with-tooltip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.hydra-button-with-tooltip > .hydra-ui-button {
+    flex: 1 1 auto;
+}
+
+/* R16 — compact horizontal textual-editor actions with dynamic sizing. */
+.textual-model-editor > header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 18px;
+}
+.textual-model-editor > header > div:last-child {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(170px, 210px));
+    justify-content: end;
+    align-items: start;
+    gap: 10px;
+    flex: initial;
+}
+.textual-model-editor > header > div:last-child .hydra-button-with-tooltip {
+    width: auto;
+    min-width: 0;
+}
+.textual-model-editor > header > div:last-child .hydra-button-with-tooltip > .hydra-ui-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 38px;
+    padding: 8px 12px;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+}
+.textual-model-editor > header > div:last-child .hydra-button-with-tooltip > .hydra-ui-tooltip-root {
+    align-self: center;
+}
+@media (max-width: 1380px) {
+    .textual-model-editor > header > div:last-child {
+        grid-template-columns: repeat(2, minmax(190px, 220px));
+        justify-content: start;
+    }
+}
+@media (max-width: 820px) {
+    .textual-model-editor > header > div:last-child {
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+    }
+}

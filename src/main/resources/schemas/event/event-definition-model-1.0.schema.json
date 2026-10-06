@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/event-definition-model-1.0.schema.json",
+  "title": "EventDefinitionModel 1.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "metamodelId", "namespace", "eventTypes", "annotations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "id": { "$ref": "#/$defs/documentId" },
+    "metamodelId": { "$ref": "#/$defs/documentId" },
+    "namespace": { "$ref": "#/$defs/namespace" },
+    "eventTypes": { "type": "array", "items": { "$ref": "#/$defs/eventType" } },
+    "annotations": { "$ref": "#/$defs/annotations" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "documentId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$" },
+    "elementId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$" },
+    "namespace": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.-]*$" },
+    "annotations": { "type": "object", "additionalProperties": { "type": "string" } },
+    "eventField": {
+      "type": "object",
+      "required": ["id", "name", "type", "required", "many", "enumTypeId", "objectTypeId", "description"],
+      "properties": {
+        "id": { "$ref": "#/$defs/elementId" },
+        "name": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["STRING", "INTEGER", "DECIMAL", "BOOLEAN", "DATE", "DATETIME", "DURATION", "DOCUMENT_ID", "ELEMENT_ID", "ENUM", "OBJECT", "ARRAY", "ANY"] },
+        "required": { "type": "boolean" },
+        "many": { "type": "boolean" },
+        "enumTypeId": { "type": "string" },
+        "objectTypeId": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "allOf": [
+        { "if": { "properties": { "type": { "const": "ENUM" } } }, "then": { "properties": { "enumTypeId": { "minLength": 1 } } } },
+        { "if": { "properties": { "type": { "const": "OBJECT" } } }, "then": { "properties": { "objectTypeId": { "minLength": 1 } } } }
+      ],
+      "additionalProperties": false
+    },
+    "eventType": {
+      "type": "object",
+      "required": ["id", "name", "namespace", "description", "category", "version", "fields", "allowedSources", "allowedSubjects", "persistencePolicy", "abstractType", "deprecated", "enabled", "annotations"],
+      "properties": {
+        "id": { "$ref": "#/$defs/elementId" },
+        "name": { "type": "string", "minLength": 1 },
+        "namespace": { "$ref": "#/$defs/namespace" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "version": { "type": "string", "minLength": 1 },
+        "fields": { "type": "array", "items": { "$ref": "#/$defs/eventField" } },
+        "allowedSources": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "allowedSubjects": { "type": "array", "items": { "enum": ["METAMODEL", "META_CLASS", "META_ATTRIBUTE", "META_REFERENCE", "META_OPERATION", "MODEL", "MODEL_ELEMENT", "MODEL_FEATURE", "VALIDATION_RULE", "VALIDATION_DIAGNOSTIC", "QUICK_FIX", "ACTION", "EVENT_DEFINITION", "EVENT_FLOW", "EDITOR"] }, "uniqueItems": true },
+        "persistencePolicy": { "enum": ["TRANSIENT", "SESSION", "AUDIT", "GAMIFICATION", "EXTERNAL"] },
+        "abstractType": { "type": "boolean" },
+        "deprecated": { "type": "boolean" },
+        "enabled": { "type": "boolean" },
+        "annotations": { "$ref": "#/$defs/annotations" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

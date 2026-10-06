@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.1",
+  "id": "people-event-architecture-diagram",
+  "metamodelId": "people",
+  "eventDefinitionModelId": "people-events",
+  "eventBindingModelId": "people-event-bindings",
+  "nodes": [],
+  "edges": []
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0",
+  "id": "rc1-people-model",
+  "metamodelId": "rc1-people",
+  "metamodelEtag": "reference",
+  "name": "People",
+  "rootElementIds": [
+    "person:1",
+    "person:2"
+  ],
+  "elements": [
+    {
+      "id": "person:1",
+      "classId": "class:Person",
+      "attributes": {
+        "attribute:class:Person:name": "Ada"
+      },
+      "annotations": {}
+    },
+    {
+      "id": "person:2",
+      "classId": "class:Person",
+      "attributes": {
+        "attribute:class:Person:name": "Grace"
+      },
+      "annotations": {}
+    }
+  ],
+  "relations": [],
+  "annotations": {}
+}

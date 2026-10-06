@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/standalone/standalone-editor-descriptor-1.1.schema.json",
+  "title": "HYDRA standalone editor descriptor 1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "applicationId",
+    "name",
+    "semanticScopeId",
+    "editorId",
+    "port",
+    "runtimeMode",
+    "runtimeBaseUrl",
+    "capabilityPackagePath",
+    "capabilityContentHash",
+    "editorDocumentPath",
+    "capabilities",
+    "settings",
+    "annotations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "applicationId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "metamodelId": {
+      "type": "string"
+    },
+    "editorId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "port": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "runtimeMode": {
+      "enum": [
+        "EMBEDDED_LOCAL",
+        "HYDRA_SERVICE",
+        "HYBRID"
+      ]
+    },
+    "runtimeBaseUrl": {
+      "type": "string"
+    },
+    "capabilityPackagePath": {
+      "type": "string"
+    },
+    "capabilityContentHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "metamodelDocumentPath": {
+      "type": "string"
+    },
+    "editorDocumentPath": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "annotations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "semanticScopeId": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

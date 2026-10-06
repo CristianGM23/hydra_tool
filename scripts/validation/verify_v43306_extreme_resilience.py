@@ -1,0 +1,28 @@
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[2]
+checks=[]
+def check(name, cond):
+    if not cond: raise AssertionError(name)
+    checks.append(name); print('PASS - '+name)
+graph=(ROOT/'src/main/java/com/example/editor/grammar/application/GrammarRuleGraphAnalyzer.java').read_text()
+tests=(ROOT/'src/test/java/com/example/editor/grammar/GrammarRuleGraphAnalyzerTests.java').read_text()
+tools=(ROOT/'src/main/java/com/example/editor/grammar/application/GrammarToolchainProfileService.java').read_text()
+rail=(ROOT/'frontend/src/application-shell/HydraModuleRail.tsx').read_text()
+css=(ROOT/'frontend/src/application-shell/application-shell.css').read_text().replace(' ','').replace('\n','')
+shelltest=(ROOT/'frontend/src/application-shell/HydraApplicationShell.test.tsx').read_text()
+check('SCC analysis uses iterative graph frames', 'GraphFrame' in graph and 'tarjan(' not in graph)
+check('cycle path search uses explicit frames', 'CycleFrame' in graph and 'findCycle(origin, next' not in graph)
+check('grammar body parser is iterative', 'Deque<ParseFrame>' in graph and 'choice(true)' not in graph)
+check('20k deep chain regression is permanent', 'veryDeepRuleChainDoesNotDependOnJvmStackDepth' in tests and '20_000' in tests)
+check('10k SCC regression is permanent', 'veryLargeStronglyConnectedGrammarDoesNotOverflowAndReportsSingleComponent' in tests and '10_000' in tests)
+check('25k nested group regression is permanent', 'deeplyNestedGroupsDoNotDependOnJvmStackDepth' in tests and '25_000' in tests)
+check('legacy Xtext profile removed', 'xtext-2.38-legacy' not in tools)
+check('legacy Langium profile removed', 'langium-4.0-legacy' not in tools)
+check('current grammar toolchains remain pinned', all(x in tools for x in ['xtext-2.44-lsp','langium-4.3-browser','antlr-4.13.2-java']))
+check('every module navigation option exposes high-level help', 'title={t(module.description)}' in rail)
+check('navigation help is regression tested', "toHaveAttribute('title'" in shelltest and 'Quick fixes' in shelltest)
+check('module headings and descriptions wrap instead of ellipsizing', '.hydra-module-heading>h1{' in css and 'white-space:normal;overflow-wrap:anywhere' in css and '.hydra-module-description{' in css)
+check('active rail description wraps long translated copy', '.hydra-module-link-description{' in css and 'overflow-wrap:anywhere' in css)
+inventory=(ROOT/'scripts/release/source_inventory.py').read_text()
+check('release tooling accepts distributed source ZIPs safely', 'def source_root(' in inventory and 'Unsafe path in HYDRA source ZIP' in inventory)
+print(f'V43306_EXTREME_RESILIENCE={len(checks)}/{len(checks)}')

@@ -1,0 +1,17 @@
+@import './editor-definition-part-1.css';
+@import './editor-definition-part-2.css';
+.hydra-feedback-toasts{position:fixed;right:20px;top:76px;z-index:1300;display:grid;gap:8px;width:min(360px,calc(100vw - 40px));pointer-events:none}
+.hydra-feedback-toast{pointer-events:auto;padding:10px 12px;border:1px solid var(--hydra-border-color,#d7dfeb);border-left:4px solid #3b82f6;border-radius:8px;background:var(--hydra-surface,var(--hydra-palette-white));box-shadow:0 8px 24px var(--hydra-palette-slate-900)22}
+.hydra-feedback-toast.severity-success{border-left-color:var(--hydra-palette-green-700)}
+.hydra-feedback-toast.severity-warning{border-left-color:var(--hydra-palette-amber-600)}
+.hydra-feedback-toast.severity-error{border-left-color:var(--hydra-palette-red-700)}
+.hydra-feedback-toast>header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hydra-feedback-toast p,.hydra-feedback-toast small{display:block;margin:5px 0}
+.hydra-feedback-toast progress{width:100%;height:7px}
+.hydra-feedback-activity-toggle{position:fixed;right:18px;bottom:18px;z-index:1250}
+.hydra-feedback-activity{position:fixed;right:18px;bottom:62px;z-index:1250;width:min(390px,calc(100vw - 36px));max-height:48vh;overflow:auto;padding:10px;border:1px solid var(--hydra-border-color,#d7dfeb);border-radius:8px;background:var(--hydra-surface,var(--hydra-palette-white));box-shadow:0 8px 28px var(--hydra-palette-slate-900)22}
+.hydra-feedback-activity>header{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-10px;background:inherit;padding:8px 0}
+.hydra-feedback-activity article{display:grid;gap:3px;padding:8px;border-left:3px solid #3b82f6;border-bottom:1px solid var(--hydra-border-color,#e5e7eb)}
+.hydra-feedback-activity article.severity-success{border-left-color:var(--hydra-palette-green-700)}
+.hydra-feedback-activity article.severity-warning{border-left-color:var(--hydra-palette-amber-600)}
+.hydra-feedback-activity article.severity-error{border-left-color:var(--hydra-palette-red-700)}

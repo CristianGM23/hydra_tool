@@ -1,0 +1,310 @@
+{
+  "metamodelId": "canonical-v7-complete",
+  "nodes": [
+    {
+      "elementId": "class-model",
+      "x": 60.0,
+      "y": 40.0,
+      "width": 280.0,
+      "height": 130.0,
+      "style": {
+        "fillColor": "#ffffff",
+        "headerColor": "#dbeafe",
+        "strokeColor": "#2563eb",
+        "textColor": "#0f172a",
+        "fontFamily": "Arial",
+        "fontSize": 14.0,
+        "fontWeight": 700.0,
+        "strokeWidth": 2.0,
+        "borderRadius": 8.0
+      }
+    },
+    {
+      "elementId": "class-named-element",
+      "x": 430.0,
+      "y": 40.0,
+      "width": 260.0,
+      "height": 170.0,
+      "style": {
+        "fillColor": "#f8fafc",
+        "headerColor": "#e2e8f0",
+        "strokeColor": "#475569",
+        "textColor": "#0f172a",
+        "fontFamily": "Arial",
+        "fontSize": 14.0,
+        "fontWeight": 700.0,
+        "strokeWidth": 2.0,
+        "borderRadius": 8.0
+      }
+    },
+    {
+      "elementId": "interface-identifiable",
+      "x": 800.0,
+      "y": 40.0,
+      "width": 240.0,
+      "height": 120.0,
+      "style": {
+        "fillColor": "#f0fdf4",
+        "headerColor": "#bbf7d0",
+        "strokeColor": "#16a34a",
+        "textColor": "#14532d",
+        "fontFamily": "Arial",
+        "fontSize": 14.0,
+        "fontWeight": 700.0,
+        "strokeWidth": 2.0,
+        "borderRadius": 8.0
+      }
+    },
+    {
+      "elementId": "class-person",
+      "x": 430.0,
+      "y": 310.0,
+      "width": 300.0,
+      "height": 250.0,
+      "style": {
+        "fillColor": "#ffffff",
+        "headerColor": "#fef3c7",
+        "strokeColor": "#d97706",
+        "textColor": "#451a03",
+        "fontFamily": "Arial",
+        "fontSize": 14.0,
+        "fontWeight": 700.0,
+        "strokeWidth": 2.0,
+        "borderRadius": 8.0
+      }
+    },
+    {
+      "elementId": "class-employee",
+      "x": 820.0,
+      "y": 330.0,
+      "width": 260.0,
+      "height": 160.0,
+      "style": {
+        "fillColor": "#ffffff",
+        "headerColor": "#fae8ff",
+        "strokeColor": "#a21caf",
+        "textColor": "#3b0764",
+        "fontFamily": "Arial",
+        "fontSize": 14.0,
+        "fontWeight": 700.0,
+        "strokeWidth": 2.0,
+        "borderRadius": 8.0
+      }
+    },
+    {
+      "elementId": "class-company",
+      "x": 60.0,
+      "y": 330.0,
+      "width": 280.0,
+      "height": 180.0,
+      "style": {
+        "fillColor": "#ffffff",
+        "headerColor": "#fee2e2",
+        "strokeColor": "#dc2626",
+        "textColor": "#450a0a",
+        "fontFamily": "Arial",
+        "fontSize": 14.0,
+        "fontWeight": 700.0,
+        "strokeWidth": 2.0,
+        "borderRadius": 8.0
+      }
+    },
+    {
+      "elementId": "class-tag",
+      "x": 60.0,
+      "y": 650.0,
+      "width": 230.0,
+      "height": 150.0,
+      "style": null
+    },
+    {
+      "elementId": "class-audit",
+      "x": 430.0,
+      "y": 650.0,
+      "width": 250.0,
+      "height": 150.0,
+      "style": null
+    },
+    {
+      "elementId": "enum-status",
+      "x": 800.0,
+      "y": 650.0,
+      "width": 250.0,
+      "height": 180.0,
+      "style": null
+    },
+    {
+      "elementId": "datatype-money",
+      "x": 1120.0,
+      "y": 650.0,
+      "width": 250.0,
+      "height": 130.0,
+      "style": null
+    }
+  ],
+  "edges": [
+    {
+      "relationId": "containment-model-elements",
+      "sourceHandle": "bottom-50-source",
+      "targetHandle": "top-50-target",
+      "kind": "CONTAINMENT",
+      "sourceClassId": "class-model",
+      "targetClassId": "class-named-element",
+      "label": "elements [0..*]",
+      "style": {
+        "strokeColor": "#1d4ed8",
+        "textColor": "#1e3a8a",
+        "fontFamily": "Arial",
+        "fontSize": 12.0,
+        "fontWeight": 600.0,
+        "strokeWidth": 2.5,
+        "lineStyle": "SOLID"
+      },
+      "routePoints": [
+        {
+          "x": 200.0,
+          "y": 170.0
+        },
+        {
+          "x": 200.0,
+          "y": 250.0
+        },
+        {
+          "x": 560.0,
+          "y": 250.0
+        },
+        {
+          "x": 560.0,
+          "y": 40.0
+        }
+      ],
+      "labelPosition": {
+        "x": 380.0,
+        "y": 240.0,
+        "segmentIndex": 1
+      }
+    },
+    {
+      "relationId": "reference-employer",
+      "sourceHandle": "left-35-source",
+      "targetHandle": "right-40-target",
+      "kind": "REFERENCE",
+      "sourceClassId": "class-person",
+      "targetClassId": "class-company",
+      "label": "employer [0..1]",
+      "style": {
+        "strokeColor": "#7c3aed",
+        "textColor": "#4c1d95",
+        "fontFamily": "Arial",
+        "fontSize": 12.0,
+        "fontWeight": 600.0,
+        "strokeWidth": 2.0,
+        "lineStyle": "DASHED"
+      },
+      "routePoints": [
+        {
+          "x": 430.0,
+          "y": 397.5
+        },
+        {
+          "x": 380.0,
+          "y": 397.5
+        },
+        {
+          "x": 380.0,
+          "y": 402.0
+        },
+        {
+          "x": 340.0,
+          "y": 402.0
+        }
+      ],
+      "labelPosition": {
+        "x": 385.0,
+        "y": 385.0,
+        "segmentIndex": 1
+      }
+    },
+    {
+      "relationId": "containment-employees",
+      "sourceHandle": "right-65-source",
+      "targetHandle": "left-70-target",
+      "kind": "CONTAINMENT",
+      "sourceClassId": "class-company",
+      "targetClassId": "class-person",
+      "label": "employees [0..*]",
+      "style": {
+        "strokeColor": "#b91c1c",
+        "textColor": "#7f1d1d",
+        "fontFamily": "Arial",
+        "fontSize": 12.0,
+        "fontWeight": 600.0,
+        "strokeWidth": 2.0,
+        "lineStyle": "SOLID"
+      },
+      "routePoints": [
+        {
+          "x": 340.0,
+          "y": 447.0
+        },
+        {
+          "x": 385.0,
+          "y": 447.0
+        },
+        {
+          "x": 385.0,
+          "y": 485.0
+        },
+        {
+          "x": 430.0,
+          "y": 485.0
+        }
+      ],
+      "labelPosition": {
+        "x": 385.0,
+        "y": 468.0,
+        "segmentIndex": 1
+      }
+    },
+    {
+      "relationId": "aggregation-tags",
+      "sourceHandle": "bottom-30-source",
+      "targetHandle": "top-50-target",
+      "kind": "AGGREGATION",
+      "sourceClassId": "class-company",
+      "targetClassId": "class-tag",
+      "label": "tags [0..*]",
+      "style": {
+        "strokeColor": "#0f766e",
+        "textColor": "#134e4a",
+        "fontFamily": "Arial",
+        "fontSize": 12.0,
+        "fontWeight": 600.0,
+        "strokeWidth": 2.0,
+        "lineStyle": "SOLID"
+      },
+      "routePoints": [],
+      "labelPosition": null
+    },
+    {
+      "relationId": "dependency-audit",
+      "sourceHandle": "bottom-70-source",
+      "targetHandle": "top-50-target",
+      "kind": "DEPENDENCY",
+      "sourceClassId": "class-company",
+      "targetClassId": "class-audit",
+      "label": "audits",
+      "style": {
+        "strokeColor": "#475569",
+        "textColor": "#334155",
+        "fontFamily": "Arial",
+        "fontSize": 12.0,
+        "fontWeight": 500.0,
+        "strokeWidth": 1.5,
+        "lineStyle": "DASHED"
+      },
+      "routePoints": [],
+      "labelPosition": null
+    }
+  ]
+}

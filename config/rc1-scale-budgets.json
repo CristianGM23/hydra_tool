@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0",
+  "levels": [
+    {
+      "elements": 100,
+      "required": true,
+      "maxSeconds": 5
+    },
+    {
+      "elements": 1000,
+      "required": true,
+      "maxSeconds": 10
+    },
+    {
+      "elements": 10000,
+      "required": true,
+      "maxSeconds": 30
+    },
+    {
+      "elements": 50000,
+      "required": false,
+      "maxSeconds": 120
+    }
+  ],
+  "minimumHeapHeadroomMb": 256,
+  "fullProperty": "hydra.rc1.scale.full",
+  "report": "target/release/rc1-scale-qualification.json"
+}

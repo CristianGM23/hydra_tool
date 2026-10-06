@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1.0",
+  "id": "people-basic-editor",
+  "metamodelId": "people",
+  "name": "People basic editor",
+  "representations": [
+    {
+      "id": "representation:main",
+      "name": "Main diagram",
+      "kind": "DIAGRAM",
+      "rootClassIds": [
+        "class:Person"
+      ],
+      "nodeMappings": [
+        {
+          "id": "node:person",
+          "targetClassId": "class:Person",
+          "representationName": "Person",
+          "shape": "ROUNDED_RECTANGLE",
+          "defaultWidth": 220,
+          "defaultHeight": 140,
+          "minimumWidth": 120,
+          "minimumHeight": 80,
+          "labelExpressionId": "",
+          "styles": {},
+          "annotations": {},
+          "imageAssetPath": "",
+          "imageFit": "CONTAIN",
+          "container": false,
+          "containmentRelationIds": [],
+          "containerPadding": 18
+        }
+      ],
+      "edgeMappings": [],
+      "toolIds": [
+        "tool:create-person"
+      ],
+      "editable": true,
+      "annotations": {}
+    }
+  ],
+  "palette": {
+    "groups": [
+      {
+        "id": "group:elements",
+        "name": "Elements",
+        "order": 0,
+        "toolIds": [
+          "tool:create-person"
+        ],
+        "initiallyCollapsed": false
+      }
+    ],
+    "tools": [
+      {
+        "kind": "CREATE_NODE",
+        "id": "tool:create-person",
+        "label": "Person",
+        "description": "Create a person.",
+        "icon": "person",
+        "representationIds": [
+          "representation:main"
+        ],
+        "visibleExpressionId": "",
+        "enabledExpressionId": "",
+        "targetClassId": "class:Person",
+        "defaultValues": {},
+        "formId": ""
+      }
+    ]
+  },
+  "forms": [],
+  "capabilityManifest": {
+    "capabilities": [
+      "MODEL_EDITING",
+      "MULTIPLE_REPRESENTATIONS",
+      "UNDO_REDO"
+    ]
+  },
+  "annotations": {},
+  "runtimePolicy": {
+    "validationTriggers": [
+      "MANUAL"
+    ],
+    "autosave": true,
+    "recoverLatestSession": true,
+    "publishEvents": true,
+    "eventFlowsEnabled": false,
+    "gamificationEnabled": false,
+    "maximumOpenRepresentations": 2,
+    "operationTimeoutMillis": 30000
+  }
+}

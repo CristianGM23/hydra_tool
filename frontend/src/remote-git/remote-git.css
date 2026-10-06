@@ -1,0 +1,287 @@
+.remote-git-panel {
+    display:grid;
+    gap:14px;
+    min-width:0
+}
+.remote-git-panel-heading {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px
+}
+.remote-git-panel-heading>div {
+    display:grid;
+    gap:4px
+}
+.remote-git-panel-heading span,.remote-git-callout p,.remote-git-action-groups header span,.remote-git-tree-panel header span,.remote-git-branch-group header span,.remote-git-conflict-pane header span,.remote-git-conflict-header span {
+    color:var(--hydra-color-text-muted);
+    line-height:1.45
+}
+.remote-git-status-grid,.remote-git-tree-summary {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(150px,1fr));
+    gap:10px
+}
+.remote-git-status-grid>div,.remote-git-tree-summary>div {
+    display:grid;
+    gap:3px;
+    padding:10px 12px;
+    border:1px solid var(--hydra-color-border);
+    border-radius:7px;
+    background:var(--hydra-color-surface);
+    min-width:0
+}
+.remote-git-status-grid span,.remote-git-tree-summary span {
+    font-size:.82em;
+    color:var(--hydra-color-text-muted)
+}
+.remote-git-status-grid strong,.remote-git-tree-summary strong {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
+.remote-git-callout {
+    display:grid;
+    justify-items:start;
+    gap:8px;
+    padding:13px;
+    border:1px solid var(--hydra-color-border);
+    border-radius:8px;
+    background:var(--hydra-bg-selection)
+}
+.remote-git-callout p {
+    margin:0
+}
+.remote-git-field-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(250px,1fr));
+    gap:14px 16px
+}
+.remote-git-field-grid input {
+    box-sizing:border-box;
+    width:100%;
+    min-height:38px;
+    padding:7px 9px;
+    border:1px solid var(--hydra-color-border);
+    border-radius:5px;
+    background:var(--hydra-color-surface);
+    color:var(--hydra-color-text);
+    font:inherit
+}
+.remote-git-action-groups {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(220px,1fr));
+    gap:10px
+}
+.remote-git-action-groups>section,.remote-git-tree-panel,.remote-git-branch-group {
+    display:grid;
+    align-content:start;
+    gap:9px;
+    padding:11px;
+    border:1px solid var(--hydra-color-border);
+    border-radius:8px;
+    background:var(--hydra-color-surface)
+}
+.remote-git-action-groups header,.remote-git-tree-panel>header,.remote-git-branch-group>header,.remote-git-conflict-pane>header,.remote-git-conflict-header {
+    display:grid;
+    gap:2px
+}
+.remote-git-tree-panel>header {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px
+}
+.remote-git-action-groups>section>div {
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap
+}
+.remote-git-file-state {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(240px,1fr));
+    gap:10px
+}
+.remote-git-file-state section {
+    padding:11px;
+    border:1px solid var(--hydra-color-border);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted)
+}
+.remote-git-file-state .conflicts {
+    border-color:var(--hydra-color-danger-600,var(--hydra-palette-danger-700))
+}
+.remote-git-file-state p {
+    margin:4px 0;
+    color:var(--hydra-color-text-muted)
+}
+.remote-git-file-state ul {
+    margin:7px 0 0;
+    padding-left:20px;
+    max-height:240px;
+    overflow:auto
+}
+.remote-git-file-state li {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:3px 0
+}
+.remote-git-tree-groups {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(280px,1fr));
+    gap:12px
+}
+.remote-git-branch-group ul {
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:grid;
+    gap:10px
+}
+.remote-git-branch-node {
+    display:grid;
+    gap:8px;
+    padding:10px;
+    border:1px solid var(--hydra-color-border);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted)
+}
+.remote-git-branch-node.current {
+    border-color:var(--hydra-color-primary-500,#2456d8);
+    box-shadow:0 0 0 1px color-mix(in srgb,var(--hydra-color-primary-500,#2456d8) 25%, transparent)
+}
+.remote-git-branch-title {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px
+}
+.remote-git-branch-title>div:first-child {
+    display:grid;
+    gap:2px
+}
+.remote-git-branch-badges {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:flex-end
+}
+.remote-git-branch-badges mark {
+    padding:2px 6px;
+    border-radius:999px;
+    background:var(--hydra-color-primary-100,var(--hydra-bg-selection));
+    color:var(--hydra-color-primary-700,#163c9f)
+}
+.remote-git-branch-badges small,.remote-git-branch-meta code {
+    padding:2px 6px;
+    border-radius:999px;
+    background:var(--hydra-color-surface);
+    border:1px solid var(--hydra-color-border)
+}
+.remote-git-branch-meta {
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    color:var(--hydra-color-text-muted);
+    font-size:.9em
+}
+.remote-git-commit-tree {
+    list-style:none;
+    margin:0;
+    padding-left:14px;
+    display:grid;
+    gap:6px;
+    border-left:2px solid var(--hydra-color-border)
+}
+.remote-git-commit-tree li {
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:8px;
+    align-items:start;
+    position:relative
+}
+.remote-git-commit-tree li::before {
+    content:'';
+    position:absolute;
+    left:-18px;
+    top:10px;
+    width:10px;
+    height:2px;
+    background:var(--hydra-color-border)
+}
+.remote-git-commit-tree .commit-id {
+    font-family:var(--hydra-font-mono,monospace);
+    padding:2px 6px;
+    border-radius:4px;
+    background:var(--hydra-color-surface);
+    border:1px solid var(--hydra-color-border)
+}
+.remote-git-commit-tree strong {
+    display:block
+}
+.remote-git-commit-tree small {
+    display:block;
+    color:var(--hydra-color-text-muted)
+}
+.remote-git-empty-state,.remote-git-message {
+    margin:0;
+    padding:9px 11px;
+    border-radius:6px;
+    background:var(--hydra-bg-surface-muted);
+    color:var(--hydra-color-text-muted)
+}
+.remote-git-conflict-modal .hydra-ui-modal-content {
+    padding-top:0
+}
+.remote-git-conflict-layout {
+    display:grid;
+    gap:12px
+}
+.remote-git-conflict-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(280px,1fr));
+    gap:12px
+}
+.remote-git-conflict-pane {
+    display:grid;
+    gap:8px;
+    padding:10px;
+    border:1px solid var(--hydra-color-border);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted)
+}
+.remote-git-conflict-pane textarea {
+    width:100%;
+    min-height:280px;
+    resize:vertical;
+    box-sizing:border-box;
+    padding:10px;
+    border:1px solid var(--hydra-color-border);
+    border-radius:6px;
+    background:var(--hydra-color-surface);
+    color:var(--hydra-color-text);
+    font:12px/1.5 var(--hydra-font-mono,monospace)
+}
+@media(max-width:1150px) {
+    .remote-git-status-grid,.remote-git-tree-summary {
+        grid-template-columns:repeat(2,minmax(150px,1fr))
+    }
+    .remote-git-action-groups,.remote-git-tree-groups {
+        grid-template-columns:1fr
+    }
+}
+@media(max-width:780px) {
+    .remote-git-status-grid,.remote-git-field-grid,.remote-git-file-state,.remote-git-conflict-grid,.remote-git-tree-summary {
+        grid-template-columns:1fr
+    }
+    .remote-git-panel-heading,.remote-git-tree-panel>header,.remote-git-branch-title {
+        flex-direction:column
+    }
+    .remote-git-file-state li {
+        align-items:flex-start;
+        flex-direction:column
+    }
+}

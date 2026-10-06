@@ -1,0 +1,99 @@
+{
+  "schemaVersion": "2.1",
+  "id": "rc1-commerce",
+  "name": "RC1 Commerce",
+  "classes": [
+    {
+      "id": "class:Store",
+      "name": "Store",
+      "kind": "CLASS",
+      "attributes": [
+        {
+          "id": "attribute:class:Store:name",
+          "name": "name",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "STRING",
+            "externalName": ""
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "ordered": true,
+          "unique": true,
+          "defaultValue": "",
+          "annotations": {}
+        }
+      ],
+      "annotations": {},
+      "operations": []
+    },
+    {
+      "id": "class:Product",
+      "name": "Product",
+      "kind": "CLASS",
+      "attributes": [
+        {
+          "id": "attribute:class:Product:sku",
+          "name": "sku",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "STRING",
+            "externalName": ""
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "ordered": true,
+          "unique": true,
+          "defaultValue": "",
+          "annotations": {}
+        },
+        {
+          "id": "attribute:class:Product:price",
+          "name": "price",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "DOUBLE",
+            "externalName": ""
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "ordered": true,
+          "unique": true,
+          "defaultValue": "0",
+          "annotations": {}
+        }
+      ],
+      "annotations": {},
+      "operations": []
+    }
+  ],
+  "enums": [],
+  "dataTypes": [],
+  "relations": [
+    {
+      "id": "reference:class:Store:products",
+      "name": "products",
+      "sourceTypeId": "class:Store",
+      "targetTypeId": "class:Product",
+      "kind": "CONTAINMENT",
+      "sourceMultiplicity": null,
+      "targetMultiplicity": {
+        "lowerBound": 0,
+        "upperBound": null
+      },
+      "oppositeRelationId": "",
+      "ordered": true,
+      "unique": true,
+      "annotations": {}
+    }
+  ],
+  "annotations": {
+    "hydra.referenceProject": "commerce-intermediate"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.0",
+  "releaseVersion": "4.32.107",
+  "candidate": "RC2",
+  "requiredFixes": [
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117
+  ],
+  "requiredPhases": [
+    "workspace-integrity",
+    "environment-doctor",
+    "toolchain-hermetic",
+    "rc1-qualification",
+    "reference-projects",
+    "recovery-contracts",
+    "installation-matrix",
+    "provenance",
+    "package-requalification"
+  ],
+  "fullOnlyPhases": [
+    "environment-doctor-full",
+    "rc1-full",
+    "scale-50000",
+    "live-e2e",
+    "frontend-playwright",
+    "maven-clean-verify",
+    "package-second-full-validation"
+  ],
+  "certificate": "target/release/rc2-certificate.json",
+  "freezeOnPass": true,
+  "timeoutsSeconds": {
+    "workspace-integrity": 300,
+    "environment-doctor": 600,
+    "toolchain-hermetic": 600,
+    "rc1-qualification": 28800,
+    "fix111-117-structural": 1800,
+    "reference-projects": 900,
+    "recovery-contracts": 1200,
+    "fault-injection-contracts": 1200,
+    "installation-matrix": 10800,
+    "environment-doctor-full": 600,
+    "source-package": 1800,
+    "sbom": 900,
+    "provenance": 900,
+    "package-requalification": 900,
+    "package-rc2-contract": 1800,
+    "package-npm-ci": 3600,
+    "package-second-full-validation": 10800,
+    "package-rebuild": 1800
+  },
+  "evidenceReuse": {
+    "rc1Stages": [
+      "scale-full",
+      "product-e2e-live",
+      "frontend-playwright"
+    ],
+    "releaseReadinessStages": [
+      "Maven full verify"
+    ]
+  }
+}

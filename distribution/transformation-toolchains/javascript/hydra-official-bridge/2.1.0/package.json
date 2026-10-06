@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "packageId": "hydra-official-bridge",
+  "packageVersion": "2.1.0",
+  "language": "JAVASCRIPT",
+  "bridgeName": "HYDRA Official JavaScript Bridge",
+  "bridgeVersion": "2.1.0",
+  "toolchainName": "Node.js",
+  "toolchainVersion": "",
+  "sha256": {
+    "HydraJavaScriptNativeRuntime.js": "9d88957e3144ea0518f837df010d579c0b2ba0c2afc4724e6e2f229b411dec8a",
+    "HydraOfficialBridge.java": "056c131da2a0824719f2b60f44e894e157b71788671406285696fac0c43496bf",
+    "bridge.properties": "4546658436f0c97c91922935f0603514773ccc3f8c28cb8c84682bc5deb52eda",
+    "toolchain.json": "906ae03c3949dccf40bcc678377e13a6ba4152b68f77191744e0e904c908d4bb"
+  }
+}

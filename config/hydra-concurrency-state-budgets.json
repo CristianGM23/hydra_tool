@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "concurrentMaps": [
+    {
+      "path": "src/main/java/com/example/editor/audit/AuditActivityDescriptorRegistry.java",
+      "policy": "HARD_MAX",
+      "evidence": "MAXIMUM_DESCRIPTORS=4096"
+    },
+    {
+      "path": "src/main/java/com/example/editor/audit/JsonlAuditLogStore.java",
+      "policy": "LIFECYCLE",
+      "evidence": "cache keys are physical audit partitions; retention/storage-pressure cleanup removes obsolete partitions and cache entries"
+    },
+    {
+      "path": "src/main/java/com/example/editor/definition/runtime/session/EditorSessionPendingEventBuffer.java",
+      "policy": "HARD_MAX",
+      "evidence": "maximumPendingEventSessions + bounded per-session memory/fallback/spool"
+    },
+    {
+      "path": "src/main/java/com/example/editor/definition/runtime/session/EditorSessionWorkingCopyStore.java",
+      "policy": "HARD_MAX",
+      "evidence": "maximumWorkingCopiesInMemory"
+    },
+    {
+      "path": "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeDeploymentRegistry.java",
+      "policy": "HARD_MAX",
+      "evidence": "maximum deployments with inactive eviction"
+    },
+    {
+      "path": "src/main/java/com/example/editor/grammar/application/GrammarAnalysisCoordinator.java",
+      "policy": "HARD_MAX",
+      "evidence": "running is bounded by maximumConcurrentAnalyses; latestRevision is bounded by maximumTrackedGrammarRevisions with insertion-order eviction"
+    },
+    {
+      "path": "src/main/java/com/example/editor/integration/adapter/xtext/XtextTechnologyAdapter.java",
+      "policy": "LIFECYCLE",
+      "evidence": "Generated Xtext runtime instances are scoped by Resource identity and removed explicitly on textDocument/didClose via HydraXtextRuntime.release; no permanent per-document retention."
+    },
+    {
+      "path": "src/main/java/com/example/editor/integration/verification/ExternalToolCircuitBreaker.java",
+      "policy": "HARD_MAX",
+      "evidence": "maximumEntries"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/importing/MetamodelImportAnalysisJobService.java",
+      "policy": "MAX_TTL",
+      "evidence": "analysisMaxRetainedJobs + analysisRetentionMinutes"
+    },
+    {
+      "path": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteExtensionAdapterCatalog.java",
+      "policy": "HARD_MAX",
+      "evidence": "maximumRegisteredAdapters"
+    },
+    {
+      "path": "src/main/java/com/example/editor/model/ModelSessionManager.java",
+      "policy": "MAX_TTL",
+      "evidence": "maxActive + idle timeout purge"
+    },
+    {
+      "path": "src/main/java/com/example/editor/observability/HydraBestEffortDiagnostics.java",
+      "policy": "HARD_MAX",
+      "evidence": "MAX_SITES=256 with overflow aggregation into other"
+    },
+    {
+      "path": "src/main/java/com/example/editor/remote/auth/EncryptedFileRemoteCredentialVault.java",
+      "policy": "HARD_MAX",
+      "evidence": "vault.maximumConnections"
+    },
+    {
+      "path": "src/main/java/com/example/editor/remote/auth/RemoteAuthFlowStore.java",
+      "policy": "MAX_TTL",
+      "evidence": "maximumPendingFlows + expiresAt cleanup"
+    },
+    {
+      "path": "src/main/java/com/example/editor/remote/auth/RemoteAuthOutcomeStore.java",
+      "policy": "MAX_TTL",
+      "evidence": "maximumPendingFlows + flowTtl cleanup for callback outcomes"
+    },
+    {
+      "path": "src/main/java/com/example/editor/runtime/job/HydraJobOrchestrator.java",
+      "policy": "HARD_MAX",
+      "evidence": "maximumRetained bounds the shared registry; terminal jobs are evicted oldest-first"
+    },
+    {
+      "path": "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeExecutor.java",
+      "policy": "HARD_MAX",
+      "evidence": "diagnosticCache is keyed only by TransformationExportLanguage; the enum bounds the cache cardinality and lifecycle changes invalidate entries explicitly"
+    },
+    {
+      "path": "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrator.java",
+      "policy": "HARD_MAX",
+      "evidence": "maxTrackedModels with FIFO eviction"
+    },
+    {
+      "path": "src/main/java/com/example/editor/validation/runtime/ValidationPlanCache.java",
+      "policy": "HARD_MAX",
+      "evidence": "maxEntries with insertion-order eviction"
+    }
+  ]
+}

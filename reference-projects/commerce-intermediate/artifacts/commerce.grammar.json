@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "rc1-commerce-grammar",
+  "name": "RC1 Commerce Grammar",
+  "technology": "LANGIUM",
+  "authoringMode": "GRAMMAR_FIRST",
+  "metamodelId": "rc1-commerce",
+  "toolchainProfileId": "langium-4.3-browser",
+  "entryDocumentId": "main",
+  "entryRule": "Model",
+  "documents": [
+    {
+      "id": "main",
+      "relativePath": "rc1-commerce.langium",
+      "languageId": "langium",
+      "content": "grammar Rc1Commerce\nentry Model: products+=Product*;\nProduct: 'product' sku=ID 'price' price=NUMBER ';';\nterminal ID: /[A-Za-z_][A-Za-z0-9_-]*/;\nterminal NUMBER: /[0-9]+(\\.[0-9]+)?/;\n",
+      "sourceHash": "",
+      "entryPoint": true,
+      "generated": false
+    }
+  ],
+  "semanticBindings": {
+    "schemaVersion": "1.0",
+    "bindings": [],
+    "annotations": {}
+  },
+  "syntaxStyleDefinitionId": "",
+  "settings": {},
+  "annotations": {
+    "hydra.referenceProject": "commerce-intermediate"
+  }
+}

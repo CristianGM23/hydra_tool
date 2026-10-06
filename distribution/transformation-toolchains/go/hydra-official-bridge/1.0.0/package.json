@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "packageId": "hydra-official-bridge",
+  "packageVersion": "1.0.0",
+  "language": "GO",
+  "bridgeName": "HYDRA Official Go Bridge",
+  "bridgeVersion": "1.0.0",
+  "toolchainName": "Go",
+  "toolchainVersion": "",
+  "sha256": {
+    "HydraOfficialBridge.java": "0ba771c53a4399d2b73c68f8433f44f8febec57604b4e46e795060278e6194e2",
+    "bridge.properties": "c0ca3c583f58cf0f4845be7e00d2061e5371cafe088f1fd3bdb25608edc5a3cc",
+    "toolchain.json": "476068b18a506121a746aed8181c6c28452bad6f10fe727937de626eaa29a37e"
+  }
+}

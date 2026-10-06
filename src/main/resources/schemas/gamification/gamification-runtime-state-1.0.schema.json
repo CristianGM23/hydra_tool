@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/gamification/gamification-runtime-state-1.0.schema.json",
+  "title": "HYDRA GamificationRuntimeState 1.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "metamodelId", "updatedAt", "actors", "processedAwardKeys"],
+  "properties": { "schemaVersion": { "const": "1.0" }, "id": { "type": "string" }, "metamodelId": { "type": "string" }, "updatedAt": { "type": "string", "format": "date-time" }, "actors": { "type": "object" }, "processedAwardKeys": { "type": "array", "items": { "type": "string" }, "uniqueItems": true } },
+  "additionalProperties": false
+}

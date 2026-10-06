@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/editor/editor-model-session-1.0.schema.json",
+  "title": "EditorModelSession 1.0",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "metamodelId",
+    "editorId",
+    "activeRepresentationId",
+    "openRepresentationIds",
+    "model",
+    "revision"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "metamodelId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "editorId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEditorEtag": {
+      "type": "string"
+    },
+    "activeRepresentationId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "id",
+        "metamodelId",
+        "rootElementIds",
+        "elements",
+        "relations"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "annotations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "openRepresentationIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "latestValidationReport": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

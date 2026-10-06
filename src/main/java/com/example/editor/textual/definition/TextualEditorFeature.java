@@ -1,0 +1,2 @@
+package com.example.editor.textual.definition;
+public enum TextualEditorFeature { COMPLETION, HOVER, GO_TO_DEFINITION, FIND_REFERENCES, RENAME, FORMATTING, FOLDING, OUTLINE, DIAGNOSTICS, QUICK_FIXES, SEMANTIC_TOKENS }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hydratest:Workflow xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:hydratest="https://hydra.example/sirius/fixture/1.0"
+    xsi:schemaLocation="https://hydra.example/sirius/fixture/1.0 platform:/resource/com.hydra.sirius.fixture.metamodel/model/hydratest.ecore"
+    name="OrderProcessing" version="1.0">
+  <nodes xsi:type="hydratest:StartNode" xmi:id="start" name="Start"/>
+  <nodes xsi:type="hydratest:Task" xmi:id="validate" name="ValidateOrder" durationMinutes="5" progress="100" automated="true">
+    <ports name="in" direction="IN"/>
+    <ports name="out" direction="OUT"/>
+  </nodes>
+  <nodes xsi:type="hydratest:DecisionNode" xmi:id="decision" name="PaymentAccepted" expression="amount &gt; 0"/>
+  <nodes xsi:type="hydratest:DataStoreNode" xmi:id="store" name="OrdersDB" kind="DATABASE"/>
+  <nodes xsi:type="hydratest:Task" xmi:id="ship" name="ShipOrder" durationMinutes="30" progress="35" automated="false">
+    <ports name="in" direction="IN"/>
+    <ports name="out" direction="OUT"/>
+  </nodes>
+  <nodes xsi:type="hydratest:EndNode" xmi:id="end" name="Done"/>
+
+  <connections name="c1" kind="CONTROL" source="start" target="validate"/>
+  <connections name="c2" kind="CONTROL" source="validate" target="decision"/>
+  <connections name="c3" kind="DATA" source="decision" target="store"/>
+  <connections name="c4" kind="CONTROL" source="decision" target="ship"/>
+  <connections name="c5" kind="CONTROL" source="ship" target="end"/>
+
+  <groups name="Processing" members="validate decision ship"/>
+  <annotations name="note1" text="This note exercises Sirius Note style." target="decision"/>
+</hydratest:Workflow>

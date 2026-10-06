@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/meta-model-2.1.schema.json",
+  "title": "MetaModel 2.1",
+  "type": "object",
+  "required": ["schemaVersion", "id", "name", "classes", "enums", "dataTypes", "relations", "annotations"],
+  "properties": {
+    "schemaVersion": { "const": "2.1" },
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "classes": { "type": "array", "items": { "$ref": "#/$defs/metaClass" } },
+    "enums": { "type": "array", "items": { "$ref": "#/$defs/metaEnum" } },
+    "dataTypes": { "type": "array", "items": { "$ref": "#/$defs/metaDataType" } },
+    "relations": { "type": "array", "items": { "$ref": "#/$defs/metaRelation" } },
+    "annotations": { "$ref": "#/$defs/annotations" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "annotations": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "multiplicity": {
+      "type": "object",
+      "required": ["lowerBound", "upperBound"],
+      "properties": {
+        "lowerBound": { "type": "integer", "minimum": 0 },
+        "upperBound": { "type": ["integer", "null"], "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "typeReference": {
+      "type": "object",
+      "required": ["kind", "targetId", "externalName"],
+      "properties": {
+        "kind": { "enum": ["PRIMITIVE", "ENUM", "DATATYPE", "CLASS", "EXTERNAL"] },
+        "targetId": { "type": "string" },
+        "externalName": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "metaAttribute": {
+      "type": "object",
+      "required": ["id", "name", "type", "multiplicity", "ordered", "unique", "defaultValue", "annotations"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "type": { "$ref": "#/$defs/typeReference" },
+        "multiplicity": { "$ref": "#/$defs/multiplicity" },
+        "ordered": { "type": "boolean" },
+        "unique": { "type": "boolean" },
+        "defaultValue": { "type": "string" },
+        "annotations": { "$ref": "#/$defs/annotations" }
+      },
+      "additionalProperties": false
+    },
+    "metaParameter": {
+      "type": "object",
+      "required": ["id", "name", "type", "multiplicity", "ordered", "unique", "annotations"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "type": { "$ref": "#/$defs/typeReference" },
+        "multiplicity": { "$ref": "#/$defs/multiplicity" },
+        "ordered": { "type": "boolean" },
+        "unique": { "type": "boolean" },
+        "annotations": { "$ref": "#/$defs/annotations" }
+      },
+      "additionalProperties": false
+    },
+    "metaOperation": {
+      "type": "object",
+      "required": ["id", "name", "returnType", "returnMultiplicity", "ordered", "unique", "parameters", "exceptionTypes", "behaviorKind", "annotations"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "returnType": { "oneOf": [{ "$ref": "#/$defs/typeReference" }, { "type": "null" }] },
+        "returnMultiplicity": { "oneOf": [{ "$ref": "#/$defs/multiplicity" }, { "type": "null" }] },
+        "ordered": { "type": "boolean" },
+        "unique": { "type": "boolean" },
+        "parameters": { "type": "array", "items": { "$ref": "#/$defs/metaParameter" } },
+        "exceptionTypes": { "type": "array", "items": { "$ref": "#/$defs/typeReference" } },
+        "behaviorKind": { "enum": ["UNSPECIFIED", "QUERY", "COMMAND"] },
+        "annotations": { "$ref": "#/$defs/annotations" }
+      },
+      "additionalProperties": false
+    },
+    "metaClass": {
+      "type": "object",
+      "required": ["id", "name", "kind", "attributes", "operations", "annotations"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["CLASS", "ABSTRACT_CLASS", "INTERFACE"] },
+        "attributes": { "type": "array", "items": { "$ref": "#/$defs/metaAttribute" } },
+        "operations": { "type": "array", "items": { "$ref": "#/$defs/metaOperation" } },
+        "annotations": { "$ref": "#/$defs/annotations" }
+      },
+      "additionalProperties": false
+    },
+    "enumLiteral": {
+      "type": "object",
+      "required": ["id", "name", "value", "annotations"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "value": { "type": "integer" },
+        "annotations": { "$ref": "#/$defs/annotations" }
+      },
+      "additionalProperties": false
+    },
+    "metaEnum": {
+      "type": "object",
+      "required": ["id", "name", "literals", "annotations"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "literals": { "type": "array", "items": { "$ref": "#/$defs/enumLiteral" } },
+        "annotations": { "$ref": "#/$defs/annotations" }
+      },
+      "additionalProperties": false
+    },
+    "metaDataType": {
+      "type": "object",
+      "required": ["id", "name", "annotations"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "annotations": { "$ref": "#/$defs/annotations" }
+      },
+      "additionalProperties": false
+    },
+    "metaRelation": {
+      "type": "object",
+      "required": ["id", "name", "sourceTypeId", "targetTypeId", "kind", "sourceMultiplicity", "targetMultiplicity", "oppositeRelationId", "ordered", "unique", "annotations"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string" },
+        "sourceTypeId": { "type": "string", "minLength": 1 },
+        "targetTypeId": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["REFERENCE", "AGGREGATION", "CONTAINMENT", "DEPENDENCY", "INHERITANCE", "IMPLEMENTATION"] },
+        "sourceMultiplicity": { "oneOf": [{ "$ref": "#/$defs/multiplicity" }, { "type": "null" }] },
+        "targetMultiplicity": { "oneOf": [{ "$ref": "#/$defs/multiplicity" }, { "type": "null" }] },
+        "oppositeRelationId": { "type": "string" },
+        "ordered": { "type": "boolean" },
+        "unique": { "type": "boolean" },
+        "annotations": { "$ref": "#/$defs/annotations" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

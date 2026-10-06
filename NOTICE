@@ -1,0 +1,8 @@
+HYDRA — HYbrid DSL & Representation Architecture
+
+This source tree contains first-party HYDRA code and references third-party software.
+No public license is declared for first-party HYDRA source by this repository.
+
+Third-party notices, provenance and compatibility information are maintained under
+`docs/licensing/` and in the release SBOM. Redistribution of third-party components
+must preserve the notices and obligations required by their respective licenses.

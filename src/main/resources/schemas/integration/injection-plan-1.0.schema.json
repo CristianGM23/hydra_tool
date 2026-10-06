@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/injection-plan-1.0.schema.json",
+  "title": "InjectionPlan 1.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "integrationProfileId", "targetTechnology", "status", "createdAt", "fileChanges", "dependencyChanges", "installationSteps", "rollbackSteps", "verificationSteps", "diagnostics", "annotations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "id": { "$ref": "#/$defs/documentId" },
+    "integrationProfileId": { "$ref": "#/$defs/documentId" },
+    "targetTechnology": { "$ref": "#/$defs/technology" },
+    "status": { "enum": ["PREVIEW", "READY", "BLOCKED"] },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "fileChanges": { "type": "array", "items": { "$ref": "#/$defs/file" } },
+    "dependencyChanges": { "type": "array", "items": { "$ref": "#/$defs/dependency" } },
+    "installationSteps": { "type": "array", "items": { "type": "string" } },
+    "rollbackSteps": { "type": "array", "items": { "type": "string" } },
+    "verificationSteps": { "type": "array", "items": { "$ref": "#/$defs/verification" } },
+    "diagnostics": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } },
+    "annotations": { "type": "object", "additionalProperties": { "type": "string" } }
+  },
+  "allOf": [
+    { "if": { "properties": { "status": { "enum": ["PREVIEW", "READY"] } } }, "then": { "properties": { "rollbackSteps": { "minItems": 1 } } } }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "documentId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$" },
+    "technology": { "enum": ["EMF", "SIRIUS_DESKTOP", "XTEXT", "LANGIUM", "BESSER_SDK", "BESSER_WEB_MODELING_EDITOR", "PLANTUML"] },
+    "sha": { "type": "string", "pattern": "^$|^[a-fA-F0-9]{64}$" },
+    "file": {
+      "type": "object",
+      "required": ["path", "changeKind", "ownership", "originalSha256", "generatedSha256", "reversible"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "changeKind": { "enum": ["ADD", "MODIFY", "DELETE"] },
+        "ownership": { "enum": ["GENERATED", "PATCHED", "PRESERVED"] },
+        "originalSha256": { "$ref": "#/$defs/sha" },
+        "generatedSha256": { "$ref": "#/$defs/sha" },
+        "reversible": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "dependency": {
+      "type": "object",
+      "required": ["ecosystem", "coordinate", "version", "scope", "action"],
+      "properties": {
+        "ecosystem": { "type": "string", "minLength": 1 },
+        "coordinate": { "type": "string", "minLength": 1 },
+        "version": { "type": "string" },
+        "scope": { "type": "string" },
+        "action": { "enum": ["ADD", "UPDATE", "KEEP", "REMOVE"] }
+      },
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "object",
+      "required": ["id", "description", "workingDirectory", "command", "expectedExitCode", "required"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "workingDirectory": { "type": "string" },
+        "command": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "expectedExitCode": { "type": "integer" },
+        "required": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "diagnostic": {
+      "type": "object",
+      "required": ["severity", "code", "elementId", "path", "message"],
+      "properties": {
+        "severity": { "enum": ["ERROR", "WARNING", "INFO"] },
+        "code": { "type": "string" },
+        "elementId": { "type": "string" },
+        "path": { "type": "string" },
+        "message": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

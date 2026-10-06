@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"1.0","id":"people-emf-module","metamodelId":"people","name":"People EMF module",
+  "target":{"technology":"EMF","kind":"MODELING_RUNTIME","technologyVersion":"2.39","projectId":"people-eclipse","moduleName":"people-emf","buildSystem":"MAVEN","sourceRoots":[],"configurationFiles":[],"endpoint":"","settings":{"basePackage":"org.example.people.emf"}},
+  "deliveryMode":"GENERATED_MODULE","features":["VALIDATION_RUNTIME","QUICK_FIX_RUNTIME","OPERATION_RUNTIME","EVENT_PUBLICATION","PROJECT_EXPORT"],
+  "artifacts":[{"kind":"METAMODEL","documentId":"people","required":true},{"kind":"VALIDATIONS","documentId":"people-validations","required":false},{"kind":"ACTIONS","documentId":"people-actions","required":false},{"kind":"OPERATION_BEHAVIORS","documentId":"people-operations","required":false},{"kind":"EVENT_DEFINITIONS","documentId":"people-events","required":false}],
+  "mappings":[],
+  "injectionPolicy":{"strategy":"ADD_MODULE","generatedRoot":"generated-integration","moduleName":"people-emf","previewRequired":true,"rollbackRequired":true,"preserveCustomCode":true,"allowModifyExistingFiles":false,"allowModifyGeneratedFiles":true,"failOnPartialMappings":false},
+  "requiredCapabilities":["MODEL_READ","MODEL_WRITE","VALIDATION_BRIDGE","QUICK_FIX_BRIDGE","OPERATION_BRIDGE","EVENT_PUBLISH","CODE_GENERATION"],"annotations":{}
+}

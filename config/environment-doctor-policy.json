@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0",
+  "minimumFreeDiskBytes": 4294967296,
+  "requiredPorts": [
+    8081,
+    18081
+  ],
+  "requireWritableWorkspace": true,
+  "requireWritableTemp": true,
+  "requirePythonMajor": 3,
+  "requiredPythonPackages": {
+    "jsonschema": "4.26.0",
+    "pytest": "9.1.1"
+  },
+  "warnWhenWindowsLongPathsDisabled": true,
+  "requiredTools": [
+    "java",
+    "javac",
+    "maven",
+    "node",
+    "npm"
+  ],
+  "fullQualificationTools": [
+    "typescript",
+    "playwright"
+  ]
+}

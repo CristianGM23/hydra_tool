@@ -1,0 +1,67 @@
+
+:root[data-hydra-theme="dark"] {
+    color-scheme: dark;
+}
+:root[data-hydra-theme="dark"] :where( .hydra-application-shell, .hydra-shell-frame, .hydra-module-surface, .hydra-module-content, .hydra-independent-workbench, .hydra-home, .hydra-home-content, .model-editor-workbench, .metamodel-visual-designer, .editor-definition-designer, .validation-designer, .event-designer, .event-flow-designer, .gamification-designer, .integration-designer, .project-workbench-shell, .update-site-import-center, .update-site-v40-workbench, .artifact-registry-center, .repository-connections-center, .capability-readiness, .standalone-distribution-center, .generated-project-center, .publication-center, .representable-import-center, .roundtrip-center, .native-compatibility-center, .operation-runtime-panel ) {
+    color: var(--hydra-text-primary);
+}
+:root[data-hydra-theme="dark"] :where( .hydra-application-shell, .hydra-shell-frame, .hydra-module-content, .hydra-home, .hydra-home-content ) {
+    background-color: var(--hydra-bg-app);
+}
+:root[data-hydra-theme="dark"] :where( .hydra-module-header, .hydra-center-introduction, .hydra-home-section-rail, .hydra-home-overview-grid > article, .hydra-home-module-row, .hydra-home-readiness > .hydra-empty-state, .hydra-designer-form, .hydra-designer-sidebar, .designer-structure-workspace, .designer-structure-properties, .hydra-ui-modal-content, .settings-dialog, .settings-section, .problems-panel, .repository-profile-editor, .repository-advanced-disclosure ) {
+    background-color: var(--hydra-bg-surface);
+    border-color: var(--hydra-border-default);
+    color: var(--hydra-text-primary);
+}
+:root[data-hydra-theme="dark"] :where( .hydra-home-section-link:hover, .hydra-home-module-row:hover, .hydra-designer-list-item:hover, .designer-structure-tree-main:hover, .hydra-ui-tree-main:hover, .hydra-multiselect-groups label:hover ) {
+    background-color: var(--hydra-bg-hover);
+}
+:root[data-hydra-theme="dark"] :where( .hydra-home-section-link[aria-current="page"], .hydra-home-module-row[aria-current="page"], .hydra-designer-list-item.selected, .designer-structure-tree-row.selected > .designer-structure-tree-main, .hydra-diagram-pointer-modes button.active, [aria-selected="true"] ) {
+    background-color: var(--hydra-bg-selection);
+}
+/* Native controls and browser-generated popup content. */
+:root[data-hydra-theme="dark"] :where(input, select, textarea, option) {
+    background-color: var(--hydra-input-bg);
+    border-color: var(--hydra-border-strong);
+    color: var(--hydra-text-primary);
+}
+:root[data-hydra-theme="dark"] :where(input, select, textarea)::placeholder {
+    color: var(--hydra-text-muted);
+    opacity: 1;
+}
+:root[data-hydra-theme="dark"] :where(button:disabled, input:disabled, select:disabled, textarea:disabled) {
+    color: var(--hydra-text-muted);
+}
+/* React Flow chrome follows the application theme. Semantic node/edge colors do not. */
+:root[data-hydra-theme="dark"] :where( .react-flow, .react-flow__renderer, .react-flow__pane, .event-architecture-canvas, .event-flow-visual-canvas, .gamification-visual-canvas, .metamodel-canvas, .editor-runtime-flow, .model-editor-canvas-region ) {
+    background-color: var(--hydra-canvas-bg);
+    color: var(--hydra-text-primary);
+}
+:root[data-hydra-theme="dark"] .react-flow__background {
+    color: var(--hydra-grid-line);
+}
+:root[data-hydra-theme="dark"] .react-flow__controls, :root[data-hydra-theme="dark"] .react-flow__minimap, :root[data-hydra-theme="dark"] .react-flow__attribution {
+    background-color: var(--hydra-bg-surface-muted);
+    border-color: var(--hydra-border-default);
+    color: var(--hydra-text-muted);
+}
+:root[data-hydra-theme="dark"] .react-flow__controls button {
+    background-color: var(--hydra-bg-surface);
+    border-color: var(--hydra-border-default);
+    color: var(--hydra-text-primary);
+    fill: currentColor;
+}
+:root[data-hydra-theme="dark"] .react-flow__edge-textbg {
+    fill: var(--hydra-bg-surface);
+}
+:root[data-hydra-theme="dark"] .react-flow__edge-text {
+    fill: var(--hydra-text-secondary);
+}
+/* Secondary copy must remain readable in panels that set a light-theme color. */
+:root[data-hydra-theme="dark"] :where( .hydra-empty-state, .hydra-module-header span, .hydra-center-introduction span, .hydra-home-overview > header > p:last-child, .hydra-home-category > header > span, .hydra-module-row-copy small, .repository-connections-lead, .repository-generated-id, .hydra-designer-sidebar p, .hydra-designer-form small, .designer-structure-tree-text small ) {
+    color: var(--hydra-text-muted);
+}
+/* Scrollbars are visible but do not create light strips around dark workspaces. */
+:root[data-hydra-theme="dark"] * {
+    scrollbar-color: var(--hydra-border-strong) var(--hydra-bg-surface-muted);
+}

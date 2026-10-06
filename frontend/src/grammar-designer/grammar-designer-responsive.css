@@ -1,0 +1,616 @@
+/* Responsive grammar header, live preview and grammar-aware completion surfaces. */
+/* R11 — compact, responsive grammar command area without redundant designer pill. */
+.grammar-designer-header{
+    display:grid;
+    grid-template-columns:minmax(260px,.8fr) minmax(620px,1.7fr);
+    align-items:end;
+    gap:12px 18px;
+    padding:2px 2px 8px;
+}
+.grammar-designer-title-group{
+    display:grid;
+    min-width:0;
+    gap:4px;
+}
+.grammar-designer-title-group h2{
+    margin:0;
+    min-width:0;
+    font-size:1.24rem;
+    line-height:1.18;
+    overflow-wrap:anywhere;
+}
+.grammar-designer-title-group p{
+    margin:0;
+    max-width:700px;
+    color:var(--hydra-text-secondary);
+    font-size:.82rem;
+    line-height:1.35;
+}
+.grammar-header-workspace{
+    display:grid;
+    grid-template-columns:minmax(250px,1.05fr) minmax(520px,2fr);
+    align-items:end;
+    gap:8px;
+    min-width:0;
+}
+.grammar-saved-selector{
+    display:grid;
+    min-width:0;
+    gap:4px;
+}
+.grammar-saved-selector>span{
+    color:var(--hydra-text-muted);
+    font-size:.68rem;
+    font-weight:750;
+}
+.grammar-header-actions{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(118px,1fr));
+    align-items:stretch;
+    gap:6px;
+    width:100%;
+    min-width:0;
+    padding:0;
+}
+.grammar-header-actions .hydra-ui-button,
+.grammar-header-actions button{
+    width:100%;
+    min-width:0;
+    min-height:36px;
+    height:100%;
+    justify-content:center;
+    padding-inline:9px;
+    white-space:normal;
+    text-align:center;
+    line-height:1.2;
+}
+@media(max-width:1280px){
+    .grammar-designer-header{grid-template-columns:1fr;align-items:stretch}
+    .grammar-header-workspace{grid-template-columns:minmax(240px,.85fr) minmax(0,2fr)}
+}
+@media(max-width:900px){
+    .grammar-header-workspace{grid-template-columns:1fr}
+    .grammar-header-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){.grammar-header-actions{grid-template-columns:1fr}}
+
+/* R11 — preview is a live grammar-derived editor surface and uses the complete workbench canvas. */
+.grammar-editor-column>.grammar-textual-preview{
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    height:100%;
+    min-height:0;
+    overflow:hidden;
+    padding:12px;
+}
+.grammar-textual-preview>.grammar-customization-heading{flex:0 0 auto}
+.grammar-textual-preview .grammar-preview-editor{
+    display:flex;
+    flex:1 1 auto;
+    width:100%;
+    height:auto;
+    min-height:0;
+    margin-top:10px;
+}
+.grammar-textual-preview .grammar-preview-editor>.grammar-editor-stack,
+.grammar-textual-preview .grammar-preview-editor .grammar-safe-editor,
+.grammar-textual-preview .grammar-preview-editor .grammar-monaco-host{
+    width:100%;
+    height:100%;
+    min-height:0;
+}
+.grammar-information-diagnostic{
+    border-left:4px solid var(--hydra-color-primary-500);
+}
+.grammar-textual-preview .grammar-preview-editor .grammar-textarea-fallback,
+.grammar-textual-preview .grammar-preview-editor .grammar-safe-highlight,
+.grammar-textual-preview .grammar-preview-editor .grammar-safe-gutter{
+    min-height:0;
+    height:100%;
+}
+
+/* R15 — tooltip-ready primary actions, readable compilation cards and inferred metamodel tree. */
+.grammar-header-actions > .hydra-ui-tooltip-root,
+.grammar-conversion-footer > div > .hydra-ui-tooltip-root{
+    display:flex;
+    width:100%;
+}
+.grammar-header-actions > .hydra-ui-tooltip-root .hydra-ui-button,
+.grammar-conversion-footer > div > .hydra-ui-tooltip-root .hydra-ui-button{
+    width:100%;
+}
+.grammar-conversion-dialog{
+    font-size:14px;
+}
+.grammar-conversion-header h3{
+    font-size:1.15rem;
+    line-height:1.25;
+}
+.grammar-conversion-header p,
+.grammar-conversion-state,
+.grammar-conversion-overview article strong,
+.grammar-conversion-overview article > span,
+.grammar-conversion-dialog ul,
+.grammar-conversion-footer .hydra-ui-button{
+    font-size:.9rem;
+}
+.grammar-conversion-overview article > div{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+}
+.grammar-conversion-footer{
+    align-items:center;
+}
+.grammar-conversion-footer > div:last-child{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.grammar-compilation-stage-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+}
+.grammar-compilation-stage-card{
+    grid-template-columns:30px minmax(0,1fr) auto;
+    align-items:center;
+    min-height:84px;
+    padding:12px;
+}
+.grammar-compilation-stage-icon{
+    width:28px;
+    height:28px;
+    font-size:.9rem;
+    line-height:1;
+}
+.grammar-compilation-stage-meta{
+    display:grid;
+    justify-items:end;
+    gap:8px;
+    align-content:center;
+}
+.grammar-stage-help-button{
+    display:grid;
+    place-items:center;
+    width:26px;
+    min-width:26px;
+    height:26px;
+    min-height:26px;
+    padding:0;
+    border-radius:999px;
+}
+.grammar-metamodel-tree-surface{
+    display:grid;
+    gap:10px;
+    padding:12px;
+    min-height:0;
+}
+.grammar-metamodel-tree-scroll{
+    max-height:480px;
+    overflow-y:auto;
+    overflow-x:auto;
+    padding:4px 8px 12px 4px;
+    border:1px solid var(--hydra-border-subtle);
+    border-radius:10px;
+    background:var(--hydra-bg-surface);
+}
+.grammar-metamodel-tree-copy{
+    margin:0;
+    color:var(--hydra-text-secondary);
+    font-size:.82rem;
+    line-height:1.45;
+}
+.grammar-metamodel-tree-root,
+.grammar-metamodel-tree-children{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+.grammar-metamodel-tree-root{
+    padding:4px 0 16px 2px;
+}
+.grammar-metamodel-tree-item{
+    position:relative;
+    list-style:none;
+    padding:5px 0;
+}
+.grammar-metamodel-tree-node{
+    position:relative;
+    z-index:2;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+    max-width:min(860px,calc(100% - 8px));
+    padding:8px 10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface);
+    box-shadow:0 1px 2px var(--hydra-shadow-color);
+    overflow-wrap:anywhere;
+}
+.grammar-metamodel-tree-node>strong{
+    min-width:0;
+    font-size:.84rem;
+    line-height:1.3;
+}
+.grammar-metamodel-tree-badges{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+}
+.grammar-metamodel-tree-badge{
+    display:inline-flex;
+    align-items:center;
+    min-height:22px;
+    padding:2px 7px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:999px;
+    background:var(--hydra-bg-surface-muted);
+    color:var(--hydra-text-secondary);
+    font-size:.7rem;
+    font-weight:650;
+    white-space:nowrap;
+}
+.grammar-metamodel-tree-item.kind-root>.grammar-metamodel-tree-node{
+    border-color:color-mix(in srgb,var(--hydra-color-primary-600) 35%,var(--hydra-border-default));
+    background:var(--hydra-bg-selection);
+}
+.grammar-metamodel-tree-item.kind-class>.grammar-metamodel-tree-node,
+.grammar-metamodel-tree-item.kind-enum>.grammar-metamodel-tree-node{
+    background:var(--hydra-bg-surface-muted);
+}
+.grammar-metamodel-tree-item.kind-attribute>.grammar-metamodel-tree-node,
+.grammar-metamodel-tree-item.kind-relation>.grammar-metamodel-tree-node,
+.grammar-metamodel-tree-item.kind-literal>.grammar-metamodel-tree-node,
+.grammar-metamodel-tree-item.kind-empty>.grammar-metamodel-tree-node{
+    padding:6px 9px;
+    font-size:.78rem;
+}
+.grammar-metamodel-tree-item.kind-empty>.grammar-metamodel-tree-node{
+    color:var(--hydra-text-muted);
+    border-style:dashed;
+}
+.grammar-metamodel-tree-children{
+    position:relative;
+    margin-left:22px;
+    padding-left:28px;
+}
+.grammar-metamodel-tree-children::before{
+    content:'';
+    position:absolute;
+    left:0;
+    top:-5px;
+    bottom:23px;
+    border-left:2px solid var(--hydra-border-strong);
+}
+.grammar-metamodel-tree-children>.grammar-metamodel-tree-item::before{
+    content:'';
+    position:absolute;
+    left:-28px;
+    top:22px;
+    width:28px;
+    border-top:2px solid var(--hydra-border-strong);
+}
+.grammar-metamodel-tree-children>.grammar-metamodel-tree-item:last-child::after{
+    content:'';
+    position:absolute;
+    left:-30px;
+    top:24px;
+    bottom:-8px;
+    width:4px;
+    background:var(--hydra-bg-surface);
+}
+@media(max-width:700px){
+    .grammar-metamodel-tree-node{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:6px;
+    }
+    .grammar-metamodel-tree-children{
+        margin-left:12px;
+        padding-left:22px;
+    }
+    .grammar-metamodel-tree-children>.grammar-metamodel-tree-item::before{
+        left:-22px;
+        width:22px;
+    }
+}
+@media(max-width:1220px){
+    .grammar-compilation-stage-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+    .grammar-compilation-stage-grid{grid-template-columns:1fr}
+    .grammar-conversion-footer > div:last-child{width:100%}
+}
+
+.hydra-button-with-tooltip{display:flex;align-items:center;gap:6px;width:100%}
+.hydra-button-with-tooltip>.hydra-ui-button{flex:1 1 auto}
+.hydra-button-with-tooltip>.hydra-ui-tooltip-root{flex:0 0 auto}
+
+/* R16 — compact dynamic grammar actions and fewer compilation cards per row. */
+.grammar-header-actions{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(170px,210px));
+    justify-content:start;
+    align-items:start;
+    gap:8px 10px;
+    width:auto;
+}
+.grammar-header-actions .hydra-button-with-tooltip{
+    width:auto;
+    min-width:0;
+}
+.grammar-header-actions .hydra-button-with-tooltip>.hydra-ui-button{
+    width:100%;
+    min-width:0;
+    min-height:38px;
+    padding:8px 12px;
+    white-space:normal;
+    text-align:center;
+    line-height:1.2;
+}
+.grammar-header-actions .hydra-button-with-tooltip>.hydra-ui-tooltip-root{
+    align-self:center;
+}
+.grammar-compilation-stage-grid.hydra-guided-stepper{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+}
+.grammar-compilation-stage-grid.hydra-guided-stepper>.grammar-compilation-stage-card{
+    min-height:96px;
+}
+.grammar-compilation-stage-card{
+    grid-template-columns:32px minmax(0,1fr) auto;
+    align-items:start;
+    gap:10px;
+}
+.grammar-compilation-stage-card .hydra-guided-status-icon,
+.grammar-compilation-stage-card .grammar-compilation-stage-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    align-self:start;
+    justify-self:center;
+    width:26px;
+    height:26px;
+    min-width:26px;
+    padding:0;
+    line-height:1;
+    transform:none;
+}
+.grammar-compilation-stage-card>div strong{
+    line-height:1.25;
+}
+.grammar-compilation-stage-meta{
+    justify-items:center;
+    align-content:start;
+    padding-top:2px;
+}
+.grammar-stage-help-button{
+    align-self:center;
+    justify-self:center;
+}
+@media(max-width:1320px){
+    .grammar-header-actions{grid-template-columns:repeat(2,minmax(180px,220px))}
+    .grammar-compilation-stage-grid.hydra-guided-stepper{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:980px){
+    .grammar-compilation-stage-grid.hydra-guided-stepper{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+    .grammar-header-actions{grid-template-columns:minmax(0,1fr);width:100%}
+    .grammar-compilation-stage-grid.hydra-guided-stepper{grid-template-columns:1fr}
+}
+
+/* R18 — use the standard system tooltip trigger in compilation cards. */
+.grammar-compilation-stage-meta > .hydra-ui-tooltip-root {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+}
+.grammar-compilation-stage-meta > .hydra-ui-tooltip-root > .hydra-context-help-button,
+.grammar-compilation-stage-meta > .hydra-ui-tooltip-root > .hydra-ui-tooltip-trigger,
+.grammar-stage-help-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    min-height: 26px;
+    padding: 0;
+    border-radius: 999px;
+    line-height: 1;
+}
+
+/* R5C13 Fix 8 — dense two-row grammar setup without clipped action labels. */
+@media (min-width:1180px){
+    .grammar-designer-header{
+        grid-template-columns:minmax(340px,.58fr) minmax(0,1.42fr);
+        gap:8px 14px;
+        align-items:end;
+    }
+    .grammar-header-workspace{
+        grid-template-columns:minmax(320px,.78fr) minmax(660px,1.72fr);
+        gap:8px 10px;
+        align-items:end;
+    }
+    .grammar-header-actions{
+        grid-template-columns:repeat(4,minmax(150px,1fr));
+        gap:8px;
+        width:100%;
+        min-width:0;
+        align-items:stretch;
+    }
+    .grammar-header-actions .hydra-button-with-tooltip{
+        display:grid;
+        grid-template-columns:minmax(0,1fr) auto;
+        gap:5px;
+        width:100%;
+        min-width:0;
+        align-items:center;
+    }
+    .grammar-header-actions .hydra-button-with-tooltip>.hydra-ui-button{
+        width:100%;
+        min-width:0;
+        height:44px;
+        min-height:44px;
+        max-height:44px;
+        padding:5px 10px;
+        overflow:hidden;
+        white-space:normal;
+        overflow-wrap:normal;
+        word-break:normal;
+        line-height:1.08;
+        text-align:center;
+        justify-content:center;
+    }
+    .grammar-saved-selector select{height:44px;min-height:44px}
+    .grammar-identity-grid{
+        grid-template-columns:minmax(0,.9fr) minmax(0,1fr) minmax(0,.9fr) minmax(0,1.03fr) minmax(0,1.08fr) minmax(0,1.02fr) minmax(0,1.08fr);
+        gap:7px 9px;
+        align-items:end;
+    }
+    .grammar-identity-grid .hydra-ui-form-control,
+    .grammar-identity-grid :is(input,select,.hydra-adaptive-select-control),
+    .grammar-import-menu summary{height:44px;min-height:44px;box-sizing:border-box}
+}
+
+/* R5C13 Fix 8 — Monaco diagnostics remain visible in the line number, gutter and whole line. */
+.grammar-monaco-host .hydra-monaco-line-error{background:color-mix(in srgb,var(--hydra-color-danger-600) 7%,transparent)}
+.grammar-monaco-host .hydra-monaco-line-warning,
+.grammar-monaco-host .hydra-monaco-line-unused{background:color-mix(in srgb,var(--hydra-color-warning-600) 8%,transparent)}
+.grammar-monaco-host .hydra-monaco-line-info{background:color-mix(in srgb,var(--hydra-color-primary-600) 6%,transparent)}
+.grammar-monaco-host .hydra-monaco-line-number-error{color:var(--hydra-color-danger-600);font-weight:800}
+.grammar-monaco-host .hydra-monaco-line-number-warning,
+.grammar-monaco-host .hydra-monaco-line-number-unused{color:var(--hydra-color-warning-600);font-weight:800}
+.grammar-monaco-host .hydra-monaco-line-number-info{color:var(--hydra-color-primary-600);font-weight:800}
+.grammar-monaco-host .hydra-monaco-line-decoration-error{border-left:3px solid var(--hydra-color-danger-600);margin-left:3px}
+.grammar-monaco-host .hydra-monaco-line-decoration-warning,
+.grammar-monaco-host .hydra-monaco-line-decoration-unused{border-left:3px solid var(--hydra-color-warning-600);margin-left:3px}
+.grammar-monaco-host .hydra-monaco-line-decoration-info{border-left:3px solid var(--hydra-color-primary-600);margin-left:3px}
+.grammar-monaco-host .hydra-monaco-glyph-error{background:radial-gradient(circle,var(--hydra-color-danger-600) 0 4px,transparent 4.5px) center/10px 10px no-repeat}
+.grammar-monaco-host .hydra-monaco-glyph-warning,
+.grammar-monaco-host .hydra-monaco-glyph-unused{background:radial-gradient(circle,var(--hydra-color-warning-600) 0 4px,transparent 4.5px) center/10px 10px no-repeat}
+.grammar-monaco-host .hydra-monaco-glyph-info{background:radial-gradient(circle,var(--hydra-color-primary-600) 0 4px,transparent 4.5px) center/10px 10px no-repeat}
+
+/* R5C13 Fix 8 — inferred UML diagram: content-sized classes, native endpoint shapes and export menu. */
+.grammar-class-node{min-width:260px;min-height:96px}
+.grammar-class-node>section{max-height:none;overflow:visible}
+.grammar-class-node>header>strong{white-space:normal;overflow:visible;overflow-wrap:anywhere;text-overflow:clip}
+.grammar-class-node .grammar-diagram-feature{
+    grid-template-columns:minmax(80px,1fr) minmax(100px,auto) auto;
+    min-height:29px;
+    height:auto;
+    padding:5px 9px;
+    align-items:start;
+}
+.grammar-class-node .grammar-diagram-feature>span:first-child,
+.grammar-class-node .grammar-diagram-feature>span:nth-child(2){white-space:normal;overflow:visible;overflow-wrap:anywhere;text-overflow:clip;line-height:1.25}
+.grammar-class-node .grammar-diagram-feature>span:nth-child(2){text-align:right}
+.grammar-uml-edge-path{stroke-linecap:round;stroke-linejoin:round}
+.grammar-uml-edge.has-problem .grammar-uml-edge-path{stroke-dasharray:5 4}
+.grammar-uml-edge-label{
+    pointer-events:none;
+    max-width:220px;
+    padding:2px 6px;
+    border:1px solid color-mix(in srgb,var(--hydra-border-default) 78%,transparent);
+    border-radius:4px;
+    background:color-mix(in srgb,var(--hydra-bg-surface) 94%,transparent);
+    color:var(--hydra-text-primary);
+    font-size:11px;
+    font-weight:600;
+    line-height:1.2;
+    white-space:nowrap;
+}
+.grammar-diagram-export-menu{position:relative;flex:0 0 auto}
+.grammar-diagram-export-menu>summary{
+    list-style:none;
+    cursor:pointer;
+    min-height:32px;
+    display:flex;
+    align-items:center;
+    padding:5px 10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:6px;
+    background:var(--hydra-bg-surface);
+    color:var(--hydra-text-primary);
+    font-size:.78rem;
+    font-weight:600;
+    white-space:nowrap;
+}
+.grammar-diagram-export-menu>summary::-webkit-details-marker{display:none}
+.grammar-diagram-export-menu>summary::after{content:'▾';margin-left:7px;font-size:.7rem}
+.grammar-diagram-export-menu[open]>summary::after{content:'▴'}
+.grammar-diagram-export-menu>div{
+    position:absolute;
+    z-index:40;
+    top:calc(100% + 4px);
+    right:0;
+    display:grid;
+    gap:4px;
+    min-width:170px;
+    padding:6px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px;
+    background:var(--hydra-bg-surface);
+    box-shadow:0 8px 24px var(--hydra-shadow-color);
+}
+.grammar-diagram-export-menu>div .hydra-ui-button{width:100%;justify-content:flex-start}
+.grammar-diagram-fallback-node{overflow:visible}
+.grammar-diagram-fallback-node li{align-items:flex-start;white-space:normal;overflow-wrap:anywhere}
+.grammar-diagram-fallback-edges{color:var(--hydra-text-secondary)}
+
+/* R5C13 Fix 9 — inferred grammar metamodel delegates to the canonical Metamodel Designer renderer. */
+.shared-metamodel-renderer,
+.shared-metamodel-renderer .inferred-metamodel-shared-canvas,
+.shared-metamodel-renderer .inferred-metamodel-flow{
+    width:100%;
+    height:100%;
+    min-width:0;
+    min-height:0;
+}
+.inferred-metamodel-shared-canvas .metamodel-feature-row{
+    overflow:visible;
+    text-overflow:clip;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    line-height:1.25;
+}
+.inferred-metamodel-shared-canvas .metamodel-compartment{
+    overflow:visible;
+}
+.inferred-metamodel-shared-canvas .metamodel-class-node,
+.inferred-metamodel-shared-canvas .metamodel-enum-node,
+.inferred-metamodel-shared-canvas .metamodel-data-type-node{
+    overflow:hidden;
+}
+
+/* R5C13 Fix 9 — diagnostic severity is visible consistently in Monaco and feedback cards. */
+.grammar-monaco-host .monaco-editor .margin-view-overlays .hydra-monaco-line-number-error,
+.grammar-monaco-host .monaco-editor .hydra-monaco-line-number-error{color:var(--hydra-color-danger-600)!important;font-weight:800!important;background:color-mix(in srgb,var(--hydra-color-danger-600) 10%,transparent)!important;border-radius:3px}
+.grammar-monaco-host .monaco-editor .margin-view-overlays .hydra-monaco-line-number-warning,
+.grammar-monaco-host .monaco-editor .margin-view-overlays .hydra-monaco-line-number-unused,
+.grammar-monaco-host .monaco-editor .hydra-monaco-line-number-warning,
+.grammar-monaco-host .monaco-editor .hydra-monaco-line-number-unused{color:var(--hydra-color-warning-600)!important;font-weight:800!important;background:color-mix(in srgb,var(--hydra-color-warning-600) 10%,transparent)!important;border-radius:3px}
+.grammar-monaco-host .monaco-editor .margin-view-overlays .hydra-monaco-line-number-info,
+.grammar-monaco-host .monaco-editor .hydra-monaco-line-number-info{color:var(--hydra-color-primary-600)!important;font-weight:800!important;background:color-mix(in srgb,var(--hydra-color-primary-600) 10%,transparent)!important;border-radius:3px}
+.grammar-problem.error{background:color-mix(in srgb,var(--hydra-color-danger-600) 4%,var(--hydra-bg-surface))}
+.grammar-problem.warning{background:color-mix(in srgb,var(--hydra-color-warning-600) 5%,var(--hydra-bg-surface))}
+.grammar-problem.info{border-left-color:var(--hydra-color-primary-600);background:color-mix(in srgb,var(--hydra-color-primary-600) 4%,var(--hydra-bg-surface))}
+.grammar-information-diagnostic{border:1px solid color-mix(in srgb,var(--hydra-color-primary-600) 30%,var(--hydra-border-default));border-left:4px solid var(--hydra-color-primary-600);background:color-mix(in srgb,var(--hydra-color-primary-600) 4%,var(--hydra-bg-surface));border-radius:6px;padding:8px 10px}
+
+/* R5C13 Fix77 — problems own diagnostic text and expose quick fixes without consuming source-editor height. */
+.grammar-problem-quick-fixes{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 10px 10px;padding-top:2px}
+.grammar-problem-quick-fixes>strong{font-size:.72rem;color:var(--hydra-text-secondary)}
+.grammar-problem-quick-fixes>div{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.grammar-problem-quick-fixes .grammar-quick-fix{min-height:30px}

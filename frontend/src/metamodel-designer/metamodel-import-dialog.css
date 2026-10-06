@@ -1,0 +1,678 @@
+.metamodel-import-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: auto;
+    padding: 34px 20px 24px;
+    box-sizing: border-box;
+    background: rgba(15, 23, 42, 0.48);
+    backdrop-filter: blur(2px);
+}
+.metamodel-import-dialog {
+    display: flex;
+    width: min(920px, calc(100vw - 40px));
+    max-height: calc(100vh - 58px);
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: 10px;
+    background: var(--hydra-bg-surface);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.35);
+}
+.metamodel-import-dialog.maximized {
+    position: fixed;
+    inset: 12px;
+    width: auto;
+    height: auto;
+    max-height: none;
+    margin: 0;
+    border-radius: 6px;
+}
+.metamodel-import-window-header {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface-muted);
+}
+.metamodel-import-window-title h2, .metamodel-import-window-title p {
+    margin: 0;
+}
+.metamodel-import-window-title h2 {
+    color: var(--hydra-text-primary);
+    font-size: 18px;
+}
+.metamodel-import-window-title p {
+    margin-top: 4px;
+    color: var(--hydra-text-muted);
+    font-size: 12px;
+}
+.metamodel-import-window-controls {
+    display: flex;
+    gap: 4px;
+}
+.metamodel-import-window-controls button {
+    display: inline-flex;
+    width: 32px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    color: var(--hydra-text-secondary);
+    background: transparent;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+.metamodel-import-window-controls button:hover {
+    border-color: var(--hydra-border-default);
+    background: var(--hydra-border-default);
+}
+.metamodel-import-window-controls button.close:hover {
+    border-color: #ef4444;
+    color: var(--hydra-bg-surface);
+    background: var(--hydra-color-danger-600);
+}
+.metamodel-import-content {
+    display: grid;
+    min-height: 0;
+    flex: 1 1 auto;
+    gap: 16px;
+    overflow: auto;
+    padding: 16px;
+}
+.metamodel-import-actions {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface-muted);
+}
+.metamodel-import-file, .metamodel-import-options-grid label {
+    display: grid;
+    gap: 7px;
+    font-size: 13px;
+}
+.metamodel-import-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+.metamodel-import-options-grid input, .metamodel-import-options-grid select {
+    width: 100%;
+    box-sizing: border-box;
+}
+.metamodel-import-checks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 16px;
+    padding: 14px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 7px;
+    background: var(--hydra-bg-surface-muted);
+}
+.metamodel-import-checks label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 13px;
+}
+.metamodel-import-preview-button {
+    justify-self: start;
+}
+.metamodel-import-analysis {
+    display: grid;
+    gap: 11px;
+    padding: 14px;
+    border: 1px solid var(--hydra-color-primary-200);
+    border-radius: 8px;
+    background: var(--hydra-bg-surface-muted);
+}
+.metamodel-import-analysis-failed {
+    border-color: var(--hydra-palette-red-200);
+    background: var(--hydra-color-danger-50);
+}
+.metamodel-import-analysis-completed {
+    border-color: var(--hydra-palette-green-200);
+    background: var(--hydra-color-success-50);
+}
+.metamodel-import-analysis-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+.metamodel-import-analysis-heading h3, .metamodel-import-analysis-heading p {
+    margin: 0;
+}
+.metamodel-import-analysis-heading p {
+    margin-top: 3px;
+    color: var(--hydra-text-secondary);
+    font-size: 12px;
+}
+.metamodel-import-analysis-heading > strong {
+    color: var(--hydra-color-primary-700);
+    font-size: 17px;
+}
+.metamodel-import-analysis progress {
+    width: 100%;
+    height: 14px;
+    accent-color: var(--hydra-color-primary-600);
+}
+.metamodel-import-activity-log {
+    display: grid;
+    gap: 7px;
+    max-height: 230px;
+    overflow: auto;
+    padding-right: 3px;
+}
+.metamodel-import-activity {
+    display: grid;
+    grid-template-columns: 60px minmax(0, 1fr) 40px;
+    gap: 8px;
+    align-items: start;
+    padding: 8px 9px;
+    border-left: 4px solid var(--hydra-color-blue-400);
+    border-radius: 5px;
+    background: var(--hydra-bg-surface);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+.metamodel-import-activity > span {
+    display: inline-flex;
+    justify-content: center;
+    padding: 2px 5px;
+    border-radius: 999px;
+    color: var(--hydra-color-blue-900);
+    background: var(--hydra-bg-selection);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.metamodel-import-activity strong {
+    color: var(--hydra-text-secondary);
+    font-size: 11px;
+}
+.metamodel-import-activity p {
+    margin: 2px 0 0;
+    color: var(--hydra-text-secondary);
+    font-size: 12px;
+}
+.metamodel-import-activity small {
+    justify-self: end;
+    color: var(--hydra-text-muted);
+    font-size: 10px;
+}
+.metamodel-import-activity-warning {
+    border-left-color: var(--hydra-color-warning-500);
+    background: var(--hydra-color-warning-50);
+}
+.metamodel-import-activity-warning > span {
+    color: var(--hydra-color-warning-600);
+    background: var(--hydra-color-warning-50);
+}
+.metamodel-import-activity-information-loss {
+    border-left-color: #ea580c;
+    background: var(--hydra-color-warning-50);
+}
+.metamodel-import-activity-information-loss > span {
+    color: var(--hydra-color-warning-600);
+    background: var(--hydra-color-warning-50);
+}
+.metamodel-import-activity-error {
+    border-left-color: var(--hydra-color-danger-600);
+    background: var(--hydra-color-danger-50);
+}
+.metamodel-import-activity-error > span {
+    color: var(--hydra-color-danger-600);
+    background: var(--hydra-color-danger-50);
+}
+.metamodel-import-preview {
+    padding: 14px;
+    border: 1px solid var(--hydra-color-primary-200);
+    border-radius: 7px;
+    background: var(--hydra-bg-selection);
+}
+.metamodel-import-preview h3, .metamodel-import-preview p {
+    margin-top: 0;
+}
+.metamodel-import-statistics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.metamodel-import-statistics span {
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--hydra-bg-selection);
+    font-size: 12px;
+}
+.metamodel-import-statistics .metamodel-import-loss-stat {
+    color: var(--hydra-color-warning-600);
+    background: var(--hydra-color-warning-50);
+}
+.metamodel-import-error {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--hydra-palette-red-200);
+    border-radius: 6px;
+    color: var(--hydra-color-danger-600);
+    background: var(--hydra-color-danger-50);
+}
+.metamodel-import-button {
+    border-color: var(--hydra-palette-sky-600);
+    color: var(--hydra-color-info-600);
+    background: var(--hydra-color-sky-50);
+}
+@media (max-width: 680px) {
+    .metamodel-import-backdrop {
+        padding: 12px;
+    }
+    .metamodel-import-dialog {
+        width: 100%;
+        max-height: calc(100vh - 24px);
+    }
+    .metamodel-import-options-grid, .metamodel-import-checks {
+        grid-template-columns: 1fr;
+    }
+    .metamodel-import-activity {
+        grid-template-columns: 52px minmax(0, 1fr);
+    }
+    .metamodel-import-activity small {
+        display: none;
+    }
+}
+/* Progreso exacto por etapas completadas. La etapa activa se anima sin inventar un porcentaje interno. */
+.metamodel-import-stage-progress {
+    position: relative;
+    height: 14px;
+    overflow: hidden;
+    border: 1px solid var(--hydra-color-blue-300);
+    border-radius: 999px;
+    background: var(--hydra-bg-selection);
+}
+.metamodel-import-stage-progress-completed, .metamodel-import-stage-progress-running {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+.metamodel-import-stage-progress-completed {
+    left: 0;
+    background: var(--hydra-color-primary-600);
+    transition: width 180ms ease-in-out;
+}
+.metamodel-import-stage-progress-running {
+    min-width: 12px;
+    background: repeating-linear-gradient(135deg, var(--hydra-color-blue-400) 0, var(--hydra-color-blue-400) 8px, var(--hydra-color-primary-200) 8px, var(--hydra-color-primary-200) 16px);
+    animation: metamodel-import-running-stage 700ms linear infinite;
+}
+@keyframes metamodel-import-running-stage {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 24px 0;
+    }
+}
+.metamodel-import-uploading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--hydra-text-secondary);
+    font-size: 12px;
+}
+.metamodel-import-uploading > span {
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--hydra-color-primary-200);
+    border-top-color: var(--hydra-color-primary-600);
+    border-radius: 50%;
+    animation: metamodel-import-spinner 700ms linear infinite;
+}
+@keyframes metamodel-import-spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+.metamodel-import-stage-list {
+    display: grid;
+    gap: 8px;
+    max-height: 320px;
+    overflow: auto;
+    padding-right: 3px;
+}
+.metamodel-import-stage {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 9px;
+    padding: 9px;
+    border: 1px solid var(--hydra-bg-selection);
+    border-left: 4px solid var(--hydra-border-strong);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface);
+}
+.metamodel-import-stage-running {
+    border-left-color: var(--hydra-color-primary-600);
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.08);
+}
+.metamodel-import-stage-completed {
+    border-left-color: var(--hydra-color-success-600);
+}
+.metamodel-import-stage-failed {
+    border-left-color: var(--hydra-color-danger-600);
+    background: var(--hydra-color-danger-50);
+}
+.metamodel-import-stage-skipped, .metamodel-import-stage-pending {
+    opacity: 0.72;
+}
+.metamodel-import-stage-marker {
+    display: grid;
+    align-content: start;
+    justify-items: center;
+    gap: 6px;
+}
+.metamodel-import-stage-marker button {
+    display: inline-flex;
+    width: 40px;
+    height: 26px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 5px;
+    color: var(--hydra-text-secondary);
+    background: var(--hydra-bg-surface-muted);
+    cursor: pointer;
+}
+.metamodel-import-stage-marker button:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+.metamodel-import-stage-severity {
+    display: inline-flex;
+    min-width: 45px;
+    justify-content: center;
+    padding: 3px 6px;
+    border-radius: 999px;
+    color: var(--hydra-color-blue-900);
+    background: var(--hydra-bg-selection);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.metamodel-import-stage-severity-warning {
+    color: var(--hydra-color-warning-600);
+    background: var(--hydra-color-warning-50);
+}
+.metamodel-import-stage-severity-information-loss {
+    color: var(--hydra-color-warning-600);
+    background: var(--hydra-color-warning-50);
+}
+.metamodel-import-stage-severity-error {
+    color: var(--hydra-color-danger-600);
+    background: var(--hydra-color-danger-50);
+}
+.metamodel-import-stage-body {
+    min-width: 0;
+}
+.metamodel-import-stage-body > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 0 6px;
+    border: 0;
+    background: transparent;
+}
+.metamodel-import-stage-body > header > div {
+    display: grid;
+    gap: 2px;
+}
+.metamodel-import-stage-body > header strong {
+    color: var(--hydra-text-primary);
+    font-size: 12px;
+}
+.metamodel-import-stage-body > header span, .metamodel-import-stage-body > header small {
+    color: var(--hydra-text-muted);
+    font-size: 10px;
+}
+.metamodel-import-stage .metamodel-import-activity {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+    margin-top: 5px;
+    padding: 7px 8px;
+    border: 0;
+    border-radius: 5px;
+    background: var(--hydra-bg-surface-muted);
+    box-shadow: none;
+}
+.metamodel-import-stage .metamodel-import-activity strong {
+    font-size: 10px;
+}
+.metamodel-import-stage .metamodel-import-activity p {
+    margin: 0;
+    font-size: 11px;
+}
+.metamodel-import-log-download {
+    margin-right: auto;
+}
+@media (max-width: 680px) {
+    .metamodel-import-stage {
+        grid-template-columns: 54px minmax(0, 1fr);
+    }
+    .metamodel-import-actions {
+        flex-wrap: wrap;
+    }
+    .metamodel-import-log-download {
+        order: 3;
+        width: 100%;
+        margin-right: 0;
+    }
+}
+.metamodel-import-content > .app-required-legend {
+    margin-bottom: 2px;
+}
+.metamodel-import-hidden-file {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+.metamodel-import-source-button {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 88px;
+    padding: 14px 16px;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: 8px;
+    background: var(--hydra-bg-surface-muted);
+    color: var(--hydra-text-primary);
+    text-align: left;
+    cursor: pointer;
+}
+.metamodel-import-source-button:hover:not(:disabled) {
+    border-color: var(--hydra-color-primary-600);
+    background: var(--hydra-bg-selection);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, .12);
+}
+.metamodel-import-source-button > svg {
+    width: 34px;
+    height: 34px;
+    color: var(--hydra-color-primary-600);
+}
+.metamodel-import-source-button > span {
+    display: grid;
+    gap: 4px;
+}
+.metamodel-import-source-button strong {
+    font-size: var(--app-form-font-size, 17px);
+}
+.metamodel-import-source-button small {
+    color: var(--hydra-text-muted);
+    font-size: calc(var(--app-form-font-size, 17px) - 2px);
+    line-height: 1.35;
+}
+.metamodel-import-options-grid .app-helped-field select, .metamodel-import-options-grid .app-helped-field input {
+    width: 100%;
+    min-height: 44px;
+    padding: 9px 11px;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface);
+    color: var(--hydra-text-primary);
+}
+.metamodel-import-checks {
+    align-items: stretch;
+}
+.metamodel-import-checks .app-helped-field {
+    padding: 10px 12px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 7px;
+    background: var(--hydra-bg-surface-muted);
+}
+.metamodel-import-check {
+    display: flex !important;
+    align-items: center;
+    gap: 9px;
+    min-height: 32px;
+    font-weight: 500 !important;
+}
+.metamodel-import-check input {
+    width: 19px;
+    height: 19px;
+    flex: 0 0 auto;
+}
+.metamodel-update-site-shortcut {
+    align-items: center;
+    background: color-mix(in srgb, var(--hydra-accent-color, #3157a4) 8%, var(--hydra-panel-background, var(--hydra-bg-surface)));
+    border: 1px solid color-mix(in srgb, var(--hydra-accent-color, #3157a4) 28%, transparent);
+    border-radius: var(--hydra-radius-lg, 12px);
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin: 4px 0 18px;
+    padding: 12px 14px;
+}
+.metamodel-update-site-shortcut div {
+    display: grid;
+    gap: 4px;
+}
+.metamodel-update-site-shortcut span {
+    color: var(--hydra-text-muted, #5f6877);
+    font-size: 0.88rem;
+}
+.metamodel-update-site-shortcut button {
+    flex: 0 0 auto;
+    min-height: var(--hydra-control-height, 34px);
+    white-space: nowrap;
+}
+@media (max-width: 760px) {
+    .metamodel-update-site-shortcut {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+
+.metamodel-import-window-header>.hydra-creation-mode-switch {
+    margin-left:auto
+}
+.metamodel-import-guided-block {
+    display:grid;
+    gap:12px
+}
+.metamodel-import-guided-block>p {
+    margin:0;
+    color:var(--hydra-text-muted);
+    line-height:1.45
+}
+.metamodel-import-guided-review {
+    display:grid;
+    gap:7px;
+    padding:10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted)
+}
+.metamodel-import-guided-review h4,.metamodel-import-guided-review p {
+    margin:0
+}
+.metamodel-import-guided-review p {
+    color:var(--hydra-text-muted);
+    line-height:1.45
+}
+.metamodel-import-guided-review>div {
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px
+}
+
+.metamodel-blockly-import-guide {
+    display:grid;
+    gap:10px;
+    padding:14px 16px;
+    border:1px solid var(--hydra-color-blue-border);
+    border-radius:10px;
+    background:var(--hydra-bg-surface-muted)
+}
+.metamodel-blockly-import-guide header span {
+    display:block;
+    margin-top:3px;
+    color:var(--hydra-text-secondary);
+    line-height:1.45
+}
+.metamodel-blockly-import-guide ol {
+    display:grid;
+    gap:7px;
+    margin:0;
+    padding-left:22px
+}
+.metamodel-blockly-import-guide li {
+    line-height:1.5
+}
+.metamodel-blockly-import-guide code {
+    padding:1px 4px;
+    border-radius:4px;
+    background:var(--hydra-bg-selection)
+}
+.metamodel-blockly-preview-details {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:10px;
+    padding:10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted)
+}
+.metamodel-blockly-preview-details>strong {
+    width:100%
+}
+.metamodel-blockly-preview-details>span {
+    padding:4px 8px;
+    border-radius:999px;
+    background:var(--hydra-bg-selection)
+}
+.metamodel-blockly-preview-details>small {
+    width:100%;
+    color:var(--hydra-text-muted);
+    line-height:1.45
+}
+
+/* Keep maximize/restore and close controls inside the import window header without overlap. */
+.metamodel-import-dialog>.metamodel-import-window-header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px;padding-right:10px}.metamodel-import-dialog>.metamodel-import-window-header .hydra-window-controls{position:static;display:flex;align-items:center;gap:4px;justify-self:end;min-width:max-content}.metamodel-import-dialog>.metamodel-import-window-header .hydra-window-controls button{position:static;transform:none}

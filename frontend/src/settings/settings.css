@@ -1,0 +1,620 @@
+:root {
+    --app-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --app-base-font-size: 18px;
+    --app-window-font-size: 18px;
+    --app-tab-font-size: 16px;
+    --app-form-font-size: 18px;
+}
+html, body, button, input, select, textarea {
+    font-family: var(--app-font-family);
+}
+body {
+    font-size: var(--app-base-font-size);
+}
+.application, .project-workbench-shell, .metamodel-designer, .validation-designer, .event-designer, .gamification-designer, .integration-designer, .editor-definition-designer {
+    font-size: var(--app-window-font-size);
+}
+.toolbar button, .toolbar select, .project-command-bar button, .project-command-link, .project-tabs button, .project-view-switch button, .project-explorer-actions button {
+    font-size: var(--app-tab-font-size);
+}
+.project-dialog, .metamodel-import-dialog, .metamodel-export-dialog, .settings-dialog, .validation-guide-dialog {
+    font-size: var(--app-window-font-size);
+}
+.project-dialog label, .project-dialog input, .project-dialog select, .project-dialog textarea, .metamodel-import-dialog label, .metamodel-import-dialog input, .metamodel-import-dialog select, .metamodel-import-dialog textarea, .metamodel-export-dialog label, .metamodel-export-dialog input, .metamodel-export-dialog select, .metamodel-export-dialog textarea, .validation-designer label, .validation-designer input, .validation-designer select, .validation-designer textarea, .event-designer label, .event-designer input, .event-designer select, .event-designer textarea, .integration-designer label, .integration-designer input, .integration-designer select, .integration-designer textarea, .editor-definition-designer label, .editor-definition-designer input, .editor-definition-designer select, .editor-definition-designer textarea, .metamodel-designer label, .metamodel-designer input, .metamodel-designer select, .metamodel-designer textarea, .gamification-designer label, .gamification-designer input, .gamification-designer select, .gamification-designer textarea, .operation-runtime-panel label, .operation-runtime-panel input, .operation-runtime-panel select, .operation-runtime-panel textarea {
+    font-size: var(--app-form-font-size);
+}
+.project-tree-label, .project-active-path, .project-file-editor > header strong, .project-inline-error, .project-inline-status {
+    font-size: var(--app-window-font-size);
+}
+.project-explorer-panel > header strong, .project-explorer-panel > header span, .project-selection-details, .project-tree-badge, .project-tree-change {
+    font-size: calc(var(--app-window-font-size) - 2px);
+}
+.settings-backdrop {
+    position: fixed;
+    z-index: 9000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(15, 23, 42, .55);
+}
+.settings-dialog {
+    width: min(760px, 96vw);
+    max-height: 92vh;
+    overflow: hidden;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 12px;
+    background: var(--hydra-bg-surface);
+    color: var(--hydra-text-primary);
+    box-shadow: 0 26px 70px rgba(15, 23, 42, .35);
+}
+.settings-dialog > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface-muted);
+}
+.settings-dialog > header > div {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.settings-dialog h2, .settings-dialog h3, .settings-dialog p {
+    margin: 0;
+}
+.settings-dialog > header p {
+    margin-top: 4px;
+    color: var(--hydra-text-muted);
+}
+.settings-dialog > header button {
+    border: 0;
+    background: transparent;
+    font-size: 28px;
+    cursor: pointer;
+}
+.settings-content {
+    display: grid;
+    gap: 18px;
+    padding: 20px;
+    overflow: auto;
+    max-height: calc(92vh - 150px);
+}
+.settings-section {
+    display: grid;
+    gap: 9px;
+    padding: 15px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 8px;
+}
+.settings-section select {
+    min-height: 42px;
+    padding: 8px 10px;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface);
+}
+.settings-size-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.settings-size-grid h3 {
+    grid-column: 1 / -1;
+}
+.settings-size-field {
+    display: grid;
+    gap: 6px;
+}
+.settings-preview {
+    display: grid;
+    gap: 9px;
+    padding: 16px;
+    border: 2px dashed var(--hydra-color-blue-300);
+    border-radius: 8px;
+    background: var(--hydra-bg-selection);
+}
+.settings-preview label {
+    display: grid;
+    gap: 6px;
+}
+.settings-preview input {
+    min-height: 42px;
+    padding: 8px 10px;
+    border: 1px solid var(--hydra-color-blue-300);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface);
+}
+.settings-dialog > footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-top: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface-muted);
+}
+.settings-dialog > footer span {
+    flex: 1;
+}
+.settings-dialog > footer button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 8px 13px;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface);
+    cursor: pointer;
+}
+.settings-dialog > footer .settings-primary {
+    border-color: var(--hydra-color-primary-600);
+    background: var(--hydra-color-primary-600);
+    color: var(--hydra-bg-surface);
+}
+.settings-dialog > footer .settings-reset {
+    color: var(--hydra-text-secondary);
+}
+@media (max-width: 700px) {
+    .settings-size-grid {
+        grid-template-columns: 1fr;
+    }
+}
+:root {
+    --app-toolbar-height: 76px;
+}
+.toolbar {
+    min-height: var(--app-toolbar-height);
+    height: var(--app-toolbar-height);
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.project-workbench-shell {
+    height: calc(100vh - var(--app-toolbar-height));
+}
+
+:root {
+    --app-diagram-font-size: 18px;
+    --app-tooltip-font-size: 18px;
+}
+.settings-diagram-preview, .settings-tooltip-preview {
+    display: grid;
+    gap: 4px;
+    padding: 11px 12px;
+    border-radius: 7px;
+}
+.settings-diagram-preview {
+    border: 1px solid var(--hydra-color-blue-300);
+    background: var(--hydra-bg-surface-muted);
+}
+.settings-diagram-preview small {
+    color: var(--hydra-text-muted);
+    line-height: 1.4;
+}
+.settings-tooltip-preview {
+    border: 1px solid var(--hydra-border-strong);
+    background: var(--hydra-bg-surface);
+    box-shadow: 0 8px 20px rgba(16,24,40,.12);
+}
+.settings-tooltip-preview span {
+    color: var(--hydra-text-secondary);
+    line-height: 1.45;
+}
+/* Forms and master-detail designers follow the setting even when old module CSS used fixed pixels. */
+.hydra-designer-form, .hydra-designer-form input, .hydra-designer-form select, .hydra-designer-form textarea, .hydra-designer-form button, .hydra-designer-sidebar, .hydra-designer-sidebar input, .hydra-designer-sidebar select, .hydra-designer-sidebar button, .validation-rule-editor, .quick-fix-designer, .event-flow-form, .gamification-editor, .integration-designer, .editor-definition-designer {
+    font-size: var(--app-form-font-size);
+}
+/* All current diagrammers and their palettes use a dedicated adjustable size. */
+.event-architecture-visual-editor, .event-flow-visual-editor, .gamification-visual-editor, .event-architecture-visual-editor button, .event-flow-visual-editor button, .gamification-visual-editor button, .event-architecture-node, .event-flow-node-card, .gamification-node-card, .event-architecture-canvas .react-flow__edge-text, .event-flow-visual-canvas .react-flow__edge-text, .gamification-visual-canvas .react-flow__edge-text, .editor-runtime-view {
+    font-size: var(--app-diagram-font-size);
+}
+.event-architecture-palette small, .event-flow-visual-palette small, .gamification-visual-palette small, .event-architecture-node small, .event-flow-node-card small, .gamification-node-card small {
+    font-size: calc(var(--app-diagram-font-size) - 2px);
+    line-height: 1.4;
+}
+.event-architecture-node-kind, .event-flow-node-kind, .gamification-node-kind, .event-architecture-palette-group summary, .event-flow-visual-palette h5, .gamification-visual-palette h5 {
+    font-size: calc(var(--app-diagram-font-size) - 3px);
+}
+/* Contextual help and process guides share one user-adjustable readable size. */
+.hydra-field-tooltip, .hydra-resizable-info-tooltip, .hydra-guide-dialog, .validation-field-tooltip, .validation-guide-dialog {
+    font-size: var(--app-tooltip-font-size);
+}
+/* Remove undersized text in every canonical form designer. */
+.hydra-sidebar-heading h3, .hydra-sidebar-heading h4, .hydra-sidebar-section-title strong, .hydra-designer-list-item strong, .hydra-designer-form-header h3, .hydra-designer-section h4, .validation-panel-heading h3, .validation-rule-editor h3, .quick-fix-editor h3 {
+    font-size: var(--app-form-font-size);
+}
+.hydra-sidebar-heading small, .hydra-designer-list-item small, .hydra-designer-list-badge, .hydra-designer-form-header p, .hydra-inline-checkbox, .hydra-id-preview, .hydra-field-label-row > label, .hydra-required-legend, .event-designer-header p, .event-dirty-state, .event-sidebar-empty, .event-document-settings > header p, .event-flow-toolbar p, .event-flow-sidebar-empty, .event-flow-edge-inspector p, .event-flow-trigger-list p, .gamification-header p, .gamification-sidebar-empty, .integration-designer p, .editor-definition-designer p, .validation-empty-group, .validation-rule-state, .validation-chip-grid label, .validation-expression-heading span, .validation-expression-child > span, .quick-fix-list-item em {
+    font-size: calc(var(--app-form-font-size) - 2px);
+    line-height: 1.45;
+}
+.hydra-sidebar-section-actions button, .hydra-designer-form button, .hydra-designer-sidebar button, .validation-designer button, .event-designer button, .gamification-designer button, .integration-designer button, .editor-definition-designer button {
+    font-size: calc(var(--app-form-font-size) - 1px);
+}
+/* Metamodel designer and its visual/property tools participate in the same settings. */
+.metamodel-visual-designer, .metamodel-property-panel, .metamodel-property-panel input, .metamodel-property-panel select, .metamodel-property-panel textarea, .metamodel-property-panel button, .visual-style-editor, .visual-style-editor input, .visual-style-editor select, .visual-style-editor button {
+    font-size: var(--app-form-font-size);
+}
+.metamodel-palette, .metamodel-palette button, .metamodel-canvas, .metamodel-class-node, .metamodel-enum-node, .metamodel-data-type-node {
+    font-size: var(--app-diagram-font-size);
+}
+.metamodel-class-node small, .metamodel-enum-node small, .metamodel-data-type-node small, .metamodel-palette small {
+    font-size: calc(var(--app-diagram-font-size) - 2px);
+    line-height: 1.4;
+}
+/* Palette descriptions, card subtitles and connection labels remain readable at every setting. */
+.event-architecture-palette-search, .event-architecture-palette-group summary, .event-architecture-catalog-item, .event-flow-visual-palette header small, .event-flow-visual-palette h5, .event-flow-palette-node strong, .gamification-visual-palette h5, .gamification-palette-node strong {
+    font-size: calc(var(--app-diagram-font-size) - 2px);
+    line-height: 1.35;
+}
+.event-architecture-palette-group summary small, .event-architecture-catalog-item small, .event-architecture-catalog-item em, .event-flow-palette-node small, .gamification-palette-node small, .event-flow-node-kind, .event-architecture-node-kind, .gamification-node-kind {
+    font-size: calc(var(--app-diagram-font-size) - 3px);
+    line-height: 1.4;
+}
+.event-architecture-toolbar-summary, .event-flow-visual-toolbar button, .gamification-visual-toolbar button {
+    font-size: calc(var(--app-diagram-font-size) - 2px);
+}
+.event-architecture-canvas .react-flow__edge-text, .event-flow-visual-canvas .react-flow__edge-text, .gamification-visual-canvas .react-flow__edge-text {
+    font-size: calc(var(--app-diagram-font-size) - 2px);
+}
+
+:root {
+    --app-responsive-scale: 1;
+    --app-control-min-height: 38px;
+    --app-control-padding-x: 14px;
+    --app-control-padding-y: 7px;
+    --app-checkbox-size: 21px;
+    --app-panel-padding: 16px;
+    --app-layout-gap: 12px;
+    --hydra-control-border: #aeb8c7;
+    --hydra-control-border-hover: #7c8ba1;
+    --hydra-control-bg-start: var(--hydra-bg-surface);
+    --hydra-control-bg-end: #f4f7fb;
+    --hydra-control-text: #27364a;
+    --hydra-control-focus: rgba(37, 99, 235, .28);
+}
+/* Low-specificity fallback for buttons which previously inherited only the
+   browser default. Module-specific buttons keep their own visual language. */
+:where(button) {
+    min-height: var(--app-control-min-height);
+    padding: var(--app-control-padding-y) var(--app-control-padding-x);
+    border: 1px solid var(--hydra-control-border);
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--hydra-control-bg-start), var(--hydra-control-bg-end));
+    color: var(--hydra-control-text);
+    font: inherit;
+    font-weight: 600;
+    line-height: 1.15;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .10);
+    transition: border-color 120ms ease, background 120ms ease, box-shadow 120ms ease, color 120ms ease, transform 120ms ease;
+}
+:where(button:hover:not(:disabled)) {
+    border-color: var(--hydra-control-border-hover);
+    background: linear-gradient(180deg, var(--hydra-bg-surface), var(--hydra-bg-surface-muted));
+    box-shadow: 0 3px 8px rgba(15, 23, 42, .14);
+    transform: translateY(-1px);
+}
+:where(button:active:not(:disabled)) {
+    box-shadow: inset 0 1px 3px rgba(15, 23, 42, .16);
+    transform: translateY(0);
+}
+:where(button:focus-visible) {
+    outline: 3px solid var(--hydra-control-focus);
+    outline-offset: 2px;
+}
+:where(button:disabled) {
+    cursor: not-allowed;
+    opacity: .58;
+    box-shadow: none;
+    transform: none;
+}
+/* Close/clear buttons remain compact circular controls instead of oversized
+   pills, while still receiving the shared focus and hover behaviour. */
+:where(button[aria-label^="Close"], button[aria-label^="Clear"], button[title="Close"]) {
+    width: var(--app-control-min-height);
+    min-width: var(--app-control-min-height);
+    padding: 0;
+    border-radius: 50%;
+}
+/* Refined accessible checkbox used consistently by all designers and dialogs. */
+:where(input[type="checkbox"]) {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    display: inline-grid !important;
+    place-content: center;
+    flex: 0 0 auto;
+    inline-size: var(--app-checkbox-size) !important;
+    block-size: var(--app-checkbox-size) !important;
+    min-inline-size: var(--app-checkbox-size) !important;
+    margin: 0;
+    border: 2px solid #8b9bb0;
+    border-radius: 6px;
+    background: linear-gradient(180deg, var(--hydra-bg-surface), var(--hydra-bg-surface-muted));
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, .08), 0 1px 2px rgba(15, 23, 42, .08);
+    cursor: pointer;
+    transition: border-color 120ms ease, background 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+:where(input[type="checkbox"])::before {
+    content: "";
+    inline-size: 48%;
+    block-size: 28%;
+    border-left: 2px solid var(--hydra-bg-surface);
+    border-bottom: 2px solid var(--hydra-bg-surface);
+    transform: translateY(-8%) rotate(-45deg) scale(0);
+    transform-origin: center;
+    transition: transform 110ms ease-out;
+}
+:where(input[type="checkbox"]:checked) {
+    border-color: var(--hydra-color-primary-600);
+    background: linear-gradient(180deg, var(--hydra-color-blue-500), var(--hydra-color-primary-600));
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, .25), 0 2px 5px rgba(37, 99, 235, .24);
+}
+:where(input[type="checkbox"]:checked)::before {
+    transform: translateY(-8%) rotate(-45deg) scale(1);
+}
+:where(input[type="checkbox"]:hover:not(:disabled)) {
+    border-color: var(--hydra-color-primary-600);
+    transform: scale(1.04);
+}
+:where(input[type="checkbox"]:focus-visible) {
+    outline: 3px solid var(--hydra-control-focus);
+    outline-offset: 2px;
+}
+:where(input[type="checkbox"]:disabled) {
+    cursor: not-allowed;
+    opacity: .55;
+    transform: none;
+}
+:where(label:has(> input[type="checkbox"]), label:has(input[type="checkbox"])) {
+    align-items: center;
+    gap: max(8px, calc(var(--app-layout-gap) * .65));
+}
+.settings-responsive-section {
+    gap: 12px;
+}
+.settings-responsive-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-weight: 400;
+    cursor: pointer;
+}
+.settings-responsive-toggle > span {
+    display: grid;
+    gap: 3px;
+}
+.settings-responsive-toggle small {
+    color: var(--hydra-text-muted);
+    line-height: 1.45;
+}
+/* Responsive structural dimensions. These overrides intentionally use
+   clamp-like variables instead of duplicating fixed values per component. */
+.toolbar {
+    gap: calc(var(--app-layout-gap) * 1.5);
+    padding-inline: var(--app-panel-padding);
+}
+.workspace {
+    grid-template-columns: clamp(190px, 16vw, 270px) minmax(0, 1fr) clamp(285px, 24vw, 390px);
+}
+.palette, .inspector {
+    padding: var(--app-panel-padding);
+}
+.property-field {
+    gap: max(5px, calc(var(--app-layout-gap) * .5));
+    margin-bottom: var(--app-layout-gap);
+}
+:where(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+    min-height: var(--app-control-min-height);
+}
+@media (max-width: 1120px) {
+    .workspace {
+        grid-template-columns: clamp(175px, 22vw, 230px) minmax(0, 1fr) clamp(255px, 29vw, 330px);
+    }
+}
+@media (max-width: 820px) {
+    .toolbar {
+        flex-wrap: wrap;
+        align-content: center;
+        overflow-y: auto;
+    }
+    .workspace {
+        grid-template-columns: minmax(150px, 34vw) minmax(0, 1fr);
+    }
+    .model-inspector-stack {
+        grid-column: 1 / -1;
+        max-height: 45vh;
+    }
+}
+
+input[type="checkbox"]:checked {
+    border-color: var(--hydra-palette-blue-700) !important;
+    background-color: var(--hydra-palette-blue-600) !important;
+    background-image: linear-gradient(180deg, var(--hydra-color-blue-500), var(--hydra-palette-blue-700)) !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 2px 5px rgba(37,99,235,.28) !important;
+}
+input[type="checkbox"]:checked::before {
+    content: "" !important;
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(-8%) rotate(-45deg) scale(1) !important;
+}
+/* Actionable backend explanations use line breaks for What/Why/How. */
+:where(.error-message, .project-inline-error, .project-dialog-error, .metamodel-import-error, .metamodel-export-error, .editor-asset-picker-error) {
+    white-space: pre-line;
+}
+/* Preserve line breaks in every validation/error surface, including file and local field errors. */
+:where([role="alert"], .project-file-state.error, .metamodel-validation-error, .metamodel-number-error) {
+    white-space: pre-line;
+}
+
+.settings-technical {
+    display:grid;
+    gap:12px
+}
+.settings-technical>header {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px
+}
+.settings-technical>header h3,.settings-technical>header p {
+    margin:0
+}
+.settings-technical>header p {
+    margin-top:4px;
+    color:var(--hydra-text-muted)
+}
+.settings-technical>header>span {
+    font-size:.78em;
+    color:var(--hydra-text-muted)
+}
+.settings-technical details {
+    border:1px solid var(--hydra-border-default);
+    border-radius:var(--hydra-radius-small);
+    background:var(--hydra-bg-surface)
+}
+.settings-technical summary {
+    padding:9px 11px;
+    cursor:pointer;
+    font-weight:700
+}
+.settings-technical-grid {
+    display:grid;
+    gap:0;
+    border-top:1px solid var(--hydra-border-default)
+}
+.settings-technical-row {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(120px,auto);
+    align-items:center;
+    gap:12px;
+    padding:9px 11px;
+    border-bottom:1px solid var(--hydra-border-default)
+}
+.settings-technical-row:last-child {
+    border-bottom:0
+}
+.settings-technical-row>div:first-child {
+    display:grid;
+    gap:2px;
+    min-width:0
+}
+.settings-technical-row strong {
+    overflow-wrap:anywhere;
+    font-family:var(--mono);
+    font-size:.78em
+}
+.settings-technical-row small {
+    color:var(--hydra-text-muted);
+    line-height:1.35
+}
+.settings-technical-row code {
+    justify-self:end;
+    max-width:260px;
+    overflow:hidden;
+    text-overflow:ellipsis
+}
+.settings-technical-row input {
+    width:120px
+}
+.settings-technical-actions {
+    display:flex;
+    justify-content:flex-end
+}
+.settings-technical-error {
+    color:var(--hydra-color-danger-600)
+}
+
+.settings-theme-choice {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:6px;
+}
+.settings-theme-choice > button {
+    min-width:0;
+    border-radius:8px;
+    background:var(--hydra-bg-surface);
+    color:var(--hydra-text-secondary);
+}
+.settings-theme-choice > button.active {
+    border-color:var(--hydra-color-primary-600);
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-color-primary-700);
+    box-shadow:0 0 0 1px color-mix(in srgb,var(--hydra-color-primary-600) 20%,transparent);
+}
+.settings-theme-select {
+    margin-top:2px;
+}
+
+.settings-technical-intro {
+    display:grid;
+    gap:3px;
+    padding:10px 12px;
+    border:1px solid var(--hydra-color-blue-200);
+    border-radius:8px;
+    background:var(--hydra-bg-selection)
+}
+.settings-technical-intro span {
+    color:var(--hydra-text-secondary);
+    line-height:1.4
+}
+.settings-technical-copy {
+    display:grid;
+    gap:4px;
+    min-width:0
+}
+.settings-technical-title {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    min-width:0
+}
+.settings-technical-title>strong {
+    font-family:inherit;
+    font-size:.94em;
+    overflow-wrap:anywhere
+}
+.settings-technical-key {
+    display:block;
+    width:max-content;
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    color:var(--hydra-text-muted);
+    font-size:.68em
+}
+.settings-technical-value {
+    display:grid;
+    justify-items:end;
+    gap:2px;
+    min-width:130px;
+    text-align:right
+}
+.settings-technical-value>strong {
+    font-size:.86em
+}
+.settings-technical-value>small {
+    color:var(--hydra-text-muted);
+    font-size:.7em
+}
+.settings-technical-value>input {
+    width:128px
+}
+.settings-technical .hydra-ui-tooltip-root {
+    flex:0 0 auto
+}
+@media(max-width:700px) {
+    .settings-technical-row {
+        grid-template-columns:1fr
+    }
+    .settings-technical-value {
+        justify-items:start;
+        text-align:left
+    }
+    .settings-technical>header {
+        flex-direction:column
+    }
+    .settings-technical-value>input {
+        width:min(100%,220px)
+    }
+}

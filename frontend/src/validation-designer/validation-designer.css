@@ -1,0 +1,1371 @@
+.validation-designer {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    background: var(--hydra-bg-app);
+}
+.validation-designer-toolbar {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) auto auto;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface);
+}
+.validation-designer-toolbar h2, .validation-panel-heading h3, .validation-rule-editor h3, .quick-fix-editor h3, .validation-diagnostics h3 {
+    margin: 0;
+}
+.validation-designer-toolbar > div:first-child span, .validation-panel-heading span, .validation-rule-editor-header span, .quick-fix-list-item small {
+    color: var(--hydra-text-muted);
+    font-size: 12px;
+}
+.validation-designer-toolbar nav {
+    display: flex;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.validation-designer-toolbar nav button {
+    border: 0;
+    border-right: 1px solid var(--hydra-border-default);
+    border-radius: 0;
+    background: var(--hydra-bg-surface);
+}
+.validation-designer-toolbar nav button:last-child {
+    border-right: 0;
+}
+.validation-designer-toolbar nav button.active {
+    background: var(--hydra-bg-selection);
+    color: var(--hydra-color-primary-700);
+    font-weight: 700;
+}
+.validation-designer-toolbar nav span {
+    display: inline-flex;
+    min-width: 18px;
+    justify-content: center;
+    margin-left: 4px;
+    border-radius: 10px;
+    background: var(--hydra-bg-selection);
+}
+.validation-designer-save-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
+}
+.validation-unsaved-state {
+    color: var(--hydra-color-warning-600);
+    font-size: 12px;
+}
+.validation-save-button {
+    background: var(--hydra-color-primary-600);
+    color: var(--hydra-bg-surface);
+    border-color: var(--hydra-color-primary-600);
+}
+.validation-rules-workspace {
+    display: grid;
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+    min-height: 0;
+    flex: 1;
+}
+.validation-rule-manager, .quick-fix-list {
+    min-height: 0;
+    overflow: auto;
+    border-right: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface);
+    padding: 14px;
+}
+.validation-panel-heading, .validation-rule-editor-header, .quick-fix-operation-header, .validation-expression-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.validation-rule-filters {
+    display: grid;
+    gap: 8px;
+    margin: 12px 0 8px;
+}
+.validation-rule-set-toolbar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.validation-rule-tree {
+    display: grid;
+    gap: 12px;
+}
+.validation-rule-set {
+    border: 1px solid #e0e5ef;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--hydra-bg-surface-muted);
+}
+.validation-rule-set-header {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto auto auto;
+    gap: 4px;
+    padding: 6px;
+    border-bottom: 1px solid #e0e5ef;
+    background: var(--hydra-bg-surface-muted);
+}
+.validation-rule-set-header input {
+    min-width: 0;
+    font-weight: 700;
+}
+.validation-rule-set-title {
+    padding: 8px 10px;
+    font-weight: 700;
+    background: var(--hydra-bg-surface-muted);
+}
+.validation-empty-group {
+    margin: 0;
+    padding: 10px;
+    color: var(--hydra-text-muted);
+    font-size: 12px;
+}
+.validation-rule-list-item, .quick-fix-list-item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    border: 0;
+    border-bottom: 1px solid #edf0f6;
+    border-radius: 0;
+    text-align: left;
+    background: var(--hydra-bg-surface);
+}
+.validation-rule-list-item:hover, .quick-fix-list-item:hover {
+    background: var(--hydra-bg-hover);
+}
+.validation-rule-list-item.selected, .quick-fix-list-item.selected {
+    background: var(--hydra-bg-selection);
+    box-shadow: inset 3px 0 var(--hydra-color-primary-600);
+}
+.validation-rule-list-copy, .quick-fix-list-item > span:nth-child(2) {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+.validation-rule-list-copy strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.validation-rule-state {
+    color: var(--hydra-text-muted);
+    font-size: 11px;
+}
+.validation-rule-diagnostics {
+    min-width: 20px;
+    border-radius: 10px;
+    background: var(--hydra-color-danger-50);
+    color: var(--hydra-color-danger-600);
+    text-align: center;
+    font-size: 11px;
+}
+.validation-severity-dot {
+    width: 9px;
+    height: 9px;
+    flex: 0 0 9px;
+    border-radius: 50%;
+}
+.validation-severity-dot.error {
+    background: var(--hydra-palette-danger-700);
+}
+.validation-severity-dot.warning {
+    background: #f79009;
+}
+.validation-severity-dot.info {
+    background: #1570ef;
+}
+.validation-rule-editor, .quick-fix-editor, .validation-diagnostics {
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
+    padding: 18px 22px 32px;
+}
+.validation-rule-editor-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--hydra-border-default);
+}
+.validation-rule-editor-header > div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+.validation-toggle {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 6px;
+}
+.validation-toggle input {
+    width: auto;
+}
+.validation-danger-button {
+    color: var(--hydra-color-danger-600);
+    border-color: #f3b6b2;
+    background: var(--hydra-color-danger-50);
+}
+.validation-rule-fields {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+}
+.validation-rule-fields.two-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.validation-rule-fields label, .validation-wide-field, .quick-fix-operation-fields label, .validation-expression-node label, .validation-expression-heading label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: var(--hydra-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+.validation-wide-field {
+    margin-top: 12px;
+}
+.validation-rule-editor input, .validation-rule-editor select, .validation-rule-editor textarea, .quick-fix-designer input, .quick-fix-designer select, .quick-fix-designer textarea, .validation-rule-manager input, .validation-rule-manager select, .validation-expression-node input, .validation-expression-node select, .validation-expression-heading input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 7px 8px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface);
+    color: var(--hydra-text-primary);
+    font: inherit;
+}
+.validation-choice-fieldset {
+    margin: 16px 0 0;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 8px;
+}
+.validation-choice-fieldset legend {
+    padding: 0 6px;
+    font-weight: 700;
+}
+.validation-chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.validation-chip-grid label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px;
+    border: 1px solid #d5dbe7;
+    border-radius: 14px;
+    background: var(--hydra-bg-surface);
+    font-size: 12px;
+}
+.validation-chip-grid label.selected {
+    border-color: var(--hydra-color-blue-border);
+    background: var(--hydra-bg-selection);
+}
+.validation-chip-grid input {
+    width: auto;
+}
+.validation-expression-builder {
+    margin-top: 18px;
+    padding: 14px;
+    border: 1px solid #cfd8e8;
+    border-radius: 10px;
+    background: var(--hydra-bg-surface-muted);
+}
+.validation-expression-heading {
+    margin-bottom: 12px;
+}
+.validation-expression-heading > div:first-child {
+    flex: 1;
+}
+.validation-expression-heading h4 {
+    margin: 0;
+}
+.validation-expression-heading span {
+    color: var(--hydra-text-muted);
+    font-size: 12px;
+}
+.validation-expression-heading label {
+    min-width: 240px;
+}
+.validation-expression-node {
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #dbe2ee;
+    border-radius: 8px;
+    background: var(--hydra-bg-surface);
+}
+.validation-expression-node[data-depth="1"] {
+    background: var(--hydra-bg-surface-muted);
+}
+.validation-expression-node-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.validation-expression-node-header select {
+    max-width: 240px;
+}
+.validation-expression-node-id {
+    margin-left: auto;
+    color: var(--hydra-text-muted);
+    font-family: monospace;
+    font-size: 10px;
+}
+.validation-expression-inline-fields {
+    display: grid;
+    grid-template-columns: minmax(120px, .35fr) minmax(160px, 1fr);
+    gap: 10px;
+}
+.validation-expression-branches {
+    display: grid;
+    gap: 10px;
+}
+.validation-expression-child {
+    display: grid;
+    gap: 5px;
+    padding-left: 10px;
+    border-left: 3px solid #c6d4f6;
+}
+.validation-expression-child > span {
+    color: var(--hydra-text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.validation-expression-static {
+    padding: 8px;
+    border-radius: 6px;
+    background: var(--hydra-bg-surface-muted);
+    color: var(--hydra-text-secondary);
+}
+.validation-inline-delete {
+    justify-self: start;
+}
+.validation-advanced-section {
+    margin-top: 16px;
+    padding: 10px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 8px;
+}
+.quick-fix-designer {
+    display: grid;
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+    min-height: 0;
+    flex: 1;
+}
+.quick-fix-list-item em {
+    color: var(--hydra-text-muted);
+    font-size: 11px;
+}
+.quick-fix-operation-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background: var(--hydra-bg-surface-muted);
+}
+.quick-fix-operation-toolbar span {
+    font-weight: 700;
+}
+.quick-fix-operation-list {
+    display: grid;
+    gap: 10px;
+}
+.quick-fix-operation-card {
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 8px;
+    background: var(--hydra-bg-surface);
+    overflow: hidden;
+}
+.quick-fix-operation-header {
+    padding: 8px 10px;
+    background: var(--hydra-bg-surface-muted);
+    border-bottom: 1px solid var(--hydra-border-default);
+}
+.quick-fix-operation-header div {
+    display: flex;
+    gap: 4px;
+}
+.quick-fix-operation-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 12px;
+}
+.validation-diagnostics {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+}
+.validation-diagnostic {
+    padding: 12px;
+    border-left: 4px solid var(--hydra-border-strong);
+    border-radius: 7px;
+    background: var(--hydra-bg-surface);
+    box-shadow: 0 1px 2px rgba(16,24,40,.08);
+}
+.validation-diagnostic.error {
+    border-left-color: var(--hydra-palette-danger-700);
+}
+.validation-diagnostic.warning {
+    border-left-color: #f79009;
+}
+.validation-diagnostic.info {
+    border-left-color: #1570ef;
+}
+.validation-diagnostic > div {
+    display: flex;
+    justify-content: space-between;
+}
+.validation-diagnostic p {
+    margin: 7px 0;
+}
+.validation-diagnostic code {
+    color: var(--hydra-text-muted);
+}
+.validation-empty-state {
+    display: flex;
+    min-height: 120px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--hydra-text-muted);
+    text-align: center;
+}
+.metamodel-designer-mode-tabs {
+    display: inline-flex;
+    border: 1px solid #bac5d8;
+    border-radius: 7px;
+    overflow: hidden;
+}
+.metamodel-designer-mode-tabs button {
+    border: 0;
+    border-right: 1px solid #bac5d8;
+    border-radius: 0;
+}
+.metamodel-designer-mode-tabs button:last-child {
+    border-right: 0;
+}
+.metamodel-designer-mode-tabs button.active {
+    background: var(--hydra-bg-selection);
+    color: var(--hydra-color-primary-700);
+    font-weight: 700;
+}
+@media (max-width: 1100px) {
+    .validation-designer-toolbar {
+        grid-template-columns: 1fr;
+    }
+    .validation-rules-workspace, .quick-fix-designer {
+        grid-template-columns: 260px minmax(0, 1fr);
+    }
+    .validation-rule-fields.two-columns, .quick-fix-operation-fields {
+        grid-template-columns: 1fr;
+    }
+}
+.quick-fix-parameter-list {
+    display: grid;
+    gap: 8px;
+    margin-top: 10px;
+}
+.quick-fix-parameter-row {
+    display: grid;
+    grid-template-columns: minmax(120px, 1fr) minmax(130px, 1fr) auto auto;
+    gap: 8px;
+    align-items: center;
+}
+.metamodel-designer-toolbar > .metamodel-designer-mode-tabs {
+    margin-right: 0;
+}
+.validation-designer-blocked {
+    flex: 1;
+    margin: 20px;
+    border: 1px dashed #c7d2e5;
+    border-radius: 10px;
+    background: var(--hydra-bg-surface-muted);
+}
+/* Contextual help and required-field guidance. */
+.validation-helped-field {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 5px;
+}
+.validation-field-label-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+.validation-field-label-row > label, .validation-field-label-row > span:first-child {
+    color: var(--hydra-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+.validation-required-marker {
+    margin-left: 3px;
+    color: var(--hydra-color-warning-600);
+    font-weight: 800;
+}
+.validation-required-legend {
+    margin: 10px 0 0;
+    color: var(--hydra-text-muted);
+    font-size: 12px;
+}
+.validation-required-legend span {
+    color: var(--hydra-color-warning-600);
+    font-weight: 800;
+}
+.validation-field-info-button, .validation-process-info-button .validation-guide-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+.validation-field-info-button {
+    width: 19px;
+    height: 19px;
+    min-width: 19px;
+    padding: 0;
+    border: 1px solid var(--hydra-color-blue-border);
+    border-radius: 50%;
+    background: var(--hydra-color-primary-subtle);
+    color: var(--hydra-color-primary-700);
+    font-family: Georgia, serif;
+    font-size: 12px;
+    line-height: 1;
+}
+.validation-field-info-button:hover, .validation-field-info-button[aria-expanded="true"] {
+    border-color: var(--hydra-color-primary-600);
+    background: var(--hydra-bg-selection);
+}
+.validation-field-info-button:focus-visible, .validation-process-info-button:focus-visible, .validation-guide-dialog button:focus-visible {
+    outline: 3px solid rgba(49, 95, 206, .28);
+    outline-offset: 2px;
+}
+.validation-field-tooltip {
+    position: absolute;
+    z-index: 60;
+    top: calc(100% + 7px);
+    left: 0;
+    width: min(340px, calc(100vw - 48px));
+    padding: 11px 12px;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: 8px;
+    background: var(--hydra-bg-surface);
+    box-shadow: 0 8px 24px rgba(16, 24, 40, .18);
+    color: var(--hydra-text-secondary);
+    font-size: 12px;
+    font-weight: 400;
+}
+.validation-field-tooltip::before {
+    position: absolute;
+    top: -6px;
+    left: 20px;
+    width: 10px;
+    height: 10px;
+    border-top: 1px solid var(--hydra-border-strong);
+    border-left: 1px solid var(--hydra-border-strong);
+    background: var(--hydra-bg-surface);
+    content: '';
+    transform: rotate(45deg);
+}
+.validation-field-tooltip strong {
+    color: var(--hydra-text-primary);
+    font-size: 13px;
+}
+.validation-field-tooltip p {
+    margin: 6px 0 8px;
+    line-height: 1.45;
+}
+.validation-field-tooltip > div {
+    display: grid;
+    gap: 3px;
+    padding-top: 7px;
+    border-top: 1px solid var(--hydra-border-default);
+}
+.validation-field-tooltip span {
+    color: var(--hydra-text-secondary);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+.validation-field-tooltip code {
+    white-space: normal;
+    color: var(--hydra-color-primary-700);
+    font-family: inherit;
+    font-size: 12px;
+}
+.validation-inline-help-field {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.validation-inline-help-field > input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+.validation-process-info-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-color: #a9bce8;
+    background: var(--hydra-color-primary-soft);
+    color: var(--hydra-color-primary-700);
+    white-space: nowrap;
+}
+.validation-process-info-button > span {
+    display: inline-flex;
+    width: 18px;
+    height: 18px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--hydra-color-primary-600);
+    color: var(--hydra-bg-surface);
+    font-family: Georgia, serif;
+}
+.validation-panel-heading-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.validation-guide-backdrop {
+    position: fixed;
+    z-index: 3000;
+    inset: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 20px 20px;
+    overflow: auto;
+    background: rgba(16, 24, 40, .48);
+}
+.validation-guide-dialog {
+    width: min(780px, 100%);
+    max-height: calc(100vh - 68px);
+    overflow: auto;
+    border: 1px solid #cdd5e3;
+    border-radius: 12px;
+    background: var(--hydra-bg-surface);
+    box-shadow: 0 24px 60px rgba(16, 24, 40, .28);
+}
+.validation-guide-dialog > header {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface);
+}
+.validation-guide-dialog > header > div {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.validation-guide-dialog h3 {
+    margin: 0;
+    color: var(--hydra-text-primary);
+}
+.validation-guide-dialog header p {
+    margin: 4px 0 0;
+    color: var(--hydra-text-muted);
+    line-height: 1.45;
+}
+.validation-guide-icon {
+    display: inline-flex;
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--hydra-color-primary-600);
+    color: var(--hydra-bg-surface);
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: 800;
+}
+.validation-guide-dialog > header > button {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--hydra-text-secondary);
+    font-size: 25px;
+}
+.validation-guide-dialog ol {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 18px 22px 18px 52px;
+}
+.validation-guide-dialog li {
+    padding: 12px 14px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 8px;
+    background: var(--hydra-bg-surface-muted);
+}
+.validation-guide-dialog li::marker {
+    color: var(--hydra-color-primary-600);
+    font-weight: 800;
+}
+.validation-guide-dialog li p {
+    margin: 5px 0 8px;
+    color: var(--hydra-text-secondary);
+    line-height: 1.45;
+}
+.validation-guide-dialog li code {
+    display: block;
+    padding: 7px 9px;
+    border-radius: 6px;
+    background: var(--hydra-color-primary-subtle);
+    color: var(--hydra-color-primary-700);
+    white-space: normal;
+    font-family: inherit;
+}
+.validation-guide-dialog > footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 20px;
+    border-top: 1px solid var(--hydra-border-default);
+    background: var(--hydra-bg-surface-muted);
+}
+.validation-guide-dialog footer p {
+    margin: 0;
+    color: var(--hydra-text-secondary);
+    font-size: 12px;
+}
+.validation-guide-dialog footer button {
+    border-color: var(--hydra-color-primary-600);
+    background: var(--hydra-color-primary-600);
+    color: var(--hydra-bg-surface);
+}
+.validation-choice-fieldset legend {
+    max-width: 100%;
+}
+.validation-choice-fieldset legend .validation-field-label-row {
+    display: inline-flex;
+}
+.validation-choice-fieldset legend .validation-field-tooltip {
+    min-width: 300px;
+}
+.validation-expression-kind-field {
+    flex: 1;
+    max-width: 320px;
+}
+.validation-expression-kind-field select {
+    max-width: 100%;
+}
+.validation-expression-child-heading {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.validation-expression-child-heading > span:first-child {
+    color: var(--hydra-text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.validation-branch-help-text {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #a9bce8;
+    border-radius: 50%;
+    color: var(--hydra-color-primary-600);
+    cursor: help;
+    font-family: Georgia, serif;
+    font-size: 10px;
+    text-transform: none;
+}
+.validation-expression-action-row, .validation-section-help-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.validation-section-help-row {
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+.validation-section-help-row p {
+    flex: 1 1 260px;
+    margin: 0;
+    color: var(--hydra-text-muted);
+    font-size: 12px;
+}
+.quick-fix-parameter-row {
+    grid-template-columns: minmax(160px, 1fr) minmax(160px, 1fr) minmax(135px, auto) auto;
+    align-items: end;
+}
+.parameter-required-field {
+    align-self: center;
+}
+.quick-fix-operation-toolbar {
+    position: relative;
+}
+.quick-fix-operation-toolbar > .validation-field-label-row {
+    min-width: 135px;
+}
+.quick-fix-operation-toolbar select {
+    max-width: 280px;
+}
+.validation-selector-editor {
+    display: grid;
+    gap: 8px;
+}
+.validation-required-empty {
+    border: 1px dashed #f4a98f;
+    border-radius: 8px;
+    background: var(--hydra-color-warning-50);
+    color: var(--hydra-color-warning-600);
+}
+@media (max-width: 800px) {
+    .validation-guide-backdrop {
+        padding: 12px;
+    }
+    .validation-guide-dialog {
+        max-height: calc(100vh - 24px);
+    }
+    .validation-guide-dialog > footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .validation-panel-heading {
+        align-items: flex-start;
+    }
+    .validation-panel-heading-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .validation-rule-editor-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+    .quick-fix-parameter-row {
+        grid-template-columns: 1fr;
+    }
+}
+/* Field tooltips must be allowed to leave operation cards. */
+.quick-fix-operation-card {
+    overflow: visible;
+}
+/* Validation guidance layout and readability refinement. */
+.validation-rule-manager .validation-panel-heading, .quick-fix-list .validation-panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+}
+.validation-rule-manager .validation-panel-heading > div:first-child, .quick-fix-list .validation-panel-heading > div:first-child {
+    width: 100%;
+}
+.validation-rule-manager .validation-panel-heading-actions, .quick-fix-list .validation-panel-heading-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.validation-panel-heading h3, .validation-rule-editor h3, .quick-fix-editor h3, .validation-diagnostics h3 {
+    font-size: 18px;
+    line-height: 1.35;
+}
+.validation-designer-toolbar > div:first-child span, .validation-panel-heading span, .validation-rule-editor-header span, .quick-fix-list-item small {
+    font-size: 16px;
+    line-height: 1.4;
+}
+.validation-rule-fields label, .validation-wide-field, .quick-fix-operation-fields label, .validation-expression-node label, .validation-expression-heading label, .validation-field-label-row > label, .validation-field-label-row > span:first-child, .validation-inline-help-field .validation-field-label-row > label {
+    font-size: 16px;
+    line-height: 1.4;
+}
+/* The generic form rule above previously made the asterisk wrap below the text. */
+.validation-field-label-row {
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 7px;
+}
+.validation-field-label-row > label {
+    display: inline-flex !important;
+    min-width: 0;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    white-space: normal;
+}
+.validation-required-marker {
+    display: inline-flex;
+    margin-left: 0;
+    align-items: center;
+    line-height: 1;
+}
+.validation-field-info-button {
+    width: 23px;
+    height: 23px;
+    min-width: 23px;
+    flex: 0 0 23px;
+    font-size: 15px;
+}
+.validation-rule-editor input, .validation-rule-editor select, .validation-rule-editor textarea, .quick-fix-designer input, .quick-fix-designer select, .quick-fix-designer textarea, .validation-rule-manager input, .validation-rule-manager select, .validation-expression-node input, .validation-expression-node select, .validation-expression-heading input {
+    font-size: 16px;
+    line-height: 1.35;
+}
+.validation-required-legend, .validation-section-help-row p, .validation-guide-dialog footer p {
+    font-size: 16px;
+    line-height: 1.45;
+}
+.validation-field-tooltip {
+    width: min(470px, calc(100vw - 48px));
+    padding: 14px 15px;
+    font-size: 16px;
+    line-height: 1.55;
+}
+.validation-field-tooltip strong {
+    font-size: 18px;
+    line-height: 1.35;
+}
+.validation-field-tooltip p {
+    margin: 8px 0 11px;
+    line-height: 1.55;
+}
+.validation-field-tooltip span {
+    font-size: 14px;
+    line-height: 1.4;
+}
+.validation-field-tooltip code {
+    font-size: 16px;
+    line-height: 1.5;
+}
+.validation-toggle, .validation-inline-help-field {
+    font-size: 16px;
+}
+.validation-rule-list-copy strong, .quick-fix-list-item strong, .validation-rule-set-title, .validation-rule-set-header input, .validation-choice-fieldset legend {
+    font-size: 16px;
+    line-height: 1.4;
+}
+.validation-rule-state, .validation-rule-diagnostics, .quick-fix-list-item em, .validation-empty-group {
+    font-size: 15px;
+}
+.validation-process-info-button, .validation-panel-heading-actions > button {
+    font-size: 15px;
+}
+.validation-guide-dialog h3 {
+    font-size: 20px;
+}
+.validation-guide-dialog header p, .validation-guide-dialog li, .validation-guide-dialog li p, .validation-guide-dialog li code, .validation-guide-dialog > footer {
+    font-size: 16px;
+    line-height: 1.5;
+}
+@media (max-width: 800px) {
+    .validation-field-tooltip {
+        width: min(430px, calc(100vw - 32px));
+    }
+}
+.operation-binding-designer {
+    padding: 1rem;
+    overflow: auto;
+    display: grid;
+    gap: .9rem;
+}
+.operation-binding-card {
+    border: 1px solid var(--border-color, var(--hydra-border-default));
+    border-radius: .5rem;
+    padding: .9rem;
+    display: grid;
+    gap: .75rem;
+    background: var(--panel-background, var(--hydra-bg-surface));
+}
+.operation-binding-card > div:first-child {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.operation-binding-card > div:first-child span {
+    color: var(--hydra-text-muted);
+}
+.operation-surface-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .8rem;
+    border: 0;
+    padding: 0;
+}
+.operation-surface-options legend {
+    font-weight: 600;
+    margin-bottom: .35rem;
+}
+.operation-surface-options label {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    text-transform: capitalize;
+}
+.validation-export-link {
+    align-self: center;
+}
+.validation-field-tooltip {
+    resize: both;
+    overflow: auto;
+    min-width: 340px;
+    min-height: 150px;
+    max-width: min(760px, 90vw);
+    max-height: 75vh;
+    font-size: var(--app-tooltip-font-size, 18px);
+}
+.validation-field-option-help {
+    margin-top: 10px;
+    border-top: 1px solid var(--hydra-color-primary-200);
+    padding-top: 8px;
+}
+.validation-field-option-help dl {
+    display: grid;
+    gap: 7px;
+    margin: 7px 0 0;
+}
+.validation-field-option-help dl > div {
+    display: grid;
+    grid-template-columns: minmax(110px, .42fr) minmax(0, 1fr);
+    gap: 8px;
+}
+.validation-field-option-help dt {
+    font-weight: 700;
+    color: var(--hydra-color-primary-700);
+}
+.validation-field-option-help dd {
+    margin: 0;
+    color: var(--hydra-text-secondary);
+}
+.validation-structure-workspace {
+    min-height: 38rem;
+}
+.validation-structure-workspace .quick-fix-designer, .validation-structure-workspace .operation-binding-designer {
+    min-height: 30rem;
+}
+.validation-structure-summary {
+    padding: 1rem;
+}
+
+.validation-condition-mode-bar {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin:8px 0 12px;
+    padding:10px 12px;
+    border:1px solid #d7dfed;
+    border-radius:9px;
+    background:var(--hydra-bg-surface);
+}
+.validation-condition-mode-bar > div:first-child {
+    display:grid;
+    gap:3px;
+    min-width:0;
+}
+.validation-condition-mode-bar > div:first-child span {
+    color:var(--hydra-text-muted);
+    font-size:14px;
+}
+.validation-guided-builder {
+    display:grid;
+    gap:12px;
+}
+.validation-guided-intro {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px;
+    border:1px solid #cbd8f2;
+    border-radius:9px;
+    background:var(--hydra-bg-selection);
+}
+.validation-guided-intro > div:first-child {
+    display:grid;
+    gap:3px;
+}
+.validation-guided-intro span {
+    color:var(--hydra-text-muted);
+    font-size:14px;
+}
+.validation-guided-empty {
+    display:grid;
+    justify-items:center;
+    gap:8px;
+    padding:20px;
+    border:1px dashed #b9c7df;
+    border-radius:10px;
+    background:var(--hydra-bg-surface);
+    text-align:center;
+}
+.validation-guided-empty > span {
+    color:var(--hydra-text-muted);
+    font-size:14px;
+}
+.validation-guided-template-grid {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+    width:100%;
+    margin-top:6px;
+}
+.validation-guided-template-grid button {
+    display:grid;
+    gap:4px;
+    min-height:78px;
+    padding:12px;
+    text-align:left;
+}
+.validation-guided-template-grid button span {
+    color:var(--hydra-text-muted);
+    font-size:13px;
+    font-weight:400;
+}
+.validation-guided-join {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 12px;
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted);
+}
+.validation-guided-join span {
+    font-size:14px;
+    font-weight:700;
+}
+.validation-guided-join select {
+    width:auto;
+    min-width:220px;
+}
+.validation-guided-clause-list {
+    display:grid;
+    gap:9px;
+}
+.validation-guided-clause {
+    overflow:hidden;
+    border:1px solid #d5deed;
+    border-radius:9px;
+    background:var(--hydra-bg-surface);
+}
+.validation-guided-clause > header {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 10px;
+    border-bottom:1px solid #e1e7f0;
+    background:var(--hydra-bg-surface-muted);
+}
+.validation-guided-clause > header button {
+    margin-left:auto;
+}
+.validation-guided-number {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:23px;
+    height:23px;
+    border-radius:50%;
+    background:var(--hydra-color-primary-600);
+    color:var(--hydra-bg-surface);
+    font-size:13px;
+    font-weight:800;
+}
+.validation-guided-fields {
+    display:grid;
+    grid-template-columns:minmax(150px,.7fr) minmax(190px,1.2fr) minmax(170px,1fr) minmax(160px,1fr);
+    gap:10px;
+    padding:12px;
+}
+.validation-guided-fields label {
+    display:grid;
+    align-content:start;
+    gap:5px;
+    min-width:0;
+}
+.validation-guided-fields label > span {
+    color:var(--hydra-text-secondary);
+    font-size:13px;
+    font-weight:700;
+}
+.validation-guided-fields input,.validation-guided-fields select {
+    box-sizing:border-box;
+    width:100%;
+    min-width:0;
+    padding:7px 8px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:6px;
+    background:var(--hydra-bg-surface);
+    color:var(--hydra-text-primary);
+    font:inherit;
+}
+.validation-guided-add-row {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:7px;
+}
+.validation-guided-add-row > span {
+    margin-right:2px;
+    color:var(--hydra-text-muted);
+    font-size:14px;
+    font-weight:700;
+}
+.validation-guided-summary {
+    display:flex;
+    gap:7px;
+    padding:9px 11px;
+    border-left:3px solid var(--hydra-color-primary-600);
+    border-radius:6px;
+    background:var(--hydra-color-primary-subtle);
+    font-size:14px;
+}
+.validation-guided-summary span {
+    color:var(--hydra-text-secondary);
+}
+.validation-guided-unsupported {
+    display:grid;
+    gap:10px;
+    padding:14px;
+    border:1px solid #f5c97b;
+    border-radius:9px;
+    background:var(--hydra-color-warning-50);
+}
+.validation-guided-unsupported > div:first-child {
+    display:grid;
+    gap:4px;
+}
+.validation-guided-unsupported span {
+    color:var(--hydra-color-warning-600);
+    font-size:14px;
+}
+.validation-guided-template-row {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+@media (max-width:1200px) {
+    .validation-guided-fields {
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+@media (max-width:760px) {
+    .validation-condition-mode-bar,.validation-guided-intro {
+        align-items:stretch;
+        flex-direction:column;
+    }
+    .validation-guided-template-grid,.validation-guided-fields {
+        grid-template-columns:1fr;
+    }
+}
+
+.validation-expression-advanced-workspace {
+    display: grid;
+    gap: 12px;
+}
+.validation-expression-technical-name {
+    max-width: 520px;
+}
+
+.quick-fix-guided-section {
+    margin-top:12px
+}
+.validation-empty-state.compact {
+    min-height:80px
+}
+.quick-fix-editor>.hydra-guided-workflow {
+    margin-left:0;
+    margin-right:0
+}
+.validation-rule-editor-header>.hydra-creation-mode-switch {
+    margin-left:auto
+}
+
+.validation-guided-fields {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    align-items: end;
+}
+.validation-guided-clause {
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--hydra-bg-surface);
+}
+.validation-guided-negation-control {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-height:38px;
+    padding:7px 10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted);
+    font-weight:600;
+}
+.validation-guided-negation-control input {
+    width:auto;
+    min-height:0;
+}
+.validation-guided-operator-hint {
+    margin:8px 0 0;
+    color:var(--hydra-text-muted);
+    font-size:.82rem;
+}
+.validation-guided-summary {
+    border-left:4px solid var(--hydra-color-primary-600);
+}
+.validation-visual-association {
+    display:grid;
+    gap:.25rem;
+    border:1px solid var(--hydra-border);
+    border-radius:8px;
+    padding:.65rem;
+    margin:.45rem 0;
+    background:var(--hydra-surface-subtle)
+}
+.validation-visual-association p {
+    margin:0;
+    color:var(--hydra-text-muted)
+}
+
+.validation-guided-context-needed {
+    display:grid;
+    gap:5px;
+    width:100%;
+    box-sizing:border-box;
+    padding:12px 14px;
+    border:1px solid var(--hydra-color-warning-300);
+    border-radius:8px;
+    background:var(--hydra-color-warning-50);
+    text-align:left
+}
+.validation-guided-context-needed span {
+    color:var(--hydra-text-secondary)
+}
+.validation-field-tooltip-portal {
+    max-height:min(620px,calc(100dvh - 24px))
+}
+.validation-field-tooltip-portal .validation-field-option-help dl {
+    max-height:none;
+    overflow:visible
+}

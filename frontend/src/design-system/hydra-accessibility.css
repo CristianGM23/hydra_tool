@@ -1,0 +1,86 @@
+
+:root {
+    --hydra-space-1: 4px;
+    --hydra-space-2: 8px;
+    --hydra-space-3: 12px;
+    --hydra-space-4: 16px;
+    --hydra-space-5: 24px;
+    --hydra-space-6: 32px;
+    --hydra-font-xs: .75rem;
+    --hydra-font-sm: .875rem;
+    --hydra-font-md: 1rem;
+    --hydra-font-lg: 1.125rem;
+    --hydra-color-primary-200: #bfdbfe;
+    --hydra-color-blue-500: #3b82f6;
+    --hydra-color-blue-400: #60a5fa;
+    --hydra-color-blue-300: #93c5fd;
+    --hydra-color-blue-900: #1e3a8a;
+    --hydra-color-blue-border: #8ba8ef;
+    --hydra-color-slate-500: #64748b;
+    --hydra-color-slate-100: #f1f5f9;
+    --hydra-color-gray-300: #d1d5db;
+    --hydra-color-warning-500: #f59e0b;
+    --hydra-color-primary-subtle: #eef3ff;
+    --hydra-color-primary-soft: #f5f8ff;
+    --hydra-color-surface-soft: #fbfcfe;
+    --hydra-color-green-300: #86efac;
+    --hydra-color-sky-50: #f0f9ff;
+}
+:root[data-hydra-theme="dark"] {
+    --hydra-color-primary-200: #385989;
+    --hydra-color-blue-500: #78a7ff;
+    --hydra-color-blue-400: #8db5ff;
+    --hydra-color-blue-300: #a9c7ff;
+    --hydra-color-blue-900: #d5e3ff;
+    --hydra-color-blue-border: #526f9f;
+    --hydra-color-slate-500: #97a6bb;
+    --hydra-color-slate-100: #162235;
+    --hydra-color-gray-300: #52606f;
+    --hydra-color-primary-subtle: #17284d;
+    --hydra-color-primary-soft: #14213a;
+    --hydra-color-surface-soft: #111a2b;
+    --hydra-color-green-300: #6ce9a6;
+    --hydra-color-sky-50: #132638;
+}
+#root {
+    container-type: inline-size;
+    container-name: hydra-workspace;
+}
+:where(button, [href], input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 2px solid var(--hydra-color-primary-600);
+    outline-offset: 2px;
+    box-shadow: var(--hydra-focus);
+}
+@container hydra-workspace (max-width: 760px) {
+    :where(.hydra-ui-modal-content, .settings-content, .hydra-designer-workspace) {
+        padding-inline: var(--hydra-space-2);
+    }
+    :where(.settings-technical-row, .settings-technical>header) {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+    }
+}
+@media (forced-colors: active) {
+    :root {
+        --hydra-focus: 0 0 0 3px Highlight;
+    }
+    :where(button, input, select, textarea, [role="button"], [role="dialog"], .react-flow__node) {
+        forced-color-adjust: auto;
+        border-color: CanvasText;
+    }
+    :where(.selected, [aria-selected="true"], [aria-current="true"]) {
+        outline: 2px solid Highlight;
+    }
+    :where(.hydra-ui-button.variant-primary, .hydra-window-close:hover) {
+        background: Highlight;
+        color: HighlightText;
+    }
+}

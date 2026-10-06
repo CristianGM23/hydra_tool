@@ -1,0 +1,1121 @@
+:root {
+    --hydra-color-primary-50: #eef4ff;
+    --hydra-color-primary-100: #dbe7ff;
+    --hydra-color-primary-600: #315fce;
+    --hydra-color-primary-700: #2349a6;
+    --hydra-color-danger-50: var(--hydra-palette-white)4f3;
+    --hydra-color-danger-600: #b42318;
+    --hydra-color-surface: var(--hydra-bg-surface);
+    --hydra-color-surface-muted: var(--hydra-bg-surface-muted);
+    --hydra-color-border: var(--hydra-border-default);
+    --hydra-color-text: var(--hydra-text-primary);
+    --hydra-color-text-muted: var(--hydra-text-muted);
+    --hydra-radius-small: 6px;
+    --hydra-radius-medium: 9px;
+    --hydra-radius-large: 13px;
+    --hydra-shadow-popover: 0 16px 38px rgba(16,24,40,.20);
+    --hydra-control-height-small: max(30px, calc(var(--app-control-min-height, 34px) - 4px));
+    --hydra-control-height: max(34px, var(--app-control-min-height, 36px));
+    --hydra-focus: 0 0 0 3px rgba(49,95,206,.24);
+}
+.hydra-ui-button {
+    box-sizing: border-box;
+    display: inline-flex;
+    min-height: var(--hydra-control-height);
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 6px 12px;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: 999px;
+    background: var(--hydra-bg-surface);
+    color: var(--hydra-text-secondary);
+    font: inherit;
+    font-size: min(var(--app-form-font-size, 16px), 17px);
+    font-weight: 650;
+    line-height: 1.15;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.hydra-ui-button:hover:not(:disabled) {
+    border-color: #6f8cc7;
+    background: var(--hydra-bg-surface-muted);
+}
+.hydra-ui-button:focus-visible {
+    outline: none;
+    box-shadow: var(--hydra-focus);
+}
+.hydra-ui-button:disabled {
+    cursor: not-allowed;
+    opacity: .55;
+}
+.hydra-ui-button.variant-primary {
+    border-color: var(--hydra-color-primary-600);
+    background: var(--hydra-color-primary-600);
+    color: var(--hydra-bg-surface);
+}
+.hydra-ui-button.variant-primary:hover:not(:disabled) {
+    background: var(--hydra-color-primary-700);
+}
+.hydra-ui-button.variant-danger {
+    border-color: var(--hydra-palette-danger-border);
+    background: var(--hydra-color-danger-50);
+    color: var(--hydra-color-danger-600);
+}
+.hydra-ui-button.variant-danger:hover:not(:disabled) {
+    background: var(--hydra-color-danger-50);
+}
+.hydra-ui-button.variant-ghost {
+    border-color: transparent;
+    background: transparent;
+}
+.hydra-ui-button.variant-quiet {
+    border-radius: var(--hydra-radius-small);
+    border-color: transparent;
+    background: var(--hydra-bg-surface-muted);
+}
+.hydra-ui-button.size-small, .hydra-ui-button.compact {
+    min-height: var(--hydra-control-height-small);
+    padding: 4px 9px;
+    font-size: min(var(--app-tab-font-size, 14px), 15px);
+}
+.hydra-ui-button.size-large {
+    min-height: 42px;
+    padding: 8px 16px;
+}
+.hydra-ui-button-spinner {
+    width: 13px;
+    height: 13px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: hydra-ui-spin .75s linear infinite;
+}
+@keyframes hydra-ui-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+.hydra-ui-tooltip-root {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+}
+.hydra-ui-tooltip-trigger {
+    display: inline-grid;
+    width: 21px;
+    height: 21px;
+    min-width: 21px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--hydra-color-blue-border);
+    border-radius: 50%;
+    background: var(--hydra-color-primary-50);
+    color: var(--hydra-color-primary-700);
+    font-family: Georgia, serif;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+}
+.hydra-ui-tooltip-trigger:hover, .hydra-ui-tooltip-trigger[aria-expanded="true"] {
+    border-color: var(--hydra-color-primary-600);
+    background: var(--hydra-color-primary-100);
+}
+.hydra-ui-tooltip {
+    position: fixed;
+    z-index: var(--hydra-z-tooltip, 26000);
+    box-sizing: border-box;
+    display: grid;
+    grid-template-rows:auto minmax(0,1fr) auto;
+    width: min(420px, calc(100vw - 24px));
+    min-width: min(280px, calc(100vw - 24px));
+    max-width: min(720px, calc(100vw - 24px));
+    max-height: min(620px, calc(100dvh - 24px));
+    gap: 8px;
+    padding: 13px 14px;
+    overflow: hidden;
+    overscroll-behavior:contain;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: var(--hydra-radius-medium);
+    background: var(--hydra-bg-surface);
+    color: var(--hydra-color-text);
+    box-shadow: var(--hydra-shadow-popover);
+    font-size: min(var(--app-tooltip-font-size, 16px), 18px);
+    line-height: 1.45;
+    text-align: left;
+}
+.hydra-ui-tooltip.resizable {
+    min-height: 150px;
+    resize: both;
+    overflow:hidden;
+}
+.hydra-ui-tooltip-title {
+    color: var(--hydra-text-primary);
+}
+.hydra-ui-tooltip-content {
+    min-height:0;
+    overflow:auto;
+    overscroll-behavior:contain;
+    padding-right:2px;
+    scrollbar-gutter:stable;
+}
+.hydra-ui-tooltip-content p {
+    margin: 0 0 8px;
+}
+.hydra-ui-tooltip-hint {
+    padding-top: 6px;
+    border-top: 1px solid #eaecf0;
+    color: var(--hydra-color-text-muted);
+    font-size: .75em;
+}
+.hydra-ui-tooltip-example {
+    display: grid;
+    gap: 3px;
+}
+.hydra-ui-tooltip-example span {
+    color: var(--hydra-color-text-muted);
+    font-size: .72em;
+    font-weight: 750;
+    text-transform: uppercase;
+}
+.hydra-ui-tooltip-example code {
+    padding: 5px 7px;
+    border-radius: 5px;
+    background: var(--hydra-bg-surface-muted);
+    white-space: normal;
+}
+.hydra-ui-option-help {
+    margin-top: 9px;
+    padding-top: 8px;
+    border-top: 1px solid var(--hydra-border-default);
+}
+.hydra-ui-option-help dl {
+    display: grid;
+    gap: 7px;
+    margin: 6px 0 0;
+}
+.hydra-ui-option-help dl > div {
+    display: grid;
+    gap: 2px;
+}
+.hydra-ui-option-help dd {
+    margin: 0;
+    color: var(--hydra-color-text-muted);
+}
+.hydra-ui-form-field {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 6px;
+}
+.hydra-ui-form-label-row {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 6px;
+}
+.hydra-ui-form-label-row > label {
+    color: var(--hydra-text-secondary);
+    font-size: min(var(--app-form-font-size, 16px), 17px);
+    font-weight: 650;
+}
+.hydra-ui-required, .hydra-ui-required-legend span {
+    color: var(--hydra-color-warning-600);
+    font-weight: 800;
+}
+.hydra-ui-form-control > :is(input, select, textarea), .hydra-ui-form-control .hydra-adaptive-select {
+    width: 100%;
+}
+.hydra-ui-form-field.invalid :is(input, select, textarea) {
+    border-color: var(--hydra-palette-danger-700);
+}
+.hydra-ui-form-hint, .hydra-ui-form-error {
+    font-size: min(calc(var(--app-form-font-size, 16px) - 2px), 14px);
+}
+.hydra-ui-form-hint {
+    color: var(--hydra-color-text-muted);
+}
+.hydra-ui-form-error {
+    color: var(--hydra-color-danger-600);
+}
+.hydra-ui-required-legend {
+    margin: 8px 0 0;
+    color: var(--hydra-color-text-muted);
+    font-size: min(var(--app-form-font-size, 16px), 15px);
+}
+.hydra-ui-checkbox {
+    display: inline-flex;
+    min-width: 0;
+    align-items: flex-start;
+    gap: 9px;
+    color: var(--hydra-text-secondary);
+    cursor: pointer;
+}
+.hydra-ui-checkbox input {
+    box-sizing: border-box;
+    width: var(--app-checkbox-size, 18px) !important;
+    height: var(--app-checkbox-size, 18px) !important;
+    min-height: 0 !important;
+    margin: 1px 0 0;
+    accent-color: var(--hydra-color-primary-600);
+}
+.hydra-ui-checkbox > span {
+    display: grid;
+    gap: 2px;
+}
+.hydra-ui-checkbox small {
+    color: var(--hydra-color-text-muted);
+    font-weight: 400;
+}
+.hydra-ui-select {
+    min-width: 0;
+}
+.hydra-ui-select select, .hydra-ui-select input {
+    border-radius: var(--hydra-radius-small);
+}
+.hydra-ui-tree-container {
+    min-width: 0;
+}
+.hydra-ui-tree, .hydra-ui-tree ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.hydra-ui-tree-row {
+    min-width: 0;
+    border-radius: var(--hydra-radius-small);
+}
+.hydra-ui-tree-row.selected {
+    background: var(--hydra-color-primary-100);
+}
+.hydra-ui-tree-main {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: 15px 25px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 7px;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+}
+.hydra-ui-tree-main:hover {
+    background: var(--hydra-bg-hover);
+}
+.hydra-ui-tree-icon {
+    display: grid;
+    width: 23px;
+    height: 23px;
+    place-items: center;
+    border: 1px solid #ccd6e6;
+    border-radius: 6px;
+    background: var(--hydra-bg-surface);
+    color: var(--hydra-color-primary-600);
+    font-size: 11px;
+    font-weight: 750;
+}
+.hydra-ui-tree-text {
+    display: grid;
+    min-width: 0;
+    gap: 1px;
+}
+.hydra-ui-tree-text strong, .hydra-ui-tree-text small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.hydra-ui-tree-text small {
+    color: var(--hydra-color-text-muted);
+    font-size: .8em;
+}
+.hydra-ui-tree-badge {
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: var(--hydra-bg-surface-muted);
+    color: var(--hydra-text-secondary);
+    font-size: .72em;
+}
+.hydra-ui-tree-empty {
+    color: var(--hydra-color-text-muted);
+    text-align: center;
+}
+.hydra-ui-resizable-panel {
+    box-sizing: border-box;
+    min-width: 0;
+    overflow: auto;
+    background: var(--hydra-color-surface);
+}
+.hydra-ui-panel-resizer {
+    flex: 0 0 7px;
+    width: 7px;
+    cursor: col-resize;
+    background: linear-gradient(90deg, transparent 2px, #d8dfeb 2px, #d8dfeb 5px, transparent 5px);
+}
+.hydra-ui-panel-resizer:hover, .hydra-ui-panel-resizer:focus-visible {
+    background: linear-gradient(90deg, transparent 2px, var(--hydra-color-primary-600) 2px, var(--hydra-color-primary-600) 5px, transparent 5px);
+    outline: none;
+}
+body.hydra-ui-resizing {
+    cursor: col-resize !important;
+    user-select: none !important;
+}
+.hydra-ui-palette {
+    box-sizing: border-box;
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    border: 1px solid var(--hydra-color-border);
+    border-radius: var(--hydra-radius-medium);
+    background: var(--hydra-bg-surface);
+    overflow: hidden;
+}
+.hydra-ui-palette-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 9px;
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--hydra-color-border);
+    background: var(--hydra-color-surface-muted);
+}
+.hydra-ui-palette-header h3 {
+    margin: 0;
+    color: var(--hydra-text-primary);
+    font-size: min(var(--app-window-font-size, 17px), 18px);
+}
+.hydra-ui-palette-header p {
+    margin: 3px 0 0;
+    color: var(--hydra-color-text-muted);
+    font-size: min(var(--app-form-font-size, 14px), 14px);
+}
+.hydra-ui-palette-actions {
+    display: flex;
+    gap: 6px;
+}
+.hydra-ui-palette-search {
+    padding: 9px 10px;
+    border-bottom: 1px solid #e6eaf0;
+}
+.hydra-ui-palette-body {
+    min-height: 0;
+    flex: 1;
+    padding: 8px;
+    overflow: auto;
+}
+.hydra-ui-palette-footer {
+    padding: 8px 10px;
+    border-top: 1px solid #e6eaf0;
+    background: var(--hydra-bg-surface-muted);
+}
+.hydra-ui-navbar {
+    box-sizing: border-box;
+    display: flex;
+    min-height: var(--app-toolbar-height, 48px);
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--hydra-color-border);
+    background: var(--hydra-bg-surface-muted);
+    font-size: min(var(--app-tab-font-size, 15px), 16px);
+}
+.hydra-ui-navbar-brand {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+}
+.hydra-ui-navbar-brand h1 {
+    margin: 0 8px 0 0;
+    color: #16346f;
+    font-size: min(calc(var(--app-window-font-size, 18px) + 2px), 22px);
+    white-space: nowrap;
+}
+.hydra-ui-navbar-group {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 6px;
+}
+.hydra-ui-navbar-group.primary {
+    flex: 1 1 auto;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.hydra-ui-navbar-group.secondary {
+    flex: 0 0 auto;
+}
+.hydra-ui-navbar-status {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    color: var(--hydra-color-text-muted);
+    white-space: nowrap;
+}
+.hydra-ui-modal-backdrop {
+    position: fixed;
+    z-index: var(--hydra-z-modal, 20000);
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    overflow: auto;
+    background: rgba(15,23,42,.52);
+}
+.hydra-ui-modal {
+    display: flex;
+    width: min(680px, 100%);
+    max-height: calc(100vh - 40px);
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: var(--hydra-radius-large);
+    background: var(--hydra-bg-surface);
+    box-shadow: 0 24px 70px rgba(15,23,42,.30);
+}
+.hydra-ui-modal.size-small {
+    width: min(460px, 100%);
+}
+.hydra-ui-modal.size-large {
+    width: min(860px, 100%);
+}
+.hydra-ui-modal.size-wide {
+    width: min(1120px, 100%);
+}
+.hydra-ui-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 15px 17px;
+    border-bottom: 1px solid var(--hydra-color-border);
+    background: var(--hydra-bg-surface-muted);
+}
+.hydra-ui-modal-header h2 {
+    margin: 0;
+    font-size: min(calc(var(--app-window-font-size, 18px) + 1px), 22px);
+}
+.hydra-ui-modal-header p {
+    margin: 4px 0 0;
+    color: var(--hydra-color-text-muted);
+}
+.hydra-ui-modal-content {
+    min-height: 0;
+    padding: 16px 17px;
+    overflow: auto;
+}
+.hydra-ui-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 17px;
+    border-top: 1px solid var(--hydra-color-border);
+    background: var(--hydra-bg-surface-muted);
+}
+.hydra-ui-error-boundary {
+    display: grid;
+    min-height: 220px;
+    place-items: center;
+    align-content: center;
+    gap: 9px;
+    padding: 24px;
+    border: 1px solid var(--hydra-palette-danger-border);
+    border-radius: var(--hydra-radius-medium);
+    background: var(--hydra-color-danger-50);
+    color: #7a271a;
+    text-align: center;
+}
+.hydra-ui-error-boundary p {
+    max-width: 680px;
+    margin: 0;
+}
+@media (max-width: 900px) {
+    .hydra-ui-navbar {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+    .hydra-ui-navbar-brand {
+        width: 100%;
+    }
+    .hydra-ui-navbar-group.primary {
+        order: 3;
+        width: 100%;
+    }
+    .hydra-ui-modal-backdrop {
+        padding: 8px;
+    }
+    .hydra-ui-modal {
+        max-height: calc(100vh - 16px);
+    }
+}
+:where(.event-designer-header-actions, .event-subtabs, .event-architecture-toolbar, .event-flow-toolbar, .gamification-visual-toolbar, .hydra-designer-form-actions, .hydra-sidebar-section-actions, .designer-structure-header-actions, .settings-actions, .editor-definition-toolbar, .integration-designer-toolbar) > button:not(.hydra-ui-button) {
+    box-sizing: border-box;
+    display: inline-flex;
+    min-height: var(--hydra-control-height-small);
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 4px 9px;
+    border: 1px solid var(--hydra-border-strong);
+    border-radius: 999px;
+    background: var(--hydra-bg-surface);
+    color: var(--hydra-text-secondary);
+    font: inherit;
+    font-size: min(var(--app-tab-font-size, 14px), 15px);
+    font-weight: 650;
+    line-height: 1.15;
+}
+:where(.event-designer-header-actions, .event-subtabs, .event-architecture-toolbar, .event-flow-toolbar, .gamification-visual-toolbar, .hydra-designer-form-actions, .hydra-sidebar-section-actions, .designer-structure-header-actions, .settings-actions, .editor-definition-toolbar, .integration-designer-toolbar) > button:not(.hydra-ui-button):hover:not(:disabled) {
+    border-color: #6f8cc7;
+    background: var(--hydra-bg-surface-muted);
+}
+:where(.event-designer-header-actions, .event-subtabs, .event-architecture-toolbar, .event-flow-toolbar, .gamification-visual-toolbar, .hydra-designer-form-actions, .hydra-sidebar-section-actions, .designer-structure-header-actions, .settings-actions, .editor-definition-toolbar, .integration-designer-toolbar) > button:not(.hydra-ui-button):focus-visible {
+    outline: none;
+    box-shadow: var(--hydra-focus);
+}
+:where(.hydra-designer-form, .designer-structure-properties, .settings-content, .event-properties-panel, .gamification-properties-panel) :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+    box-sizing: border-box;
+    min-height: var(--hydra-control-height);
+    max-width: 100%;
+    padding: 6px 9px;
+    border: 1px solid #b8c3d3;
+    border-radius: var(--hydra-radius-small);
+    background: var(--hydra-bg-surface);
+    color: var(--hydra-color-text);
+    font: inherit;
+    font-size: min(var(--app-form-font-size, 16px), 17px);
+}
+:where(.hydra-designer-form, .designer-structure-properties, .settings-content, .event-properties-panel, .gamification-properties-panel) :is(input, select, textarea):focus-visible {
+    border-color: var(--hydra-color-primary-600);
+    outline: none;
+    box-shadow: var(--hydra-focus);
+}
+:where(.hydra-designer-form, .designer-structure-properties, .settings-content, .event-properties-panel, .gamification-properties-panel) input[type="checkbox"] {
+    box-sizing: border-box;
+    width: var(--app-checkbox-size, 18px);
+    height: var(--app-checkbox-size, 18px);
+    min-height: 0;
+    accent-color: var(--hydra-color-primary-600);
+}
+:where(.hydra-ui-palette, .hydra-ui-resizable-panel, .designer-structure-panel, .event-properties-panel, .gamification-properties-panel) {
+    container-type: inline-size;
+}
+@container (max-width: 300px) {
+    .hydra-ui-palette-header {
+        flex-direction: column;
+    }
+    .hydra-ui-palette-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    .hydra-ui-form-label-row {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .hydra-ui-button-spinner {
+        animation-duration: 1.5s;
+    }
+    .hydra-ui-tooltip, .hydra-ui-modal {
+        scroll-behavior: auto;
+    }
+}
+/* Unified contextual-help control: every page uses the same button as Rules. */
+:where(.hydra-context-help-button, .hydra-ui-tooltip-trigger, .hydra-field-info-button, .hydra-resizable-info-button, .validation-field-info-button, .app-field-info-button, .validation-branch-help-text) {
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    inline-size: 23px !important;
+    block-size: 23px !important;
+    min-inline-size: 23px !important;
+    min-block-size: 23px !important;
+    max-inline-size: 23px !important;
+    max-block-size: 23px !important;
+    flex: 0 0 23px !important;
+    aspect-ratio: 1 / 1 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    border: 1px solid var(--hydra-color-blue-border) !important;
+    border-radius: 50% !important;
+    background: var(--hydra-color-primary-subtle) !important;
+    color: var(--hydra-color-primary-700) !important;
+    font-family: Georgia, serif !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    cursor: pointer;
+}
+:where(.hydra-context-help-button, .hydra-ui-tooltip-trigger, .hydra-field-info-button, .hydra-resizable-info-button, .validation-field-info-button, .app-field-info-button, .validation-branch-help-text):hover, :where(.hydra-context-help-button, .hydra-ui-tooltip-trigger, .hydra-field-info-button, .hydra-resizable-info-button, .validation-field-info-button, .app-field-info-button)[aria-expanded="true"] {
+    border-color: var(--hydra-color-primary-600) !important;
+    background: var(--hydra-bg-selection) !important;
+}
+:where(.hydra-context-help-button, .hydra-ui-tooltip-trigger, .hydra-field-info-button, .hydra-resizable-info-button, .validation-field-info-button, .app-field-info-button):focus-visible {
+    outline: 3px solid rgb(49 95 206 / 28%) !important;
+    outline-offset: 2px !important;
+}
+
+.hydra-creation-mode-switch {
+    display:inline-flex;
+    align-items:center;
+    gap:2px;
+    padding:3px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:999px;
+    background:var(--hydra-bg-surface-muted)
+}
+.hydra-creation-mode-switch button {
+    min-height:30px;
+    padding:5px 12px;
+    border:0;
+    border-radius:999px;
+    background:transparent;
+    color:var(--hydra-text-secondary);
+    font-weight:700
+}
+.hydra-creation-mode-switch button.active {
+    background:var(--hydra-color-primary-600);
+    color:var(--hydra-bg-surface);
+    box-shadow:0 1px 2px rgba(15,23,42,.15)
+}
+.hydra-guided-workflow {
+    display:grid;
+    gap:12px;
+    margin:12px 0 16px;
+    padding:14px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:10px;
+    background:var(--hydra-bg-surface-muted)
+}
+.hydra-guided-workflow-header {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px
+}
+.hydra-guided-workflow-header h4,.hydra-guided-workflow-header p,.hydra-guided-current-step h4,.hydra-guided-current-step p {
+    margin:0
+}
+.hydra-guided-workflow-header p,.hydra-guided-current-step p {
+    margin-top:3px;
+    color:var(--hydra-text-muted);
+    line-height:1.4
+}
+.hydra-guided-workflow-header>span {
+    flex:0 0 auto;
+    padding:4px 8px;
+    border-radius:999px;
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-color-primary-600);
+    font-size:11px;
+    font-weight:800
+}
+.hydra-guided-stepper {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:7px
+}
+.hydra-guided-stepper>button {
+    display:grid;
+    grid-template-columns:25px minmax(0,1fr);
+    align-items:start;
+    gap:7px;
+    padding:9px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface);
+    text-align:left
+}
+.hydra-guided-stepper>button:not(:disabled):hover {
+    border-color:#7c9be4;
+    background:var(--hydra-bg-surface-muted)
+}
+.hydra-guided-stepper>button.active {
+    outline:2px solid rgba(49,95,206,.22);
+    border-color:var(--hydra-color-primary-600)
+}
+.hydra-guided-stepper>button.locked {
+    opacity:.5
+}
+.hydra-guided-stepper>button>span:last-child {
+    display:grid;
+    gap:2px
+}
+.hydra-guided-stepper strong {
+    color:var(--hydra-text-primary);
+    font-size:11px
+}
+.hydra-guided-stepper small {
+    color:var(--hydra-text-muted);
+    font-size:10px;
+    line-height:1.35
+}
+.hydra-guided-status-dot,.hydra-guided-check-dot {
+    display:inline-grid;
+    place-items:center;
+    width:23px;
+    height:23px;
+    min-width:23px;
+    border-radius:50%;
+    color:var(--hydra-bg-surface);
+    font-size:12px;
+    font-weight:900;
+    line-height:1
+}
+.hydra-guided-stepper .complete .hydra-guided-status-dot,.hydra-guided-checklist .complete .hydra-guided-check-dot {
+    background:var(--hydra-color-success-600,var(--hydra-palette-green-700))
+}
+.hydra-guided-stepper .error .hydra-guided-status-dot,.hydra-guided-checklist .incomplete .hydra-guided-check-dot {
+    background:var(--hydra-color-danger-600,var(--hydra-palette-red-600))
+}
+.hydra-guided-stepper .ready .hydra-guided-status-dot {
+    background:var(--hydra-color-primary-600)
+}
+.hydra-guided-stepper .pending .hydra-guided-status-dot {
+    border:2px solid var(--hydra-border-strong);
+    background:var(--hydra-bg-surface);
+    color:var(--hydra-text-muted)
+}
+.hydra-guided-stepper>button.ready {
+    border-color:#93b4ff;
+    background:var(--hydra-bg-surface-muted)
+}
+.hydra-guided-stepper>button.error {
+    border-color:#f0a4a4;
+    background:var(--hydra-color-danger-50)
+}
+.hydra-guided-current-step {
+    display:grid;
+    gap:10px;
+    padding:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px;
+    background:var(--hydra-bg-surface)
+}
+.hydra-guided-current-step>header span {
+    color:var(--hydra-color-primary-600);
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.04em
+}
+.hydra-guided-checklist {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:6px
+}
+.hydra-guided-checklist>div {
+    display:grid;
+    grid-template-columns:23px minmax(0,1fr);
+    align-items:start;
+    gap:7px;
+    padding:7px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px;
+    background:var(--hydra-color-surface-soft)
+}
+.hydra-guided-checklist>div>span:last-child {
+    display:grid;
+    gap:2px
+}
+.hydra-guided-checklist strong {
+    font-size:11px
+}
+.hydra-guided-checklist small {
+    color:var(--hydra-text-muted);
+    font-size:10px;
+    line-height:1.35
+}
+.hydra-guided-check-empty {
+    margin:0;
+    color:var(--hydra-text-muted);
+    font-size:11px
+}
+.hydra-guided-step-content {
+    display:grid;
+    gap:12px
+}
+.hydra-guided-workflow-actions {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding-top:2px
+}
+.hydra-guided-workflow-actions>span {
+    flex:1;
+    color:var(--hydra-text-muted);
+    font-size:11px;
+    text-align:center
+}
+.hydra-guided-workflow-actions button.primary {
+    border-color:var(--hydra-color-primary-600);
+    background:var(--hydra-color-primary-600);
+    color:var(--hydra-bg-surface)
+}
+.hydra-guided-workflow-actions button:disabled {
+    opacity:.48;
+    cursor:not-allowed
+}
+
+.hydra-multiselect-chips {
+    display:grid;
+    gap:7px;
+    min-width:0
+}
+.hydra-multiselect-chip-field {
+    display:flex;
+    align-items:flex-start;
+    gap:7px;
+    min-height:38px;
+    padding:5px 6px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:6px;
+    background:var(--hydra-bg-surface)
+}
+.hydra-multiselect-chip-list {
+    display:flex;
+    flex:1;
+    min-width:0;
+    flex-wrap:wrap;
+    gap:5px;
+    align-items:center
+}
+.hydra-multiselect-empty {
+    padding:5px;
+    color:var(--hydra-text-muted);
+    font-size:11px
+}
+.hydra-multiselect-chip {
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    max-width:100%;
+    padding:4px 4px 4px 8px;
+    border:1px solid var(--hydra-color-blue-border);
+    border-radius:999px;
+    background:var(--hydra-color-primary-subtle);
+    color:var(--hydra-color-primary-700);
+    font-size:11px;
+    font-weight:700
+}
+.hydra-multiselect-chip.custom {
+    border-color:var(--hydra-color-violet-200);
+    background:var(--hydra-color-violet-50);
+    color:var(--hydra-color-primary-700)
+}
+.hydra-multiselect-chip>span {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
+.hydra-multiselect-chip button {
+    display:grid;
+    width:18px;
+    height:18px;
+    min-width:18px;
+    place-items:center;
+    padding:0;
+    border:0;
+    border-radius:50%;
+    background:rgba(49,95,206,.1);
+    color:inherit
+}
+.hydra-multiselect-options-toggle {
+    flex:0 0 auto;
+    padding:5px 8px;
+    font-size:10px
+}
+.hydra-multiselect-option-panel {
+    display:grid;
+    gap:8px;
+    padding:9px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted)
+}
+.hydra-multiselect-toolbar {
+    display:grid;
+    grid-template-columns:minmax(150px,1fr) auto auto;
+    gap:6px
+}
+.hydra-multiselect-toolbar input {
+    min-width:0
+}
+.hydra-multiselect-toolbar button {
+    font-size:10px
+}
+.hydra-multiselect-groups {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:7px
+}
+.hydra-multiselect-groups fieldset {
+    min-width:0;
+    margin:0;
+    padding:7px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px;
+    background:var(--hydra-bg-surface)
+}
+.hydra-multiselect-groups legend {
+    padding:0 4px;
+    color:var(--hydra-text-secondary);
+    font-size:10px;
+    font-weight:800
+}
+.hydra-multiselect-groups fieldset>div {
+    display:grid;
+    gap:3px
+}
+.hydra-multiselect-groups label {
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr);
+    align-items:start;
+    gap:6px;
+    padding:5px;
+    border-radius:5px;
+    cursor:pointer
+}
+.hydra-multiselect-groups label:hover {
+    background:var(--hydra-bg-hover)
+}
+.hydra-multiselect-groups label>span {
+    display:grid;
+    gap:1px
+}
+.hydra-multiselect-groups label strong {
+    font-size:11px
+}
+.hydra-multiselect-groups label small {
+    color:var(--hydra-text-muted);
+    font-size:9px;
+    line-height:1.3
+}
+.hydra-multiselect-no-results {
+    margin:0;
+    color:var(--hydra-text-muted);
+    font-size:11px
+}
+.hydra-multiselect-custom {
+    border-top:1px solid var(--hydra-border-default);
+    padding-top:7px
+}
+.hydra-multiselect-custom summary {
+    color:var(--hydra-text-secondary);
+    font-size:10px;
+    font-weight:700;
+    cursor:pointer
+}
+.hydra-multiselect-custom p {
+    margin:5px 0;
+    color:var(--hydra-text-muted);
+    font-size:10px
+}
+.hydra-multiselect-custom>div {
+    display:flex;
+    gap:6px
+}
+.hydra-multiselect-custom input {
+    flex:1;
+    min-width:0
+}
+@media(max-width:760px) {
+    .hydra-guided-workflow-actions {
+        align-items:stretch;
+        flex-direction:column
+    }
+    .hydra-guided-workflow-actions>span {
+        order:-1
+    }
+    .hydra-multiselect-toolbar {
+        grid-template-columns:1fr 1fr
+    }
+    .hydra-multiselect-toolbar input {
+        grid-column:1/-1
+    }
+}
+
+
+.hydra-layer-io-backdrop {
+    position:fixed;
+    inset:0;
+    z-index:1800;
+    display:grid;
+    place-items:center;
+    padding:16px;
+    background:rgba(15,23,42,.36)
+}
+.hydra-layer-io-dialog {
+    display:grid;
+    grid-template-rows:auto minmax(0,1fr) auto;
+    width:min(1480px,calc(100vw - 24px));
+    max-height:calc(100vh - 24px);
+    overflow:auto;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:14px;
+    background:var(--hydra-bg-surface);
+    box-shadow:0 24px 70px rgba(15,23,42,.28);
+    font-size:18px;
+    line-height:1.5
+}
+.hydra-layer-io-dialog>header {
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding:20px 24px;
+    border-bottom:1px solid #dfe5ef
+}
+.hydra-layer-io-dialog>header h3,.hydra-layer-io-dialog>header p {
+    margin:0
+}
+.hydra-layer-io-dialog>header h3 {
+    font-size:28px;
+    line-height:1.2
+}
+
+/* Semantic status tones used by structure trees without changing node layout. */
+.hydra-ui-tree-icon.tone-success {
+    border-color:var(--hydra-color-success-600);
+    background:var(--hydra-color-success-50);
+    color:var(--hydra-color-success-700);
+}
+.hydra-ui-tree-icon.tone-danger {
+    border-color:var(--hydra-color-danger-600);
+    background:var(--hydra-color-danger-50);
+    color:var(--hydra-color-danger-600);
+}
+.hydra-ui-tree-icon.tone-warning {
+    border-color:var(--hydra-color-warning-600);
+    background:var(--hydra-color-warning-50);
+    color:var(--hydra-color-warning-700);
+}
+
+.hydra-ui-field-guidance {
+    display:grid;
+    gap:7px;
+    margin:9px 0;
+    padding:9px 10px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted)
+}
+.hydra-ui-field-guidance>div {
+    display:grid;
+    gap:2px
+}
+.hydra-ui-field-guidance strong {
+    color:var(--hydra-text-primary);
+    font-size:.74em;
+    text-transform:uppercase;
+    letter-spacing:.025em
+}
+.hydra-ui-field-guidance p {
+    margin:0;
+    color:var(--hydra-text-secondary);
+    line-height:1.42
+}

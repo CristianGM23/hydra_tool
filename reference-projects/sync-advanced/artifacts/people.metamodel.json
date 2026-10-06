@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "2.1",
+  "id": "rc1-people",
+  "name": "RC1 People",
+  "classes": [
+    {
+      "id": "class:Person",
+      "name": "Person",
+      "kind": "CLASS",
+      "attributes": [
+        {
+          "id": "attribute:class:Person:name",
+          "name": "name",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "STRING",
+            "externalName": ""
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "ordered": true,
+          "unique": true,
+          "defaultValue": "",
+          "annotations": {}
+        }
+      ],
+      "annotations": {},
+      "operations": []
+    }
+  ],
+  "enums": [],
+  "dataTypes": [],
+  "relations": [],
+  "annotations": {}
+}

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/event/event-architecture-diagram-1.1.schema.json",
+  "title": "EventArchitectureDiagram 1.1",
+  "description": "Curated event architecture canvas. The complete event catalog remains in the palette and only explicitly placed events are persisted as nodes.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "metamodelId",
+    "eventDefinitionModelId",
+    "eventBindingModelId",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.1" },
+    "id": { "type": "string", "minLength": 1 },
+    "metamodelId": { "type": "string", "minLength": 1 },
+    "eventDefinitionModelId": { "type": "string", "minLength": 1 },
+    "eventBindingModelId": { "type": "string", "minLength": 1 },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["nodeId", "x", "y", "width", "height", "collapsed"],
+        "properties": {
+          "nodeId": { "type": "string", "minLength": 1 },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number", "exclusiveMinimum": 0 },
+          "height": { "type": "number", "exclusiveMinimum": 0 },
+          "collapsed": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["edgeId", "points"],
+        "properties": {
+          "edgeId": { "type": "string", "minLength": 1 },
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": {
+                "x": { "type": "number" },
+                "y": { "type": "number" }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

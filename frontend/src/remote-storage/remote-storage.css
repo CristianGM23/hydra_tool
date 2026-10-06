@@ -1,0 +1,111 @@
+.hydra-remote-storage-fields {
+    display:grid;
+    grid-template-columns:minmax(180px,.8fr) minmax(260px,1.5fr);
+    gap:10px;
+    align-items:start
+}
+.hydra-remote-storage-fields label {
+    display:grid;
+    gap:5px
+}
+.hydra-remote-storage-fields input,.hydra-remote-storage-fields select {
+    min-width:0;
+    width:100%
+}
+.hydra-remote-storage-profile-summary {
+    grid-column:1/-1;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 12px;
+    align-items:center;
+    margin:0;
+    padding:8px 10px;
+    border:1px solid var(--hydra-border,var(--hydra-border-default));
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted,var(--hydra-bg-surface-muted))
+}
+.hydra-remote-storage-profile-summary small {
+    margin-left:auto
+}
+@media(max-width:760px) {
+    .hydra-remote-storage-fields {
+        grid-template-columns:1fr
+    }
+    .hydra-remote-storage-profile-summary {
+        grid-column:1
+    }
+}
+.hydra-remote-project-dialog .hydra-ui-modal-content {
+    display:grid;
+    gap:14px
+}
+.hydra-remote-project-tabs {
+    display:flex;
+    gap:4px;
+    border-bottom:1px solid var(--hydra-border,var(--hydra-border-default))
+}
+.hydra-remote-project-tabs button {
+    border:0;
+    border-bottom:2px solid transparent;
+    background:transparent;
+    padding:8px 10px
+}
+.hydra-remote-project-tabs button.active {
+    border-bottom-color:currentColor;
+    font-weight:700
+}
+.hydra-remote-project-options {
+    display:grid;
+    gap:10px
+}
+.hydra-remote-project-options label {
+    display:grid;
+    gap:5px
+}
+.hydra-remote-project-path {
+    display:flex;
+    gap:6px
+}
+.hydra-remote-project-path input {
+    flex:1;
+    min-width:0
+}
+.hydra-remote-project-result {
+    display:grid;
+    gap:3px;
+    padding:10px;
+    border:1px solid var(--hydra-border,var(--hydra-border-default));
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted,var(--hydra-bg-surface-muted))
+}
+.hydra-remote-location-switch {
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+    align-items:center
+}
+.hydra-remote-location-switch button {
+    border:1px solid var(--hydra-border,var(--hydra-border-default));
+    background:var(--hydra-bg-surface,var(--hydra-bg-surface));
+    padding:6px 10px;
+    border-radius:7px
+}
+.hydra-remote-location-switch button.active {
+    background:var(--hydra-selection-bg,var(--hydra-bg-selection));
+    border-color:var(--hydra-border-strong,var(--hydra-border-strong));
+    font-weight:700
+}
+.hydra-remote-source-panel,.metamodel-export-destination {
+    display:grid;
+    gap:10px;
+    padding:10px;
+    border:1px solid var(--hydra-border,var(--hydra-border-default));
+    border-radius:8px;
+    background:var(--hydra-bg-surface-muted,var(--hydra-bg-surface-muted))
+}
+.hydra-remote-source-panel>button {
+    justify-self:start
+}
+.hydra-remote-source-panel>small,.metamodel-export-destination>small {
+    color:var(--hydra-text-secondary,var(--hydra-text-muted))
+}

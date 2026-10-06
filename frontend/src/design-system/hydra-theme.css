@@ -1,0 +1,176 @@
+
+:root {
+    /* Shared fixed palette: centralizes legacy literal colors without changing light/dark semantics. */
+    --hydra-palette-white: #fff;
+    --hydra-palette-slate-900: #0f172a;
+    --hydra-palette-slate-300: #cbd5e1;
+    --hydra-palette-sky-600: #0284c7;
+    --hydra-palette-neutral-border: #d7dce5;
+    --hydra-palette-green-700: #15803d;
+    --hydra-palette-amber-600: #d97706;
+    --hydra-palette-red-200: #fecaca;
+    --hydra-palette-danger-700: #d92d20;
+    --hydra-palette-blue-600: #2563eb;
+    --hydra-palette-red-600: #dc2626;
+    --hydra-palette-danger-border: #f0aaa5;
+    --hydra-palette-green-200: #bbf7d0;
+    --hydra-palette-blue-700: #1d4ed8;
+    --hydra-palette-red-700: #b91c1c;
+}
+
+:root, :root[data-hydra-theme="light"] {
+    --hydra-bg-app: #f5f7fb;
+    --hydra-bg-surface: #ffffff;
+    --hydra-bg-surface-muted: #f7f9fc;
+    --hydra-bg-elevated: #ffffff;
+    --hydra-bg-hover: #f0f4fb;
+    --hydra-bg-selection: #dbe7ff;
+    --hydra-input-bg: #ffffff;
+    --hydra-text-primary: #1d2939;
+    --hydra-text-secondary: #475467;
+    --hydra-text-muted: #667085;
+    --hydra-border-default: #d7deea;
+    --hydra-border-strong: #aebbd1;
+    --hydra-shadow-color: rgba(16,24,40,.20);
+    --hydra-canvas-bg: #f8fafc;
+    --hydra-grid-line: #d8e0ec;
+    --hydra-color-success-50: #ecfdf3;
+    --hydra-color-success-600: #067647;
+    --hydra-color-warning-50: #fffaeb;
+    --hydra-color-warning-600: #b54708;
+    --hydra-color-info-50: #eff8ff;
+    --hydra-color-info-600: #026aa2;
+    --hydra-color-violet-50: #f5f3ff;
+    --hydra-color-violet-200: #c4b5fd;
+    --hydra-color-violet-600: #7c3aed;
+    --hydra-text-on-dark: #ffffff;
+    --hydra-z-floating: 18000;
+    --hydra-z-modal: 20000;
+    --hydra-z-modal-auxiliary: 22000;
+    --hydra-z-dropdown: 24000;
+    --hydra-z-tooltip: 26000;
+}
+:root[data-hydra-theme="dark"] {
+    --hydra-bg-app: #0b1220;
+    --hydra-bg-surface: #111a2b;
+    --hydra-bg-surface-muted: #162235;
+    --hydra-bg-elevated: #1b2940;
+    --hydra-bg-hover: #20304a;
+    --hydra-bg-selection: #1f3970;
+    --hydra-input-bg: #0f1a2b;
+    --hydra-text-primary: #e6edf7;
+    --hydra-text-secondary: #c0cada;
+    --hydra-text-muted: #97a6bb;
+    --hydra-border-default: #33445f;
+    --hydra-border-strong: #526784;
+    --hydra-shadow-color: rgba(0,0,0,.52);
+    --hydra-canvas-bg: #0c1524;
+    --hydra-grid-line: #263750;
+    --hydra-color-primary-50: #17284d;
+    --hydra-color-primary-100: #1f3970;
+    --hydra-color-primary-600: #78a7ff;
+    --hydra-color-primary-700: #a4c3ff;
+    --hydra-color-danger-50: #3a1d22;
+    --hydra-color-danger-600: #ff8f86;
+    --hydra-color-success-50: #123326;
+    --hydra-color-success-600: #6ce9a6;
+    --hydra-color-warning-50: #392a13;
+    --hydra-color-warning-600: #fec84b;
+    --hydra-color-info-50: #102a43;
+    --hydra-color-info-600: #7cd4fd;
+    --hydra-color-violet-50: #2b1d43;
+    --hydra-color-violet-200: #725a9f;
+    --hydra-color-violet-600: #c4b5fd;
+    --hydra-text-on-dark: #ffffff;
+}
+:root[data-hydra-theme] {
+    --hydra-color-surface: var(--hydra-bg-surface);
+    --hydra-color-surface-muted: var(--hydra-bg-surface-muted);
+    --hydra-color-border: var(--hydra-border-default);
+    --hydra-color-text: var(--hydra-text-primary);
+    --hydra-color-text-muted: var(--hydra-text-muted);
+    --hydra-shadow-popover: 0 16px 38px var(--hydra-shadow-color);
+}
+html, body, #root {
+    background: var(--hydra-bg-app);
+    color: var(--hydra-text-primary);
+}
+body {
+    transition: background-color 120ms ease, color 120ms ease;
+}
+:where(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+    border-color: var(--hydra-border-strong);
+    background-color: var(--hydra-input-bg);
+    color: var(--hydra-text-primary);
+}
+:where(input, select, textarea)::placeholder {
+    color: var(--hydra-text-muted);
+}
+/* Shared primitives plus surfaces that still contain literal light colors. */
+:root[data-hydra-theme="dark"] :where( .hydra-ui-button:not(.variant-primary):not(.variant-danger), .hydra-ui-tooltip, .hydra-ui-tree-icon, .hydra-ui-palette, .hydra-ui-modal, .settings-dialog, .settings-section, .hydra-designer-form, .hydra-designer-sidebar, .designer-structure-properties, .event-properties-panel, .gamification-properties-panel, .integration-designer, .editor-definition-designer, .validation-rule-editor, .quick-fix-designer, .project-explorer-panel, .project-file-editor, .project-command-bar ) {
+    background-color: var(--hydra-bg-surface);
+    color: var(--hydra-text-primary);
+    border-color: var(--hydra-border-default);
+}
+:root[data-hydra-theme="dark"] :where( .hydra-ui-navbar, .hydra-ui-modal-header, .hydra-ui-modal-footer, .hydra-ui-palette-header, .hydra-ui-palette-footer, .settings-dialog > header, .settings-dialog > footer, .designer-structure-header, .event-document-settings > header ) {
+    background-color: var(--hydra-bg-surface-muted);
+    border-color: var(--hydra-border-default);
+    color: var(--hydra-text-primary);
+}
+:root[data-hydra-theme="dark"] :where( .hydra-ui-button:not(.variant-primary):not(.variant-danger):hover, .hydra-ui-tree-main:hover ) {
+    background-color: var(--hydra-bg-hover);
+}
+:root[data-hydra-theme="dark"] :where( .hydra-ui-form-label-row > label, .hydra-ui-checkbox, .hydra-ui-palette-header h3, .hydra-ui-tooltip-title, .hydra-ui-navbar-brand h1 ) {
+    color: var(--hydra-text-primary);
+}
+:root[data-hydra-theme="dark"] :where( .settings-preview, .settings-diagram-preview, .settings-tooltip-preview ) {
+    background: var(--hydra-bg-surface-muted);
+    border-color: var(--hydra-border-strong);
+    color: var(--hydra-text-primary);
+}
+/* React Flow uses theme tokens only for chrome/canvas. Semantic node colors remain untouched. */
+:root[data-hydra-theme="dark"] :where(.react-flow, .event-flow-visual-canvas, .gamification-visual-canvas, .event-architecture-canvas, .metamodel-canvas) {
+    background-color: var(--hydra-canvas-bg);
+}
+:root[data-hydra-theme="dark"] .react-flow__controls button {
+    background: var(--hydra-bg-surface);
+    border-color: var(--hydra-border-default);
+    color: var(--hydra-text-primary);
+    fill: currentColor;
+}
+:root[data-hydra-theme="dark"] .react-flow__minimap {
+    background: var(--hydra-bg-surface-muted);
+}
+
+:root[data-hydra-theme="light"] {
+    --text:#6b6375;
+    --text-h:#08060d;
+    --bg:var(--hydra-bg-surface);
+    --border:var(--hydra-border-default);
+    --code-bg:#f4f3ec;
+    --accent:#6f43d6;
+    --accent-bg:rgba(111,67,214,.10);
+    --accent-border:rgba(111,67,214,.45);
+    --social-bg:rgba(244,243,236,.5);
+    --hydra-control-bg-end:#f4f7fb;
+    --hydra-control-text:#27364a;
+}
+:root[data-hydra-theme="dark"] {
+    --text:var(--hydra-text-secondary);
+    --text-h:var(--hydra-text-primary);
+    --bg:var(--hydra-bg-app);
+    --border:var(--hydra-border-default);
+    --code-bg:var(--hydra-bg-elevated);
+    --accent:#a4c3ff;
+    --accent-bg:rgba(120,167,255,.15);
+    --accent-border:rgba(120,167,255,.48);
+    --social-bg:rgba(22,34,53,.72);
+    --hydra-control-bg-start:var(--hydra-bg-surface);
+    --hydra-control-bg-end:var(--hydra-bg-surface-muted);
+    --hydra-control-text:var(--hydra-text-primary);
+    --hydra-control-border:var(--hydra-border-strong);
+    --hydra-control-border-hover:#7890b1;
+}
+:root[data-hydra-theme="dark"] #social .button-icon {
+    filter:invert(1) brightness(2);
+}

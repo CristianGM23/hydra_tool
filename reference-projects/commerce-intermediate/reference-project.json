@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0",
+  "id": "commerce-intermediate",
+  "level": "INTERMEDIATE",
+  "title": "Comercio con gramática",
+  "description": "Proyecto de referencia para metamodelado, modelos y flujo grammar-first.",
+  "capabilities": [
+    "METAMODEL",
+    "MODEL",
+    "GRAMMAR",
+    "TEXTUAL_MODEL"
+  ],
+  "expectedArtifacts": [
+    {
+      "path": "artifacts/commerce.metamodel.json",
+      "kind": "METAMODEL",
+      "required": true
+    },
+    {
+      "path": "artifacts/commerce.model.json",
+      "kind": "MODEL",
+      "required": true
+    },
+    {
+      "path": "artifacts/commerce.grammar.json",
+      "kind": "GRAMMAR",
+      "required": true
+    }
+  ],
+  "acceptance": [
+    "all-json-parse",
+    "metamodel-id-consistency",
+    "grammar-entry-document-exists",
+    "no-secret-files"
+  ]
+}

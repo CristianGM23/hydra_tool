@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0",
+  "id": "people",
+  "metamodelId": "people",
+  "updatedAt": "2026-07-28T12:00:00Z",
+  "waitingContinuations": [],
+  "retryContinuations": [],
+  "traces": [],
+  "runtimeState": {
+    "deduplication": {},
+    "windows": {},
+    "aggregates": {},
+    "sums": {},
+    "joins": {},
+    "sequences": {},
+    "patterns": {},
+    "absenceWatches": []
+  }
+}

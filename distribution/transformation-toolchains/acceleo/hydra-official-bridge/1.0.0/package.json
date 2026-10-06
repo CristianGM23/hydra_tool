@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "packageId": "hydra-official-bridge",
+  "packageVersion": "1.0.0",
+  "language": "ACCELEO",
+  "bridgeName": "HYDRA Official Acceleo Bridge",
+  "bridgeVersion": "1.0.0",
+  "toolchainName": "Eclipse Acceleo",
+  "toolchainVersion": "",
+  "sha256": {
+    "HydraOfficialBridge.java": "0ba771c53a4399d2b73c68f8433f44f8febec57604b4e46e795060278e6194e2",
+    "bridge.properties": "21cea77a07b02b2987a6af4a125e381a355927baa6feae4792b03cd1cf054d79",
+    "toolchain.json": "05dccd0b6a836cea9e26e47f2b900a414bafdfdde76d7825fe0de6a535d1e1a5"
+  }
+}

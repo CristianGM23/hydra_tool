@@ -1,0 +1,43 @@
+/* HYDRA edges are rendered as explicit SVG paths and polygons. */
+.hydra-directed-edge-visible-path, .hydra-directed-edge-halo, .hydra-directed-edge-arrow {
+    pointer-events: none;
+}
+.hydra-directed-edge-visible-path, .hydra-directed-edge-halo {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+.hydra-directed-edge-visible-path {
+    filter: drop-shadow(0 1px 1px rgba(15, 23, 42, .28));
+}
+.hydra-directed-edge-halo {
+    opacity: .96;
+}
+.hydra-directed-edge-interaction {
+    pointer-events: stroke;
+}
+.react-flow__edge.animated .hydra-directed-edge-halo, .react-flow__edge.animated .hydra-directed-edge-interaction {
+    stroke-dasharray: none;
+    animation: none;
+}
+.hydra-directed-edge-arrow {
+    vector-effect: non-scaling-stroke;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 1px 1px rgba(15, 23, 42, .35));
+}
+.hydra-directed-edge-arrow.selected {
+    stroke-width: 2.4;
+    filter: drop-shadow(0 0 3px rgba(37, 99, 235, .62));
+}
+.event-architecture-canvas .react-flow__edges, .event-flow-visual-canvas .react-flow__edges, .gamification-visual-canvas .react-flow__edges {
+    z-index: 3;
+}
+.event-architecture-canvas .react-flow__nodes, .event-flow-visual-canvas .react-flow__nodes, .gamification-visual-canvas .react-flow__nodes {
+    z-index: 4;
+}
+.event-architecture-canvas .react-flow__edge-path, .event-flow-visual-canvas .react-flow__edge-path, .gamification-visual-canvas .react-flow__edge-path {
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}

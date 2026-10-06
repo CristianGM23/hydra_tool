@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0",
+  "id": "people-editor:compiled",
+  "sourceEditorDefinitionId": "people-editor",
+  "sourceEtag": "\"example-etag\"",
+  "metamodelId": "people",
+  "name": "People editor",
+  "compiledAt": "2026-07-28T12:00:00Z",
+  "representationsById": {
+    "representation:main": {
+      "id": "representation:main",
+      "name": "Main diagram",
+      "kind": "DIAGRAM",
+      "rootClassIds": [
+        "class:Person"
+      ],
+      "editable": true,
+      "nodeMappingsByClassId": {},
+      "edgeMappingsByRelationId": {},
+      "toolsById": {},
+      "paletteGroups": [],
+      "annotations": {}
+    }
+  },
+  "formsById": {},
+  "formsByTargetClassId": {},
+  "capabilityManifest": {
+    "capabilities": [
+      "MODEL_EDITING"
+    ]
+  },
+  "annotations": {},
+  "runtimePolicy": {
+    "validationTriggers": [
+      "MANUAL"
+    ],
+    "autosave": true,
+    "recoverLatestSession": true,
+    "publishEvents": true,
+    "eventFlowsEnabled": false,
+    "gamificationEnabled": false,
+    "maximumOpenRepresentations": 2,
+    "operationTimeoutMillis": 30000
+  }
+}

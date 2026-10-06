@@ -1,0 +1,9 @@
+{
+  "schemaVersion":"1.0","id":"people-sirius-desktop","metamodelId":"people","name":"People Sirius Desktop plug-in",
+  "target":{"technology":"SIRIUS_DESKTOP","kind":"GRAPHICAL_MODELING_EDITOR","technologyVersion":"7.x","projectId":"people-eclipse","moduleName":"people-sirius","buildSystem":"TYCHO","sourceRoots":[],"configurationFiles":[],"endpoint":"","settings":{"pluginId":"org.example.people.sirius"}},
+  "deliveryMode":"GENERATED_MODULE","features":["EDITOR_UI_CONTRIBUTION","NOTATION_CONTRIBUTION","PALETTE_CONTRIBUTION","VALIDATION_RUNTIME","QUICK_FIX_RUNTIME","OPERATION_RUNTIME","EVENT_PUBLICATION","PROJECT_EXPORT"],
+  "artifacts":[{"kind":"METAMODEL","documentId":"people","required":true},{"kind":"EDITOR_DEFINITION","documentId":"people-editor","required":true},{"kind":"VALIDATIONS","documentId":"people-validations","required":false},{"kind":"ACTIONS","documentId":"people-actions","required":false},{"kind":"OPERATION_BEHAVIORS","documentId":"people-operations","required":false},{"kind":"EVENT_DEFINITIONS","documentId":"people-events","required":false}],
+  "mappings":[],
+  "injectionPolicy":{"strategy":"ADD_PLUGIN","generatedRoot":"generated-integration","moduleName":"people-sirius","previewRequired":true,"rollbackRequired":true,"preserveCustomCode":true,"allowModifyExistingFiles":false,"allowModifyGeneratedFiles":true,"failOnPartialMappings":false},
+  "requiredCapabilities":["UI_CONTRIBUTION","NOTATION_CONTRIBUTION","PALETTE_CONTRIBUTION","VALIDATION_BRIDGE","QUICK_FIX_BRIDGE","OPERATION_BRIDGE","EVENT_PUBLISH","CODE_GENERATION"],"annotations":{}
+}

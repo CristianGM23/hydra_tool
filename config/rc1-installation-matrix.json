@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0",
+  "cases": [
+    {
+      "id": "ascii-space",
+      "pathTemplate": "HYDRA RC1 clean install",
+      "required": true
+    },
+    {
+      "id": "unicode",
+      "pathTemplate": "HYDRA RC1 áéí 漢字",
+      "required": true
+    },
+    {
+      "id": "nested",
+      "pathTemplate": "deep/nested/path/HYDRA RC1",
+      "required": true
+    },
+    {
+      "id": "readonly-source",
+      "pathTemplate": "HYDRA RC1 readonly",
+      "required": false
+    }
+  ],
+  "forbiddenRuntimeDependencies": [
+    "mvn",
+    "node",
+    "npm"
+  ],
+  "sourceValidationCommands": [
+    "python scripts/validation/verify_manifest.py",
+    "python scripts/release/verify_release_metadata.py"
+  ],
+  "report": "target/release/rc1-installation-matrix.json"
+}

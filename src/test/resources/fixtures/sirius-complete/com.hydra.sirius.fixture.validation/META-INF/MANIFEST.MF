@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HYDRA Sirius Fixture EVL Validation
+Bundle-SymbolicName: com.hydra.sirius.fixture.validation;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: HYDRA Fixture
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Bundle: org.eclipse.epsilon.evl,
+ org.eclipse.epsilon.evl.emf,
+ org.eclipse.epsilon.evl.emf.validation,
+ org.eclipse.emf.ecore,
+ org.eclipse.ui.ide,
+ com.hydra.sirius.fixture.metamodel

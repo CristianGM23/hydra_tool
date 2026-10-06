@@ -1,0 +1,191 @@
+{
+  "schemaVersion": "1.0",
+  "invariants": [
+    {
+      "id": "current-release-tree-green",
+      "owner": "release",
+      "rationale": "A delivery is publishable only when the current capability gates pass.",
+      "evidence": "scripts/validation/verify_final_tree.py"
+    },
+    {
+      "id": "pre-ga-no-internal-migrations",
+      "owner": "architecture",
+      "rationale": "Before GA, canonical HYDRA data uses only current schemas and carries no internal migration chain.",
+      "evidence": "scripts/validation/verify_pre_ga_hygiene.py"
+    },
+    {
+      "id": "no-visual-product-or-metamodel-version",
+      "owner": "ux",
+      "rationale": "Release and metamodel schema versions are internal metadata, not visual identity.",
+      "evidence": "scripts/validation/verify_no_visual_versions.py"
+    },
+    {
+      "id": "external-project-deep-inventory",
+      "owner": "recovery",
+      "rationale": "External ZIP/JAR/WAR/EAR projects are inventoried recursively with bounded resource usage.",
+      "evidence": "src/main/java/com/example/editor/project/recovery/ExternalProjectArchiveWalker.java"
+    },
+    {
+      "id": "unknown-project-resources-preserved",
+      "owner": "recovery",
+      "rationale": "Unknown files are retained as PROJECT_RESOURCE instead of disappearing silently.",
+      "evidence": "src/main/java/com/example/editor/project/recovery/ExternalProjectResourceKind.java"
+    },
+    {
+      "id": "mapping-evidence-explainable",
+      "owner": "recovery",
+      "rationale": "Recovered mappings expose score, confidence, fidelity, alternatives, recovered/lost fields and reasons.",
+      "evidence": "src/main/java/com/example/editor/project/recovery/ExternalProjectMappingEvidence.java"
+    },
+    {
+      "id": "unsafe-mappings-not-auto-selected",
+      "owner": "recovery",
+      "rationale": "Automatic selection requires high confidence and a clear score gap.",
+      "evidence": "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryService.java"
+    },
+    {
+      "id": "external-import-non-destructive",
+      "owner": "recovery",
+      "rationale": "External source is preserved and failed materialization is rolled back.",
+      "evidence": "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java"
+    },
+    {
+      "id": "one-import-progress-contract",
+      "owner": "import",
+      "rationale": "Import progress uses stages and activities only; no parallel percentage callback exists.",
+      "evidence": "src/main/java/com/example/editor/metamodel/importing/MetamodelImportProgressListener.java"
+    },
+    {
+      "id": "one-connection-terminator-model",
+      "owner": "diagram",
+      "rationale": "Connection ends use sourceTerminator/targetTerminator only.",
+      "evidence": "frontend/src/designer-ui/HydraConnectionVisual.ts"
+    },
+    {
+      "id": "one-project-image-kind",
+      "owner": "editor-definition",
+      "rationale": "Project-backed images use PROJECT_IMAGE for all supported raster/vector formats.",
+      "evidence": "frontend/src/editor-definition/types.ts"
+    },
+    {
+      "id": "generated-api-converges-with-controllers",
+      "owner": "api",
+      "rationale": "OpenAPI contract and TypeScript route registry are generated from current controllers.",
+      "evidence": "scripts/api/verify_openapi.py"
+    },
+    {
+      "id": "frontend-import-graph-acyclic",
+      "owner": "frontend",
+      "rationale": "Frontend subsystem dependencies remain acyclic.",
+      "evidence": "scripts/validation/verify_frontend_architecture.py"
+    },
+    {
+      "id": "shared-control-system",
+      "owner": "frontend",
+      "rationale": "Production actions use shared HYDRA controls for consistent accessibility and behavior.",
+      "evidence": "scripts/validation/verify_frontend_control_convergence.py"
+    },
+    {
+      "id": "spanish-visible-copy-covered",
+      "owner": "i18n",
+      "rationale": "Visible production copy has a Spanish translation or is explicitly technical.",
+      "evidence": "scripts/validation/verify_hydra_i18n_full.py"
+    },
+    {
+      "id": "bounded-concurrent-state",
+      "owner": "runtime",
+      "rationale": "Caches, queues, sessions and lock registries have bounded lifecycle policies.",
+      "evidence": "scripts/validation/verify_concurrency_state_budgets.py"
+    },
+    {
+      "id": "bounded-external-processes",
+      "owner": "security",
+      "rationale": "External tools run through bounded policies with safe arguments, timeout and output limits.",
+      "evidence": "scripts/security/verify_external_process_security.py"
+    },
+    {
+      "id": "actionable-remote-errors",
+      "owner": "remote",
+      "rationale": "Authentication, proxy, DNS, TLS, conflict, rate-limit and storage errors preserve actionable semantics.",
+      "evidence": "src/main/java/com/example/editor/remote/auth/RemoteOAuthProviderErrorMapper.java"
+    },
+    {
+      "id": "safe-project-root-deletion",
+      "owner": "project",
+      "rationale": "Complete project deletion verifies a HYDRA project root and refuses unsafe filesystem roots.",
+      "evidence": "src/main/java/com/example/editor/project/storage/ProjectDeletionService.java"
+    },
+    {
+      "id": "canonical-jsonl-audit",
+      "owner": "audit",
+      "rationale": "Audit storage writes one canonical compact JSON object per line and tolerates isolated corrupt lines without migration.",
+      "evidence": "src/main/java/com/example/editor/audit/AuditJsonlRecordCodec.java"
+    },
+    {
+      "id": "portable-backend-url",
+      "owner": "frontend",
+      "rationale": "Frontend calls use portable backendFetch instead of hardcoded localhost URLs.",
+      "evidence": "frontend/src/api/backendConfig.ts"
+    },
+    {
+      "id": "wcag-platform-hooks",
+      "owner": "accessibility",
+      "rationale": "Focus, reduced motion and forced-colors behavior are centralized.",
+      "evidence": "frontend/src/design-system/hydra-accessibility.css"
+    },
+    {
+      "id": "release-package-allowlisted",
+      "owner": "release",
+      "rationale": "Source packaging excludes dependencies, builds, runtime data and IDE state.",
+      "evidence": "scripts/release/package_source.py"
+    },
+    {
+      "id": "release-patch-byte-exact",
+      "owner": "release",
+      "rationale": "The patch must reproduce the filtered target tree byte-for-byte from the declared baseline.",
+      "evidence": "scripts/release/generate_patch.py"
+    },
+    {
+      "id": "jdk24-runtime-certification",
+      "owner": "release",
+      "rationale": "The release keeps Java 24 bytecode while qualification accepts supported JDK 24 or 25 plus frontend and Maven runtime gates.",
+      "evidence": "scripts/release/verify_toolchain.py"
+    },
+    {
+      "id": "actionable-error-recovery-contract",
+      "owner": "ux",
+      "rationale": "API errors expose user summary, impact, safe recovery guidance, correlation evidence and separated technical detail without inventing unsafe automatic fixes.",
+      "evidence": "scripts/validation/verify_r5c13_fix99_100_release_closure.py"
+    },
+    {
+      "id": "qualified-release-reproducible",
+      "owner": "release",
+      "rationale": "A qualified release must survive extraction, revalidation and byte-reproducible source/SBOM regeneration.",
+      "evidence": "scripts/release/qualify_release.py"
+    },
+    {
+      "id": "provider-aware-jdk-discovery",
+      "owner": "release",
+      "rationale": "Windows qualification resolves a complete supported JDK through provider-aware discovery instead of fixed installation paths.",
+      "evidence": "scripts/toolchain/hydra_environment.py"
+    },
+    {
+      "id": "qualification-checkpoints-fingerprinted",
+      "owner": "release",
+      "rationale": "Qualification checkpoints are reusable only for the same canonical source/toolchain fingerprint and keep per-stage logs.",
+      "evidence": "scripts/release/qualification_engine.py"
+    },
+    {
+      "id": "release-provenance-machine-readable",
+      "owner": "release",
+      "rationale": "Candidate evidence records source, SBOM, qualification, platform and effective toolchain with SHA-256 provenance.",
+      "evidence": "scripts/release/generate_provenance.py"
+    },
+    {
+      "id": "rc2-feature-freeze",
+      "owner": "release",
+      "rationale": "A passing RC2 emits a machine-readable feature-freeze certificate before stable release.",
+      "evidence": "scripts/release/qualify_rc2.py"
+    }
+  ]
+}

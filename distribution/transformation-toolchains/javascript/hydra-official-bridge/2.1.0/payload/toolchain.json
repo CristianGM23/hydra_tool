@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "language": "JAVASCRIPT",
+  "bridgeName": "HYDRA Official JavaScript Bridge",
+  "bridgeVersion": "2.1.0",
+  "toolchainName": "Node.js",
+  "toolchainVersion": "",
+  "command": [
+    "${java}",
+    "${bundle}/HydraOfficialBridge.java",
+    "${bundle}/bridge.properties"
+  ]
+}

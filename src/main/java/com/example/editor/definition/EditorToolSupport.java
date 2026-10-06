@@ -1,0 +1,10 @@
+package com.example.editor.definition;
+import java.util.List;
+import com.example.editor.validation.contract.StableIdentifierPolicy;
+final class EditorToolSupport {
+    /** Descripción: Inicializa una instancia de EditorToolSupport con sus dependencias y datos de entrada. Entradas: no requiere parámetros de entrada. Salida: deja la instancia inicializada y lista para su uso. */ private EditorToolSupport() { }
+    /** Descripción: Ejecuta la operación «id» correspondiente a la responsabilidad de EditorToolSupport. Entradas: value: valor de entrada que debe procesarse; field: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static String id(String value, String field) { return StableIdentifierPolicy.requireElementId(value, field); }
+    /** Descripción: Ejecuta la operación «text» correspondiente a la responsabilidad de EditorToolSupport. Entradas: value: valor de entrada que debe procesarse; fallback: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static String text(String value, String fallback) { return value == null || value.isBlank() ? fallback : value.trim(); }
+    /** Descripción: Ejecuta la operación «ids» correspondiente a la responsabilidad de EditorToolSupport. Entradas: values: colección de elementos que debe procesarse; field: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static List<String> ids(List<String> values, String field) { return values == null ? List.of() : values.stream().map(value -> id(value, field)).toList(); }
+    /** Descripción: Ejecuta la operación «optionalId» correspondiente a la responsabilidad de EditorToolSupport. Entradas: value: valor de entrada que debe procesarse; field: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static String optionalId(String value, String field) { return value == null || value.isBlank() ? "" : id(value, field); }
+}

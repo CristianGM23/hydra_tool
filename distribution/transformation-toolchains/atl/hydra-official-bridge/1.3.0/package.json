@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "packageId": "hydra-official-bridge",
+  "packageVersion": "1.3.0",
+  "language": "ATL",
+  "bridgeName": "HYDRA Official ATL Bridge",
+  "bridgeVersion": "1.3.0",
+  "toolchainName": "Eclipse ATL",
+  "toolchainVersion": "",
+  "sha256": {
+    "HydraOfficialBridge.java": "e77c69ca8eb04f790d45be571ed8a3daaf8070df93e12a688de1907bb4ba51eb",
+    "bridge.properties": "76f56998294dcd72972ce95f2fba5bda6593ecc46074185ce79c96e90a7663d7",
+    "toolchain.json": "fd4588885263d186a48bf89cdb71da21fe2f68ed557b6ff9719102d1150c019a"
+  }
+}

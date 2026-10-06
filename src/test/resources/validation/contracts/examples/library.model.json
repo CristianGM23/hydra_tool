@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "id": "library-sample",
+  "metamodelId": "library",
+  "metamodelEtag": "etag-meta-1",
+  "name": "Valid library",
+  "rootElementIds": [
+    "object:library"
+  ],
+  "elements": [
+    {
+      "id": "object:library",
+      "classId": "class:Library",
+      "attributes": {
+        "attribute:class:Library:name": "Central Library"
+      },
+      "annotations": {}
+    },
+    {
+      "id": "object:book-1",
+      "classId": "class:Book",
+      "attributes": {
+        "attribute:class:Book:title": "Architecture",
+        "attribute:class:Book:pages": 320
+      },
+      "annotations": {}
+    }
+  ],
+  "relations": [
+    {
+      "id": "relation-instance:books-1",
+      "relationId": "reference:class:Library:books",
+      "sourceElementId": "object:library",
+      "targetElementId": "object:book-1",
+      "annotations": {}
+    }
+  ],
+  "annotations": {}
+}

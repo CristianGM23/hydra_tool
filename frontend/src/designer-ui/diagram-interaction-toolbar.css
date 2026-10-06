@@ -1,0 +1,142 @@
+.hydra-diagram-toolbox {
+    display:grid;
+    width:100%;
+    min-width:0;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface-muted);
+    overflow:hidden;
+}
+.hydra-diagram-toolbox-main, .hydra-diagram-selection-actions {
+    display:flex;
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    align-items:center;
+    gap:6px;
+    padding:6px 8px;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overflow-y:hidden;
+    overscroll-behavior-inline:contain;
+    scrollbar-width:thin;
+    scrollbar-gutter:stable;
+    contain:inline-size;
+}
+.hydra-diagram-pointer-modes {
+    display:inline-flex;
+    flex:0 0 auto;
+    align-items:center;
+    gap:5px;
+    padding:2px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:7px;
+    background:var(--hydra-bg-surface);
+}
+.hydra-diagram-pointer-modes > button {
+    min-height:29px;
+    padding:4px 9px;
+    border:1px solid transparent;
+    border-radius:5px;
+    background:transparent;
+    color:var(--hydra-text-secondary);
+    font:inherit;
+    font-size:10.5px;
+    white-space:nowrap;
+    cursor:pointer;
+}
+.hydra-diagram-pointer-modes > button:hover {
+    background:var(--hydra-bg-hover);
+    color:var(--hydra-text-primary);
+}
+.hydra-diagram-pointer-modes > button.active {
+    border-color:var(--hydra-color-primary-600);
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-color-primary-700);
+    font-weight:700;
+}
+.hydra-diagram-pointer-modes > button.connect {
+    border-inline-start-color:var(--hydra-border-default);
+}
+.hydra-diagram-selection-actions {
+    border-top:1px solid #e8edf5;
+    background:var(--hydra-bg-surface);
+}
+.hydra-diagram-tool-group {
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    min-width:0;
+}
+.hydra-diagram-tool-group > span {
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+}
+.hydra-diagram-tool-group .hydra-designer-dropdown-popup {
+    min-width:205px;
+}
+.hydra-diagram-tool-group .hydra-designer-dropdown-popup > button {
+    min-height:31px;
+    padding:5px 8px;
+    border-radius:5px;
+    font-size:10px;
+}
+.hydra-diagram-tool-group .hydra-designer-dropdown-popup button.active {
+    border-color:var(--hydra-color-primary-600);
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-color-primary-700);
+    font-weight:700;
+}
+.hydra-diagram-tool-group .hydra-designer-dropdown-popup button.danger {
+    border-color:#efc2c2;
+    color:var(--hydra-color-danger-600);
+}
+.hydra-diagram-toolbox-trailing {
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+}
+.hydra-diagram-toolbox-help {
+    flex:1 0 260px;
+    min-width:220px;
+    color:var(--hydra-text-muted);
+    font-size:10px;
+    line-height:1.3;
+}
+.hydra-diagram-selection-summary {
+    display:inline-flex;
+    align-items:baseline;
+    gap:6px;
+    padding-right:3px;
+}
+.hydra-diagram-selection-summary > strong {
+    color:var(--hydra-text-muted);
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    white-space:nowrap;
+}
+.hydra-diagram-selection-summary > span {
+    color:var(--hydra-text-secondary);
+    font-size:10px;
+    white-space:nowrap;
+}
+@media(max-width:760px) {
+    .hydra-diagram-toolbox-main, .hydra-diagram-selection-actions {
+        align-items:center;
+        gap:5px;
+    }
+    .hydra-diagram-toolbox-help {
+        flex:0 0 260px;
+    }
+}
+.hydra-diagram-toolbox-main > *, .hydra-diagram-selection-actions > * {
+    flex-shrink:0;
+}

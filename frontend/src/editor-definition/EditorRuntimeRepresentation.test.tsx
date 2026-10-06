@@ -1,0 +1,21 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { EditorRuntimeRepresentation } from './EditorRuntimeRepresentation';
+import type { EditorSessionDiagramDocument, EditorSessionView, RepresentationKind } from './types';
+
+const diagram:EditorSessionDiagramDocument={schemaVersion:'1.0',id:'session-one',metamodelId:'people',editorId:'people-editor',representationId:'representation:main',nodes:[{elementId:'person-one',x:20,y:20,width:180,height:90},{elementId:'person-two',x:260,y:20,width:180,height:90}],edges:[]};
+function view(kind:RepresentationKind,nodes=true):EditorSessionView{return {session:{schemaVersion:'1.0',id:'session-one',metamodelId:'people',editorId:'people-editor',sourceEditorEtag:'etag',activeRepresentationId:'representation:main',openRepresentationIds:['representation:main'],model:{schemaVersion:'1.0',id:'model-one',metamodelId:'people',rootElementIds:['person-one'],elements:[],relations:[],annotations:{}},latestValidationReport:null,revision:1,createdAt:'2026-07-29T00:00:00Z',updatedAt:'2026-07-29T00:00:00Z',annotations:{}},etag:'etag',representationId:'representation:main',representationName:`${kind} view`,representationKind:kind,editable:true,nodes:nodes?[{elementId:'person-one',classId:'class:Person',className:'Person',mappingId:'node:person',representationName:'Person',shape:'RECTANGLE',label:'Ada',width:180,height:90,attributes:{name:'Ada'},styles:{}},{elementId:'person-two',classId:'class:Person',className:'Person',mappingId:'node:person',representationName:'Person',shape:'RECTANGLE',label:'Grace',width:180,height:90,attributes:{name:'Grace'},styles:{}}]:[],edges:nodes?[{relationInstanceId:'knows-one',relationId:'relation:knows',relationName:'knows',mappingId:'edge:knows',sourceElementId:'person-one',targetElementId:'person-two',lineType:'STRAIGHT',label:'knows',styles:{}}]:[],paletteGroups:[],selectedForm:null,representations:[],validationReport:null,undoAvailable:false,redoAvailable:false};}
+function renderKind(kind:RepresentationKind,onSelect=vi.fn()){render(<EditorRuntimeRepresentation view={view(kind)} diagram={diagram} selectedIds={[]} onSelectNode={onSelect}/>);return onSelect;}
+
+describe('neutral runtime representation kinds',()=>{
+ it('renders the diagram representation',()=>{renderKind('DIAGRAM');expect(screen.getByText('Ada')).toBeInTheDocument();});
+ it('renders hierarchy in the tree representation',()=>{renderKind('TREE');expect(screen.getByRole('tree')).toBeInTheDocument();expect(screen.getByText('Grace')).toBeInTheDocument();});
+ it('renders attributes in the table representation',()=>{renderKind('TABLE');expect(screen.getByRole('table')).toHaveTextContent('name');expect(screen.getByRole('table')).toHaveTextContent('Ada');});
+ it('renders a form-oriented representation',()=>{renderKind('FORM');expect(screen.getByText('class:Person')).toBeInTheDocument();});
+ it('renders an adjacency matrix',()=>{renderKind('MATRIX');expect(screen.getByRole('table')).toHaveTextContent('Source \\ Target');expect(screen.getByRole('table')).toHaveTextContent('●');});
+ it('renders dashboard counters',()=>{renderKind('DASHBOARD');expect(screen.getByText('Visible elements')).toBeInTheDocument();expect(screen.getByText('Visible relations')).toBeInTheDocument();});
+ it('uses one semantic selection across non-diagram viewpoints',()=>{const select=renderKind('TABLE');fireEvent.click(screen.getByText('Ada'));expect(select).toHaveBeenCalledWith('person-one');});
+ it('shows an empty-state message for an empty tree',()=>{render(<EditorRuntimeRepresentation view={view('TREE',false)} diagram={{...diagram,nodes:[]}} selectedIds={[]} onSelectNode={vi.fn()}/>);expect(screen.getByText(/No elements/i)).toBeInTheDocument();});
+ it('marks the selected table row',()=>{render(<EditorRuntimeRepresentation view={view('TABLE')} diagram={diagram} selectedIds={['person-one']} onSelectNode={vi.fn()}/>);expect(screen.getByText('Ada').closest('tr')).toHaveClass('selected');});
+ it('keeps dashboard class cards navigable',()=>{const select=renderKind('DASHBOARD');fireEvent.click(screen.getByRole('button',{name:/Person/}));expect(select).toHaveBeenCalledWith('person-one');});
+});

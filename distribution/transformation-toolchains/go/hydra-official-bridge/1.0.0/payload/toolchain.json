@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "language": "GO",
+  "bridgeName": "HYDRA Official Go Bridge",
+  "bridgeVersion": "1.0.0",
+  "toolchainName": "Go",
+  "toolchainVersion": "",
+  "command": [
+    "${java}",
+    "${bundle}/HydraOfficialBridge.java",
+    "${bundle}/bridge.properties"
+  ]
+}

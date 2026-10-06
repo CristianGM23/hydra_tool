@@ -1,0 +1,10 @@
+{
+  "releaseType": "internal-source-distribution",
+  "publicLicenseDeclared": false,
+  "scm": {
+    "status": "not-declared-in-source-tree",
+    "requiredForPublicPublication": true
+  },
+  "sourcePackagePolicy": "allowlist",
+  "runtimeDataIncluded": false
+}

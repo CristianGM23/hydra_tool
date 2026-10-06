@@ -1,0 +1,539 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://modeling-editor.local/schemas/action-model-1.0.schema.json",
+  "title": "ActionModel 1.0",
+  "description": "Acciones declarativas reutilizables por quick fixes, paletas y formularios.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "metamodelId",
+    "expressionModelId",
+    "actions"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "metamodelId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "expressionModelId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "annotations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "default": {}
+    }
+  },
+  "$defs": {
+    "selector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "SELF",
+            "SELECTION",
+            "PARAMETER",
+            "CREATED_ELEMENT",
+            "ELEMENT_ID"
+          ]
+        },
+        "parameterName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "elementId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "valueSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "literal": {},
+        "expressionId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "parameterName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "literal"
+          ]
+        },
+        {
+          "required": [
+            "expressionId"
+          ]
+        },
+        {
+          "required": [
+            "parameterName"
+          ]
+        }
+      ]
+    },
+    "operation": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/setAttribute"
+        },
+        {
+          "$ref": "#/$defs/clearAttribute"
+        },
+        {
+          "$ref": "#/$defs/copyAttribute"
+        },
+        {
+          "$ref": "#/$defs/addRelation"
+        },
+        {
+          "$ref": "#/$defs/removeRelation"
+        },
+        {
+          "$ref": "#/$defs/createElement"
+        },
+        {
+          "$ref": "#/$defs/deleteElement"
+        },
+        {
+          "$ref": "#/$defs/transformText"
+        },
+        {
+          "$ref": "#/$defs/executeAction"
+        },
+        {
+          "$ref": "#/$defs/invokeOperation"
+        }
+      ]
+    },
+    "setAttribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operationId",
+        "target",
+        "attributeId",
+        "value"
+      ],
+      "properties": {
+        "kind": {
+          "const": "SET_ATTRIBUTE"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "target": {
+          "$ref": "#/$defs/selector"
+        },
+        "attributeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "value": {
+          "$ref": "#/$defs/valueSource"
+        }
+      }
+    },
+    "clearAttribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operationId",
+        "target",
+        "attributeId"
+      ],
+      "properties": {
+        "kind": {
+          "const": "CLEAR_ATTRIBUTE"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "target": {
+          "$ref": "#/$defs/selector"
+        },
+        "attributeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "copyAttribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operationId",
+        "source",
+        "sourceAttributeId",
+        "target",
+        "targetAttributeId"
+      ],
+      "properties": {
+        "kind": {
+          "const": "COPY_ATTRIBUTE"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "source": {
+          "$ref": "#/$defs/selector"
+        },
+        "sourceAttributeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "target": {
+          "$ref": "#/$defs/selector"
+        },
+        "targetAttributeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "addRelation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operationId",
+        "relationId",
+        "source",
+        "target"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ADD_RELATION"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "relationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "source": {
+          "$ref": "#/$defs/selector"
+        },
+        "target": {
+          "$ref": "#/$defs/selector"
+        }
+      }
+    },
+    "removeRelation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operationId",
+        "relationId",
+        "source",
+        "target"
+      ],
+      "properties": {
+        "kind": {
+          "const": "REMOVE_RELATION"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "relationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "source": {
+          "$ref": "#/$defs/selector"
+        },
+        "target": {
+          "$ref": "#/$defs/selector"
+        }
+      }
+    },
+    "createElement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operationId",
+        "classId",
+        "resultName"
+      ],
+      "properties": {
+        "kind": {
+          "const": "CREATE_ELEMENT"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "classId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "resultName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "containmentRelationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "container": {
+          "$ref": "#/$defs/selector"
+        }
+      }
+    },
+    "deleteElement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operationId",
+        "target"
+      ],
+      "properties": {
+        "kind": {
+          "const": "DELETE_ELEMENT"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "target": {
+          "$ref": "#/$defs/selector"
+        }
+      }
+    },
+    "transformText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operationId",
+        "target",
+        "attributeId",
+        "transformation"
+      ],
+      "properties": {
+        "kind": {
+          "const": "TRANSFORM_TEXT"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "target": {
+          "$ref": "#/$defs/selector"
+        },
+        "attributeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "transformation": {
+          "enum": [
+            "UPPERCASE",
+            "LOWERCASE",
+            "CAPITALIZE",
+            "TRIM"
+          ]
+        }
+      }
+    },
+    "executeAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operationId",
+        "actionId"
+      ],
+      "properties": {
+        "kind": {
+          "const": "EXECUTE_ACTION"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "actionId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "arguments": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/valueSource"
+          },
+          "default": {}
+        }
+      }
+    },
+    "parameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "type",
+        "required"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "type": {
+          "enum": [
+            "STRING",
+            "INTEGER",
+            "DECIMAL",
+            "BOOLEAN",
+            "ELEMENT_ID",
+            "CLASS_ID",
+            "RELATION_ID",
+            "ATTRIBUTE_ID"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "enabled",
+        "parameters",
+        "operations",
+        "transactionPolicy",
+        "undoPolicy"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "default": ""
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/parameter"
+          }
+        },
+        "preconditionExpressionId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/operation"
+          }
+        },
+        "transactionPolicy": {
+          "enum": [
+            "ATOMIC",
+            "BEST_EFFORT"
+          ]
+        },
+        "undoPolicy": {
+          "enum": [
+            "REQUIRED",
+            "OPTIONAL",
+            "NOT_SUPPORTED"
+          ]
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {}
+        }
+      }
+    },
+    "invokeOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operationId",
+        "target",
+        "metamodelOperationId",
+        "arguments"
+      ],
+      "properties": {
+        "kind": {
+          "const": "INVOKE_OPERATION"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "target": {
+          "$ref": "#/$defs/selector"
+        },
+        "metamodelOperationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/valueSource"
+          }
+        }
+      }
+    }
+  }
+}

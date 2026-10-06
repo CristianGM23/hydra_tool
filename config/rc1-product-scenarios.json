@@ -1,0 +1,233 @@
+{
+  "schemaVersion": "1.0",
+  "defaultBaseUrl": "http://127.0.0.1:8081",
+  "scenarios": [
+    {
+      "id": "library-core-flow",
+      "referenceProject": "library-basic",
+      "description": "Metamodelo + expresiones + acciones + validaciones + modelo + cleanup.",
+      "steps": [
+        {
+          "name": "health",
+          "method": "GET",
+          "path": "/actuator/health",
+          "expectedStatus": [
+            200
+          ]
+        },
+        {
+          "name": "cleanup-before",
+          "method": "DELETE",
+          "path": "/api/canonical-metamodels/library",
+          "expectedStatus": [
+            204,
+            404
+          ]
+        },
+        {
+          "name": "create-metamodel",
+          "method": "POST",
+          "path": "/api/canonical-metamodels",
+          "bodyFile": "reference-projects/library-basic/artifacts/library.metamodel.json",
+          "expectedStatus": [
+            201
+          ]
+        },
+        {
+          "name": "validate-metamodel",
+          "method": "POST",
+          "path": "/api/canonical-metamodels/library/validate",
+          "expectedStatus": [
+            200
+          ]
+        },
+        {
+          "name": "create-expressions",
+          "method": "POST",
+          "path": "/api/canonical-metamodels/library/expressions",
+          "bodyFile": "reference-projects/library-basic/artifacts/library.expressions.json",
+          "expectedStatus": [
+            201
+          ]
+        },
+        {
+          "name": "create-actions",
+          "method": "POST",
+          "path": "/api/canonical-metamodels/library/actions",
+          "bodyFile": "reference-projects/library-basic/artifacts/library.actions.json",
+          "expectedStatus": [
+            201
+          ]
+        },
+        {
+          "name": "create-validations",
+          "method": "POST",
+          "path": "/api/canonical-metamodels/library/validations",
+          "bodyFile": "reference-projects/library-basic/artifacts/library.validations.json",
+          "expectedStatus": [
+            201
+          ]
+        },
+        {
+          "name": "check-validations",
+          "method": "POST",
+          "path": "/api/canonical-metamodels/library/validations/check",
+          "expectedStatus": [
+            200
+          ]
+        },
+        {
+          "name": "cleanup-after",
+          "method": "DELETE",
+          "path": "/api/canonical-metamodels/library",
+          "expectedStatus": [
+            204
+          ]
+        }
+      ]
+    },
+    {
+      "id": "grammar-flow",
+      "referenceProject": "commerce-intermediate",
+      "description": "Persistencia + análisis de gramática grammar-first.",
+      "steps": [
+        {
+          "name": "cleanup-before",
+          "method": "DELETE",
+          "path": "/api/grammars/rc1-commerce-grammar",
+          "expectedStatus": [
+            204,
+            404
+          ]
+        },
+        {
+          "name": "create-grammar",
+          "method": "POST",
+          "path": "/api/grammars",
+          "bodyFile": "reference-projects/commerce-intermediate/artifacts/commerce.grammar.json",
+          "expectedStatus": [
+            201
+          ]
+        },
+        {
+          "name": "get-grammar",
+          "method": "GET",
+          "path": "/api/grammars/rc1-commerce-grammar",
+          "expectedStatus": [
+            200
+          ]
+        },
+        {
+          "name": "cleanup-after",
+          "method": "DELETE",
+          "path": "/api/grammars/rc1-commerce-grammar",
+          "expectedStatus": [
+            204
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transformation-definition-flow",
+      "referenceProject": "sync-advanced",
+      "description": "Dos metamodelos + definición bidireccional + check + cleanup.",
+      "steps": [
+        {
+          "name": "cleanup-transformation",
+          "method": "DELETE",
+          "path": "/api/transformations/rc1-people-contacts",
+          "expectedStatus": [
+            204,
+            404
+          ]
+        },
+        {
+          "name": "cleanup-people",
+          "method": "DELETE",
+          "path": "/api/canonical-metamodels/rc1-people",
+          "expectedStatus": [
+            204,
+            404
+          ]
+        },
+        {
+          "name": "cleanup-contacts",
+          "method": "DELETE",
+          "path": "/api/canonical-metamodels/rc1-contacts",
+          "expectedStatus": [
+            204,
+            404
+          ]
+        },
+        {
+          "name": "create-people",
+          "method": "POST",
+          "path": "/api/canonical-metamodels",
+          "bodyFile": "reference-projects/sync-advanced/artifacts/people.metamodel.json",
+          "expectedStatus": [
+            201
+          ]
+        },
+        {
+          "name": "create-contacts",
+          "method": "POST",
+          "path": "/api/canonical-metamodels",
+          "bodyFile": "reference-projects/sync-advanced/artifacts/contacts.metamodel.json",
+          "expectedStatus": [
+            201
+          ]
+        },
+        {
+          "name": "check-transformation-draft",
+          "method": "POST",
+          "path": "/api/transformations/check",
+          "bodyFile": "reference-projects/sync-advanced/artifacts/people-contacts.transformation.json",
+          "expectedStatus": [
+            200
+          ]
+        },
+        {
+          "name": "create-transformation",
+          "method": "POST",
+          "path": "/api/transformations",
+          "bodyFile": "reference-projects/sync-advanced/artifacts/people-contacts.transformation.json",
+          "expectedStatus": [
+            201
+          ]
+        },
+        {
+          "name": "check-stored",
+          "method": "GET",
+          "path": "/api/transformations/rc1-people-contacts/check",
+          "expectedStatus": [
+            200
+          ]
+        },
+        {
+          "name": "cleanup-transformation-after",
+          "method": "DELETE",
+          "path": "/api/transformations/rc1-people-contacts",
+          "expectedStatus": [
+            204
+          ]
+        },
+        {
+          "name": "cleanup-people-after",
+          "method": "DELETE",
+          "path": "/api/canonical-metamodels/rc1-people",
+          "expectedStatus": [
+            204
+          ]
+        },
+        {
+          "name": "cleanup-contacts-after",
+          "method": "DELETE",
+          "path": "/api/canonical-metamodels/rc1-contacts",
+          "expectedStatus": [
+            204
+          ]
+        }
+      ]
+    }
+  ]
+}

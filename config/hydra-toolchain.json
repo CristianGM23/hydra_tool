@@ -1,0 +1,8 @@
+{
+  "java": "24",
+  "maven": "3.9.16",
+  "node": "22.16.0",
+  "npm": "10.9.2",
+  "typescript": "6.0.3",
+  "javaQualificationMax": "25"
+}

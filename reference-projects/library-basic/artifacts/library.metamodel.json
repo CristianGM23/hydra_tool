@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "2.1",
+  "id": "library",
+  "name": "Library",
+  "classes": [
+    {
+      "id": "class:Library",
+      "name": "Library",
+      "kind": "CLASS",
+      "attributes": [
+        {
+          "id": "attribute:class:Library:name",
+          "name": "name",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "STRING",
+            "externalName": ""
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "ordered": true,
+          "unique": true,
+          "defaultValue": "",
+          "annotations": {}
+        }
+      ],
+      "annotations": {},
+      "operations": []
+    },
+    {
+      "id": "class:Book",
+      "name": "Book",
+      "kind": "CLASS",
+      "attributes": [
+        {
+          "id": "attribute:class:Book:title",
+          "name": "title",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "STRING",
+            "externalName": ""
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "ordered": true,
+          "unique": true,
+          "defaultValue": "",
+          "annotations": {}
+        },
+        {
+          "id": "attribute:class:Book:pages",
+          "name": "pages",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "INTEGER",
+            "externalName": ""
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "ordered": true,
+          "unique": true,
+          "defaultValue": "1",
+          "annotations": {}
+        }
+      ],
+      "annotations": {},
+      "operations": [
+        {
+          "id": "operation:class:Book:isLong",
+          "name": "isLong",
+          "returnType": {
+            "kind": "PRIMITIVE",
+            "targetId": "BOOLEAN",
+            "externalName": ""
+          },
+          "returnMultiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "ordered": true,
+          "unique": true,
+          "parameters": [
+            {
+              "id": "parameter:operation:class:Book:isLong:minimumPages",
+              "name": "minimumPages",
+              "type": {
+                "kind": "PRIMITIVE",
+                "targetId": "INTEGER",
+                "externalName": ""
+              },
+              "multiplicity": {
+                "lowerBound": 1,
+                "upperBound": 1
+              },
+              "ordered": true,
+              "unique": true,
+              "annotations": {}
+            }
+          ],
+          "exceptionTypes": [],
+          "behaviorKind": "QUERY",
+          "annotations": {}
+        }
+      ]
+    }
+  ],
+  "enums": [],
+  "dataTypes": [],
+  "relations": [
+    {
+      "id": "reference:class:Library:books",
+      "name": "books",
+      "sourceTypeId": "class:Library",
+      "targetTypeId": "class:Book",
+      "kind": "CONTAINMENT",
+      "sourceMultiplicity": null,
+      "targetMultiplicity": {
+        "lowerBound": 0,
+        "upperBound": null
+      },
+      "oppositeRelationId": "",
+      "ordered": true,
+      "unique": true,
+      "annotations": {}
+    }
+  ],
+  "annotations": {}
+}

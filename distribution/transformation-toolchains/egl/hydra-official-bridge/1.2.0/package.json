@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "packageId": "hydra-official-bridge",
+  "packageVersion": "1.2.0",
+  "language": "EGL",
+  "bridgeName": "HYDRA Official EGL Bridge",
+  "bridgeVersion": "1.2.0",
+  "toolchainName": "Epsilon EGL",
+  "toolchainVersion": "",
+  "sha256": {
+    "HydraOfficialBridge.java": "a79537ed868c5b20e03fd6f694ad16b123adfdc19a8b025f10bd401a1483c2fd",
+    "bridge.properties": "a7b585159ec5b7bd182ecfdf9d2a92b53cfbc9aaf5e1836195fa82de3822c62f",
+    "toolchain.json": "4464721e906fc0a9cdb199febd61f4bf053354c2429d8d54ed0fd06071303542"
+  }
+}

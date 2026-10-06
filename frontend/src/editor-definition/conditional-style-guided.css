@@ -1,0 +1,17 @@
+
+.editor-conditional-style-card>.editor-conditional-style-step>summary {
+    min-height:50px;
+    align-items:center;
+}
+.editor-conditional-style-step:not([open])>summary {
+    background:var(--hydra-bg-surface-muted);
+}
+.editor-conditional-style-condition .validation-guided-context-summary {
+    margin-bottom:2px;
+}
+.editor-conditional-style-condition .validation-guided-fields {
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+}
+.editor-conditional-style-condition .validation-guided-fields>label {
+    padding:7px;
+}

@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "1.0",
+  "maxNativeButtons": 1,
+  "minHydraButtons": 700,
+  "nativeButtonOwner": "frontend/src/design-system/HydraButton.tsx"
+}

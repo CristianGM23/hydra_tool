@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "id": "library-actions",
+  "metamodelId": "library",
+  "expressionModelId": "library",
+  "annotations": {},
+  "actions": [
+    {
+      "id": "action:set-pages-one",
+      "name": "Set pages to one",
+      "description": "Repairs a non-positive page count",
+      "enabled": true,
+      "parameters": [],
+      "operations": [
+        {
+          "kind": "SET_ATTRIBUTE",
+          "operationId": "operation:set-pages",
+          "target": {
+            "kind": "SELF"
+          },
+          "attributeId": "attribute:class:Book:pages",
+          "value": {
+            "literal": 1
+          }
+        }
+      ],
+      "transactionPolicy": "ATOMIC",
+      "undoPolicy": "REQUIRED",
+      "annotations": {}
+    }
+  ]
+}

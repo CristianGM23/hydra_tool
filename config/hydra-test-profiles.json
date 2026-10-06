@@ -1,0 +1,153 @@
+{
+  "schemaVersion": "1.0",
+  "profiles": {
+    "fast": {
+      "description": "Changed and focused tests with safe parallelism and cache reuse.",
+      "backend": [
+        "./mvnw",
+        "-Phydra-test-fast",
+        "test"
+      ],
+      "frontend": [
+        "npm",
+        "run",
+        "test:fast"
+      ],
+      "runBackend": true,
+      "runFrontend": true,
+      "cache": true,
+      "parallelTasks": true,
+      "taskTimeoutSeconds": 1200,
+      "retries": 0
+    },
+    "full": {
+      "description": "Complete backend and frontend verification before a delivery.",
+      "backend": [
+        "./mvnw",
+        "-Phydra-test-full",
+        "clean",
+        "verify"
+      ],
+      "frontend": [
+        "npm",
+        "run",
+        "test:full"
+      ],
+      "runBackend": true,
+      "runFrontend": true,
+      "cache": false,
+      "parallelTasks": false,
+      "taskTimeoutSeconds": 5400,
+      "retries": 0
+    },
+    "native": {
+      "description": "Full verification including opt-in native generated-project acceptance tests.",
+      "backend": [
+        "./mvnw",
+        "-Phydra-test-native",
+        "clean",
+        "verify"
+      ],
+      "frontend": [
+        "npm",
+        "run",
+        "test:full"
+      ],
+      "runBackend": true,
+      "runFrontend": true,
+      "cache": false,
+      "parallelTasks": false,
+      "taskTimeoutSeconds": 10800,
+      "retries": 0
+    },
+    "update-site": {
+      "description": "Focused update-site/p2 observability, reconciliation, materialization and semantic recovery verification for blocks O-V.",
+      "backend": [
+        "./mvnw",
+        "-Dtest=*UpdateSite*",
+        "test"
+      ],
+      "frontend": [
+        "npm",
+        "run",
+        "test:update-site"
+      ],
+      "runBackend": true,
+      "runFrontend": true,
+      "cache": true,
+      "parallelTasks": true,
+      "taskTimeoutSeconds": 2400,
+      "retries": 0
+    },
+    "frontend": {
+      "description": "Frontend-only optimized suite.",
+      "backend": [],
+      "frontend": [
+        "npm",
+        "run",
+        "test:fast"
+      ],
+      "runBackend": false,
+      "runFrontend": true,
+      "cache": true,
+      "parallelTasks": false,
+      "taskTimeoutSeconds": 1800,
+      "retries": 0
+    },
+    "backend": {
+      "description": "Backend-only optimized suite.",
+      "backend": [
+        "./mvnw",
+        "-Phydra-test-fast",
+        "test"
+      ],
+      "frontend": [],
+      "runBackend": true,
+      "runFrontend": false,
+      "cache": true,
+      "parallelTasks": false,
+      "taskTimeoutSeconds": 3600,
+      "retries": 0
+    },
+    "parallel": {
+      "description": "Opt-in high-throughput profile for isolated CI agents and sharded suites.",
+      "backend": [
+        "./mvnw",
+        "-Phydra-test-parallel",
+        "test"
+      ],
+      "frontend": [
+        "npm",
+        "run",
+        "test:parallel"
+      ],
+      "runBackend": true,
+      "runFrontend": true,
+      "cache": false,
+      "parallelTasks": true,
+      "taskTimeoutSeconds": 5400,
+      "retries": 0
+    }
+  },
+  "selection": {
+    "backendRoots": [
+      "src/main/java",
+      "src/test/java",
+      "pom.xml"
+    ],
+    "frontendRoots": [
+      "frontend/src",
+      "frontend/package.json",
+      "frontend/vitest.config.ts"
+    ],
+    "sharedRoots": [
+      "config",
+      "scripts/testing"
+    ]
+  },
+  "limits": {
+    "maximumParallelTasks": 2,
+    "cacheDirectory": ".hydra-test-cache",
+    "logDirectory": "target/hydra-test-logs"
+  }
+}

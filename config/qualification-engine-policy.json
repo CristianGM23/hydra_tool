@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "logDirectory": "target/release/logs",
+  "stateDirectory": "target/release/checkpoints",
+  "defaultTimeoutSeconds": 3600,
+  "heartbeatSeconds": 30,
+  "pollSeconds": 1,
+  "tailLines": 120,
+  "terminateGraceSeconds": 8,
+  "fingerprintInputs": ["MANIFEST_SHA256.txt", "config/hydra-toolchain.json", "config/toolchain-discovery-policy.json"],
+  "reusePassedStagesOnlyWhenFingerprintMatches": true
+}

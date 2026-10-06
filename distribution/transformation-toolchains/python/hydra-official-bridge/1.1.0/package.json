@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "packageId": "hydra-official-bridge",
+  "packageVersion": "1.1.0",
+  "language": "PYTHON",
+  "bridgeName": "HYDRA Official Python Bridge",
+  "bridgeVersion": "1.1.0",
+  "toolchainName": "Python",
+  "toolchainVersion": "",
+  "sha256": {
+    "HydraOfficialBridge.java": "a79537ed868c5b20e03fd6f694ad16b123adfdc19a8b025f10bd401a1483c2fd",
+    "HydraPythonNativeRuntime.py": "2a4c73f06fa36714fd1cb3aa0a8fb6109aa422313067040498d8ddf99263e9e7",
+    "bridge.properties": "884978d0299b39895a574fccca6466e4aefcd39efe80f4edca29b37218914f7a",
+    "toolchain.json": "54db24933c2313ab0f250220e8ca9e9e01eb0995a7930a0ad6f01d9423385b37"
+  }
+}

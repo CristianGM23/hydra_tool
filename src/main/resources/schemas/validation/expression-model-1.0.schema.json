@@ -1,0 +1,524 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://modeling-editor.local/schemas/expression-model-1.0.schema.json",
+  "title": "ExpressionModel 1.0",
+  "description": "Lenguaje canónico, neutral y tipado para reglas, acciones y configuración visual.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "metamodelId",
+    "expressions"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "metamodelId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "expressions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/expression"
+      }
+    },
+    "annotations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "default": {}
+    }
+  },
+  "$defs": {
+    "valueType": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "BOOLEAN",
+            "INTEGER",
+            "DECIMAL",
+            "STRING",
+            "DATE",
+            "DATETIME",
+            "BINARY",
+            "ENUM",
+            "OBJECT",
+            "COLLECTION",
+            "MODEL",
+            "ANY",
+            "NULL"
+          ]
+        },
+        "classId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "enumId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "elementType": {
+          "$ref": "#/$defs/valueType"
+        }
+      }
+    },
+    "expression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "root"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "contextClassId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "declaredReturnType": {
+          "$ref": "#/$defs/valueType"
+        },
+        "root": {
+          "$ref": "#/$defs/node"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {}
+        }
+      }
+    },
+    "node": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/literalNode"
+        },
+        {
+          "$ref": "#/$defs/selfNode"
+        },
+        {
+          "$ref": "#/$defs/modelNode"
+        },
+        {
+          "$ref": "#/$defs/classInstancesNode"
+        },
+        {
+          "$ref": "#/$defs/attributeNode"
+        },
+        {
+          "$ref": "#/$defs/relationNode"
+        },
+        {
+          "$ref": "#/$defs/unaryNode"
+        },
+        {
+          "$ref": "#/$defs/binaryNode"
+        },
+        {
+          "$ref": "#/$defs/collectionNode"
+        },
+        {
+          "$ref": "#/$defs/conditionalNode"
+        },
+        {
+          "$ref": "#/$defs/functionNode"
+        },
+        {
+          "$ref": "#/$defs/variableNode"
+        },
+        {
+          "$ref": "#/$defs/operationCallNode"
+        }
+      ]
+    },
+    "literalNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "valueType",
+        "value"
+      ],
+      "properties": {
+        "kind": {
+          "const": "LITERAL"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "valueType": {
+          "$ref": "#/$defs/valueType"
+        },
+        "value": {}
+      }
+    },
+    "selfNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId"
+      ],
+      "properties": {
+        "kind": {
+          "const": "SELF"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "modelNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId"
+      ],
+      "properties": {
+        "kind": {
+          "const": "MODEL"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "classInstancesNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "classId"
+      ],
+      "properties": {
+        "kind": {
+          "const": "CLASS_INSTANCES"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "classId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "attributeNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "target",
+        "attributeId"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ATTRIBUTE_ACCESS"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "target": {
+          "$ref": "#/$defs/node"
+        },
+        "attributeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "relationNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "target",
+        "relationId"
+      ],
+      "properties": {
+        "kind": {
+          "const": "RELATION_NAVIGATION"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "target": {
+          "$ref": "#/$defs/node"
+        },
+        "relationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "unaryNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "operator",
+        "operand"
+      ],
+      "properties": {
+        "kind": {
+          "const": "UNARY"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "operator": {
+          "enum": [
+            "NOT",
+            "IS_NULL",
+            "IS_NOT_NULL",
+            "IS_EMPTY",
+            "IS_NOT_EMPTY",
+            "NEGATE",
+            "SIZE",
+            "TO_UPPER",
+            "TO_LOWER"
+          ]
+        },
+        "operand": {
+          "$ref": "#/$defs/node"
+        }
+      }
+    },
+    "binaryNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "operator",
+        "left",
+        "right"
+      ],
+      "properties": {
+        "kind": {
+          "const": "BINARY"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "operator": {
+          "enum": [
+            "AND",
+            "OR",
+            "EQUALS",
+            "NOT_EQUALS",
+            "GREATER_THAN",
+            "GREATER_OR_EQUAL",
+            "LESS_THAN",
+            "LESS_OR_EQUAL",
+            "ADD",
+            "SUBTRACT",
+            "MULTIPLY",
+            "DIVIDE",
+            "CONTAINS",
+            "STARTS_WITH",
+            "ENDS_WITH",
+            "MATCHES"
+          ]
+        },
+        "left": {
+          "$ref": "#/$defs/node"
+        },
+        "right": {
+          "$ref": "#/$defs/node"
+        }
+      }
+    },
+    "collectionNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "operator",
+        "source"
+      ],
+      "properties": {
+        "kind": {
+          "const": "COLLECTION"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "operator": {
+          "enum": [
+            "EXISTS",
+            "FOR_ALL",
+            "NONE",
+            "IS_UNIQUE",
+            "SELECT",
+            "COUNT",
+            "SUM",
+            "MIN",
+            "MAX"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/node"
+        },
+        "expression": {
+          "$ref": "#/$defs/node"
+        }
+      }
+    },
+    "conditionalNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "condition",
+        "whenTrue",
+        "whenFalse"
+      ],
+      "properties": {
+        "kind": {
+          "const": "CONDITIONAL"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "condition": {
+          "$ref": "#/$defs/node"
+        },
+        "whenTrue": {
+          "$ref": "#/$defs/node"
+        },
+        "whenFalse": {
+          "$ref": "#/$defs/node"
+        }
+      }
+    },
+    "functionNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "functionName",
+        "arguments"
+      ],
+      "properties": {
+        "kind": {
+          "const": "FUNCTION"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "functionName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        }
+      }
+    },
+    "variableNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "variableName"
+      ],
+      "properties": {
+        "kind": {
+          "const": "VARIABLE"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "variableName": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        }
+      }
+    },
+    "operationCallNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "nodeId",
+        "target",
+        "operationId",
+        "arguments"
+      ],
+      "properties": {
+        "kind": {
+          "const": "OPERATION_CALL"
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "target": {
+          "$ref": "#/$defs/node"
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        }
+      }
+    }
+  }
+}

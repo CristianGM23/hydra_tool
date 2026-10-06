@@ -1,0 +1,26 @@
+.integration-technology-journey{display:grid;gap:12px;padding:14px;border:1px solid var(--hydra-border-default);border-radius:12px;background:var(--hydra-bg-surface-muted)}
+.integration-technology-journey>header{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:start}
+.integration-technology-journey>header>div:first-child{display:grid;gap:4px}
+.integration-technology-journey>header p{margin:0;color:var(--hydra-text-muted);max-width:78ch}
+.integration-technology-journey-kicker{font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--hydra-text-muted)}
+.integration-technology-journey-score{display:grid;justify-items:end;gap:2px;min-width:96px}
+.integration-technology-journey-score strong{font-size:1.35rem}
+.integration-technology-journey-score span{font-size:.78rem;color:var(--hydra-text-muted)}
+.integration-technology-stage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.integration-technology-stage{display:grid;gap:7px;padding:10px;border:1px solid var(--hydra-border-default);border-radius:10px;background:var(--hydra-bg-surface)}
+.integration-technology-stage>div{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.integration-technology-stage>div span{font-size:.72rem;font-weight:700;text-transform:uppercase}
+.integration-technology-stage p,.integration-technology-stage small{margin:0;color:var(--hydra-text-muted)}
+.integration-technology-stage ul{margin:0;padding-left:18px;color:var(--hydra-text-muted);font-size:.78rem}
+.integration-technology-stage.support-full{border-inline-start:4px solid var(--hydra-color-success-600)}
+.integration-technology-stage.support-partial{border-inline-start:4px solid var(--hydra-color-warning-600)}
+.integration-technology-stage.support-external{border-inline-start:4px solid var(--hydra-color-info-600)}
+.integration-technology-stage.support-unsupported,.integration-technology-stage.not-applicable{opacity:.72}
+.integration-technology-stage.not-applicable{border-style:dashed}
+.integration-technology-journey-blockers,.integration-technology-journey-recommendations{display:grid;gap:5px;padding:10px 12px;border-radius:9px}
+.integration-technology-journey-blockers{background:var(--hydra-color-danger-50)}
+.integration-technology-journey-recommendations{background:var(--hydra-color-info-50)}
+.integration-technology-journey aside ul{margin:0;padding-left:20px}
+.integration-technology-journey.compact .integration-technology-stage-grid{grid-template-columns:repeat(auto-fit,minmax(115px,1fr))}
+.integration-technology-journey.compact .integration-technology-stage{padding:8px}
+@media(max-width:900px){.integration-technology-journey>header{grid-template-columns:1fr}.integration-technology-journey-score{justify-items:start}}

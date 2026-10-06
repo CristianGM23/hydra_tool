@@ -1,0 +1,16 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://hydra.local/schemas/gamification/user-feedback-envelope-1.0.schema.json",
+  "title":"HYDRA UserFeedbackEnvelope 1.0",
+  "type":"object",
+  "required":["schemaVersion","id","semanticScopeId","actorId","kind","severity","title","message","occurredAt","presentation"],
+  "properties":{
+    "schemaVersion":{"const":"1.0"},"id":{"type":"string"},"semanticScopeId":{"type":"string"},"actorId":{"type":"string"},
+    "kind":{"enum":["POINTS_AWARDED","PENALTY_APPLIED","ACHIEVEMENT_UNLOCKED","LEVEL_REACHED","CHALLENGE_PROGRESS","CHALLENGE_COMPLETED","REWARD_UNLOCKED","APPLICATION_REJECTED","AWARD_COMPENSATED"]},
+    "severity":{"enum":["SUCCESS","INFO","WARNING","ERROR"]},"title":{"type":"string"},"message":{"type":"string"},"reason":{"type":"string"},"nextStep":{"type":"string"},
+    "pointsDelta":{"type":"integer"},"pointTypeId":{"type":"string"},"progressCurrent":{"type":"integer"},"progressTarget":{"type":"integer"},
+    "achievementId":{"type":"string"},"challengeId":{"type":"string"},"rewardId":{"type":"string"},"levelId":{"type":"string"},"sourceEventId":{"type":"string"},"correlationId":{"type":"string"},"occurredAt":{"type":"string","format":"date-time"},
+    "presentation":{"type":"object","required":["enabled","surfaces","durationMillis","persistActivity","showPoints","showProgress","maxVisible","dedupeWindowSeconds","aggregateWindowMillis","includeRejected"],"properties":{"enabled":{"type":"boolean"},"surfaces":{"type":"array","items":{"enum":["TOAST","ACTIVITY","STATUS","PROGRESS","DIALOG"]},"uniqueItems":true},"durationMillis":{"type":"integer","minimum":1000,"maximum":30000},"persistActivity":{"type":"boolean"},"showPoints":{"type":"boolean"},"showProgress":{"type":"boolean"},"maxVisible":{"type":"integer","minimum":1,"maximum":20},"dedupeWindowSeconds":{"type":"integer","minimum":0,"maximum":3600},"aggregateWindowMillis":{"type":"integer","minimum":0,"maximum":60000},"includeRejected":{"type":"boolean"}},"additionalProperties":false},
+    "actions":{"type":"array"},"metadata":{"type":"object","additionalProperties":{"type":"string"}}
+  },"additionalProperties":false
+}

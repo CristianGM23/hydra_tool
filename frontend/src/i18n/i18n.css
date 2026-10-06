@@ -1,0 +1,19 @@
+.hydra-language-toggle {
+    display:inline-flex;
+    align-items:center;
+    gap:2px;
+    padding:2px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:999px;
+    background:var(--hydra-bg-surface)
+}
+.hydra-language-toggle .hydra-ui-button {
+    min-width:34px;
+    padding-inline:7px
+}
+.settings-language-help {
+    margin:7px 0 0;
+    color:var(--hydra-text-muted);
+    font-size:.84rem;
+    line-height:1.45
+}

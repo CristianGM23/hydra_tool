@@ -1,0 +1,107 @@
+.visual-style-editor {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--hydra-border-default);
+}
+.visual-style-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+.visual-style-heading h3 {
+    margin: 0;
+    font-size: 14px;
+}
+.visual-style-heading span {
+    color: var(--hydra-text-muted);
+    font-size: 10px;
+}
+.visual-style-section {
+    overflow: hidden;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 6px;
+    background: var(--hydra-bg-surface);
+}
+.visual-style-section.open {
+    border-color: var(--hydra-color-blue-300);
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.08);
+}
+.visual-style-section-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 9px 10px;
+    border: 0;
+    color: var(--hydra-text-secondary);
+    background: var(--hydra-bg-surface-muted);
+    text-align: left;
+    cursor: pointer;
+}
+.visual-style-section-toggle > span:first-child {
+    display: grid;
+    gap: 2px;
+}
+.visual-style-section-toggle strong {
+    font-size: 12px;
+}
+.visual-style-section-toggle small {
+    color: var(--hydra-text-muted);
+    font-size: 10px;
+    font-weight: 400;
+}
+.visual-style-section-chevron {
+    font-size: 18px;
+    line-height: 1;
+    transition: transform 120ms ease-in-out;
+}
+.visual-style-section.open .visual-style-section-chevron {
+    transform: rotate(180deg);
+}
+.visual-style-section-content {
+    display: grid;
+    gap: 9px;
+    padding: 10px;
+    border-top: 1px solid var(--hydra-bg-selection);
+}
+.visual-color-editor {
+    margin: 0;
+    padding: 8px;
+    border: 1px solid var(--hydra-border-default);
+    border-radius: 5px;
+}
+.visual-color-editor legend {
+    padding: 0 4px;
+    color: var(--hydra-text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+}
+.visual-color-main-row {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 7px;
+}
+.visual-color-main-row input[type='color'] {
+    width: 42px;
+    min-height: 32px;
+    padding: 2px;
+}
+.visual-color-rgb-row, .visual-style-number-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 7px;
+}
+.visual-style-number-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.visual-color-rgb-row label, .visual-style-number-grid label, .visual-style-section-content > label {
+    display: grid;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 600;
+}

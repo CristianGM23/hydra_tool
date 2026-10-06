@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "id": "rc1-commerce-model",
+  "metamodelId": "rc1-commerce",
+  "metamodelEtag": "reference",
+  "name": "RC1 Commerce sample",
+  "rootElementIds": [
+    "object:store"
+  ],
+  "elements": [
+    {
+      "id": "object:store",
+      "classId": "class:Store",
+      "attributes": {
+        "attribute:class:Store:name": "Central Store"
+      },
+      "annotations": {}
+    },
+    {
+      "id": "object:product:1",
+      "classId": "class:Product",
+      "attributes": {
+        "attribute:class:Product:sku": "HYDRA-001",
+        "attribute:class:Product:price": 42.5
+      },
+      "annotations": {}
+    }
+  ],
+  "relations": [
+    {
+      "id": "relation:store:product:1",
+      "relationId": "reference:class:Store:products",
+      "sourceElementId": "object:store",
+      "targetElementId": "object:product:1",
+      "annotations": {}
+    }
+  ],
+  "annotations": {}
+}

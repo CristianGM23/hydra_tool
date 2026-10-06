@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <!-- Epsilon's EvlValidator can compose with existing EMF validators. -->
+  <extension point="org.eclipse.epsilon.evl.emf.validation">
+    <constraintsBinding
+        namespaceURI="https://hydra.example/sirius/fixture/1.0"
+        constraints="validation/hydratest.evl"
+        compose="true"/>
+  </extension>
+  <extension point="org.eclipse.ui.ide.markerResolution">
+    <markerResolutionGenerator
+        markerType="org.eclipse.emf.ecore.diagnostic"
+        class="org.eclipse.epsilon.evl.emf.validation.EvlMarkerResolutionGenerator"/>
+  </extension>
+</plugin>

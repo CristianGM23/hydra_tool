@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0",
+  "releaseVersion": "4.32.107",
+  "requiredPhases": [
+    "primary-full-tree",
+    "critical-recovery-smoke",
+    "source-package",
+    "sbom",
+    "package-integrity",
+    "extracted-structural-gate",
+    "reproducible-package",
+    "reproducible-sbom"
+  ],
+  "criticalBackendTests": [
+    "EditorApplicationTests",
+    "SystemEndpointsTests",
+    "HydraFaultInjectionServiceTests",
+    "HydraSchemaEvolutionPlanningTests",
+    "AtomicJsonDocumentStoreSchemaEvolutionTests",
+    "ProjectPortableManifestTests"
+  ],
+  "secondFullValidationRequiredForPublicOrCandidateRelease": true,
+  "packageMustBeByteReproducible": true,
+  "sbomMustBeByteReproducible": true
+}

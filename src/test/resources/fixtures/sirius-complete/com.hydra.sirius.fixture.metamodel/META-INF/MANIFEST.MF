@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HYDRA Sirius Fixture Metamodel
+Bundle-SymbolicName: com.hydra.sirius.fixture.metamodel;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: HYDRA Fixture
+Bundle-RequiredExecutionEnvironment: JavaSE-17

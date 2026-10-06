@@ -1,0 +1,3355 @@
+{
+  "schemaVersion": "1.0",
+  "hydraVersion": "4.32.107",
+  "operationCount": 558,
+  "operations": [
+    {
+      "method": "get",
+      "path": "/api/artifact-registry/",
+      "operationId": "HydraArtifactRegistryController_snapshot_get",
+      "controller": "HydraArtifactRegistryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/artifact-registry/",
+      "operationId": "HydraArtifactRegistryController_register_post",
+      "controller": "HydraArtifactRegistryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/artifact-registry/compatibility/{id}",
+      "operationId": "HydraArtifactRegistryController_compatibility_get",
+      "controller": "HydraArtifactRegistryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/artifact-registry/graph",
+      "operationId": "HydraArtifactRegistryController_graph_get",
+      "controller": "HydraArtifactRegistryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/artifact-registry/impact/{id}",
+      "operationId": "HydraArtifactRegistryController_impact_get",
+      "controller": "HydraArtifactRegistryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/artifact-registry/scan",
+      "operationId": "HydraArtifactRegistryController_scan_post",
+      "controller": "HydraArtifactRegistryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/artifact-registry/scan/jobs",
+      "operationId": "HydraArtifactRegistryController_scanAsync_post",
+      "controller": "HydraArtifactRegistryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/artifact-transactions/pending",
+      "operationId": "HydraArtifactTransactionController_pending_get",
+      "controller": "HydraArtifactTransactionController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/artifact-transactions/{id}",
+      "operationId": "HydraArtifactTransactionController_abort_delete",
+      "controller": "HydraArtifactTransactionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/audit-log/",
+      "operationId": "AuditLogController_query_get",
+      "controller": "AuditLogController"
+    },
+    {
+      "method": "post",
+      "path": "/api/audit-log/activities",
+      "operationId": "AuditLogController_captureClientActivity_post",
+      "controller": "AuditLogController"
+    },
+    {
+      "method": "get",
+      "path": "/api/audit-log/descriptors",
+      "operationId": "AuditLogController_descriptors_get",
+      "controller": "AuditLogController"
+    },
+    {
+      "method": "get",
+      "path": "/api/audit-log/export",
+      "operationId": "AuditLogController_export_get",
+      "controller": "AuditLogController"
+    },
+    {
+      "method": "post",
+      "path": "/api/audit-log/maintenance/delete",
+      "operationId": "AuditLogController_delete_post",
+      "controller": "AuditLogController"
+    },
+    {
+      "method": "post",
+      "path": "/api/audit-log/maintenance/run",
+      "operationId": "AuditLogController_runMaintenance_post",
+      "controller": "AuditLogController"
+    },
+    {
+      "method": "get",
+      "path": "/api/audit-log/maintenance/storage",
+      "operationId": "AuditLogController_storageStatus_get",
+      "controller": "AuditLogController"
+    },
+    {
+      "method": "get",
+      "path": "/api/audit-log/statistics",
+      "operationId": "AuditLogController_statistics_get",
+      "controller": "AuditLogController"
+    },
+    {
+      "method": "get",
+      "path": "/api/audit-log/status",
+      "operationId": "AuditLogController_status_get",
+      "controller": "AuditLogController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/",
+      "operationId": "CanonicalMetamodelController_list_get",
+      "controller": "CanonicalMetamodelController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/",
+      "operationId": "CanonicalMetamodelController_create_post",
+      "controller": "CanonicalMetamodelController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/actions",
+      "operationId": "CanonicalActionController_list_get",
+      "controller": "CanonicalActionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/event-flows",
+      "operationId": "CanonicalEventFlowController_list_get",
+      "controller": "CanonicalEventFlowController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/events",
+      "operationId": "CanonicalEventModelController_list_get",
+      "controller": "CanonicalEventModelController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/events/reserved-types",
+      "operationId": "CanonicalEventModelController_reservedTypes_get",
+      "controller": "CanonicalEventModelController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/expressions",
+      "operationId": "CanonicalExpressionController_list_get",
+      "controller": "CanonicalExpressionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/gamification",
+      "operationId": "CanonicalGamificationController_list_get",
+      "controller": "CanonicalGamificationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/operation-behaviors",
+      "operationId": "CanonicalOperationBehaviorController_list_get",
+      "controller": "CanonicalOperationBehaviorController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/validation/analyze",
+      "operationId": "MetamodelValidationController_analyzeDraft_post",
+      "controller": "MetamodelValidationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/validations",
+      "operationId": "CanonicalValidationController_list_get",
+      "controller": "CanonicalValidationController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{id}",
+      "operationId": "CanonicalMetamodelController_delete_delete",
+      "controller": "CanonicalMetamodelController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{id}",
+      "operationId": "CanonicalMetamodelController_find_get",
+      "controller": "CanonicalMetamodelController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{id}",
+      "operationId": "CanonicalMetamodelController_replace_put",
+      "controller": "CanonicalMetamodelController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{id}/projections",
+      "operationId": "CanonicalMetamodelProjectionController_projections_get",
+      "controller": "CanonicalMetamodelProjectionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{id}/projections/ecore",
+      "operationId": "CanonicalMetamodelProjectionController_regenerateEcore_post",
+      "controller": "CanonicalMetamodelProjectionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{id}/targets",
+      "operationId": "CanonicalMetamodelProjectionController_targets_get",
+      "controller": "CanonicalMetamodelProjectionController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{id}/targets/ecore",
+      "operationId": "CanonicalMetamodelProjectionController_updateEcore_put",
+      "controller": "CanonicalMetamodelProjectionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{id}/validate",
+      "operationId": "CanonicalMetamodelController_validate_post",
+      "controller": "CanonicalMetamodelController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{id}/validation/run",
+      "operationId": "MetamodelValidationController_validateStored_post",
+      "controller": "MetamodelValidationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{id}/validation/status",
+      "operationId": "MetamodelValidationController_status_get",
+      "controller": "MetamodelValidationController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/actions",
+      "operationId": "CanonicalActionController_delete_delete",
+      "controller": "CanonicalActionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/actions",
+      "operationId": "CanonicalActionController_find_get",
+      "controller": "CanonicalActionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/actions",
+      "operationId": "CanonicalActionController_create_post",
+      "controller": "CanonicalActionController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/actions",
+      "operationId": "CanonicalActionController_replace_put",
+      "controller": "CanonicalActionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/actions/check",
+      "operationId": "CanonicalActionController_check_post",
+      "controller": "CanonicalActionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/deletion-impact",
+      "operationId": "MetamodelLifecycleController_analyzeDeletion_get",
+      "controller": "MetamodelLifecycleController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/deletion-recovery",
+      "operationId": "MetamodelLifecycleController_retryPendingCleanup_post",
+      "controller": "MetamodelLifecycleController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/diagram/",
+      "operationId": "MetamodelDiagramController_delete_delete",
+      "controller": "MetamodelDiagramController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/diagram/",
+      "operationId": "MetamodelDiagramController_load_get",
+      "controller": "MetamodelDiagramController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/diagram/",
+      "operationId": "MetamodelDiagramController_save_put",
+      "controller": "MetamodelDiagramController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/",
+      "operationId": "CanonicalEditorDefinitionController_list_get",
+      "controller": "CanonicalEditorDefinitionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/",
+      "operationId": "CanonicalEditorDefinitionController_create_post",
+      "controller": "CanonicalEditorDefinitionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/imports/commit-associations",
+      "operationId": "VisualDefinitionImportController_commitAssociations_post",
+      "controller": "VisualDefinitionImportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/imports/drawio",
+      "operationId": "VisualDefinitionImportController_drawio_post",
+      "controller": "VisualDefinitionImportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/imports/gmf",
+      "operationId": "VisualDefinitionImportController_gmf_post",
+      "controller": "VisualDefinitionImportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/imports/sirius",
+      "operationId": "VisualDefinitionImportController_sirius_post",
+      "controller": "VisualDefinitionImportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/imports/sirius-web",
+      "operationId": "VisualDefinitionImportController_siriusWeb_post",
+      "controller": "VisualDefinitionImportController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}",
+      "operationId": "CanonicalEditorDefinitionController_delete_delete",
+      "controller": "CanonicalEditorDefinitionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}",
+      "operationId": "CanonicalEditorDefinitionController_find_get",
+      "controller": "CanonicalEditorDefinitionController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}",
+      "operationId": "CanonicalEditorDefinitionController_replace_put",
+      "controller": "CanonicalEditorDefinitionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/check",
+      "operationId": "CanonicalEditorDefinitionController_check_post",
+      "controller": "CanonicalEditorDefinitionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/",
+      "operationId": "EditorRuntimeController_find_get",
+      "controller": "EditorRuntimeController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/cache",
+      "operationId": "EditorRuntimeController_invalidate_delete",
+      "controller": "EditorRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/cache/metrics",
+      "operationId": "EditorRuntimeController_metrics_get",
+      "controller": "EditorRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/compile",
+      "operationId": "EditorRuntimeController_compile_post",
+      "controller": "EditorRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/",
+      "operationId": "EditorModelSessionController_create_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/import-emf",
+      "operationId": "EditorModelSessionController_importEmf_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}",
+      "operationId": "EditorModelSessionController_delete_delete",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}",
+      "operationId": "EditorModelSessionController_find_get",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/code-generation/targets",
+      "operationId": "EditorSessionCodeGenerationController_targets_get",
+      "controller": "EditorSessionCodeGenerationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/code-generation/{targetId}",
+      "operationId": "EditorSessionCodeGenerationController_generate_post",
+      "controller": "EditorSessionCodeGenerationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/code-generation/{targetId}/preview",
+      "operationId": "EditorSessionCodeGenerationController_preview_post",
+      "controller": "EditorSessionCodeGenerationController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/diagram/",
+      "operationId": "EditorSessionDiagramController_delete_delete",
+      "controller": "EditorSessionDiagramController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/diagram/",
+      "operationId": "EditorSessionDiagramController_find_get",
+      "controller": "EditorSessionDiagramController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/diagram/",
+      "operationId": "EditorSessionDiagramController_save_put",
+      "controller": "EditorSessionDiagramController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/discard",
+      "operationId": "EditorModelSessionController_discard_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/elements/delete",
+      "operationId": "EditorModelSessionController_deleteElements_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/elements/{elementId}",
+      "operationId": "EditorModelSessionController_deleteElement_delete",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/elements/{elementId}",
+      "operationId": "EditorModelSessionController_updateElement_put",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/elements/{elementId}/appearance",
+      "operationId": "EditorModelSessionController_changeElementAppearance_put",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/elements/{elementId}/containment",
+      "operationId": "EditorModelSessionController_reparentElement_put",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/problems/{diagnosticId}/quick-fixes",
+      "operationId": "EditorModelSessionController_quickFixes_get",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/problems/{diagnosticId}/quick-fixes/{actionId}/apply",
+      "operationId": "EditorModelSessionController_applyQuickFix_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/problems/{diagnosticId}/quick-fixes/{actionId}/preview",
+      "operationId": "EditorModelSessionController_previewQuickFix_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/redo",
+      "operationId": "EditorModelSessionController_redo_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/relations/{relationInstanceId}",
+      "operationId": "EditorModelSessionController_deleteRelation_delete",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/representation",
+      "operationId": "EditorModelSessionController_representation_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/representations/{representationId}",
+      "operationId": "EditorModelSessionController_closeRepresentation_delete",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/representations/{representationId}",
+      "operationId": "EditorModelSessionController_representationView_get",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/save",
+      "operationId": "EditorModelSessionController_save_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/tools/{toolId}/edges",
+      "operationId": "EditorModelSessionController_createEdge_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/tools/{toolId}/execute",
+      "operationId": "EditorModelSessionController_executeTool_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/tools/{toolId}/nodes",
+      "operationId": "EditorModelSessionController_createNode_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/undo",
+      "operationId": "EditorModelSessionController_undo_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/editors/{editorId}/runtime/sessions/{sessionId}/validation",
+      "operationId": "EditorModelSessionController_validate_post",
+      "controller": "EditorModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-architecture/exports/{format}",
+      "operationId": "EventArchitectureExportController_export_get",
+      "controller": "EventArchitectureExportController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows",
+      "operationId": "CanonicalEventFlowController_delete_delete",
+      "controller": "CanonicalEventFlowController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows",
+      "operationId": "CanonicalEventFlowController_find_get",
+      "controller": "CanonicalEventFlowController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows",
+      "operationId": "CanonicalEventFlowController_create_post",
+      "controller": "CanonicalEventFlowController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows",
+      "operationId": "CanonicalEventFlowController_replace_put",
+      "controller": "CanonicalEventFlowController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/check",
+      "operationId": "CanonicalEventFlowController_checkDraft_post",
+      "controller": "CanonicalEventFlowController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/check-saved",
+      "operationId": "CanonicalEventFlowController_check_post",
+      "controller": "CanonicalEventFlowController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/diagram/",
+      "operationId": "EventFlowDiagramController_delete_delete",
+      "controller": "EventFlowDiagramController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/diagram/",
+      "operationId": "EventFlowDiagramController_find_get",
+      "controller": "EventFlowDiagramController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/diagram/",
+      "operationId": "EventFlowDiagramController_save_put",
+      "controller": "EventFlowDiagramController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/optional",
+      "operationId": "CanonicalEventFlowController_findOptional_get",
+      "controller": "CanonicalEventFlowController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/runtime/compile",
+      "operationId": "EventFlowRuntimeController_compile_post",
+      "controller": "EventFlowRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/runtime/events",
+      "operationId": "EventFlowRuntimeController_process_post",
+      "controller": "EventFlowRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/runtime/refresh",
+      "operationId": "EventFlowRuntimeController_refresh_post",
+      "controller": "EventFlowRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/runtime/start",
+      "operationId": "EventFlowRuntimeController_start_post",
+      "controller": "EventFlowRuntimeController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/runtime/state",
+      "operationId": "EventFlowRuntimeController_clearState_delete",
+      "controller": "EventFlowRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/runtime/state",
+      "operationId": "EventFlowRuntimeController_state_get",
+      "controller": "EventFlowRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/runtime/status",
+      "operationId": "EventFlowRuntimeController_status_get",
+      "controller": "EventFlowRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/runtime/stop",
+      "operationId": "EventFlowRuntimeController_stop_post",
+      "controller": "EventFlowRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/runtime/tick",
+      "operationId": "EventFlowRuntimeController_tick_post",
+      "controller": "EventFlowRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/event-flows/runtime/traces",
+      "operationId": "EventFlowRuntimeController_traces_get",
+      "controller": "EventFlowRuntimeController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/events",
+      "operationId": "CanonicalEventModelController_delete_delete",
+      "controller": "CanonicalEventModelController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/events",
+      "operationId": "CanonicalEventModelController_find_get",
+      "controller": "CanonicalEventModelController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/events",
+      "operationId": "CanonicalEventModelController_create_post",
+      "controller": "CanonicalEventModelController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/events",
+      "operationId": "CanonicalEventModelController_replace_put",
+      "controller": "CanonicalEventModelController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/events/check",
+      "operationId": "CanonicalEventModelController_check_post",
+      "controller": "CanonicalEventModelController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/events/diagram/",
+      "operationId": "EventArchitectureDiagramController_delete_delete",
+      "controller": "EventArchitectureDiagramController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/events/diagram/",
+      "operationId": "EventArchitectureDiagramController_find_get",
+      "controller": "EventArchitectureDiagramController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/events/diagram/",
+      "operationId": "EventArchitectureDiagramController_save_put",
+      "controller": "EventArchitectureDiagramController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/expressions",
+      "operationId": "CanonicalExpressionController_delete_delete",
+      "controller": "CanonicalExpressionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/expressions",
+      "operationId": "CanonicalExpressionController_find_get",
+      "controller": "CanonicalExpressionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/expressions",
+      "operationId": "CanonicalExpressionController_create_post",
+      "controller": "CanonicalExpressionController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/expressions",
+      "operationId": "CanonicalExpressionController_replace_put",
+      "controller": "CanonicalExpressionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/expressions/check",
+      "operationId": "CanonicalExpressionController_check_post",
+      "controller": "CanonicalExpressionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/expressions/{expressionId}/evaluate",
+      "operationId": "CanonicalExpressionController_evaluate_post",
+      "controller": "CanonicalExpressionController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification",
+      "operationId": "CanonicalGamificationController_delete_delete",
+      "controller": "CanonicalGamificationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification",
+      "operationId": "CanonicalGamificationController_find_get",
+      "controller": "CanonicalGamificationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification",
+      "operationId": "CanonicalGamificationController_create_post",
+      "controller": "CanonicalGamificationController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification",
+      "operationId": "CanonicalGamificationController_replace_put",
+      "controller": "CanonicalGamificationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/check",
+      "operationId": "CanonicalGamificationController_checkDraft_post",
+      "controller": "CanonicalGamificationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/check-saved",
+      "operationId": "CanonicalGamificationController_check_post",
+      "controller": "CanonicalGamificationController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/diagram/",
+      "operationId": "GamificationDiagramController_delete_delete",
+      "controller": "GamificationDiagramController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/diagram/",
+      "operationId": "GamificationDiagramController_find_get",
+      "controller": "GamificationDiagramController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/diagram/",
+      "operationId": "GamificationDiagramController_save_put",
+      "controller": "GamificationDiagramController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/exports/{format}",
+      "operationId": "GamificationExportController_export_get",
+      "controller": "GamificationExportController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/runtime/",
+      "operationId": "GamificationRuntimeController_reset_delete",
+      "controller": "GamificationRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/runtime/",
+      "operationId": "GamificationRuntimeController_state_get",
+      "controller": "GamificationRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/runtime/events",
+      "operationId": "GamificationRuntimeController_process_post",
+      "controller": "GamificationRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/runtime/feedback",
+      "operationId": "GamificationRuntimeController_feedback_get",
+      "controller": "GamificationRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/",
+      "operationId": "CanonicalIntegrationProfileController_list_get",
+      "controller": "CanonicalIntegrationProfileController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/",
+      "operationId": "CanonicalIntegrationProfileController_create_post",
+      "controller": "CanonicalIntegrationProfileController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/check",
+      "operationId": "CanonicalIntegrationProfileController_checkDraft_post",
+      "controller": "CanonicalIntegrationProfileController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/technologies",
+      "operationId": "CanonicalIntegrationProfileController_technologies_get",
+      "controller": "CanonicalIntegrationProfileController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}",
+      "operationId": "CanonicalIntegrationProfileController_delete_delete",
+      "controller": "CanonicalIntegrationProfileController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}",
+      "operationId": "CanonicalIntegrationProfileController_find_get",
+      "controller": "CanonicalIntegrationProfileController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}",
+      "operationId": "CanonicalIntegrationProfileController_replace_put",
+      "controller": "CanonicalIntegrationProfileController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/check",
+      "operationId": "CanonicalIntegrationProfileController_check_post",
+      "controller": "CanonicalIntegrationProfileController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/projections/{format}/export",
+      "operationId": "CanonicalProjectionController_export_post",
+      "controller": "CanonicalProjectionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/projections/{format}/import",
+      "operationId": "CanonicalProjectionController_importProjection_post",
+      "controller": "CanonicalProjectionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/apply",
+      "operationId": "TechnologyIntegrationController_apply_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/compile",
+      "operationId": "TechnologyIntegrationController_compile_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/preview",
+      "operationId": "TechnologyIntegrationController_preview_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/rollback/{manifestId}",
+      "operationId": "TechnologyIntegrationController_rollback_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/sync/apply",
+      "operationId": "TechnologyIntegrationController_syncApply_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/sync/preview",
+      "operationId": "TechnologyIntegrationController_syncPreview_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/sync/resolve",
+      "operationId": "TechnologyIntegrationController_resolve_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/sync/resolve/apply",
+      "operationId": "TechnologyIntegrationController_resolveAndApply_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/sync/resolve/rollback/{operationId}",
+      "operationId": "TechnologyIntegrationController_rollbackResolved_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/validate",
+      "operationId": "TechnologyIntegrationController_validate_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/lifecycle",
+      "operationId": "MetamodelLifecycleController_delete_delete",
+      "controller": "MetamodelLifecycleController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/operation-behaviors",
+      "operationId": "CanonicalOperationBehaviorController_delete_delete",
+      "controller": "CanonicalOperationBehaviorController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/operation-behaviors",
+      "operationId": "CanonicalOperationBehaviorController_find_get",
+      "controller": "CanonicalOperationBehaviorController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/operation-behaviors",
+      "operationId": "CanonicalOperationBehaviorController_create_post",
+      "controller": "CanonicalOperationBehaviorController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/operation-behaviors",
+      "operationId": "CanonicalOperationBehaviorController_replace_put",
+      "controller": "CanonicalOperationBehaviorController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/operation-behaviors/check",
+      "operationId": "CanonicalOperationBehaviorController_check_post",
+      "controller": "CanonicalOperationBehaviorController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/operation-behaviors/export",
+      "operationId": "CanonicalOperationBehaviorController_export_get",
+      "controller": "CanonicalOperationBehaviorController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/operation-runtime",
+      "operationId": "OperationRuntimeController_catalog_get",
+      "controller": "OperationRuntimeController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations",
+      "operationId": "CanonicalValidationController_delete_delete",
+      "controller": "CanonicalValidationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations",
+      "operationId": "CanonicalValidationController_find_get",
+      "controller": "CanonicalValidationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations",
+      "operationId": "CanonicalValidationController_create_post",
+      "controller": "CanonicalValidationController"
+    },
+    {
+      "method": "put",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations",
+      "operationId": "CanonicalValidationController_replace_put",
+      "controller": "CanonicalValidationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations/check",
+      "operationId": "CanonicalValidationController_check_post",
+      "controller": "CanonicalValidationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations/runtime/compile",
+      "operationId": "ValidationRuntimeController_compile_post",
+      "controller": "ValidationRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations/runtime/drawio/definition",
+      "operationId": "ValidationRuntimeController_definitionDrawio_get",
+      "controller": "ValidationRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations/runtime/drawio/plan",
+      "operationId": "ValidationRuntimeController_planDrawio_get",
+      "controller": "ValidationRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations/runtime/drawio/report",
+      "operationId": "ValidationRuntimeController_reportDrawio_post",
+      "controller": "ValidationRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations/runtime/orchestrate",
+      "operationId": "ValidationRuntimeController_orchestrate_post",
+      "controller": "ValidationRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/validations/runtime/validate",
+      "operationId": "ValidationRuntimeController_validate_post",
+      "controller": "ValidationRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/capability-packages/archives/",
+      "operationId": "CapabilityPackageArchiveController_cached_get",
+      "controller": "CapabilityPackageArchiveController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/archives/",
+      "operationId": "CapabilityPackageArchiveController_exportPackage_post",
+      "controller": "CapabilityPackageArchiveController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/archives/import",
+      "operationId": "CapabilityPackageArchiveController_importPackage_post",
+      "controller": "CapabilityPackageArchiveController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/check",
+      "operationId": "CapabilityPackageController_check_post",
+      "controller": "CapabilityPackageController"
+    },
+    {
+      "method": "get",
+      "path": "/api/capability-packages/compatibility",
+      "operationId": "CapabilityPackageController_compatibility_get",
+      "controller": "CapabilityPackageController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/orchestration/apply",
+      "operationId": "CapabilityOrchestrationController_apply_post",
+      "controller": "CapabilityOrchestrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/orchestration/preview",
+      "operationId": "CapabilityOrchestrationController_preview_post",
+      "controller": "CapabilityOrchestrationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/capability-packages/orchestration/{orchestrationId}",
+      "operationId": "CapabilityOrchestrationController_find_get",
+      "controller": "CapabilityOrchestrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/orchestration/{orchestrationId}/replay",
+      "operationId": "CapabilityOrchestrationController_replay_post",
+      "controller": "CapabilityOrchestrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/semantic-merge/apply",
+      "operationId": "CapabilitySemanticMergeController_apply_post",
+      "controller": "CapabilitySemanticMergeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/semantic-merge/preview",
+      "operationId": "CapabilitySemanticMergeController_preview_post",
+      "controller": "CapabilitySemanticMergeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/semantic-merge/rollback",
+      "operationId": "CapabilitySemanticMergeController_rollback_post",
+      "controller": "CapabilitySemanticMergeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/transactions/apply",
+      "operationId": "CapabilityLayerTransactionController_apply_post",
+      "controller": "CapabilityLayerTransactionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/transactions/preview",
+      "operationId": "CapabilityLayerTransactionController_preview_post",
+      "controller": "CapabilityLayerTransactionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/capability-packages/transactions/rollback",
+      "operationId": "CapabilityLayerTransactionController_rollback_post",
+      "controller": "CapabilityLayerTransactionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/code-generation/targets",
+      "operationId": "ModelCodeGenerationCatalogController_targets_get",
+      "controller": "ModelCodeGenerationCatalogController"
+    },
+    {
+      "method": "get",
+      "path": "/api/compatibility/",
+      "operationId": "HydraApiCompatibilityController_compatibility_get",
+      "controller": "HydraApiCompatibilityController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/diagrams/{modelFileName:.+}",
+      "operationId": "DiagramController_delete_delete",
+      "controller": "DiagramController"
+    },
+    {
+      "method": "get",
+      "path": "/api/diagrams/{modelFileName:.+}",
+      "operationId": "DiagramController_find_get",
+      "controller": "DiagramController"
+    },
+    {
+      "method": "put",
+      "path": "/api/diagrams/{modelFileName:.+}",
+      "operationId": "DiagramController_save_put",
+      "controller": "DiagramController"
+    },
+    {
+      "method": "get",
+      "path": "/api/distribution-provenance/",
+      "operationId": "HydraDistributionProvenanceController_reports_get",
+      "controller": "HydraDistributionProvenanceController"
+    },
+    {
+      "method": "post",
+      "path": "/api/distribution-provenance/",
+      "operationId": "HydraDistributionProvenanceController_evaluate_post",
+      "controller": "HydraDistributionProvenanceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/distribution-provenance/{reportId}",
+      "operationId": "HydraDistributionProvenanceController_find_get",
+      "controller": "HydraDistributionProvenanceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/distribution-provenance/{reportId}/html",
+      "operationId": "HydraDistributionProvenanceController_html_get",
+      "controller": "HydraDistributionProvenanceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/distribution-provenance/{reportId}/sbom",
+      "operationId": "HydraDistributionProvenanceController_export_get",
+      "controller": "HydraDistributionProvenanceController"
+    },
+    {
+      "method": "post",
+      "path": "/api/distribution-registry/entries",
+      "operationId": "HydraDistributionRegistryController_register_post",
+      "controller": "HydraDistributionRegistryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/distribution-registry/federation/reports",
+      "operationId": "HydraCatalogFederationController_reports_get",
+      "controller": "HydraCatalogFederationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/distribution-registry/federation/reports/{reportId}",
+      "operationId": "HydraCatalogFederationController_report_get",
+      "controller": "HydraCatalogFederationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/distribution-registry/federation/sources",
+      "operationId": "HydraCatalogFederationController_sources_get",
+      "controller": "HydraCatalogFederationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/distribution-registry/federation/sources",
+      "operationId": "HydraCatalogFederationController_saveSource_post",
+      "controller": "HydraCatalogFederationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/distribution-registry/federation/synchronize",
+      "operationId": "HydraCatalogFederationController_synchronize_post",
+      "controller": "HydraCatalogFederationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/distribution-registry/index",
+      "operationId": "HydraDistributionRegistryController_index_get",
+      "controller": "HydraDistributionRegistryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/distribution-registry/index/import",
+      "operationId": "HydraDistributionRegistryController_importIndex_post",
+      "controller": "HydraDistributionRegistryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/distribution-registry/search",
+      "operationId": "HydraDistributionRegistryController_search_post",
+      "controller": "HydraDistributionRegistryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/editor-assets/",
+      "operationId": "EditorVisualAssetController_visual_get",
+      "controller": "EditorVisualAssetController"
+    },
+    {
+      "method": "get",
+      "path": "/api/editor/bootstrap/{metamodelId}",
+      "operationId": "EditorBootstrapController_bootstrap_get",
+      "controller": "EditorBootstrapController"
+    },
+    {
+      "method": "post",
+      "path": "/api/external-project-recovery/analyze",
+      "operationId": "ExternalProjectRecoveryController_analyze_post",
+      "controller": "ExternalProjectRecoveryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/external-project-recovery/import",
+      "operationId": "ExternalProjectRecoveryController_importProject_post",
+      "controller": "ExternalProjectRecoveryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/generated-projects/",
+      "operationId": "GeneratedProjectLifecycleController_registry_get",
+      "controller": "GeneratedProjectLifecycleController"
+    },
+    {
+      "method": "post",
+      "path": "/api/generated-projects/",
+      "operationId": "GeneratedProjectLifecycleController_register_post",
+      "controller": "GeneratedProjectLifecycleController"
+    },
+    {
+      "method": "post",
+      "path": "/api/generated-projects/execute",
+      "operationId": "GeneratedProjectLifecycleController_execute_post",
+      "controller": "GeneratedProjectLifecycleController"
+    },
+    {
+      "method": "get",
+      "path": "/api/generated-projects/profiles",
+      "operationId": "GeneratedProjectLifecycleController_profiles_get",
+      "controller": "GeneratedProjectLifecycleController"
+    },
+    {
+      "method": "get",
+      "path": "/api/grammar-compilations/{snapshotId}",
+      "operationId": "GrammarCompilationController_find_get",
+      "controller": "GrammarCompilationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammar-compilations/{snapshotId}/activate",
+      "operationId": "GrammarCompilationController_activate_post",
+      "controller": "GrammarCompilationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/grammar-compilations/{snapshotId}/generated-project.zip",
+      "operationId": "GrammarCompilationController_generatedProject_get",
+      "controller": "GrammarCompilationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/grammars/",
+      "operationId": "GrammarController_list_get",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/",
+      "operationId": "GrammarController_create_post",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "get",
+      "path": "/api/grammars/analysis/status",
+      "operationId": "GrammarController_analysisStatus_get",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/analysis/{requestId}/cancel",
+      "operationId": "GrammarController_cancel_post",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/analyze-draft",
+      "operationId": "GrammarController_analyzeDraft_post",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/class-diagram-draft",
+      "operationId": "GrammarController_classDiagramDraft_post",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/conversion-preview",
+      "operationId": "GrammarController_conversionPreview_post",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "get",
+      "path": "/api/grammars/providers",
+      "operationId": "GrammarController_providers_get",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/providers/{providerId}/reset",
+      "operationId": "GrammarController_resetProvider_post",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "get",
+      "path": "/api/grammars/toolchain-profiles",
+      "operationId": "GrammarController_profiles_get",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/grammars/{grammarId}",
+      "operationId": "GrammarController_delete_delete",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "get",
+      "path": "/api/grammars/{grammarId}",
+      "operationId": "GrammarController_find_get",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "put",
+      "path": "/api/grammars/{grammarId}",
+      "operationId": "GrammarController_replace_put",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "get",
+      "path": "/api/grammars/{grammarId}/active-compilation",
+      "operationId": "GrammarCompilationController_active_get",
+      "controller": "GrammarCompilationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/{grammarId}/analyze",
+      "operationId": "GrammarController_analyze_post",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/{grammarId}/class-diagram",
+      "operationId": "GrammarController_classDiagram_post",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/{grammarId}/code-actions",
+      "operationId": "GrammarController_codeActions_post",
+      "controller": "GrammarController"
+    },
+    {
+      "method": "get",
+      "path": "/api/grammars/{grammarId}/compilations",
+      "operationId": "GrammarCompilationController_list_get",
+      "controller": "GrammarCompilationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/{grammarId}/compile",
+      "operationId": "GrammarCompilationController_compile_post",
+      "controller": "GrammarCompilationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/grammars/{grammarId}/compile-progress/{requestId}",
+      "operationId": "GrammarCompilationController_progress_get",
+      "controller": "GrammarCompilationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/grammars/{grammarId}/compile/jobs",
+      "operationId": "GrammarCompilationController_compileAsync_post",
+      "controller": "GrammarCompilationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/hydra/capabilities/grammar/{grammarId}",
+      "operationId": "HydraCapabilityReadinessController_summarizeGrammar_get",
+      "controller": "HydraCapabilityReadinessController"
+    },
+    {
+      "method": "get",
+      "path": "/api/hydra/capabilities/metamodel/{metamodelId}",
+      "operationId": "HydraCapabilityReadinessController_summarizeMetamodel_get",
+      "controller": "HydraCapabilityReadinessController"
+    },
+    {
+      "method": "get",
+      "path": "/api/jobs/",
+      "operationId": "HydraJobController_list_get",
+      "controller": "HydraJobController"
+    },
+    {
+      "method": "get",
+      "path": "/api/jobs/{jobId}",
+      "operationId": "HydraJobController_find_get",
+      "controller": "HydraJobController"
+    },
+    {
+      "method": "post",
+      "path": "/api/jobs/{jobId}/cancel",
+      "operationId": "HydraJobController_cancel_post",
+      "controller": "HydraJobController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodel-imports/",
+      "operationId": "MetamodelImportController_importAndSave_post",
+      "controller": "MetamodelImportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodel-imports/analysis-jobs",
+      "operationId": "MetamodelImportController_startAnalysis_post",
+      "controller": "MetamodelImportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodel-imports/analysis-jobs/{jobId}",
+      "operationId": "MetamodelImportController_getAnalysis_get",
+      "controller": "MetamodelImportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodel-imports/analysis-jobs/{jobId}/import",
+      "operationId": "MetamodelImportController_importPrepared_post",
+      "controller": "MetamodelImportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodel-imports/analysis-jobs/{jobId}/logs",
+      "operationId": "MetamodelImportController_downloadCombinedLog_get",
+      "controller": "MetamodelImportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodel-imports/analysis-jobs/{jobId}/stages/{stageId}/log",
+      "operationId": "MetamodelImportController_downloadStageLog_get",
+      "controller": "MetamodelImportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodel-imports/browser-directory",
+      "operationId": "MetamodelImportController_importBrowserDirectory_post",
+      "controller": "MetamodelImportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodel-imports/formats",
+      "operationId": "MetamodelImportController_listFormats_get",
+      "controller": "MetamodelImportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodel-imports/preview",
+      "operationId": "MetamodelImportController_preview_post",
+      "controller": "MetamodelImportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodel-layouts/",
+      "operationId": "MetamodelLayoutController_layout_post",
+      "controller": "MetamodelLayoutController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodel-layouts/algorithms",
+      "operationId": "MetamodelLayoutController_algorithms_get",
+      "controller": "MetamodelLayoutController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodels/",
+      "operationId": "MetamodelController_list_get",
+      "controller": "MetamodelController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodels/reload",
+      "operationId": "MetamodelController_reload_post",
+      "controller": "MetamodelController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodels/runtime-status",
+      "operationId": "MetamodelController_runtimeStatuses_get",
+      "controller": "MetamodelController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodels/{id}",
+      "operationId": "MetamodelController_find_get",
+      "controller": "MetamodelController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodels/{metamodelId}/dependent-artifacts:cleanup",
+      "operationId": "MetamodelDependentArtifactCleanupController_cleanup_post",
+      "controller": "MetamodelDependentArtifactCleanupController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodels/{metamodelId}/export-formats",
+      "operationId": "MetamodelExportController_listFormats_get",
+      "controller": "MetamodelExportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodels/{metamodelId}/exports",
+      "operationId": "MetamodelExportController_exportConfigured_post",
+      "controller": "MetamodelExportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodels/{metamodelId}/exports/bundle",
+      "operationId": "MetamodelExportController_exportBundle_post",
+      "controller": "MetamodelExportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodels/{metamodelId}/exports/{format}",
+      "operationId": "MetamodelExportController_export_get",
+      "controller": "MetamodelExportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodels/{metamodelId}/project-export-artifacts",
+      "operationId": "MetamodelProjectExportController_artifacts_get",
+      "controller": "MetamodelProjectExportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/metamodels/{metamodelId}/project-export-formats",
+      "operationId": "MetamodelProjectExportController_list_get",
+      "controller": "MetamodelProjectExportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/metamodels/{metamodelId}/project-exports/{kind}",
+      "operationId": "MetamodelProjectExportController_export_post",
+      "controller": "MetamodelProjectExportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/",
+      "operationId": "ModelDocumentController_create_post",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "get",
+      "path": "/api/models/files",
+      "operationId": "ModelDocumentController_listSavedModels_get",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "get",
+      "path": "/api/models/files/download",
+      "operationId": "ModelDocumentController_download_get",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/models/files/{fileName:.+}",
+      "operationId": "ModelDocumentController_deleteSavedModel_delete",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/open",
+      "operationId": "ModelDocumentController_open_post",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "get",
+      "path": "/api/models/{modelId}",
+      "operationId": "ModelDocumentController_find_get",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "put",
+      "path": "/api/models/{modelId}/attributes",
+      "operationId": "ModelDocumentController_setAttribute_put",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "get",
+      "path": "/api/models/{modelId}/code-generation/targets",
+      "operationId": "ModelCodeGenerationController_targets_get",
+      "controller": "ModelCodeGenerationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/code-generation/{targetId}",
+      "operationId": "ModelCodeGenerationController_generate_post",
+      "controller": "ModelCodeGenerationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/code-generation/{targetId}/preview",
+      "operationId": "ModelCodeGenerationController_preview_post",
+      "controller": "ModelCodeGenerationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/elements",
+      "operationId": "ModelDocumentController_addElement_post",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/elements/delete",
+      "operationId": "ModelDocumentController_deleteElements_post",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/models/{modelId}/elements/{elementId}",
+      "operationId": "ModelDocumentController_deleteElement_delete",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/operations/undo",
+      "operationId": "OperationRuntimeController_undo_post",
+      "controller": "OperationRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/operations/{operationId}",
+      "operationId": "OperationRuntimeController_invoke_post",
+      "controller": "OperationRuntimeController"
+    },
+    {
+      "method": "put",
+      "path": "/api/models/{modelId}/references",
+      "operationId": "ModelDocumentController_setReference_put",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/save",
+      "operationId": "ModelDocumentController_save_post",
+      "controller": "ModelDocumentController"
+    },
+    {
+      "method": "get",
+      "path": "/api/models/{modelId}/validation-runtime/latest",
+      "operationId": "ModelValidationRuntimeController_latest_get",
+      "controller": "ModelValidationRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/models/{modelId}/validation-runtime/problems/{diagnosticId}/quick-fixes",
+      "operationId": "ModelValidationRuntimeController_quickFixes_get",
+      "controller": "ModelValidationRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/validation-runtime/problems/{diagnosticId}/quick-fixes/{actionId}/apply",
+      "operationId": "ModelValidationRuntimeController_apply_post",
+      "controller": "ModelValidationRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/validation-runtime/problems/{diagnosticId}/quick-fixes/{actionId}/preview",
+      "operationId": "ModelValidationRuntimeController_preview_post",
+      "controller": "ModelValidationRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/validation-runtime/quick-fixes/redo",
+      "operationId": "ModelValidationRuntimeController_redo_post",
+      "controller": "ModelValidationRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/validation-runtime/quick-fixes/undo",
+      "operationId": "ModelValidationRuntimeController_undo_post",
+      "controller": "ModelValidationRuntimeController"
+    },
+    {
+      "method": "post",
+      "path": "/api/models/{modelId}/validation-runtime/validate",
+      "operationId": "ModelValidationRuntimeController_validate_post",
+      "controller": "ModelValidationRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/notations/",
+      "operationId": "NotationController_list_get",
+      "controller": "NotationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/notations/",
+      "operationId": "NotationController_upload_post",
+      "controller": "NotationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/notations/reload",
+      "operationId": "NotationController_reload_post",
+      "controller": "NotationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/notations/{id}",
+      "operationId": "NotationController_find_get",
+      "controller": "NotationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/observability/traces/",
+      "operationId": "HydraOperationTraceController_find_get",
+      "controller": "HydraOperationTraceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/observability/traces/recent",
+      "operationId": "HydraOperationTraceController_recent_get",
+      "controller": "HydraOperationTraceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/performance/capabilities/automation/",
+      "operationId": "CapabilityPerformanceAutomationController_reports_get",
+      "controller": "CapabilityPerformanceAutomationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/performance/capabilities/automation/",
+      "operationId": "CapabilityPerformanceAutomationController_run_post",
+      "controller": "CapabilityPerformanceAutomationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/performance/capabilities/automation/baselines/{capabilityId}/{scenarioId}",
+      "operationId": "CapabilityPerformanceAutomationController_baseline_get",
+      "controller": "CapabilityPerformanceAutomationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/performance/capabilities/automation/{reportId}",
+      "operationId": "CapabilityPerformanceAutomationController_find_get",
+      "controller": "CapabilityPerformanceAutomationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/performance/capabilities/automation/{reportId}/approve",
+      "operationId": "CapabilityPerformanceAutomationController_approve_post",
+      "controller": "CapabilityPerformanceAutomationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/performance/capabilities/automation/{reportId}/html",
+      "operationId": "CapabilityPerformanceAutomationController_html_get",
+      "controller": "CapabilityPerformanceAutomationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/performance/capabilities/budgets",
+      "operationId": "CapabilityPerformanceController_budgets_get",
+      "controller": "CapabilityPerformanceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/performance/capabilities/reports",
+      "operationId": "CapabilityPerformanceController_reports_get",
+      "controller": "CapabilityPerformanceController"
+    },
+    {
+      "method": "post",
+      "path": "/api/performance/capabilities/reports",
+      "operationId": "CapabilityPerformanceController_evaluate_post",
+      "controller": "CapabilityPerformanceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/performance/capabilities/reports/compare",
+      "operationId": "CapabilityPerformanceController_compare_get",
+      "controller": "CapabilityPerformanceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/performance/capabilities/reports/{reportId}",
+      "operationId": "CapabilityPerformanceController_report_get",
+      "controller": "CapabilityPerformanceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/performance/capabilities/reports/{reportId}.html",
+      "operationId": "CapabilityPerformanceController_html_get",
+      "controller": "CapabilityPerformanceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/policies/bundles/",
+      "operationId": "HydraPolicyBundleController_bundles_get",
+      "controller": "HydraPolicyBundleController"
+    },
+    {
+      "method": "post",
+      "path": "/api/policies/bundles/",
+      "operationId": "HydraPolicyBundleController_save_post",
+      "controller": "HydraPolicyBundleController"
+    },
+    {
+      "method": "get",
+      "path": "/api/policies/bundles/channels/{channel}/active",
+      "operationId": "HydraPolicyBundleController_active_get",
+      "controller": "HydraPolicyBundleController"
+    },
+    {
+      "method": "get",
+      "path": "/api/policies/bundles/simulations",
+      "operationId": "HydraPolicyBundleController_simulations_get",
+      "controller": "HydraPolicyBundleController"
+    },
+    {
+      "method": "post",
+      "path": "/api/policies/bundles/{bundleId}/{version}/activate",
+      "operationId": "HydraPolicyBundleController_activate_post",
+      "controller": "HydraPolicyBundleController"
+    },
+    {
+      "method": "post",
+      "path": "/api/policies/bundles/{bundleId}/{version}/revoke",
+      "operationId": "HydraPolicyBundleController_revoke_post",
+      "controller": "HydraPolicyBundleController"
+    },
+    {
+      "method": "post",
+      "path": "/api/policies/bundles/{bundleId}/{version}/simulate",
+      "operationId": "HydraPolicyBundleController_simulate_post",
+      "controller": "HydraPolicyBundleController"
+    },
+    {
+      "method": "post",
+      "path": "/api/policies/evaluate",
+      "operationId": "HydraPolicyController_evaluate_post",
+      "controller": "HydraPolicyController"
+    },
+    {
+      "method": "get",
+      "path": "/api/policies/revocations",
+      "operationId": "HydraPolicyController_revocations_get",
+      "controller": "HydraPolicyController"
+    },
+    {
+      "method": "post",
+      "path": "/api/policies/revocations",
+      "operationId": "HydraPolicyController_revoke_post",
+      "controller": "HydraPolicyController"
+    },
+    {
+      "method": "get",
+      "path": "/api/policies/rules",
+      "operationId": "HydraPolicyController_rules_get",
+      "controller": "HydraPolicyController"
+    },
+    {
+      "method": "post",
+      "path": "/api/policies/rules",
+      "operationId": "HydraPolicyController_saveRule_post",
+      "controller": "HydraPolicyController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/",
+      "operationId": "ProjectController_create_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/projects/active",
+      "operationId": "ProjectController_deleteActiveProject_delete",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/changes",
+      "operationId": "ProjectController_changes_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "put",
+      "path": "/api/projects/active/configuration",
+      "operationId": "ProjectController_configure_put",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/deletion-impact",
+      "operationId": "ProjectController_deletionImpact_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/download",
+      "operationId": "ProjectController_download_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/drawio/descriptor",
+      "operationId": "ProjectController_descriptorDrawio_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/active/drawio/sync-plan",
+      "operationId": "ProjectController_syncPlanDrawio_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/drawio/tree",
+      "operationId": "ProjectController_treeDrawio_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/active/duplicate",
+      "operationId": "ProjectController_duplicate_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/projects/active/entries",
+      "operationId": "ProjectController_delete_delete",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/active/entries",
+      "operationId": "ProjectController_createEntry_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/export",
+      "operationId": "ProjectController_exportProject_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/active/export-selection",
+      "operationId": "ProjectController_exportSelection_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/file",
+      "operationId": "ProjectController_read_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "put",
+      "path": "/api/projects/active/file",
+      "operationId": "ProjectController_write_put",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/local-path",
+      "operationId": "ProjectController_localPath_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/active/move",
+      "operationId": "ProjectController_move_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/search",
+      "operationId": "ProjectController_search_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/active/sync",
+      "operationId": "ProjectController_synchronize_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/active/sync/preview",
+      "operationId": "ProjectController_preview_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "put",
+      "path": "/api/projects/active/tabs",
+      "operationId": "ProjectController_saveTabs_put",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/tree",
+      "operationId": "ProjectController_tree_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/active/upload",
+      "operationId": "ProjectController_upload_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/active/visual",
+      "operationId": "ProjectController_visual_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/catalog",
+      "operationId": "ProjectController_catalog_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/close",
+      "operationId": "ProjectController_close_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/import",
+      "operationId": "ProjectController_importProject_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/import-browser-directory",
+      "operationId": "ProjectController_importBrowserDirectory_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/import-directory",
+      "operationId": "ProjectController_importProjectDirectory_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/open",
+      "operationId": "ProjectController_open_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/path-picker",
+      "operationId": "ProjectController_pickPath_post",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/portable/export",
+      "operationId": "ProjectPortablePackageController_exportPortable_post",
+      "controller": "ProjectPortablePackageController"
+    },
+    {
+      "method": "post",
+      "path": "/api/projects/portable/import",
+      "operationId": "ProjectPortablePackageController_importPortable_post",
+      "controller": "ProjectPortablePackageController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/recent",
+      "operationId": "ProjectController_recent_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "get",
+      "path": "/api/projects/session",
+      "operationId": "ProjectController_session_get",
+      "controller": "ProjectController"
+    },
+    {
+      "method": "post",
+      "path": "/api/publications/check",
+      "operationId": "DistributionPublicationController_check_post",
+      "controller": "DistributionPublicationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/publications/final-verified/publish",
+      "operationId": "HydraFinalVerifiedPublicationController_publish_post",
+      "controller": "HydraFinalVerifiedPublicationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/publications/provenance-verified/publish",
+      "operationId": "ProvenanceVerifiedPublicationController_publish_post",
+      "controller": "ProvenanceVerifiedPublicationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/publications/publish",
+      "operationId": "DistributionPublicationController_publish_post",
+      "controller": "DistributionPublicationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/publications/validate",
+      "operationId": "DistributionPublicationController_validate_post",
+      "controller": "DistributionPublicationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/publications/verified/publish",
+      "operationId": "VerifiedDistributionPublicationController_publish_post",
+      "controller": "VerifiedDistributionPublicationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/recovery/backups",
+      "operationId": "HydraRecoveryController_backup_post",
+      "controller": "HydraRecoveryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/recovery/backups/{backupId}/verify",
+      "operationId": "HydraRecoveryController_verify_get",
+      "controller": "HydraRecoveryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/recovery/continuity/compare",
+      "operationId": "HydraContinuityController_compare_get",
+      "controller": "HydraContinuityController"
+    },
+    {
+      "method": "get",
+      "path": "/api/recovery/continuity/plans",
+      "operationId": "HydraContinuityController_plans_get",
+      "controller": "HydraContinuityController"
+    },
+    {
+      "method": "post",
+      "path": "/api/recovery/continuity/plans",
+      "operationId": "HydraContinuityController_save_post",
+      "controller": "HydraContinuityController"
+    },
+    {
+      "method": "get",
+      "path": "/api/recovery/continuity/plans/due",
+      "operationId": "HydraContinuityController_duePlans_get",
+      "controller": "HydraContinuityController"
+    },
+    {
+      "method": "get",
+      "path": "/api/recovery/continuity/runs",
+      "operationId": "HydraContinuityController_reports_get",
+      "controller": "HydraContinuityController"
+    },
+    {
+      "method": "post",
+      "path": "/api/recovery/continuity/runs",
+      "operationId": "HydraContinuityController_run_post",
+      "controller": "HydraContinuityController"
+    },
+    {
+      "method": "post",
+      "path": "/api/recovery/drills",
+      "operationId": "HydraRecoveryController_drill_post",
+      "controller": "HydraRecoveryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/release-gates/",
+      "operationId": "HydraReleaseGateController_reports_get",
+      "controller": "HydraReleaseGateController"
+    },
+    {
+      "method": "post",
+      "path": "/api/release-gates/",
+      "operationId": "HydraReleaseGateController_evaluate_post",
+      "controller": "HydraReleaseGateController"
+    },
+    {
+      "method": "get",
+      "path": "/api/release-gates/{reportId}",
+      "operationId": "HydraReleaseGateController_find_get",
+      "controller": "HydraReleaseGateController"
+    },
+    {
+      "method": "get",
+      "path": "/api/release-gates/{reportId}/candidate-readiness",
+      "operationId": "HydraReleaseCandidateController_candidateReadiness_get",
+      "controller": "HydraReleaseCandidateController"
+    },
+    {
+      "method": "get",
+      "path": "/api/release-gates/{reportId}/html",
+      "operationId": "HydraReleaseGateController_html_get",
+      "controller": "HydraReleaseGateController"
+    },
+    {
+      "method": "get",
+      "path": "/api/remote-auth/callback",
+      "operationId": "RemoteAuthController_callback_get",
+      "controller": "RemoteAuthController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/remote-auth/connection",
+      "operationId": "RemoteAuthController_disconnect_delete",
+      "controller": "RemoteAuthController"
+    },
+    {
+      "method": "post",
+      "path": "/api/remote-auth/device-poll",
+      "operationId": "RemoteAuthController_poll_post",
+      "controller": "RemoteAuthController"
+    },
+    {
+      "method": "get",
+      "path": "/api/remote-auth/profiles",
+      "operationId": "RemoteAuthController_profiles_get",
+      "controller": "RemoteAuthController"
+    },
+    {
+      "method": "get",
+      "path": "/api/remote-auth/provider-setups",
+      "operationId": "RemoteAuthController_providerSetups_get",
+      "controller": "RemoteAuthController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/remote-auth/provider-setups/{provider}",
+      "operationId": "RemoteAuthController_resetProviderSetup_delete",
+      "controller": "RemoteAuthController"
+    },
+    {
+      "method": "put",
+      "path": "/api/remote-auth/provider-setups/{provider}",
+      "operationId": "RemoteAuthController_updateProviderSetup_put",
+      "controller": "RemoteAuthController"
+    },
+    {
+      "method": "get",
+      "path": "/api/remote-auth/provider-setups/{provider}/registration-kit",
+      "operationId": "RemoteAuthController_providerRegistrationKit_get",
+      "controller": "RemoteAuthController"
+    },
+    {
+      "method": "get",
+      "path": "/api/remote-auth/security-context",
+      "operationId": "RemoteAuthController_securityContext_get",
+      "controller": "RemoteAuthController"
+    },
+    {
+      "method": "post",
+      "path": "/api/remote-auth/start",
+      "operationId": "RemoteAuthController_start_post",
+      "controller": "RemoteAuthController"
+    },
+    {
+      "method": "post",
+      "path": "/api/remote-git/conflicts/resolve",
+      "operationId": "RemoteGitController_resolveConflict_post",
+      "controller": "RemoteGitController"
+    },
+    {
+      "method": "get",
+      "path": "/api/remote-git/conflicts/{profileId}",
+      "operationId": "RemoteGitController_conflictView_get",
+      "controller": "RemoteGitController"
+    },
+    {
+      "method": "get",
+      "path": "/api/remote-git/repository-tree/{profileId}",
+      "operationId": "RemoteGitController_repositoryTree_get",
+      "controller": "RemoteGitController"
+    },
+    {
+      "method": "post",
+      "path": "/api/remote-git/{operation}",
+      "operationId": "RemoteGitController_execute_post",
+      "controller": "RemoteGitController"
+    },
+    {
+      "method": "post",
+      "path": "/api/remote-storage/layers/export",
+      "operationId": "RemoteStorageController_exportLayer_post",
+      "controller": "RemoteStorageController"
+    },
+    {
+      "method": "get",
+      "path": "/api/remote-storage/layers/import",
+      "operationId": "RemoteStorageController_importLayer_get",
+      "controller": "RemoteStorageController"
+    },
+    {
+      "method": "get",
+      "path": "/api/remote-storage/profile-configurations",
+      "operationId": "RemoteStorageController_profileConfigurations_get",
+      "controller": "RemoteStorageController"
+    },
+    {
+      "method": "get",
+      "path": "/api/remote-storage/profiles",
+      "operationId": "RemoteStorageController_profiles_get",
+      "controller": "RemoteStorageController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/remote-storage/profiles/{profileId}",
+      "operationId": "RemoteStorageController_deleteProfile_delete",
+      "controller": "RemoteStorageController"
+    },
+    {
+      "method": "put",
+      "path": "/api/remote-storage/profiles/{profileId}",
+      "operationId": "RemoteStorageController_saveProfile_put",
+      "controller": "RemoteStorageController"
+    },
+    {
+      "method": "post",
+      "path": "/api/remote-storage/profiles/{profileId}/test",
+      "operationId": "RemoteStorageController_testProfile_post",
+      "controller": "RemoteStorageController"
+    },
+    {
+      "method": "post",
+      "path": "/api/remote-storage/projects/export",
+      "operationId": "RemoteStorageController_exportProject_post",
+      "controller": "RemoteStorageController"
+    },
+    {
+      "method": "post",
+      "path": "/api/remote-storage/projects/import",
+      "operationId": "RemoteStorageController_importProject_post",
+      "controller": "RemoteStorageController"
+    },
+    {
+      "method": "post",
+      "path": "/api/remote-storage/resolve-location",
+      "operationId": "RemoteStorageController_resolveLocation_post",
+      "controller": "RemoteStorageController"
+    },
+    {
+      "method": "post",
+      "path": "/api/representable-imports/apply",
+      "operationId": "RepresentableImportController_apply_post",
+      "controller": "RepresentableImportController"
+    },
+    {
+      "method": "post",
+      "path": "/api/representable-imports/preview",
+      "operationId": "RepresentableImportController_preview_post",
+      "controller": "RepresentableImportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/representable-imports/technologies",
+      "operationId": "RepresentableImportController_technologies_get",
+      "controller": "RepresentableImportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/runtime-caches/",
+      "operationId": "HydraCacheInventoryController_list_get",
+      "controller": "HydraCacheInventoryController"
+    },
+    {
+      "method": "get",
+      "path": "/api/runtime-capacity/",
+      "operationId": "RuntimeCapacityController_capacity_get",
+      "controller": "RuntimeCapacityController"
+    },
+    {
+      "method": "get",
+      "path": "/api/schema-evolution/plan",
+      "operationId": "HydraSchemaEvolutionController_plan_get",
+      "controller": "HydraSchemaEvolutionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/standalone-distributions/materialize",
+      "operationId": "StandaloneDistributionController_materialize_post",
+      "controller": "StandaloneDistributionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/standalone-distributions/package",
+      "operationId": "StandaloneDistributionController_packageEditor_post",
+      "controller": "StandaloneDistributionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/standalone-distributions/plan",
+      "operationId": "StandaloneDistributionController_plan_post",
+      "controller": "StandaloneDistributionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/standalone-distributions/validate",
+      "operationId": "StandaloneDistributionController_validate_post",
+      "controller": "StandaloneDistributionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/standalone-editors/generate",
+      "operationId": "StandaloneEditorController_generate_post",
+      "controller": "StandaloneEditorController"
+    },
+    {
+      "method": "get",
+      "path": "/api/system/observability/",
+      "operationId": "HydraObservabilityController_status_get",
+      "controller": "HydraObservabilityController"
+    },
+    {
+      "method": "post",
+      "path": "/api/system/observability/rendering",
+      "operationId": "HydraObservabilityController_rendering_post",
+      "controller": "HydraObservabilityController"
+    },
+    {
+      "method": "get",
+      "path": "/api/system/readiness",
+      "operationId": "SystemReadinessController_readiness_get",
+      "controller": "SystemReadinessController"
+    },
+    {
+      "method": "get",
+      "path": "/api/system/runtime-resources",
+      "operationId": "RuntimeResourceDiagnosticsController_status_get",
+      "controller": "RuntimeResourceDiagnosticsController"
+    },
+    {
+      "method": "get",
+      "path": "/api/system/status",
+      "operationId": "SystemStatusController_status_get",
+      "controller": "SystemStatusController"
+    },
+    {
+      "method": "get",
+      "path": "/api/system/technical-settings/",
+      "operationId": "HydraTechnicalSettingsController_get_get",
+      "controller": "HydraTechnicalSettingsController"
+    },
+    {
+      "method": "patch",
+      "path": "/api/system/technical-settings/",
+      "operationId": "HydraTechnicalSettingsController_update_patch",
+      "controller": "HydraTechnicalSettingsController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-editor-definitions/",
+      "operationId": "TextualEditorDefinitionController_list_get",
+      "controller": "TextualEditorDefinitionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-editor-definitions/",
+      "operationId": "TextualEditorDefinitionController_create_post",
+      "controller": "TextualEditorDefinitionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-editor-definitions/runtime-check",
+      "operationId": "TextualEditorDefinitionController_runtimeCheck_post",
+      "controller": "TextualEditorDefinitionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-editor-definitions/shared-layer-options",
+      "operationId": "TextualEditorDefinitionController_sharedLayerOptions_post",
+      "controller": "TextualEditorDefinitionController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/textual-editor-definitions/{id}",
+      "operationId": "TextualEditorDefinitionController_delete_delete",
+      "controller": "TextualEditorDefinitionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-editor-definitions/{id}",
+      "operationId": "TextualEditorDefinitionController_find_get",
+      "controller": "TextualEditorDefinitionController"
+    },
+    {
+      "method": "put",
+      "path": "/api/textual-editor-definitions/{id}",
+      "operationId": "TextualEditorDefinitionController_replace_put",
+      "controller": "TextualEditorDefinitionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-editor-definitions/{id}/runtime",
+      "operationId": "TextualEditorDefinitionController_runtime_get",
+      "controller": "TextualEditorDefinitionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/",
+      "operationId": "TextualModelSessionController_create_post",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}",
+      "operationId": "TextualModelSessionController_find_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{id}/parse",
+      "operationId": "TextualModelSessionController_parse_post",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{id}/save",
+      "operationId": "TextualModelSessionController_save_post",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}/semantic-at",
+      "operationId": "TextualModelSessionController_semanticAt_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{id}/validation",
+      "operationId": "TextualModelSessionController_validate_post",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}/validation/{diagnosticId}/quick-fixes",
+      "operationId": "TextualModelSessionController_quickFixes_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{id}/validation/{diagnosticId}/quick-fixes/{actionId}/apply",
+      "operationId": "TextualModelSessionController_applyQuickFix_post",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{id}/validation/{diagnosticId}/quick-fixes/{actionId}/preview",
+      "operationId": "TextualModelSessionController_previewQuickFix_post",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{sessionId}/perspectives/targets",
+      "operationId": "TextualModelSessionCodeGenerationController_targets_get",
+      "controller": "TextualModelSessionCodeGenerationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{sessionId}/perspectives/{targetId}",
+      "operationId": "TextualModelSessionCodeGenerationController_generate_post",
+      "controller": "TextualModelSessionCodeGenerationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{sessionId}/perspectives/{targetId}/preview",
+      "operationId": "TextualModelSessionCodeGenerationController_preview_post",
+      "controller": "TextualModelSessionCodeGenerationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-syntax-styles/",
+      "operationId": "TextualSyntaxStyleController_list_get",
+      "controller": "TextualSyntaxStyleController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-syntax-styles/",
+      "operationId": "TextualSyntaxStyleController_create_post",
+      "controller": "TextualSyntaxStyleController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/textual-syntax-styles/{id}",
+      "operationId": "TextualSyntaxStyleController_delete_delete",
+      "controller": "TextualSyntaxStyleController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-syntax-styles/{id}",
+      "operationId": "TextualSyntaxStyleController_find_get",
+      "controller": "TextualSyntaxStyleController"
+    },
+    {
+      "method": "put",
+      "path": "/api/textual-syntax-styles/{id}",
+      "operationId": "TextualSyntaxStyleController_replace_put",
+      "controller": "TextualSyntaxStyleController"
+    },
+    {
+      "method": "get",
+      "path": "/api/toolchain-compatibility/catalog",
+      "operationId": "NativeToolchainCompatibilityController_catalog_get",
+      "controller": "NativeToolchainCompatibilityController"
+    },
+    {
+      "method": "get",
+      "path": "/api/toolchain-compatibility/latest",
+      "operationId": "NativeToolchainCompatibilityController_latest_get",
+      "controller": "NativeToolchainCompatibilityController"
+    },
+    {
+      "method": "post",
+      "path": "/api/toolchain-compatibility/run",
+      "operationId": "NativeToolchainCompatibilityController_run_post",
+      "controller": "NativeToolchainCompatibilityController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/",
+      "operationId": "TransformationController_list_get",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/",
+      "operationId": "TransformationController_create_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/check",
+      "operationId": "TransformationController_check_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/export",
+      "operationId": "TransformationController_export_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/export-languages",
+      "operationId": "TransformationController_exportLanguages_get",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/parity/native/execute",
+      "operationId": "TransformationNativeParityController_execute_post",
+      "controller": "TransformationNativeParityController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/parity/native/runtimes",
+      "operationId": "TransformationNativeParityController_runtimes_get",
+      "controller": "TransformationNativeParityController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/parity/native/runtimes/{language}/diagnose",
+      "operationId": "TransformationNativeParityController_diagnose_post",
+      "controller": "TransformationNativeParityController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/parity/native/toolchains",
+      "operationId": "TransformationToolchainProvisioningController_catalog_get",
+      "controller": "TransformationToolchainProvisioningController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/parity/native/toolchains/{language}/install",
+      "operationId": "TransformationToolchainProvisioningController_install_post",
+      "controller": "TransformationToolchainProvisioningController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/parity/native/toolchains/{language}/install/jobs",
+      "operationId": "TransformationToolchainProvisioningController_installAsync_post",
+      "controller": "TransformationToolchainProvisioningController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/parity/native/toolchains/{language}/uninstall",
+      "operationId": "TransformationToolchainProvisioningController_uninstall_post",
+      "controller": "TransformationToolchainProvisioningController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/parity/native/toolchains/{language}/uninstall/jobs",
+      "operationId": "TransformationToolchainProvisioningController_uninstallAsync_post",
+      "controller": "TransformationToolchainProvisioningController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/parity/verify",
+      "operationId": "TransformationParityController_verify_post",
+      "controller": "TransformationParityController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/preview",
+      "operationId": "TransformationController_preview_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/preview-model-to-text",
+      "operationId": "TransformationController_previewModelToText_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/preview-synchronize",
+      "operationId": "TransformationController_previewSynchronize_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/preview-text-to-model",
+      "operationId": "TransformationController_previewTextToModel_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/quick-fixes/",
+      "operationId": "TransformationQuickFixController_suggest_post",
+      "controller": "TransformationQuickFixController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/transformations/{id}",
+      "operationId": "TransformationController_delete_delete",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/{id}",
+      "operationId": "TransformationController_find_get",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "put",
+      "path": "/api/transformations/{id}",
+      "operationId": "TransformationController_replace_put",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/{id}/check",
+      "operationId": "TransformationController_checkStored_get",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{id}/execute",
+      "operationId": "TransformationController_execute_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{id}/execute/{direction}",
+      "operationId": "TransformationController_executeDirectional_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{id}/model-to-text",
+      "operationId": "TransformationController_modelToText_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{id}/synchronize",
+      "operationId": "TransformationController_synchronize_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{id}/text-to-model",
+      "operationId": "TransformationController_textToModel_post",
+      "controller": "TransformationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/{transformationId}/synchronization-sessions/",
+      "operationId": "TransformationSynchronizationSessionController_list_get",
+      "controller": "TransformationSynchronizationSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{transformationId}/synchronization-sessions/",
+      "operationId": "TransformationSynchronizationSessionController_create_post",
+      "controller": "TransformationSynchronizationSessionController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/transformations/{transformationId}/synchronization-sessions/{sessionId}",
+      "operationId": "TransformationSynchronizationSessionController_delete_delete",
+      "controller": "TransformationSynchronizationSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/{transformationId}/synchronization-sessions/{sessionId}",
+      "operationId": "TransformationSynchronizationSessionController_find_get",
+      "controller": "TransformationSynchronizationSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/{transformationId}/synchronization-sessions/{sessionId}/history",
+      "operationId": "TransformationSynchronizationSessionController_history_get",
+      "controller": "TransformationSynchronizationSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{transformationId}/synchronization-sessions/{sessionId}/rebase",
+      "operationId": "TransformationSynchronizationSessionController_rebase_post",
+      "controller": "TransformationSynchronizationSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{transformationId}/synchronization-sessions/{sessionId}/restore/{revision}",
+      "operationId": "TransformationSynchronizationSessionController_restore_post",
+      "controller": "TransformationSynchronizationSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{transformationId}/synchronization-sessions/{sessionId}/synchronize",
+      "operationId": "TransformationSynchronizationSessionController_synchronize_post",
+      "controller": "TransformationSynchronizationSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/{transformationId}/tests/",
+      "operationId": "TransformationTestController_list_get",
+      "controller": "TransformationTestController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{transformationId}/tests/",
+      "operationId": "TransformationTestController_create_post",
+      "controller": "TransformationTestController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{transformationId}/tests/run",
+      "operationId": "TransformationTestController_runAll_post",
+      "controller": "TransformationTestController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/transformations/{transformationId}/tests/{testCaseId}",
+      "operationId": "TransformationTestController_delete_delete",
+      "controller": "TransformationTestController"
+    },
+    {
+      "method": "get",
+      "path": "/api/transformations/{transformationId}/tests/{testCaseId}",
+      "operationId": "TransformationTestController_find_get",
+      "controller": "TransformationTestController"
+    },
+    {
+      "method": "put",
+      "path": "/api/transformations/{transformationId}/tests/{testCaseId}",
+      "operationId": "TransformationTestController_replace_put",
+      "controller": "TransformationTestController"
+    },
+    {
+      "method": "post",
+      "path": "/api/transformations/{transformationId}/tests/{testCaseId}/run",
+      "operationId": "TransformationTestController_runOne_post",
+      "controller": "TransformationTestController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/analyses/{analysisId}/compact",
+      "operationId": "UpdateSiteAnalysisPagingController_compact_get",
+      "controller": "UpdateSiteAnalysisPagingController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/analyses/{analysisId}/evidence",
+      "operationId": "UpdateSiteAnalysisPagingController_evidence_get",
+      "controller": "UpdateSiteAnalysisPagingController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/analyses/{analysisId}/files",
+      "operationId": "UpdateSiteAnalysisPagingController_files_get",
+      "controller": "UpdateSiteAnalysisPagingController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/analyses/{analysisId}/logs",
+      "operationId": "UpdateSiteAnalysisPagingController_logs_get",
+      "controller": "UpdateSiteAnalysisPagingController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/analyze",
+      "operationId": "UpdateSiteImportController_analyze_post",
+      "controller": "UpdateSiteImportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters",
+      "operationId": "UpdateSiteAdapterController_extensionAdapters_get",
+      "controller": "UpdateSiteAdapterController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/bench/",
+      "operationId": "UpdateSiteAdapterBenchController_reports_get",
+      "controller": "UpdateSiteAdapterBenchController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/extension-adapters/bench/",
+      "operationId": "UpdateSiteAdapterBenchController_run_post",
+      "controller": "UpdateSiteAdapterBenchController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/bench/compare",
+      "operationId": "UpdateSiteAdapterBenchController_compare_get",
+      "controller": "UpdateSiteAdapterBenchController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/bench/{reportId}",
+      "operationId": "UpdateSiteAdapterBenchController_find_get",
+      "controller": "UpdateSiteAdapterBenchController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/bench/{reportId}/html",
+      "operationId": "UpdateSiteAdapterBenchController_html_get",
+      "controller": "UpdateSiteAdapterBenchController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/documents",
+      "operationId": "UpdateSiteAdapterController_documents_get",
+      "controller": "UpdateSiteAdapterController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/extension-adapters/import",
+      "operationId": "UpdateSiteAdapterController_importAdapter_post",
+      "controller": "UpdateSiteAdapterController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/extension-adapters/preview",
+      "operationId": "UpdateSiteAdapterController_previewAdapter_post",
+      "controller": "UpdateSiteAdapterController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/extension-adapters/test",
+      "operationId": "UpdateSiteAdapterController_testAdapter_post",
+      "controller": "UpdateSiteAdapterController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/verification/",
+      "operationId": "UpdateSiteAdapterVerificationController_reports_get",
+      "controller": "UpdateSiteAdapterVerificationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/extension-adapters/verification/",
+      "operationId": "UpdateSiteAdapterVerificationController_verify_post",
+      "controller": "UpdateSiteAdapterVerificationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/verification/{reportId}",
+      "operationId": "UpdateSiteAdapterVerificationController_find_get",
+      "controller": "UpdateSiteAdapterVerificationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/verification/{reportId}/html",
+      "operationId": "UpdateSiteAdapterVerificationController_html_get",
+      "controller": "UpdateSiteAdapterVerificationController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/update-site-imports/extension-adapters/{adapterId}",
+      "operationId": "UpdateSiteAdapterController_deleteAdapter_delete",
+      "controller": "UpdateSiteAdapterController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/extension-adapters/{adapterId}/activation",
+      "operationId": "UpdateSiteAdapterController_activateAdapter_post",
+      "controller": "UpdateSiteAdapterController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/{adapterId}/export",
+      "operationId": "UpdateSiteAdapterController_exportAdapter_get",
+      "controller": "UpdateSiteAdapterController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/{adapterId}/versions",
+      "operationId": "UpdateSiteAdapterController_adapterVersions_get",
+      "controller": "UpdateSiteAdapterController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/extension-adapters/{adapterId}/versions/{version}/export",
+      "operationId": "UpdateSiteAdapterController_exportAdapterVersion_get",
+      "controller": "UpdateSiteAdapterController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/import",
+      "operationId": "UpdateSiteRecoveryController_importAndSave_post",
+      "controller": "UpdateSiteRecoveryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/materialize",
+      "operationId": "UpdateSiteMaterializationController_materialize_post",
+      "controller": "UpdateSiteMaterializationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/materialize/rollback",
+      "operationId": "UpdateSiteMaterializationController_rollback_post",
+      "controller": "UpdateSiteMaterializationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/merge",
+      "operationId": "UpdateSiteMaterializationController_merge_post",
+      "controller": "UpdateSiteMaterializationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/merge/rollback",
+      "operationId": "UpdateSiteMaterializationController_rollbackMerge_post",
+      "controller": "UpdateSiteMaterializationController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/mirror-updates/",
+      "operationId": "UpdateSiteMirrorUpdateController_reports_get",
+      "controller": "UpdateSiteMirrorUpdateController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/mirror-updates/",
+      "operationId": "UpdateSiteMirrorUpdateController_evaluate_post",
+      "controller": "UpdateSiteMirrorUpdateController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/mirror-updates/channels/{channel}",
+      "operationId": "UpdateSiteMirrorUpdateController_channel_get",
+      "controller": "UpdateSiteMirrorUpdateController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/mirror-updates/channels/{channel}/rollback",
+      "operationId": "UpdateSiteMirrorUpdateController_rollback_post",
+      "controller": "UpdateSiteMirrorUpdateController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/mirror-updates/{reportId}",
+      "operationId": "UpdateSiteMirrorUpdateController_find_get",
+      "controller": "UpdateSiteMirrorUpdateController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/mirrors/{mirrorId}",
+      "operationId": "UpdateSiteP2MirrorController_find_get",
+      "controller": "UpdateSiteP2MirrorController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/mirrors/{mirrorId}/export",
+      "operationId": "UpdateSiteP2MirrorController_export_get",
+      "controller": "UpdateSiteP2MirrorController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/mirrors/{mirrorId}/validate",
+      "operationId": "UpdateSiteP2MirrorController_validate_post",
+      "controller": "UpdateSiteP2MirrorController"
+    },
+    {
+      "method": "delete",
+      "path": "/api/update-site-imports/performance/cache",
+      "operationId": "UpdateSitePerformanceController_clearCache_delete",
+      "controller": "UpdateSitePerformanceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/performance/cache",
+      "operationId": "UpdateSitePerformanceController_cacheMetrics_get",
+      "controller": "UpdateSitePerformanceController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/reconcile",
+      "operationId": "UpdateSiteRecoveryController_reconcile_post",
+      "controller": "UpdateSiteRecoveryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/analyze",
+      "operationId": "UpdateSiteSourceController_analyzeRemote_post",
+      "controller": "UpdateSiteSourceController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/snapshots",
+      "operationId": "UpdateSiteSourceController_createRemoteSnapshot_post",
+      "controller": "UpdateSiteSourceController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/snapshots/analyze",
+      "operationId": "UpdateSiteAnalysisController_analyzeRemoteSnapshot_post",
+      "controller": "UpdateSiteAnalysisController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/snapshots/import",
+      "operationId": "UpdateSiteImportController_importRemoteSnapshot_post",
+      "controller": "UpdateSiteImportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/remote/snapshots/{snapshotId}",
+      "operationId": "UpdateSiteSourceController_remoteSnapshot_get",
+      "controller": "UpdateSiteSourceController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/snapshots/{snapshotId}/drift",
+      "operationId": "UpdateSiteSourceController_checkRemoteSnapshotDrift_post",
+      "controller": "UpdateSiteSourceController"
+    },
+    {
+      "method": "get",
+      "path": "/api/update-site-imports/remote/snapshots/{snapshotId}/export",
+      "operationId": "UpdateSiteSourceController_exportRemoteSnapshot_get",
+      "controller": "UpdateSiteSourceController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/snapshots/{snapshotId}/import",
+      "operationId": "UpdateSiteRecoveryController_importRemoteSnapshot_post",
+      "controller": "UpdateSiteRecoveryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/snapshots/{snapshotId}/licenses",
+      "operationId": "UpdateSiteSourceController_reviewRemoteSnapshotLicenses_post",
+      "controller": "UpdateSiteSourceController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/snapshots/{snapshotId}/materialize",
+      "operationId": "UpdateSiteMaterializationController_materializeRemoteSnapshot_post",
+      "controller": "UpdateSiteMaterializationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/snapshots/{snapshotId}/merge",
+      "operationId": "UpdateSiteMaterializationController_mergeRemoteSnapshot_post",
+      "controller": "UpdateSiteMaterializationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/snapshots/{snapshotId}/mirror",
+      "operationId": "UpdateSiteP2MirrorController_create_post",
+      "controller": "UpdateSiteP2MirrorController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/remote/snapshots/{snapshotId}/reconcile",
+      "operationId": "UpdateSiteRecoveryController_reconcileRemoteSnapshot_post",
+      "controller": "UpdateSiteRecoveryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/repository/analyze",
+      "operationId": "UpdateSiteSourceController_analyzeRepository_post",
+      "controller": "UpdateSiteSourceController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/repository/snapshots/{snapshotId}/analyze",
+      "operationId": "UpdateSiteAnalysisController_analyzeRepositorySnapshot_post",
+      "controller": "UpdateSiteAnalysisController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/repository/snapshots/{snapshotId}/import",
+      "operationId": "UpdateSiteRecoveryController_importRepositorySnapshot_post",
+      "controller": "UpdateSiteRecoveryController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/repository/snapshots/{snapshotId}/materialize",
+      "operationId": "UpdateSiteMaterializationController_materializeRepositorySnapshot_post",
+      "controller": "UpdateSiteMaterializationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/repository/snapshots/{snapshotId}/merge",
+      "operationId": "UpdateSiteMaterializationController_mergeRepositorySnapshot_post",
+      "controller": "UpdateSiteMaterializationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/update-site-imports/repository/snapshots/{snapshotId}/reconcile",
+      "operationId": "UpdateSiteRecoveryController_reconcileRepositorySnapshot_post",
+      "controller": "UpdateSiteRecoveryController"
+    }
+  ]
+}

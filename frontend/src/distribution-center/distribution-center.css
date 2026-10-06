@@ -1,0 +1,99 @@
+.standalone-distribution-center {
+    min-height:100%;
+    background:var(--hydra-color-slate-100)
+}
+.distribution-layout {
+    display:grid;
+    grid-template-columns:minmax(440px,1.35fr) minmax(300px,.8fr);
+    gap:14px;
+    padding:16px
+}
+.distribution-layout>form,.distribution-layout>aside>section {
+    padding:15px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:10px;
+    background:var(--hydra-bg-surface)
+}
+.distribution-layout form input {
+    width:100%;
+    min-height:38px;
+    padding:7px 9px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:7px
+}
+.distribution-form-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px
+}
+.distribution-layout fieldset {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin:10px 0;
+    padding:12px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px
+}
+.distribution-layout legend {
+    font-weight:800
+}
+.distribution-actions {
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    margin-top:14px
+}
+.distribution-layout>aside {
+    display:grid;
+    align-content:start;
+    gap:10px
+}
+.distribution-layout>aside h3 {
+    margin:0 0 8px
+}
+.distribution-layout>aside ul {
+    display:grid;
+    gap:6px;
+    margin:0;
+    padding:0;
+    list-style:none
+}
+.distribution-layout>aside li {
+    display:grid;
+    gap:3px;
+    padding:7px;
+    border-radius:6px;
+    background:var(--hydra-bg-surface-muted)
+}
+.distribution-layout>aside li span {
+    color:var(--hydra-text-muted);
+    font-size:.68rem
+}
+.distribution-layout>aside li p {
+    margin:0;
+    font-size:.78rem
+}
+.distribution-layout>aside code {
+    overflow-wrap:anywhere
+}
+.distribution-layout>aside section.valid {
+    border-color:var(--hydra-color-green-300)
+}
+.distribution-layout>aside section.invalid {
+    border-color:#fca5a5
+}
+.distribution-download-result {
+    border-color:var(--hydra-color-blue-300)!important;
+    background:var(--hydra-bg-selection)!important
+}
+@media(max-width:1000px) {
+    .distribution-layout {
+        grid-template-columns:1fr
+    }
+}
+@media(max-width:680px) {
+    .distribution-form-grid,.distribution-layout fieldset {
+        grid-template-columns:1fr
+    }
+}

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "1.0",
+  "failOn": [
+    "generic-error-without-action",
+    "raw-technical-visible",
+    "english-residual-high-confidence",
+    "missing-guidance-critical-surface"
+  ],
+  "criticalSurfaces": [
+    {
+      "id": "home",
+      "paths": [
+        "frontend/src/application-shell"
+      ],
+      "requires": [
+        "help",
+        "emptyState",
+        "error"
+      ]
+    },
+    {
+      "id": "metamodel",
+      "paths": [
+        "frontend/src/metamodel-designer"
+      ],
+      "requires": [
+        "help",
+        "error"
+      ]
+    },
+    {
+      "id": "validation",
+      "paths": [
+        "frontend/src/validation-designer"
+      ],
+      "requires": [
+        "help",
+        "error"
+      ]
+    },
+    {
+      "id": "grammar",
+      "paths": [
+        "frontend/src/grammar-designer"
+      ],
+      "requires": [
+        "help",
+        "problems",
+        "error"
+      ]
+    },
+    {
+      "id": "transformation",
+      "paths": [
+        "frontend/src/transformation-designer"
+      ],
+      "requires": [
+        "help",
+        "error"
+      ]
+    },
+    {
+      "id": "project",
+      "paths": [
+        "frontend/src/project-explorer"
+      ],
+      "requires": [
+        "help",
+        "error"
+      ]
+    }
+  ],
+  "genericErrorPatterns": [
+    "Operation failed",
+    "Something went wrong",
+    "Unknown error",
+    "An error occurred"
+  ],
+  "technicalVisiblePatterns": [
+    "java.lang.",
+    "NullPointerException",
+    "StackTrace",
+    "BeanCreationException"
+  ],
+  "allowedTechnicalFiles": [
+    "frontend/src/api/",
+    "frontend/src/problems/",
+    "frontend/src/design-system/HydraActionableErrorNotice.tsx",
+    "frontend/src/metamodel-designer/MetamodelPropertyPanel.tsx"
+  ],
+  "report": "target/release/rc1-ux-audit.json",
+  "allowedGenericFiles": [
+    "frontend/src/event-designer/eventTypePresentation.ts",
+    "frontend/src/i18n/"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0",
+  "id": "sync-advanced",
+  "level": "ADVANCED",
+  "title": "Sincronización bidireccional People ↔ Contacts",
+  "description": "Proyecto de referencia M2M bidireccional e incremental con dos metamodelos y modelos base.",
+  "capabilities": [
+    "METAMODEL",
+    "MODEL",
+    "TRANSFORMATION_M2M",
+    "BIDIRECTIONAL_SYNC",
+    "INCREMENTAL_SYNC",
+    "TRACE"
+  ],
+  "expectedArtifacts": [
+    {
+      "path": "artifacts/people.metamodel.json",
+      "kind": "METAMODEL",
+      "required": true
+    },
+    {
+      "path": "artifacts/contacts.metamodel.json",
+      "kind": "METAMODEL",
+      "required": true
+    },
+    {
+      "path": "artifacts/people.model.json",
+      "kind": "MODEL",
+      "required": true
+    },
+    {
+      "path": "artifacts/contacts.model.json",
+      "kind": "MODEL",
+      "required": true
+    },
+    {
+      "path": "artifacts/people-contacts.transformation.json",
+      "kind": "TRANSFORMATION",
+      "required": true
+    }
+  ],
+  "acceptance": [
+    "all-json-parse",
+    "metamodel-id-consistency",
+    "bidirectional-rules-present",
+    "incremental-policy-present",
+    "no-secret-files"
+  ]
+}

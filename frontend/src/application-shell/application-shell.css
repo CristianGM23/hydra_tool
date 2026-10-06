@@ -1,0 +1,1032 @@
+.hydra-application-shell {
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+    background:var(--hydra-bg-app);
+    color:var(--hydra-text-primary)
+}
+.hydra-ui-navbar {
+    flex:0 0 auto
+}
+.hydra-brand-button {
+    display:grid;
+    gap:2px;
+    padding:0;
+    border:0;
+    background:transparent;
+    color:inherit;
+    text-align:left;
+    cursor:pointer
+}
+.hydra-brand-button strong {
+    font-size:1.05rem;
+    letter-spacing:.03em
+}
+.hydra-brand-button span {
+    font-size:.7rem;
+    opacity:.72;
+    white-space:nowrap
+}
+.hydra-shell-frame {
+    display:grid;
+    grid-template-columns:188px minmax(0,1fr);
+    min-height:0;
+    flex:1
+}
+.hydra-shell-frame.home-only {
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    min-height:0
+}
+.hydra-shell-frame.home-only>.hydra-module-surface {
+    height:100%;
+    min-height:0
+}
+.hydra-shell-frame.home-only .hydra-module-content {
+    display:flex;
+    min-height:0
+}
+.hydra-module-rail {
+    padding:14px 10px;
+    overflow:auto;
+    border-right:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface-muted)
+}
+.hydra-module-rail section+section {
+    margin-top:17px
+}
+.hydra-module-rail h2 {
+    margin:0 8px 6px;
+    color:var(--hydra-text-muted);
+    font-size:.68rem;
+    letter-spacing:.1em;
+    text-transform:uppercase
+}
+.hydra-module-rail section>div {
+    display:grid;
+    gap:3px
+}
+.hydra-module-rail .hydra-module-link {
+    justify-content:flex-start;
+    width:100%;
+    min-height:30px;
+    padding-inline:8px;
+    border:1px solid transparent;
+    border-left:3px solid transparent;
+    border-radius:6px;
+    background:transparent;
+    color:var(--hydra-text-primary);
+    font-weight:600
+}
+.hydra-module-rail .hydra-module-link:hover {
+    border-color:var(--hydra-border-default);
+    background:var(--hydra-bg-surface)
+}
+.hydra-module-rail .hydra-module-link[aria-current="page"] {
+    border-color:var(--hydra-color-blue-400);
+    border-left-color:var(--hydra-color-primary-600);
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-text-primary);
+    box-shadow:inset 3px 0 var(--hydra-color-primary-600)
+}
+.hydra-module-surface {
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    min-height:0
+}
+.hydra-module-header {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:20px;
+    padding:14px 20px;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface)
+}
+.hydra-module-header p,.hydra-module-header h1,.hydra-module-header span {
+    margin:0
+}
+.hydra-module-header p {
+    color:var(--hydra-text-muted);
+    font-size:.68rem;
+    font-weight:800;
+    letter-spacing:.1em;
+    text-transform:uppercase
+}
+.hydra-module-header h1 {
+    margin-top:2px;
+    font-size:1.18rem
+}
+.hydra-module-header span {
+    display:block;
+    max-width:760px;
+    margin-top:4px;
+    color:var(--hydra-text-muted);
+    font-size:.83rem
+}
+.hydra-module-toolbar {
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:7px;
+    flex-wrap:wrap
+}
+.hydra-module-content {
+    min-width:0;
+    min-height:0;
+    flex:1;
+    overflow:auto
+}
+.hydra-independent-workbench {
+    min-height:100%;
+    background:var(--hydra-bg-surface)
+}
+.hydra-empty-state {
+    display:grid;
+    place-content:center;
+    min-height:280px;
+    padding:32px;
+    text-align:center;
+    color:var(--hydra-text-muted)
+}
+.hydra-empty-state h2,.hydra-empty-state h3,.hydra-empty-state p {
+    margin:0
+}
+.hydra-empty-state p {
+    max-width:560px;
+    margin-top:8px
+}
+.hydra-empty-state.error {
+    color:var(--hydra-color-danger-600)
+}
+.hydra-center-introduction {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:18px;
+    padding:18px;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface)
+}
+.hydra-center-introduction p,.hydra-center-introduction h2,.hydra-center-introduction span {
+    margin:0
+}
+.hydra-center-introduction p {
+    color:var(--hydra-color-primary-600);
+    font-size:.7rem;
+    font-weight:800;
+    letter-spacing:.1em;
+    text-transform:uppercase
+}
+.hydra-center-introduction h2 {
+    margin-top:3px;
+    font-size:1.18rem
+}
+.hydra-center-introduction span {
+    display:block;
+    max-width:760px;
+    margin-top:5px;
+    color:var(--hydra-text-muted)
+}
+.hydra-operation-result {
+    display:grid;
+    gap:4px;
+    margin:14px;
+    padding:12px;
+    border:1px solid var(--hydra-color-green-300);
+    border-radius:9px;
+    background:var(--hydra-color-success-50)
+}
+.hydra-operation-result code {
+    overflow-wrap:anywhere
+}
+.hydra-home {
+    display:grid;
+    gap:26px;
+    padding:26px;
+    overflow:auto
+}
+.hydra-home-hero {
+    display:grid;
+    grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);
+    gap:22px;
+    padding:28px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:18px;
+    background:linear-gradient(125deg,#0f2740,#173f67 62%,#245f8e);
+    color:var(--hydra-bg-surface);
+    box-shadow:0 18px 40px rgba(23,63,103,.18)
+}
+.hydra-home-kicker {
+    margin:0 0 8px;
+    color:#9ed8ff;
+    font-size:.76rem;
+    font-weight:800;
+    letter-spacing:.12em;
+    text-transform:uppercase
+}
+.hydra-home-hero h1 {
+    max-width:760px;
+    margin:0;
+    font-size:clamp(2rem,4vw,3.5rem);
+    line-height:1.02
+}
+.hydra-home-hero>div>p:not(.hydra-home-kicker) {
+    max-width:760px;
+    margin:15px 0 0;
+    color:#d8e9f7;
+    font-size:1.02rem
+}
+.hydra-home-actions {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:22px
+}
+.hydra-home-context {
+    align-self:stretch;
+    padding:18px;
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:13px;
+    background:rgba(255,255,255,.09);
+    backdrop-filter:blur(8px)
+}
+.hydra-home-context h2 {
+    margin:0 0 12px;
+    font-size:1rem
+}
+.hydra-home-context p {
+    margin:12px 0 0;
+    color:#d8e9f7;
+    font-size:.84rem
+}
+.hydra-home-modules {
+    display:grid;
+    gap:22px
+}
+.hydra-home-modules>article {
+    display:grid;
+    gap:10px
+}
+.hydra-home-modules>article>header {
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:18px
+}
+.hydra-home-modules header p,.hydra-home-modules header h2 {
+    margin:0
+}
+.hydra-home-modules header p {
+    color:var(--hydra-color-primary-600);
+    font-size:.66rem;
+    font-weight:800;
+    letter-spacing:.1em
+}
+.hydra-home-modules header h2 {
+    font-size:1.18rem
+}
+.hydra-home-modules header>span {
+    max-width:620px;
+    color:var(--hydra-text-muted);
+    font-size:.82rem;
+    text-align:right
+}
+.hydra-home-module-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:12px
+}
+.hydra-home-module-card {
+    display:grid;
+    font:inherit;
+    align-content:start;
+    gap:8px;
+    min-height:170px;
+    padding:16px;
+    border:1px solid var(--hydra-border-default);
+    border-top:4px solid var(--hydra-color-primary-600);
+    border-radius:12px;
+    background:var(--hydra-bg-surface);
+    color:var(--hydra-text-primary);
+    text-align:left;
+    cursor:pointer;
+    box-shadow:0 3px 12px rgba(15,23,42,.05);
+    transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease
+}
+.hydra-home-module-card:focus-visible {
+    outline:3px solid var(--hydra-focus-ring,var(--hydra-color-blue-400));
+    outline-offset:3px
+}
+.hydra-home-module-card:hover {
+    transform:translateY(-2px);
+    border-color:var(--hydra-color-blue-400);
+    box-shadow:0 10px 24px rgba(15,23,42,.1)
+}
+.hydra-home-module-card strong {
+    font-size:1rem
+}
+.hydra-home-module-card p {
+    margin:0;
+    color:var(--hydra-text-muted);
+    font-size:.82rem;
+    line-height:1.45
+}
+.hydra-module-card-badge {
+    justify-self:start;
+    padding:3px 6px;
+    border-radius:999px;
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-color-primary-700);
+    font-size:.65rem;
+    font-weight:700
+}
+.hydra-module-card-open {
+    align-self:end;
+    margin-top:auto;
+    color:var(--hydra-color-primary-700);
+    font-size:.78rem;
+    font-weight:800
+}
+.accent-gamification {
+    --hydra-card-accent:#a855f7
+}
+.accent-transformations {
+    --hydra-card-accent:#7c3aed
+}
+.accent-events,.accent-flow {
+    --hydra-card-accent:#0891b2
+}
+.accent-validation {
+    --hydra-card-accent:var(--hydra-color-danger-600)
+}
+.accent-distribution,.accent-integrations,.accent-roundtrip {
+    --hydra-card-accent:#059669
+}
+.accent-compatibility,.accent-capabilities {
+    --hydra-card-accent:var(--hydra-color-warning-600)
+}
+.accent-model,.accent-metamodel,.accent-editors {
+    --hydra-card-accent:var(--hydra-color-primary-600)
+}
+.hydra-home-module-card[class*=accent-] {
+    border-top-color:var(--hydra-card-accent,var(--hydra-color-primary-600))
+}
+@media(max-width:1050px) {
+    .hydra-shell-frame {
+        grid-template-columns:154px minmax(0,1fr)
+    }
+    .hydra-home-hero {
+        grid-template-columns:1fr
+    }
+    .hydra-home-context {
+        max-width:none
+    }
+}
+@media(max-width:760px) {
+    .hydra-shell-frame {
+        display:block
+    }
+    .hydra-module-rail {
+        display:flex;
+        gap:12px;
+        overflow-x:auto;
+        border-right:0;
+        border-bottom:1px solid var(--hydra-border-default)
+    }
+    .hydra-module-rail section {
+        min-width:max-content
+    }
+    .hydra-module-rail section+section {
+        margin-top:0
+    }
+    .hydra-module-header {
+        display:grid
+    }
+    .hydra-home {
+        padding:14px
+    }
+    .hydra-home-hero {
+        padding:20px
+    }
+    .hydra-home-modules>article>header {
+        display:grid
+    }
+    .hydra-home-modules header>span {
+        text-align:left
+    }
+}
+.accent-generated-projects,.accent-artifacts {
+    --hydra-card-accent:var(--hydra-color-violet-600)
+}
+.accent-representable-imports {
+    --hydra-card-accent:#0f766e
+}
+.accent-publication {
+    --hydra-card-accent:var(--hydra-color-warning-600)
+}
+.status-planned,.status-skipped,.status-not-run,.status-full,.status-none,.status-available,.status-stale,.status-missing-dependency,.status-conflicted,.status-invalid {
+    display:inline-flex;
+    justify-self:start;
+    padding:3px 7px;
+    border-radius:999px;
+    font-size:.65rem;
+    font-weight:800
+}
+.status-planned,.status-skipped,.status-not-run,.status-stale {
+    background:var(--hydra-border-default);
+    color:var(--hydra-text-secondary)
+}
+.status-full,.status-available {
+    background:var(--hydra-color-success-50);
+    color:var(--hydra-color-success-600)
+}
+.status-none,.status-invalid,.status-conflicted,.status-missing-dependency {
+    background:var(--hydra-color-danger-50);
+    color:var(--hydra-color-danger-600)
+}
+.hydra-module-loading {
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 32px;
+    text-align: left;
+}
+.hydra-module-loading-spinner {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 4px solid color-mix(in srgb, var(--hydra-border, #9aa8bc) 45%, transparent);
+    border-top-color: var(--hydra-accent, var(--hydra-color-primary-600));
+    animation: hydra-module-loading-spin 0.9s linear infinite;
+}
+.hydra-module-loading h2, .hydra-module-loading p {
+    margin: 0;
+}
+.hydra-module-loading p {
+    margin-top: 5px;
+    color: var(--hydra-text-muted, #536176);
+}
+@keyframes hydra-module-loading-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+.hydra-home {
+    --hydra-home-section-rail-width:clamp(232px,16vw,280px);
+    display:grid;
+    grid-template-columns:var(--hydra-home-section-rail-width) minmax(0,1fr);
+    gap:0;
+    width:100%;
+    height:100%;
+    min-height:0;
+    padding:0;
+    overflow:hidden;
+    background:var(--hydra-bg-app);
+    align-self:stretch
+}
+.hydra-home-section-rail {
+    min-width:0;
+    padding:18px 12px;
+    border-right:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface);
+    overflow-y:auto;
+    overflow-x:hidden;
+    scrollbar-gutter:stable
+}
+.hydra-home-rail-intro {
+    display:grid;
+    gap:5px;
+    padding:0 8px 15px;
+    border-bottom:1px solid var(--hydra-border-default)
+}
+.hydra-home-rail-intro strong {
+    font-size:.9rem
+}
+.hydra-home-rail-intro span {
+    color:var(--hydra-text-muted);
+    font-size:.76rem;
+    line-height:1.4
+}
+.hydra-home-section-rail nav {
+    display:grid;
+    gap:4px;
+    margin-top:14px
+}
+.hydra-home-section-link {
+    width:100%;
+    min-height:38px;
+    padding:7px 10px;
+    border:1px solid transparent;
+    border-left:3px solid transparent;
+    border-radius:7px;
+    background:transparent;
+    color:var(--hydra-text-secondary);
+    font:inherit;
+    font-weight:650;
+    text-align:left;
+    cursor:pointer;
+    box-sizing:border-box;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    line-height:1.25
+}
+.hydra-home-section-link:hover {
+    background:var(--hydra-bg-hover)
+}
+.hydra-home-section-link[aria-current=page] {
+    border-color:var(--hydra-color-primary-200);
+    border-left-color:var(--hydra-color-primary-600);
+    background:var(--hydra-bg-selection);
+    color:var(--hydra-color-primary-700)
+}
+.hydra-home-content {
+    min-width:0;
+    overflow:auto;
+    padding:22px
+}
+.hydra-home-content>section {
+    max-width:1120px;
+    margin:0 auto
+}
+.hydra-home-overview>header,.hydra-home-category>header,.hydra-home-readiness>header {
+    display:grid;
+    gap:5px;
+    margin-bottom:16px
+}
+.hydra-home-overview>header p,.hydra-home-overview>header h1,.hydra-home-category>header p,.hydra-home-category>header h1,.hydra-home-readiness>header p,.hydra-home-readiness>header h1 {
+    margin:0
+}
+.hydra-home-overview>header h1,.hydra-home-category>header h1,.hydra-home-readiness>header h1 {
+    font-size:clamp(1.45rem,3vw,2rem)
+}
+.hydra-home-overview>header>p:last-child,.hydra-home-category>header>span {
+    max-width:760px;
+    color:var(--hydra-text-muted)
+}
+.hydra-home-overview-grid {
+    display:grid;
+    grid-template-columns:minmax(0,1.4fr) minmax(270px,.8fr);
+    gap:14px
+}
+.hydra-home-overview-grid>article {
+    padding:18px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:12px;
+    background:var(--hydra-bg-surface)
+}
+.hydra-home-overview-grid h2,.hydra-home-overview-grid p {
+    margin:0
+}
+.hydra-home-overview-grid p {
+    margin-top:7px;
+    color:var(--hydra-text-muted);
+    line-height:1.48
+}
+.hydra-home-actions {
+    margin-top:16px
+}
+.hydra-home-context {
+    color:var(--hydra-text-primary);
+    box-shadow:none;
+    backdrop-filter:none
+}
+.hydra-home-context p {
+    color:var(--hydra-text-muted)
+}
+.hydra-home-category>header {
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:18px
+}
+.hydra-home-category>header>div>p,.hydra-home-readiness>header>p {
+    color:var(--hydra-color-primary-600);
+    font-size:.68rem;
+    font-weight:800;
+    letter-spacing:.1em
+}
+.hydra-home-category>header>span {
+    font-size:.84rem;
+    text-align:right
+}
+.hydra-home-module-list {
+    display:grid;
+    gap:8px
+}
+.hydra-home-module-row {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto auto;
+    align-items:center;
+    gap:16px;
+    width:100%;
+    padding:13px 15px;
+    border:1px solid var(--hydra-border-default);
+    border-left:4px solid var(--hydra-card-accent,var(--hydra-color-primary-600));
+    border-radius:10px;
+    background:var(--hydra-bg-surface);
+    color:var(--hydra-text-primary);
+    font:inherit;
+    text-align:left;
+    cursor:pointer;
+    transition:border-color .14s ease,background .14s ease
+}
+.hydra-home-module-row:hover {
+    border-color:var(--hydra-color-blue-300);
+    background:var(--hydra-bg-hover)
+}
+.hydra-home-module-row:focus-visible {
+    outline:3px solid var(--hydra-focus-ring,var(--hydra-color-blue-400));
+    outline-offset:2px
+}
+.hydra-module-row-copy {
+    display:grid;
+    gap:3px
+}
+.hydra-module-row-copy strong {
+    font-size:.96rem
+}
+.hydra-module-row-copy small {
+    color:var(--hydra-text-muted);
+    line-height:1.4
+}
+.hydra-module-row-meta {
+    padding:3px 7px;
+    border-radius:999px;
+    background:var(--hydra-color-slate-100);
+    color:var(--hydra-text-secondary);
+    font-size:.68rem;
+    font-weight:700
+}
+.hydra-home-module-row .hydra-module-card-open {
+    margin:0;
+    white-space:nowrap
+}
+.hydra-home-readiness>.hydra-empty-state {
+    border:1px solid var(--hydra-border-default);
+    border-radius:12px;
+    background:var(--hydra-bg-surface)
+}
+@media(max-width:860px) {
+    .hydra-home {
+        grid-template-columns:1fr;
+        overflow:auto
+    }
+    .hydra-home-section-rail {
+        position:sticky;
+        top:0;
+        z-index:4;
+        padding:9px 10px;
+        border-right:0;
+        border-bottom:1px solid var(--hydra-border-default);
+        overflow-x:auto
+    }
+    .hydra-home-rail-intro {
+        display:none
+    }
+    .hydra-home-section-rail nav {
+        display:flex;
+        min-width:max-content;
+        margin:0
+    }
+    .hydra-home-section-link {
+        width:auto;
+        white-space:nowrap
+    }
+    .hydra-home-content {
+        overflow:visible;
+        padding:14px
+    }
+    .hydra-home-overview-grid {
+        grid-template-columns:1fr
+    }
+    .hydra-home-category>header {
+        display:grid
+    }
+    .hydra-home-category>header>span {
+        text-align:left
+    }
+    .hydra-home-module-row {
+        grid-template-columns:minmax(0,1fr) auto
+    }
+    .hydra-module-row-meta {
+        display:none
+    }
+}
+@media(max-width:520px) {
+    .hydra-home-module-row {
+        grid-template-columns:1fr
+    }
+    .hydra-home-module-row .hydra-module-card-open {
+        justify-self:start
+    }
+}
+
+.hydra-center-introduction {
+    flex-wrap: wrap;
+    min-width: 0;
+}
+.hydra-center-introduction > div:first-child {
+    min-width: min(100%, 320px);
+    flex: 1 1 520px;
+}
+.hydra-center-introduction > .hydra-center-actions, .hydra-center-introduction > .hydra-ui-button {
+    flex: 0 1 auto;
+}
+.hydra-center-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+.hydra-independent-workbench, .hydra-module-content > section, .hydra-module-content > .native-compatibility-center, .hydra-module-content > .representable-import-center, .hydra-module-content > .standalone-distribution-center, .hydra-module-content > .roundtrip-center, .hydra-module-content > .publication-center, .hydra-module-content > .artifact-registry-center, .hydra-module-content > .generated-project-center, .hydra-module-content > .capability-center, .hydra-module-content > .update-site-import-center {
+    width: 100%;
+    min-width: 0;
+}
+@media (max-width: 760px) {
+    .hydra-center-introduction {
+        align-items: stretch;
+    }
+    .hydra-center-introduction > .hydra-center-actions, .hydra-center-introduction > .hydra-ui-button {
+        width: 100%;
+    }
+    .hydra-center-introduction > .hydra-ui-button, .hydra-center-introduction > .hydra-center-actions > * {
+        flex: 1 1 170px;
+    }
+}
+
+.hydra-module-header {
+    align-items:center;
+    padding:8px 14px;
+    min-height:54px;
+    gap:14px
+}
+.hydra-module-heading {
+    min-width:0;
+    flex:1 1 auto;
+    display:grid;
+    grid-template-columns:max-content minmax(0,1fr);
+    column-gap:10px;
+    row-gap:1px;
+    align-items:baseline
+}
+.hydra-module-heading>p {
+    grid-column:1;
+    font-size:.62rem;
+    white-space:nowrap
+}
+.hydra-module-heading>h1 {
+    grid-column:2;
+    margin:0!important;
+    min-width:0;
+    font-size:1rem;
+    line-height:1.2;
+    white-space:normal;
+    overflow-wrap:anywhere
+}
+.hydra-module-description {
+    grid-column:1 / -1;
+    max-width:none!important;
+    margin:1px 0 0!important;
+    color:var(--hydra-text-muted);
+    font-size:.75rem!important;
+    line-height:1.3;
+    white-space:normal;
+    overflow-wrap:anywhere
+}
+.hydra-module-toolbar {
+    flex:0 0 auto;
+    max-width:min(48%,720px);
+    overflow-x:auto;
+    overflow-y:hidden;
+    flex-wrap:nowrap;
+    scrollbar-width:thin;
+    overscroll-behavior-inline:contain
+}
+.hydra-workbench-mode-bar {
+    display:flex;
+    min-width:0;
+    justify-content:flex-end;
+    align-items:center;
+    padding:4px 8px;
+    border-bottom:1px solid var(--hydra-border-default);
+    background:var(--hydra-bg-surface)
+}
+.hydra-workbench-mode-bar>.hydra-creation-mode-switch {
+    max-width:100%;
+    overflow-x:auto;
+    overflow-y:hidden
+}
+@media(max-width:760px) {
+    .hydra-module-header {
+        align-items:stretch
+    }
+    .hydra-module-heading {
+        grid-template-columns:1fr
+    }
+    .hydra-module-heading>p,.hydra-module-heading>h1,.hydra-module-description {
+        grid-column:1
+    }
+    .hydra-module-heading>h1,.hydra-module-description {
+        white-space:normal;
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical
+    }
+    .hydra-module-toolbar {
+        max-width:100%;
+        justify-content:flex-start
+    }
+    .hydra-workbench-mode-bar {
+        justify-content:flex-start;
+        overflow-x:auto
+    }
+}
+
+.hydra-module-rail .hydra-module-link[aria-current="page"]:focus-visible {
+    outline:2px solid var(--hydra-color-primary-600);
+    outline-offset:2px
+}
+
+.hydra-application-shell {
+    height:100vh;
+    min-height:0;
+    overflow:hidden
+}
+.hydra-shell-frame,.hydra-module-surface,.hydra-module-content {
+    min-height:0
+}
+
+/* V4.32.74: workflow-oriented navigation rail. */
+.hydra-shell-frame {
+    grid-template-columns:236px minmax(0,1fr)
+}
+.hydra-module-rail {
+    padding:14px 12px 18px
+}
+.hydra-module-rail-intro {
+    display:grid;
+    gap:4px;
+    margin:0 4px 14px;
+    padding:10px 11px;
+    border:1px solid var(--hydra-border-default);
+    border-radius:9px;
+    background:var(--hydra-bg-surface)
+}
+.hydra-module-rail-intro strong {
+    font-size:.78rem
+}
+.hydra-module-rail-intro span {
+    color:var(--hydra-text-muted);
+    font-size:.67rem;
+    line-height:1.35
+}
+.hydra-module-rail section>header {
+    display:grid;
+    gap:2px;
+    margin:0 6px 6px
+}
+.hydra-module-rail h2 {
+    margin:0
+}
+.hydra-module-rail section>header p {
+    margin:0;
+    color:var(--hydra-text-muted);
+    font-size:.63rem;
+    line-height:1.3
+}
+.hydra-module-rail-entry {
+    display:grid;
+    gap:2px
+}
+.hydra-module-rail-entry.active {
+    margin-bottom:3px
+}
+.hydra-module-link-description {
+    margin:0 7px 5px 11px;
+    color:var(--hydra-text-muted);
+    font-size:.64rem;
+    line-height:1.35;
+    overflow-wrap:anywhere
+}
+.hydra-module-rail .hydra-module-link {
+    min-height:32px;
+    line-height:1.2;
+    white-space:normal
+}
+
+/* Keep Home capability rows aligned even when descriptions wrap differently. */
+.hydra-home-module-row {
+    grid-template-columns:minmax(0,1fr) 168px 112px;
+    min-height:72px
+}
+.hydra-module-row-copy,
+.hydra-module-row-meta,
+.hydra-home-module-row .hydra-module-card-open {
+    align-self:center
+}
+.hydra-module-row-meta {
+    justify-self:start;
+    text-align:center
+}
+.hydra-home-module-row .hydra-module-card-open {
+    justify-self:end;
+    text-align:right
+}
+
+@media(max-width:1050px) {
+    .hydra-shell-frame {
+        grid-template-columns:196px minmax(0,1fr)
+    }
+    .hydra-module-rail section>header p,
+    .hydra-module-link-description {
+        display:none
+    }
+}
+@media(max-width:760px) {
+    .hydra-module-rail-intro {
+        display:none
+    }
+    .hydra-module-rail section>header p {
+        display:none
+    }
+}
+/* V4.32.74: module-row buttons are compound cards, not single-line buttons. */
+.hydra-home-module-row {
+    white-space: normal;
+    align-items: stretch;
+}
+.hydra-module-row-copy {
+    min-width: 0;
+    align-content: center;
+}
+.hydra-module-row-copy strong,
+.hydra-module-row-copy small {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+.hydra-module-row-meta {
+    white-space: normal;
+    line-height: 1.25;
+}
+
+/* V4.32.80: compound Home buttons override the shared pill-button geometry regardless of CSS load order. */
+.hydra-ui-button.hydra-home-module-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 168px 112px;
+    align-items: center;
+    justify-content: stretch;
+    justify-items: stretch;
+    gap: 16px;
+    width: 100%;
+    min-height: 72px;
+    padding: 13px 15px;
+    border: 1px solid var(--hydra-border-default);
+    border-left: 4px solid var(--hydra-card-accent, var(--hydra-color-primary-600));
+    border-radius: 10px;
+    text-align: left;
+    white-space: normal;
+}
+.hydra-home-module-row .hydra-module-row-copy {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    justify-self: stretch;
+    text-align: left;
+}
+.hydra-home-module-row .hydra-module-row-copy > :is(strong, small) {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+.hydra-home-module-row .hydra-module-row-meta {
+    box-sizing: border-box;
+    width: 100%;
+    justify-self: stretch;
+    text-align: center;
+}
+.hydra-home-module-row .hydra-module-card-open {
+    box-sizing: border-box;
+    width: 100%;
+    justify-self: stretch;
+    text-align: right;
+}
+
+/* Home overview owns the capability dashboard so the selected semantic context is immediately actionable. */
+.hydra-home-content>section.hydra-home-overview{max-width:1500px}
+.hydra-home-overview-readiness{margin-top:16px;min-width:0}
+.hydra-home-overview-readiness>.hydra-empty-state,.hydra-home-overview-readiness>.hydra-home-readiness-loading{padding:20px;border:1px solid var(--hydra-border-default);border-radius:12px;background:var(--hydra-bg-surface)}
+.hydra-home-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hydra-home-context .hydra-ui-select{width:100%}
+@media (max-width:980px){.hydra-home-overview-readiness .capability-layer-grid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}}
+

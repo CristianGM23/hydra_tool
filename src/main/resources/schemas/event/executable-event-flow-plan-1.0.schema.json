@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/event/executable-event-flow-plan-1.0.schema.json",
+  "title": "HYDRA ExecutableEventFlowPlan 1.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "metamodelId", "sourceModelId", "compiledAt", "flowsById", "flowIdsByTriggerEventType"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" }, "id": { "type": "string" }, "metamodelId": { "type": "string" }, "sourceModelId": { "type": "string" }, "compiledAt": { "type": "string", "format": "date-time" },
+    "flowsById": { "type": "object" }, "flowIdsByTriggerEventType": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } }
+  }, "additionalProperties": true
+}

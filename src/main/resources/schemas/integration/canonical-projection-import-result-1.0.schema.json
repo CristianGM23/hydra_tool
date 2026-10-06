@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/integration/canonical-projection-import-result-1.0.schema.json",
+  "title": "HYDRA CanonicalProjectionImportResult 1.0",
+  "type": "object",
+  "required": ["supportLevel", "recoveredArtifacts", "opaqueElements", "diagnostics"],
+  "properties": {
+    "supportLevel": {"enum": ["FULL", "PARTIAL", "PROJECTION_ONLY", "UNSUPPORTED"]},
+    "recoveredArtifacts": {"type": "array", "items": {"type": "object", "required": ["kind", "documentId", "mediaType", "content", "sha256", "metadata"], "properties": {
+      "kind": {"type": "string"}, "documentId": {"type": "string", "minLength": 1}, "mediaType": {"type": "string"}, "content": {"type": "string", "contentEncoding": "base64"},
+      "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "metadata": {"type": "object", "additionalProperties": {"type": "string"}}
+    }, "additionalProperties": false}},
+    "opaqueElements": {"type": "array", "items": {"type": "string"}}, "diagnostics": {"type": "array"}
+  }, "additionalProperties": false
+}

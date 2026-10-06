@@ -1,0 +1,5 @@
+# Python dependencies used only by HYDRA release/validation tooling.
+# They are installed into a HYDRA-managed virtual environment; the user's
+# global Python installation is never modified.
+jsonschema==4.26.0
+pytest==9.1.1

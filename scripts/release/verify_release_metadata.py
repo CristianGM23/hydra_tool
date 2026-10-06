@@ -1,0 +1,35 @@
+from pathlib import Path
+import json,sys,xml.etree.ElementTree as ET
+ROOT=Path(__file__).resolve().parents[2]
+checks=[]
+def check(name,ok):checks.append((name,bool(ok)))
+version=json.loads((ROOT/'config/hydra-version.json').read_text(encoding='utf-8'))['version']
+pom=(ROOT/'pom.xml').read_text(encoding='utf-8')
+check('POM version follows canonical release version',f'<version>{version}</version>' in pom)
+check('API contract release version follows canonical release version', json.loads((ROOT/'config/api-contract.json').read_text(encoding='utf-8')).get('hydraVersion') == version)
+check('generated frontend release constant follows canonical release version', f"HYDRA_VERSION = '{version}'" in (ROOT/'frontend/src/generated/hydraVersion.ts').read_text(encoding='utf-8'))
+check('internal Java release constant follows canonical release version', f'VERSION = "{version}"' in (ROOT/'src/main/java/com/example/editor/product/HydraReleaseVersion.java').read_text(encoding='utf-8'))
+check('generated OpenAPI version follows canonical release version', f'  version: {version}' in (ROOT/'docs/api/hydra-openapi.yaml').read_text(encoding='utf-8'))
+check('POM declares license metadata','<licenses>' in pom and 'file:LICENSE' in pom)
+check('POM declares SCM metadata','<scm>' in pom and '<connection>scm:git:' in pom and '<tag>HEAD</tag>' in pom)
+check('first-party license notice exists',(ROOT/'LICENSE').is_file() and (ROOT/'NOTICE').is_file())
+inventory=(ROOT/'scripts/release/source_inventory.py').read_text(encoding='utf-8')
+check('source packager is allowlist based','ALLOWED_ROOTS' in inventory and 'source_files' in (ROOT/'scripts/release/package_source.py').read_text(encoding='utf-8'))
+pack=(ROOT/'scripts/release/package_source.py').read_text(encoding='utf-8')
+check('source packager excludes runtime/build directories',all(x in inventory for x in ["'node_modules'","'target'","'dist'","'data'","'coverage'"]) and 'excluded(' in inventory)
+check('source packager retains Vite entrypoint and bundle budget',"'frontend/index.html'" in inventory and "'frontend/config'" in inventory)
+sbom_script=(ROOT/'scripts/release/generate_sbom.py').read_text(encoding='utf-8')
+check('SBOM inventories npm lock','package-lock.json' in sbom_script and 'pkg:npm/' in sbom_script)
+check('SBOM inventories Maven dependencies','pom.xml' in sbom_script and 'pkg:maven/' in sbom_script)
+workflow=(ROOT/'.github/workflows/hydra-ci.yml').read_text(encoding='utf-8')
+check('CI runs on Windows and Linux','windows-latest' in workflow and 'ubuntu-latest' in workflow)
+check('CI uses npm ci','npm ci' in workflow)
+check('CI uses Java 24',"java-version: '24'" in workflow or 'java-version: 24' in workflow)
+wrapper=(ROOT/'.mvn/wrapper/maven-wrapper.properties').read_text(encoding='utf-8')
+check('Maven Wrapper pins Maven 3.9.16','apache-maven-3.9.16-bin.zip' in wrapper)
+check('Maven Wrapper pins distribution SHA-256','distributionSha256Sum=5af3b743dd8b876b5c45da33b676251e5f1687712644abb4ee519ca56e1d89ce' in wrapper)
+check('Maven Wrapper pins wrapper SHA-256','wrapperSha256Sum=4e2fbf6554bc8a4702cdfdd3bef464f423393d784ddbb037216320ce55d5e4e1' in wrapper)
+for name,ok in checks:print(('PASS' if ok else 'FAIL')+' - '+name)
+failed=[n for n,o in checks if not o]
+print(f'RELEASE_METADATA={len(checks)-len(failed)}/{len(checks)}')
+if failed:sys.exit(1)

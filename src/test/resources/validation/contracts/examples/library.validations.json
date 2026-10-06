@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0",
+  "id": "library-validations",
+  "metamodelId": "library",
+  "expressionModelId": "library",
+  "actionModelId": "library-actions",
+  "annotations": {},
+  "ruleSets": [
+    {
+      "id": "rule-set:book-quality",
+      "name": "Book quality",
+      "description": "Basic book checks",
+      "enabled": true,
+      "order": 0,
+      "ruleIds": [
+        "rule:book-pages-positive"
+      ],
+      "annotations": {}
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule:book-pages-positive",
+      "name": "Positive number of pages",
+      "code": "BOOK_PAGES_POSITIVE",
+      "description": "A book must contain at least one page",
+      "enabled": true,
+      "context": {
+        "kind": "ATTRIBUTE",
+        "classId": "class:Book",
+        "featureId": "attribute:class:Book:pages"
+      },
+      "severity": "ERROR",
+      "conditionExpressionId": "expression:book-pages-positive",
+      "messageTemplate": "The number of pages must be greater than zero",
+      "triggers": [
+        "ON_CREATE",
+        "ON_ATTRIBUTE_CHANGE",
+        "ON_SAVE"
+      ],
+      "dependencies": [
+        {
+          "kind": "ATTRIBUTE",
+          "elementId": "attribute:class:Book:pages"
+        }
+      ],
+      "quickFixIds": [
+        "action:set-pages-one"
+      ],
+      "executionMode": "INCREMENTAL",
+      "authoritativeRepresentation": "CANONICAL",
+      "conversionStatus": "FULL",
+      "annotations": {}
+    }
+  ],
+  "importedSources": []
+}

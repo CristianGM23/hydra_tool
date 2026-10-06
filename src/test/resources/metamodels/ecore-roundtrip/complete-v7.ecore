@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    name="canonicalV7Complete"
+    nsURI="urn:canonical:v7:complete"
+    nsPrefix="cv7">
+
+    <eClassifiers xsi:type="ecore:EEnum" name="Status">
+        <eLiterals name="ACTIVE" value="10" literal="active"/>
+        <eLiterals name="INACTIVE" value="20" literal="inactive"/>
+        <eLiterals name="SUSPENDED" value="30" literal="suspended"/>
+    </eClassifiers>
+
+    <eClassifiers xsi:type="ecore:EDataType" name="Money" instanceClassName="com.example.Money" serializable="true"/>
+
+    <eClassifiers xsi:type="ecore:EClass" name="Identifiable" abstract="true" interface="true"/>
+
+    <eClassifiers xsi:type="ecore:EClass" name="NamedElement" abstract="true">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" iD="true"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+
+    <eClassifiers xsi:type="ecore:EClass" name="Model">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1" containment="true" eType="#//NamedElement"/>
+    </eClassifiers>
+
+    <eClassifiers xsi:type="ecore:EClass" name="Person" eSuperTypes="#//NamedElement #//Identifiable">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="active" lowerBound="1" defaultValueLiteral="true"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" defaultValueLiteral="ACTIVE" eType="#//Status"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="balance" eType="#//Money"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="employer" eType="#//Company" eOpposite="#//Company/employees" resolveProxies="true"/>
+    </eClassifiers>
+
+    <eClassifiers xsi:type="ecore:EClass" name="Employee" eSuperTypes="#//Person">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="employeeNumber" lowerBound="1" defaultValueLiteral="0"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+
+    <eClassifiers xsi:type="ecore:EClass" name="Company" eSuperTypes="#//NamedElement">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="legalName" lowerBound="1"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="employees" upperBound="-1" containment="true"
+            eType="#//Person" eOpposite="#//Person/employer"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="tags" upperBound="-1" eType="#//Tag"/>
+    </eClassifiers>
+
+    <eClassifiers xsi:type="ecore:EClass" name="Tag">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+
+    <eClassifiers xsi:type="ecore:EClass" name="Audit">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="created" lowerBound="1"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    </eClassifiers>
+</ecore:EPackage>

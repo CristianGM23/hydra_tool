@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.0",
+  "id": "people-session",
+  "metamodelId": "people",
+  "editorId": "people-editor",
+  "sourceEditorEtag": "\"editor-etag\"",
+  "activeRepresentationId": "representation:main",
+  "model": {
+    "schemaVersion": "1.0",
+    "id": "people-model",
+    "metamodelId": "people",
+    "metamodelEtag": "\"metamodel-etag\"",
+    "name": "People",
+    "rootElementIds": [
+      "element:ada"
+    ],
+    "elements": [
+      {
+        "id": "element:ada",
+        "classId": "class:Person",
+        "attributes": {
+          "attribute:Person:name": "Ada"
+        },
+        "annotations": {}
+      }
+    ],
+    "relations": [],
+    "annotations": {
+      "editorId": "people-editor"
+    }
+  },
+  "revision": 1,
+  "createdAt": "2026-07-28T15:00:00Z",
+  "updatedAt": "2026-07-28T15:01:00Z",
+  "annotations": {},
+  "openRepresentationIds": [
+    "representation:main"
+  ],
+  "latestValidationReport": null
+}

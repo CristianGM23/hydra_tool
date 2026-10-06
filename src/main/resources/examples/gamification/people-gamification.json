@@ -1,0 +1,100 @@
+{
+  "definitions": {
+    "schemaVersion": "1.0",
+    "id": "people-gamification",
+    "metamodelId": "people",
+    "name": "Quality gamification",
+    "pointTypes": [
+      {
+        "id": "points:quality",
+        "name": "Quality points",
+        "description": "Granted only from verified quality evidence.",
+        "minimumBalance": -10
+      }
+    ],
+    "levels": [
+      {
+        "id": "level:reviewer",
+        "name": "Reviewer",
+        "pointTypeId": "points:quality",
+        "minimumPoints": 10,
+        "rewardId": "reward:reviewer-badge"
+      }
+    ],
+    "achievements": [
+      {
+        "id": "achievement:first-resolution",
+        "name": "First verified resolution",
+        "description": "Resolve the first validation problem.",
+        "rewardId": "",
+        "hidden": false
+      }
+    ],
+    "challenges": [
+      {
+        "id": "challenge:five-resolutions",
+        "name": "Five verified resolutions",
+        "description": "Resolve five distinct diagnostics.",
+        "targetCount": 5,
+        "rewardId": "reward:reviewer-badge"
+      }
+    ],
+    "rewards": [
+      {
+        "id": "reward:reviewer-badge",
+        "name": "Reviewer badge",
+        "description": "Portable badge metadata.",
+        "payload": {
+          "badge": "reviewer"
+        }
+      }
+    ],
+    "annotations": {}
+  },
+  "bindings": {
+    "schemaVersion": "1.0",
+    "id": "people-gamification-bindings",
+    "metamodelId": "people",
+    "definitionModelId": "people-gamification",
+    "rules": [
+      {
+        "id": "rule:verified-resolution",
+        "name": "Reward a verified resolution",
+        "eventTypeId": "course.people.quality-evidence",
+        "conditionPath": "",
+        "operator": "EQUALS",
+        "pointsTypeId": "points:quality",
+        "points": 2,
+        "achievementId": "achievement:first-resolution",
+        "challengeId": "challenge:five-resolutions",
+        "rewardId": "",
+        "repeatPolicy": "ONCE_PER_EVENT",
+        "cooldownSeconds": 0,
+        "maxAwardsPerActor": 100,
+        "maxAwardsPerDay": 20,
+        "enabled": true,
+        "effectKind": "AWARD"
+      },
+      {
+        "id": "rule:invalid-model-penalty",
+        "name": "Penalize an invalid saved model",
+        "eventTypeId": "core.validation.execution-completed",
+        "conditionPath": "payload.errorCount",
+        "operator": "GREATER_THAN",
+        "expectedValue": 0,
+        "pointsTypeId": "points:quality",
+        "points": -1,
+        "effectKind": "PENALTY",
+        "achievementId": "",
+        "challengeId": "",
+        "rewardId": "",
+        "repeatPolicy": "ONCE_PER_EVENT",
+        "cooldownSeconds": 0,
+        "maxAwardsPerActor": 100,
+        "maxAwardsPerDay": 20,
+        "enabled": true
+      }
+    ],
+    "annotations": {}
+  }
+}

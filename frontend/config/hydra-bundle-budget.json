@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "2.0",
+  "mode": "strict",
+  "entryMaxBytes": 900000,
+  "asyncChunkMaxBytes": 850000,
+  "entryMaxGzipBytes": 300000,
+  "asyncChunkMaxGzipBytes": 280000,
+  "totalApplicationJavaScriptMaxBytes": 4500000,
+  "totalJavaScriptMaxBytes": 8500000,
+  "moduleBudgets": {
+    "monaco-vendor": {
+      "patterns": ["monaco-"],
+      "maxBytes": 4200000,
+      "maxGzipBytes": 1050000,
+      "required": true,
+      "excludeFromGenericChunkBudget": true,
+      "excludeFromApplicationTotal": true
+    },
+    "actionable-error-localization": {
+      "patterns": ["actionableError-"],
+      "maxBytes": 1650000,
+      "maxGzipBytes": 500000,
+      "required": true,
+      "excludeFromGenericChunkBudget": true,
+      "excludeFromApplicationTotal": false
+    },
+    "update-site-import-center": {
+      "patterns": ["UpdateSiteImportCenter", "update-site-import-center"],
+      "maxBytes": 850000,
+      "maxGzipBytes": 280000,
+      "required": true
+    },
+    "validation-designer": {
+      "patterns": ["ValidationDesigner", "validation-designer"],
+      "maxBytes": 850000,
+      "maxGzipBytes": 280000,
+      "required": false
+    },
+    "event-designer": {
+      "patterns": ["EventDesigner", "event-designer"],
+      "maxBytes": 850000,
+      "maxGzipBytes": 280000,
+      "required": false
+    }
+  },
+  "exemptions": []
+}

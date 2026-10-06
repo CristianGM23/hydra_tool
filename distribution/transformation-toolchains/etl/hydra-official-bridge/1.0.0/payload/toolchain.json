@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "language": "ETL",
+  "bridgeName": "HYDRA Official ETL Bridge",
+  "bridgeVersion": "1.0.0",
+  "toolchainName": "Epsilon ETL",
+  "toolchainVersion": "",
+  "command": [
+    "${java}",
+    "${bundle}/HydraOfficialBridge.java",
+    "${bundle}/bridge.properties"
+  ]
+}

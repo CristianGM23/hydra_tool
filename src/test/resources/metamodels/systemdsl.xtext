@@ -1,0 +1,70 @@
+grammar org.example.systemdsl.SystemDSL with org.eclipse.xtext.common.Terminals
+
+// Rule raíz (Entry Point)
+SystemModel:
+    'system' name=ID
+    (
+      types+=CustomDataType |
+      enums+=CustomEnum |
+      components+=Component
+    )*;
+
+// ==========================================
+// 1. ENUMERADOS Y DATA TYPES PERSONALIZADOS
+// ==========================================
+
+// Enumerado
+enum Environment:
+    DEVELOPMENT = 'DEV' |
+    TESTING     = 'TEST' |
+    PRODUCTION  = 'PROD';
+
+// Data Type Personalizado 1: IP Address
+// Sintaxis tipo: 192.168.1.1
+IPAddress:
+    INT '.' INT '.' INT '.' INT;
+
+// Data Type Personalizado 2: Port
+// Utiliza un entero nativo como base
+Port:
+    INT;
+
+// Data Type Personalizado 3: Custom Type abstracto/concreto para variables
+CustomDataType:
+    'datatype' name=ID 'extends' baseType=('String' | 'Integer' | 'Boolean');
+
+// ==========================================
+// 2. ELEMENTOS DEL SISTEMA Y REFERENCIAS
+// ==========================================
+
+// Elemento abstracto base usando herencia
+Component:
+    Database | Service;
+
+// Base de Datos
+Database:
+    'database' name=ID '{'
+        'ip' ip=IPAddress
+        'port' port=Port
+        ('env' env=Environment)?
+    '}';
+
+// Microservicio
+Service:
+    'service' name=ID '{'
+        'port' port=Port
+        ('env' env=Environment)?
+
+        // Referencia cruzada opcional a una Base de Datos existente
+        ('connectsTo' database=[Database|ID])?
+
+        // Contiene parámetros/atributos internos
+        ('attributes' '{' attributes+=Attribute+ '}')?
+    '}';
+
+// Atributo interno de un servicio
+Attribute:
+    name=ID ':' (
+        // Referencia a un CustomDataType O bien un tipo primitivo inline
+        type=[CustomDataType|ID] | primitiveType=('string' | 'int' | 'bool')
+    );

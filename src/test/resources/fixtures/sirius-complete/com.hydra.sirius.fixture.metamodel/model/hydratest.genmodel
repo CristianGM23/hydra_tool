@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/com.hydra.sirius.fixture.metamodel/src-gen"
+    modelPluginID="com.hydra.sirius.fixture.metamodel"
+    modelName="HydraTest"
+    importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="17.0"
+    copyrightFields="false"
+    operationReflection="true">
+  <foreignModel>hydratest.ecore</foreignModel>
+  <genPackages prefix="Hydratest" disposableProviderFactory="true" ecorePackage="hydratest.ecore#/"/>
+</genmodel:GenModel>

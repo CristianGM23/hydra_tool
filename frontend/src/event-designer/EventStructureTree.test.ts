@@ -1,0 +1,9 @@
+import { describe, expect, it } from 'vitest';
+import { createDefaultEventBinding, createDefaultEventField, createDefaultEventType, createEmptyEventModels } from './eventDesignerFactory';
+import { buildEventStructure } from './eventStructureModel';
+
+describe('event structure tree', () => {
+    it('shows event data fields and subjects under their canonical event', () => { const value=createEmptyEventModels('people'); const event={...createDefaultEventType(value.definitions.namespace),id:'event:created',fields:[{...createDefaultEventField(),id:'field:id'}],allowedSubjects:['MODEL' as const]}; value.definitions.eventTypes=[event]; const root=buildEventStructure(value.definitions,value.bindings,[])[0]; expect(JSON.stringify(root)).toContain('Event data'); expect(JSON.stringify(root)).toContain('field:id'); expect(JSON.stringify(root)).toContain('MODEL'); });
+    it('shows source, target and payload mappings under a binding', () => { const value=createEmptyEventModels('people'); const target={...createDefaultEventType(value.definitions.namespace),id:'event:target'}; value.definitions.eventTypes=[target]; value.bindings.bindings=[{...createDefaultEventBinding('core.model.saved',target.id),id:'binding:one',payloadMappings:[{targetFieldId:'field:value',sourcePath:'payload.value',expressionId:''}]}]; const json=JSON.stringify(buildEventStructure(value.definitions,value.bindings,['core.model.saved'])); expect(json).toContain('Source'); expect(json).toContain('Target'); expect(json).toContain('field:value'); });
+    it('keeps the complete system catalog outside the editable custom event list', () => { const value=createEmptyEventModels('people'); const json=JSON.stringify(buildEventStructure(value.definitions,value.bindings,['core.model.saved','core.validation.violation-resolved'])); expect(json).toContain('System event catalog'); expect(json).toContain('core.model.saved'); });
+});

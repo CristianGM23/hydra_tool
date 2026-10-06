@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hydra.local/schemas/editor/executable-editor-plan-1.0.schema.json",
+  "title": "ExecutableEditorPlan 1.0",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "sourceEditorDefinitionId",
+    "sourceEtag",
+    "metamodelId",
+    "name",
+    "compiledAt",
+    "representationsById",
+    "formsById",
+    "formsByTargetClassId",
+    "capabilityManifest",
+    "runtimePolicy"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEditorDefinitionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEtag": {
+      "type": "string"
+    },
+    "metamodelId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "compiledAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "representationsById": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/representation"
+      }
+    },
+    "formsById": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "formsByTargetClassId": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "capabilityManifest": {
+      "type": "object",
+      "required": [
+        "capabilities"
+      ],
+      "properties": {
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "annotations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "runtimePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validationTriggers",
+        "autosave",
+        "recoverLatestSession",
+        "publishEvents",
+        "eventFlowsEnabled",
+        "gamificationEnabled",
+        "maximumOpenRepresentations",
+        "operationTimeoutMillis"
+      ],
+      "properties": {
+        "validationTriggers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "ON_OPEN",
+              "ON_CHANGE",
+              "ON_REPRESENTATION_CHANGE",
+              "MANUAL"
+            ]
+          }
+        },
+        "autosave": {
+          "type": "boolean"
+        },
+        "recoverLatestSession": {
+          "type": "boolean"
+        },
+        "publishEvents": {
+          "type": "boolean"
+        },
+        "eventFlowsEnabled": {
+          "type": "boolean"
+        },
+        "gamificationEnabled": {
+          "type": "boolean"
+        },
+        "maximumOpenRepresentations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "operationTimeoutMillis": {
+          "type": "integer",
+          "minimum": 100
+        }
+      }
+    }
+  },
+  "$defs": {
+    "representation": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "rootClassIds",
+        "editable",
+        "nodeMappingsByClassId",
+        "edgeMappingsByRelationId",
+        "toolsById",
+        "paletteGroups"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "DIAGRAM",
+            "TREE",
+            "TABLE",
+            "FORM",
+            "MATRIX",
+            "DASHBOARD"
+          ]
+        },
+        "rootClassIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "editable": {
+          "type": "boolean"
+        },
+        "nodeMappingsByClassId": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "edgeMappingsByRelationId": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "toolsById": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
+        },
+        "paletteGroups": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

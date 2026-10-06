@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "1.0",
+  "id": "people-event-flows",
+  "metamodelId": "people",
+  "eventDefinitionModelId": "people-events",
+  "expressionModelId": "",
+  "flows": [
+    {
+      "id": "flow:verified-resolution",
+      "name": "Verified diagnostic resolution",
+      "description": "Produces a neutral derived event only after a validation confirms resolution.",
+      "enabled": true,
+      "triggerEventTypeIds": [
+        "core.validation.violation-resolved"
+      ],
+      "variables": [],
+      "nodes": [
+        {
+          "id": "node:source",
+          "name": "Resolved violation",
+          "kind": "SOURCE",
+          "eventTypeId": "core.validation.violation-resolved",
+          "configuration": {},
+          "retryPolicy": {
+            "maxAttempts": 0,
+            "delayMillis": 0,
+            "backoffMultiplier": 1.0
+          },
+          "timeoutPolicy": {
+            "timeoutMillis": 0,
+            "timeoutTransitionId": ""
+          },
+          "compensable": false,
+          "enabled": true
+        },
+        {
+          "id": "node:dedupe",
+          "name": "One resolution per diagnostic",
+          "kind": "DEDUPLICATE",
+          "eventTypeId": "",
+          "configuration": {
+            "keyPath": "payload.diagnosticId",
+            "retentionMillis": 86400000
+          },
+          "retryPolicy": {
+            "maxAttempts": 0,
+            "delayMillis": 0,
+            "backoffMultiplier": 1.0
+          },
+          "timeoutPolicy": {
+            "timeoutMillis": 0,
+            "timeoutTransitionId": ""
+          },
+          "compensable": false,
+          "enabled": true
+        },
+        {
+          "id": "node:emit",
+          "name": "Quality evidence",
+          "kind": "EMIT",
+          "eventTypeId": "course.people.quality-evidence",
+          "configuration": {},
+          "retryPolicy": {
+            "maxAttempts": 0,
+            "delayMillis": 0,
+            "backoffMultiplier": 1.0
+          },
+          "timeoutPolicy": {
+            "timeoutMillis": 0,
+            "timeoutTransitionId": ""
+          },
+          "compensable": false,
+          "enabled": true
+        }
+      ],
+      "transitions": [
+        {
+          "id": "transition:source-dedupe",
+          "sourceNodeId": "node:source",
+          "targetNodeId": "node:dedupe",
+          "kind": "NEXT",
+          "conditionExpressionId": "",
+          "order": 0,
+          "label": ""
+        },
+        {
+          "id": "transition:dedupe-emit",
+          "sourceNodeId": "node:dedupe",
+          "targetNodeId": "node:emit",
+          "kind": "NEXT",
+          "conditionExpressionId": "",
+          "order": 0,
+          "label": ""
+        }
+      ],
+      "compensations": [],
+      "annotations": {}
+    }
+  ],
+  "annotations": {}
+}

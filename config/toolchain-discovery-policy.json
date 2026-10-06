@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0",
+  "java": {
+    "bytecodeTarget": 24,
+    "qualificationFeatures": [
+      24,
+      25
+    ],
+    "environmentVariables": [
+      "HYDRA_JAVA_HOME",
+      "JAVA_HOME"
+    ],
+    "windowsRegistryKeys": [
+      "SOFTWARE\\JavaSoft\\JDK",
+      "SOFTWARE\\Eclipse Adoptium\\JDK",
+      "SOFTWARE\\Microsoft\\JDK",
+      "SOFTWARE\\Azul Systems\\Zulu",
+      "SOFTWARE\\Amazon Corretto"
+    ],
+    "windowsRoots": [
+      "%ProgramFiles%\\Java",
+      "%ProgramFiles%\\Eclipse Adoptium",
+      "%ProgramFiles%\\Microsoft",
+      "%ProgramFiles%\\Amazon Corretto",
+      "%ProgramFiles%\\Azul Systems",
+      "%ProgramFiles%\\BellSoft",
+      "%LOCALAPPDATA%\\Programs\\Eclipse Adoptium"
+    ],
+    "maxFilesystemDepth": 3,
+    "requireCompiler": true,
+    "projectLocalRoots": [
+      ".toolchains/jdk",
+      ".jdk",
+      "tools/jdk"
+    ],
+    "maxProjectLocalDepth": 2
+  },
+  "node": {
+    "environmentVariables": [
+      "HYDRA_NODE_HOME",
+      "NODE_HOME"
+    ],
+    "preferProjectLocal": true
+  },
+  "resolutionOrder": [
+    "explicit",
+    "environment",
+    "project-local",
+    "path",
+    "java-home-property",
+    "windows-registry",
+    "filesystem"
+  ],
+  "hashExecutables": true
+}

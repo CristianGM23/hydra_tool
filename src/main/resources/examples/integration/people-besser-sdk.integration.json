@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0",
+  "id": "people-besser-sdk",
+  "metamodelId": "people",
+  "name": "People events for BESSER SDK",
+  "target": {
+    "technology": "BESSER_SDK",
+    "kind": "MODELING_RUNTIME",
+    "technologyVersion": "7.x",
+    "projectId": "people-besser-project",
+    "moduleName": "people_event_integration",
+    "buildSystem": "PIP",
+    "sourceRoots": ["src"],
+    "configurationFiles": ["pyproject.toml"],
+    "endpoint": "",
+    "settings": { "modelFormat": "BUML_PYTHON" }
+  },
+  "deliveryMode": "GENERATED_MODULE",
+  "features": ["EVENT_PUBLICATION", "EVENT_CONSUMPTION", "GAMIFICATION_RUNTIME", "PROJECT_EXPORT"],
+  "artifacts": [
+    { "kind": "METAMODEL", "documentId": "people", "required": true },
+    { "kind": "EVENT_DEFINITIONS", "documentId": "people-events", "required": true },
+    { "kind": "GAMIFICATION_DEFINITIONS", "documentId": "people-gamification", "required": false }
+  ],
+  "mappings": [
+    {
+      "id": "mapping:person",
+      "kind": "TYPE",
+      "canonicalDocumentId": "people",
+      "canonicalElementId": "class:Person",
+      "hostReference": {
+        "strategy": "BESSER_ELEMENT_ID",
+        "documentUri": "src/people_model.py",
+        "namespace": "people",
+        "qualifiedName": "Person",
+        "externalId": "Person",
+        "featureName": "",
+        "path": "structural_model.Person",
+        "attributes": {}
+      },
+      "required": true,
+      "annotations": {}
+    }
+  ],
+  "injectionPolicy": {
+    "strategy": "ADD_PACKAGE",
+    "generatedRoot": "src/people_event_integration",
+    "moduleName": "people_event_integration",
+    "previewRequired": true,
+    "rollbackRequired": true,
+    "preserveCustomCode": true,
+    "allowModifyExistingFiles": false,
+    "allowModifyGeneratedFiles": false,
+    "failOnPartialMappings": true
+  },
+  "requiredCapabilities": ["MODEL_READ", "EVENT_PUBLISH", "EVENT_CONSUME", "CODE_GENERATION"],
+  "annotations": {}
+}

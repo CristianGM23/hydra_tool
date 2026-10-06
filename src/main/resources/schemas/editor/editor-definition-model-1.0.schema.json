@@ -1,0 +1,951 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/editor-definition-model-1.0.schema.json",
+  "title": "EditorDefinitionModel 1.0",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "metamodelId",
+    "name",
+    "representations",
+    "palette",
+    "forms",
+    "capabilityManifest",
+    "runtimePolicy",
+    "annotations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "id": {
+      "$ref": "#/$defs/documentId"
+    },
+    "metamodelId": {
+      "$ref": "#/$defs/documentId"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "representations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/representation"
+      }
+    },
+    "palette": {
+      "$ref": "#/$defs/palette"
+    },
+    "forms": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/form"
+      }
+    },
+    "capabilityManifest": {
+      "$ref": "#/$defs/capabilities"
+    },
+    "annotations": {
+      "$ref": "#/$defs/annotations"
+    },
+    "runtimePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validationTriggers",
+        "autosave",
+        "recoverLatestSession",
+        "publishEvents",
+        "eventFlowsEnabled",
+        "gamificationEnabled",
+        "maximumOpenRepresentations",
+        "operationTimeoutMillis"
+      ],
+      "properties": {
+        "validationTriggers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "ON_OPEN",
+              "ON_CHANGE",
+              "ON_REPRESENTATION_CHANGE",
+              "MANUAL"
+            ]
+          }
+        },
+        "autosave": {
+          "type": "boolean"
+        },
+        "recoverLatestSession": {
+          "type": "boolean"
+        },
+        "publishEvents": {
+          "type": "boolean"
+        },
+        "eventFlowsEnabled": {
+          "type": "boolean"
+        },
+        "gamificationEnabled": {
+          "type": "boolean"
+        },
+        "maximumOpenRepresentations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "operationTimeoutMillis": {
+          "type": "integer",
+          "minimum": 100
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "documentId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$"
+    },
+    "elementId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$"
+    },
+    "annotations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "stringMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "semanticEdge": {
+      "type": "object",
+      "required": [
+        "edgeClassId",
+        "sourceRelationId",
+        "targetRelationId",
+        "defaultValues",
+        "annotations"
+      ],
+      "properties": {
+        "edgeClassId": {
+          "$ref": "#/$defs/elementId"
+        },
+        "sourceRelationId": {
+          "$ref": "#/$defs/elementId"
+        },
+        "targetRelationId": {
+          "$ref": "#/$defs/elementId"
+        },
+        "containmentRelationId": {
+          "type": "string"
+        },
+        "defaultValues": {
+          "type": "object"
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        }
+      },
+      "additionalProperties": false
+    },
+    "nodeMapping": {
+      "type": "object",
+      "required": [
+        "id",
+        "targetClassId",
+        "representationName",
+        "shape",
+        "defaultWidth",
+        "defaultHeight",
+        "minimumWidth",
+        "minimumHeight",
+        "labelExpressionId",
+        "styles",
+        "annotations"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "targetClassId": {
+          "$ref": "#/$defs/elementId"
+        },
+        "representationName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shape": {
+          "enum": [
+            "RECTANGLE",
+            "ROUNDED_RECTANGLE",
+            "ELLIPSE",
+            "DIAMOND",
+            "TRIANGLE",
+            "PENTAGON",
+            "HEXAGON",
+            "OCTAGON",
+            "PARALLELOGRAM",
+            "TRAPEZOID",
+            "CYLINDER",
+            "DOCUMENT",
+            "CLOUD",
+            "STAR",
+            "CROSS",
+            "SVG_PATH",
+            "PROJECT_IMAGE"
+          ]
+        },
+        "defaultWidth": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "defaultHeight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "minimumWidth": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "minimumHeight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "labelExpressionId": {
+          "type": "string"
+        },
+        "styles": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        },
+        "imageAssetPath": {
+          "type": "string"
+        },
+        "imageFit": {
+          "enum": [
+            "CONTAIN",
+            "COVER",
+            "FILL",
+            "NONE"
+          ]
+        },
+        "container": {
+          "type": "boolean"
+        },
+        "containmentRelationIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/elementId"
+          },
+          "uniqueItems": true
+        },
+        "containerPadding": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "conditionalStyles": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/conditionalStyle"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "edgeMapping": {
+      "type": "object",
+      "required": [
+        "id",
+        "relationId",
+        "sourceClassId",
+        "targetClassId",
+        "lineType",
+        "labelExpressionId",
+        "styles",
+        "annotations"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "relationId": {
+          "type": "string"
+        },
+        "semanticEdge": {
+          "$ref": "#/$defs/semanticEdge"
+        },
+        "sourceClassId": {
+          "$ref": "#/$defs/elementId"
+        },
+        "targetClassId": {
+          "$ref": "#/$defs/elementId"
+        },
+        "lineType": {
+          "enum": [
+            "BEZIER",
+            "STRAIGHT",
+            "STEP",
+            "SMOOTH_STEP",
+            "ORTHOGONAL"
+          ]
+        },
+        "labelExpressionId": {
+          "type": "string"
+        },
+        "styles": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        },
+        "conditionalStyles": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/conditionalStyle"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "representation": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "rootClassIds",
+        "nodeMappings",
+        "edgeMappings",
+        "toolIds",
+        "editable",
+        "annotations"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "DIAGRAM",
+            "TREE",
+            "TABLE",
+            "FORM",
+            "MATRIX",
+            "DASHBOARD"
+          ]
+        },
+        "rootClassIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/elementId"
+          },
+          "uniqueItems": true
+        },
+        "nodeMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nodeMapping"
+          }
+        },
+        "edgeMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/edgeMapping"
+          }
+        },
+        "toolIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/elementId"
+          },
+          "uniqueItems": true
+        },
+        "editable": {
+          "type": "boolean"
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        },
+        "layers": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/representationLayer"
+          }
+        },
+        "filters": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/representationFilter"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "toolBase": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "label",
+        "description",
+        "icon",
+        "representationIds",
+        "visibleExpressionId",
+        "enabledExpressionId"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "representationIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/elementId"
+          },
+          "uniqueItems": true
+        },
+        "visibleExpressionId": {
+          "type": "string"
+        },
+        "enabledExpressionId": {
+          "type": "string"
+        }
+      }
+    },
+    "nodeTool": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/toolBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "targetClassId",
+            "defaultValues",
+            "formId"
+          ],
+          "properties": {
+            "kind": {
+              "const": "CREATE_NODE"
+            },
+            "targetClassId": {
+              "$ref": "#/$defs/elementId"
+            },
+            "defaultValues": {
+              "type": "object"
+            },
+            "formId": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "edgeTool": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/toolBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "edgeMappingId",
+            "relationId",
+            "sourceClassIds",
+            "targetClassIds",
+            "reconnectable"
+          ],
+          "properties": {
+            "kind": {
+              "const": "CREATE_EDGE"
+            },
+            "edgeMappingId": {
+              "$ref": "#/$defs/elementId"
+            },
+            "relationId": {
+              "type": "string"
+            },
+            "semanticEdge": {
+              "$ref": "#/$defs/semanticEdge"
+            },
+            "sourceClassIds": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/elementId"
+              }
+            },
+            "targetClassIds": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/elementId"
+              }
+            },
+            "reconnectable": {
+              "type": "boolean"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "operationTool": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/toolBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "operationId"
+          ],
+          "properties": {
+            "kind": {
+              "const": "INVOKE_OPERATION"
+            },
+            "operationId": {
+              "$ref": "#/$defs/elementId"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "actionTool": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/toolBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "actionId"
+          ],
+          "properties": {
+            "kind": {
+              "const": "RUN_ACTION"
+            },
+            "actionId": {
+              "$ref": "#/$defs/elementId"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "validateTool": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/toolBase"
+        },
+        {
+          "type": "object",
+          "required": [
+            "validationMode"
+          ],
+          "properties": {
+            "kind": {
+              "const": "VALIDATE"
+            },
+            "validationMode": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "tool": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/nodeTool"
+        },
+        {
+          "$ref": "#/$defs/edgeTool"
+        },
+        {
+          "$ref": "#/$defs/operationTool"
+        },
+        {
+          "$ref": "#/$defs/actionTool"
+        },
+        {
+          "$ref": "#/$defs/validateTool"
+        }
+      ]
+    },
+    "paletteGroup": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "order",
+        "toolIds",
+        "initiallyCollapsed"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "order": {
+          "type": "integer"
+        },
+        "toolIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/elementId"
+          },
+          "uniqueItems": true
+        },
+        "initiallyCollapsed": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "palette": {
+      "type": "object",
+      "required": [
+        "groups",
+        "tools"
+      ],
+      "properties": {
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/paletteGroup"
+          }
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/tool"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "formField": {
+      "type": "object",
+      "required": [
+        "id",
+        "featureId",
+        "label",
+        "widget",
+        "required",
+        "readOnly",
+        "visibleExpressionId",
+        "enabledExpressionId",
+        "helpText"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "featureId": {
+          "$ref": "#/$defs/elementId"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "widget": {
+          "enum": [
+            "TEXT",
+            "TEXTAREA",
+            "NUMBER",
+            "BOOLEAN",
+            "ENUM",
+            "DATE",
+            "COLOR",
+            "REFERENCE",
+            "MULTI_REFERENCE",
+            "FILE",
+            "CODE",
+            "EXPRESSION",
+            "READ_ONLY",
+            "CUSTOM"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "readOnly": {
+          "type": "boolean"
+        },
+        "visibleExpressionId": {
+          "type": "string"
+        },
+        "enabledExpressionId": {
+          "type": "string"
+        },
+        "defaultValue": {},
+        "helpText": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "formSection": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "order",
+        "columns",
+        "fields"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "title": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/formField"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "form": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "targetClassId",
+        "sections"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "targetClassId": {
+          "$ref": "#/$defs/elementId"
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/formSection"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "capabilities": {
+      "type": "object",
+      "required": [
+        "capabilities"
+      ],
+      "properties": {
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "MODEL_EDITING",
+              "MULTIPLE_REPRESENTATIONS",
+              "OPERATIONS",
+              "VALIDATION_RUNTIME",
+              "QUICK_FIX_RUNTIME",
+              "EVENTS",
+              "EVENT_FLOWS",
+              "GAMIFICATION",
+              "IMPORT",
+              "EXPORT",
+              "UNDO_REDO"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "conditionalStyle": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "enabled",
+        "priority",
+        "conditionExpressionId",
+        "styles"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": -100000,
+          "maximum": 100000
+        },
+        "conditionExpressionId": {
+          "$ref": "#/$defs/elementId"
+        },
+        "styles": {
+          "$ref": "#/$defs/stringMap"
+        }
+      },
+      "additionalProperties": false
+    },
+    "representationLayer": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "defaultLayer",
+        "activeByDefault",
+        "userToggleable",
+        "nodeMappingIds",
+        "edgeMappingIds",
+        "toolIds",
+        "annotations"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "defaultLayer": {
+          "type": "boolean"
+        },
+        "activeByDefault": {
+          "type": "boolean"
+        },
+        "userToggleable": {
+          "type": "boolean"
+        },
+        "nodeMappingIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/elementId"
+          },
+          "uniqueItems": true
+        },
+        "edgeMappingIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/elementId"
+          },
+          "uniqueItems": true
+        },
+        "toolIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/elementId"
+          },
+          "uniqueItems": true
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        }
+      },
+      "additionalProperties": false
+    },
+    "representationFilter": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "activeByDefault",
+        "mappingIds",
+        "conditionExpressionId",
+        "externalCondition",
+        "annotations"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/elementId"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "activeByDefault": {
+          "type": "boolean"
+        },
+        "mappingIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/elementId"
+          },
+          "uniqueItems": true
+        },
+        "conditionExpressionId": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "externalCondition": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "annotations": {
+          "$ref": "#/$defs/annotations"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

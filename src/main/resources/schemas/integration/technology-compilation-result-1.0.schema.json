@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://hydra.local/schemas/integration/technology-compilation-result-1.0.schema.json",
+  "title":"TechnologyCompilationResult 1.0",
+  "type":"object",
+  "required":["technology","files","diagnostics"],
+  "properties":{
+    "technology":{"enum":["EMF","SIRIUS_DESKTOP","XTEXT","LANGIUM","BESSER_SDK","BESSER_WEB_MODELING_EDITOR","ECLIPSE_GLSP","PLANTUML"]},
+    "files":{"type":"array","items":{"type":"object","required":["relativePath","mediaType","content"],"properties":{"relativePath":{"type":"string","minLength":1},"mediaType":{"type":"string"},"content":{"type":"string","contentEncoding":"base64"},"ownership":{"enum":["GENERATED","PATCHED","PRESERVED"]},"replaceable":{"type":"boolean"}}}},
+    "dependencies":{"type":"array"},"installationSteps":{"type":"array","items":{"type":"string"}},"rollbackSteps":{"type":"array","items":{"type":"string"}},"verificationSteps":{"type":"array"},"diagnostics":{"type":"array"},"metadata":{"type":"object","additionalProperties":{"type":"string"}}
+  },
+  "additionalProperties":false
+}

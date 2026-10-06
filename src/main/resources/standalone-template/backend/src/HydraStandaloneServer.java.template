@@ -1,0 +1,199 @@
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HexFormat;
+import java.util.List;
+import java.util.concurrent.Executors;
+
+/** Servidor local sin dependencias externas para un editor generado por HYDRA. */
+public final class HydraStandaloneServer {
+    private static final long MAXIMUM_MODEL_BYTES = __MAX_MODEL_BYTES__L;
+    private final Path root;
+    private final Path frontend;
+    private final Path models;
+
+    private HydraStandaloneServer(Path root) throws IOException {
+        this.root = root.toAbsolutePath().normalize();
+        this.frontend = this.root.resolve("frontend").normalize();
+        this.models = this.root.resolve("models").normalize();
+        Files.createDirectories(models);
+    }
+
+    public static void main(String[] args) throws Exception {
+        int port = __DEFAULT_PORT__;
+        String host = "127.0.0.1";
+        Path root = Path.of(".");
+        for(String argument : args) {
+            if(argument.startsWith("--port=")) port = Integer.parseInt(argument.substring("--port=".length()));
+            else if(argument.startsWith("--host=")) host = safeHost(argument.substring("--host=".length()));
+            else if(argument.startsWith("--root=")) root = Path.of(argument.substring("--root=".length()));
+        }
+        HydraStandaloneServer application = new HydraStandaloneServer(root);
+        HttpServer server = HttpServer.create(new InetSocketAddress(host, port), 0);
+        server.createContext("/api/health", application::health);
+        server.createContext("/api/config", application::config);
+        server.createContext("/api/models", application::models);
+        server.createContext("/", application::staticContent);
+        server.setExecutor(Executors.newFixedThreadPool(Math.max(2, Math.min(8, Runtime.getRuntime().availableProcessors()))));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> server.stop(1)));
+        server.start();
+        System.out.println("HYDRA standalone editor listening at http://" + host + ":" + port);
+    }
+
+    private static String safeHost(String value) {
+        String host = value == null ? "" : value.trim();
+        if(host.isBlank()) return "127.0.0.1";
+        if(!host.matches("[A-Za-z0-9:.\\-]+")) throw new IllegalArgumentException("Unsafe host value");
+        return host;
+    }
+
+    private void health(HttpExchange exchange) throws IOException {
+        if(!"GET".equals(exchange.getRequestMethod())) { methodNotAllowed(exchange); return; }
+        json(exchange, 200, "{\"status\":\"UP\",\"applicationId\":\"__APPLICATION_ID_JSON__\"}");
+    }
+
+    private void config(HttpExchange exchange) throws IOException {
+        if(!"GET".equals(exchange.getRequestMethod())) { methodNotAllowed(exchange); return; }
+        sendFile(exchange, root.resolve("standalone-editor.json"), "application/json; charset=utf-8");
+    }
+
+    private void models(HttpExchange exchange) throws IOException {
+        String relative = exchange.getRequestURI().getPath().substring("/api/models".length());
+        if(relative.isBlank() || "/".equals(relative)) { listModels(exchange); return; }
+        String id = safeId(URLDecoder.decode(relative.substring(1), StandardCharsets.UTF_8));
+        Path model = models.resolve(id + ".model.json").normalize();
+        if(!model.startsWith(models)) { response(exchange, 400, "text/plain; charset=utf-8", "Unsafe model identifier".getBytes(StandardCharsets.UTF_8)); return; }
+        switch(exchange.getRequestMethod()) {
+            case "GET" -> sendFile(exchange, model, "application/json; charset=utf-8");
+            case "PUT" -> saveModel(exchange, model);
+            case "DELETE" -> deleteModel(exchange, model);
+            default -> methodNotAllowed(exchange);
+        }
+    }
+
+    private void listModels(HttpExchange exchange) throws IOException {
+        if(!"GET".equals(exchange.getRequestMethod())) { methodNotAllowed(exchange); return; }
+        List<String> ids = new ArrayList<>();
+        try(var stream = Files.list(models)) {
+            stream.filter(path -> path.getFileName().toString().endsWith(".model.json"))
+                    .sorted(Comparator.comparing(path -> path.getFileName().toString()))
+                    .forEach(path -> ids.add(path.getFileName().toString().replaceFirst("\\.model\\.json$", "")));
+        }
+        String body = ids.stream().map(HydraStandaloneServer::quote).reduce("", (left, right) -> left.isEmpty() ? right : left + "," + right);
+        json(exchange, 200, "[" + body + "]");
+    }
+
+    private void saveModel(HttpExchange exchange, Path model) throws IOException {
+        byte[] body = exchange.getRequestBody().readNBytes((int)Math.min(Integer.MAX_VALUE, MAXIMUM_MODEL_BYTES + 1));
+        if(body.length > MAXIMUM_MODEL_BYTES) { response(exchange, 413, "text/plain; charset=utf-8", "Model exceeds configured limit".getBytes(StandardCharsets.UTF_8)); return; }
+        String expected = exchange.getRequestHeaders().getFirst("If-Match");
+        if(expected != null && Files.isRegularFile(model) && !matches(expected, etag(model))) {
+            response(exchange, 412, "text/plain; charset=utf-8", "Model changed since it was loaded".getBytes(StandardCharsets.UTF_8)); return;
+        }
+        atomicWrite(model, body);
+        Headers headers = exchange.getResponseHeaders();
+        headers.set("ETag", quote(etag(body)));
+        response(exchange, 200, "application/json; charset=utf-8", body);
+    }
+
+    private void deleteModel(HttpExchange exchange, Path model) throws IOException {
+        if(!Files.exists(model)) { response(exchange, 404, "text/plain; charset=utf-8", "Model not found".getBytes(StandardCharsets.UTF_8)); return; }
+        String expected = exchange.getRequestHeaders().getFirst("If-Match");
+        if(expected != null && !matches(expected, etag(model))) {
+            response(exchange, 412, "text/plain; charset=utf-8", "Model changed since it was loaded".getBytes(StandardCharsets.UTF_8)); return;
+        }
+        Files.delete(model);
+        exchange.sendResponseHeaders(204, -1);
+        exchange.close();
+    }
+
+    private void staticContent(HttpExchange exchange) throws IOException {
+        if(!"GET".equals(exchange.getRequestMethod())) { methodNotAllowed(exchange); return; }
+        String requestPath = exchange.getRequestURI().getPath();
+        String relative = "/".equals(requestPath) ? "index.html" : requestPath.substring(1);
+        Path candidate = frontend.resolve(relative).normalize();
+        if(!candidate.startsWith(frontend) || !Files.isRegularFile(candidate)) { response(exchange, 404, "text/plain; charset=utf-8", "Not found".getBytes(StandardCharsets.UTF_8)); return; }
+        sendFile(exchange, candidate, contentType(candidate));
+    }
+
+    private void sendFile(HttpExchange exchange, Path file, String contentType) throws IOException {
+        if(!Files.isRegularFile(file)) { response(exchange, 404, "text/plain; charset=utf-8", "Not found".getBytes(StandardCharsets.UTF_8)); return; }
+        long size = Files.size(file);
+        exchange.getResponseHeaders().set("Content-Type", contentType);
+        exchange.getResponseHeaders().set("X-Content-Type-Options", "nosniff");
+        exchange.getResponseHeaders().set("ETag", quote(etag(file)));
+        exchange.sendResponseHeaders(200, size);
+        try(InputStream input = Files.newInputStream(file); OutputStream output = exchange.getResponseBody()) {
+            input.transferTo(output);
+        }
+    }
+
+    private static void atomicWrite(Path target, byte[] bytes) throws IOException {
+        Files.createDirectories(target.getParent());
+        Path temporary = Files.createTempFile(target.getParent(), target.getFileName().toString(), ".tmp");
+        try {
+            Files.write(temporary, bytes);
+            try { Files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING); }
+            catch(AtomicMoveNotSupportedException exception) { Files.move(temporary, target, StandardCopyOption.REPLACE_EXISTING); }
+        } finally { Files.deleteIfExists(temporary); }
+    }
+
+    private static String safeId(String value) {
+        String result = value == null ? "" : value.trim();
+        if(result.isBlank() || !result.matches("[A-Za-z0-9._:-]{1,160}") || ".".equals(result) || "..".equals(result)) throw new IllegalArgumentException("Invalid model identifier");
+        return result;
+    }
+
+    private static String contentType(Path path) {
+        String name = path.getFileName().toString().toLowerCase();
+        if(name.endsWith(".html")) return "text/html; charset=utf-8";
+        if(name.endsWith(".js")) return "text/javascript; charset=utf-8";
+        if(name.endsWith(".css")) return "text/css; charset=utf-8";
+        if(name.endsWith(".json")) return "application/json; charset=utf-8";
+        if(name.endsWith(".svg")) return "image/svg+xml";
+        return "application/octet-stream";
+    }
+
+    private static String etag(byte[] bytes) {
+        try { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes)); }
+        catch(Exception exception) { throw new IllegalStateException(exception); }
+    }
+
+    private static String etag(Path file) throws IOException {
+        try(InputStream input = Files.newInputStream(file)) {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] buffer = new byte[16 * 1024];
+            for(int read = input.read(buffer); read >= 0; read = input.read(buffer)) {
+                if(read > 0) digest.update(buffer, 0, read);
+            }
+            return HexFormat.of().formatHex(digest.digest());
+        } catch(java.security.NoSuchAlgorithmException exception) {
+            throw new IllegalStateException(exception);
+        }
+    }
+
+    private static boolean matches(String expected, String actual) { return expected.replace("\"", "").equals(actual); }
+    private static String quote(String value) { return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\""; }
+    private static void json(HttpExchange exchange, int status, String value) throws IOException { response(exchange, status, "application/json; charset=utf-8", value.getBytes(StandardCharsets.UTF_8)); }
+    private static void methodNotAllowed(HttpExchange exchange) throws IOException { response(exchange, 405, "text/plain; charset=utf-8", "Method not allowed".getBytes(StandardCharsets.UTF_8)); }
+    private static void response(HttpExchange exchange, int status, String contentType, byte[] bytes) throws IOException {
+        exchange.getResponseHeaders().set("Content-Type", contentType);
+        exchange.getResponseHeaders().set("X-Content-Type-Options", "nosniff");
+        exchange.sendResponseHeaders(status, bytes.length);
+        try(OutputStream output = exchange.getResponseBody()) { output.write(bytes); }
+    }
+}

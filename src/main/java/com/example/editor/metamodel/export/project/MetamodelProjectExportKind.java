@@ -1,0 +1,33 @@
+package com.example.editor.metamodel.export.project;
+
+import java.util.Arrays;
+import com.example.editor.integration.IntegrationBuildSystem;
+import com.example.editor.integration.IntegrationTargetKind;
+import com.example.editor.integration.IntegrationTechnology;
+
+/** Destinos de proyecto completo disponibles directamente desde un metamodelo validado. */
+public enum MetamodelProjectExportKind {
+    EMF_ECLIPSE("emf-eclipse", "EMF Eclipse workspace", "Ecore, GenModel and Eclipse Model/Edit/Editor/Tests projects.", IntegrationTechnology.EMF, IntegrationTargetKind.MODELING_RUNTIME, IntegrationBuildSystem.TYCHO, false),
+    ECLIPSE_GLSP("eclipse-glsp", "Eclipse GLSP workspace", "Client, server, source-model bridge, editor definition and runnable web host.", IntegrationTechnology.ECLIPSE_GLSP, IntegrationTargetKind.GRAPHICAL_MODELING_EDITOR, IntegrationBuildSystem.NPM, true),
+    ECLIPSE_MODELING("eclipse-modeling", "Eclipse Modeling distribution", "Feature-based Eclipse product with EMF, GMF, Sirius, Xtext, Xtend and the selected HYDRA runtime layers.", IntegrationTechnology.ECLIPSE_MODELING_DISTRIBUTION, IntegrationTargetKind.IDE_DISTRIBUTION, IntegrationBuildSystem.TYCHO, true),
+    VSCODE_MODELING("vscode-modeling", "VS Code modeling extension", "Installable VS Code extension with HYDRA runtime activation plus Langium, GLSP and Xtext/LSP bridges.", IntegrationTechnology.VSCODE_EXTENSION, IntegrationTargetKind.IDE_EXTENSION, IntegrationBuildSystem.NPM, true),
+    MXGRAPH_DRAWIO("mxgraph-drawio", "mxGraph / draw.io integration", "mxGraph runtime plus diagrams.net/draw.io plug-in, palettes, mappings, forms and portable HYDRA runtime layers.", IntegrationTechnology.MXGRAPH_DRAWIO, IntegrationTargetKind.GRAPHICAL_MODELING_EDITOR, IntegrationBuildSystem.NPM, true),
+    XTEXT("xtext", "Xtext language workspace", "Runtime, IDE, UI and test projects generated from the validated metamodel.", IntegrationTechnology.XTEXT, IntegrationTargetKind.TEXTUAL_LANGUAGE_TOOLING, IntegrationBuildSystem.MAVEN, false),
+    LANGIUM("langium", "Langium language workspace", "Grammar, language server, VS Code extension, CLI, web worker and tests.", IntegrationTechnology.LANGIUM, IntegrationTargetKind.TEXTUAL_LANGUAGE_TOOLING, IntegrationBuildSystem.NPM, false),
+    BESSER_DESKTOP("besser-desktop", "BESSER desktop / SDK workspace", "Python package, B-UML projection, CLI entry point and generated-project tests.", IntegrationTechnology.BESSER_SDK, IntegrationTargetKind.LOW_CODE_PLATFORM, IntegrationBuildSystem.PIP, false),
+    BESSER_WEB("besser-web", "BESSER Web Modeling Editor workspace", "WME extension, diagram/palette bindings, backend bridge and standalone web host scaffold.", IntegrationTechnology.BESSER_WEB_MODELING_EDITOR, IntegrationTargetKind.GRAPHICAL_MODELING_EDITOR, IntegrationBuildSystem.NPM, true);
+
+    private final String id; private final String displayName; private final String description;
+    private final IntegrationTechnology technology; private final IntegrationTargetKind targetKind;
+    private final IntegrationBuildSystem buildSystem; private final boolean requiresEditor;
+
+    /** Descripción: Inicializa una instancia de MetamodelProjectExportKind con sus dependencias y datos de entrada. Entradas: id: identificador que delimita el recurso objetivo; displayName: dato de entrada necesario para la operación; description: dato de entrada necesario para la operación; technology: dato de entrada necesario para la operación; targetKind: dato de entrada necesario para la operación; buildSystem: dato de entrada necesario para la operación; requiresEditor: dato de entrada necesario para la operación. Salida: deja la instancia inicializada y lista para su uso. */ MetamodelProjectExportKind(String id, String displayName, String description, IntegrationTechnology technology,
+            IntegrationTargetKind targetKind, IntegrationBuildSystem buildSystem, boolean requiresEditor){
+        this.id = id; this.displayName = displayName; this.description = description; this.technology = technology;
+        this.targetKind = targetKind; this.buildSystem = buildSystem; this.requiresEditor = requiresEditor;
+    }
+    /** Descripción: Ejecuta la operación «id» correspondiente a la responsabilidad de MetamodelProjectExportKind. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public String id(){return id;} /** Descripción: Ejecuta la operación «displayName» correspondiente a la responsabilidad de MetamodelProjectExportKind. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public String displayName(){return displayName;} /** Descripción: Ejecuta la operación «description» correspondiente a la responsabilidad de MetamodelProjectExportKind. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public String description(){return description;}
+    /** Descripción: Ejecuta la operación «technology» correspondiente a la responsabilidad de MetamodelProjectExportKind. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public IntegrationTechnology technology(){return technology;} /** Descripción: Ejecuta la operación «targetKind» correspondiente a la responsabilidad de MetamodelProjectExportKind. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public IntegrationTargetKind targetKind(){return targetKind;}
+    /** Descripción: Crea o prepara el resultado de «buildSystem» dentro de MetamodelProjectExportKind. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public IntegrationBuildSystem buildSystem(){return buildSystem;} /** Descripción: Valida las condiciones necesarias para «requiresEditor» y rechaza entradas no válidas. Entradas: no requiere parámetros de entrada. Salida: devuelve un indicador que expresa el resultado de la condición. */ public boolean requiresEditor(){return requiresEditor;}
+    /** Descripción: Ejecuta la operación «fromId» correspondiente a la responsabilidad de MetamodelProjectExportKind. Entradas: value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ public static MetamodelProjectExportKind fromId(String value){return Arrays.stream(values()).filter(item -> item.id.equalsIgnoreCase(value == null ? "" : value.trim())).findFirst().orElseThrow(() -> new IllegalArgumentException("Unsupported complete project export: " + value));}
+}

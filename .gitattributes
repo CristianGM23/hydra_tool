@@ -1,0 +1,53 @@
+* text=auto
+
+# Source code
+*.java text eol=lf
+*.kt text eol=lf
+*.gradle text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.py text eol=lf
+*.go text eol=lf
+
+# Configuration and documentation
+*.json text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.properties text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+
+# Unix scripts
+*.sh text eol=lf
+/mvnw text eol=lf
+
+# Windows scripts
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+/mvnw.cmd text eol=crlf
+
+# Binary files
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.gif -text
+*.webp -text
+*.ico -text
+*.pdf -text
+*.zip -text
+*.rar -text
+*.7z -text
+*.jar -text
+*.war -text
+*.dll -text
+*.exe -text
+*.woff -text
+*.woff2 -text

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0",
+  "id": "rc1-contacts-model",
+  "metamodelId": "rc1-contacts",
+  "metamodelEtag": "reference",
+  "name": "Contacts",
+  "rootElementIds": [
+    "contact:1",
+    "contact:2"
+  ],
+  "elements": [
+    {
+      "id": "contact:1",
+      "classId": "class:Contact",
+      "attributes": {
+        "attribute:class:Contact:displayName": "Ada"
+      },
+      "annotations": {}
+    },
+    {
+      "id": "contact:2",
+      "classId": "class:Contact",
+      "attributes": {
+        "attribute:class:Contact:displayName": "Grace"
+      },
+      "annotations": {}
+    }
+  ],
+  "relations": [],
+  "annotations": {}
+}

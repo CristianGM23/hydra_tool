@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "id": "report:library-sample-1",
+  "modelId": "library-sample",
+  "metamodelId": "library",
+  "validationModelId": "library-validations",
+  "generatedAt": "2026-07-25T12:00:00Z",
+  "scope": {
+    "kind": "MODEL"
+  },
+  "diagnostics": [
+    {
+      "id": "diagnostic:pages",
+      "kind": "VIOLATION",
+      "ruleId": "rule:book-pages-positive",
+      "severity": "ERROR",
+      "message": "The number of pages must be greater than zero",
+      "location": {
+        "modelElementId": "object:book-1",
+        "featureId": "attribute:class:Book:pages"
+      },
+      "quickFixIds": [
+        "action:set-pages-one"
+      ],
+      "details": {}
+    }
+  ],
+  "metrics": {
+    "evaluatedRules": 1,
+    "skippedRules": 0,
+    "durationMillis": 2
+  }
+}

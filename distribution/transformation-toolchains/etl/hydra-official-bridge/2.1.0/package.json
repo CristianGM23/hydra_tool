@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "packageId": "hydra-official-bridge",
+  "packageVersion": "2.1.0",
+  "language": "ETL",
+  "bridgeName": "HYDRA Official ETL Bridge",
+  "bridgeVersion": "2.1.0",
+  "toolchainName": "Epsilon ETL",
+  "toolchainVersion": "",
+  "sha256": {
+    "HydraOfficialBridge.java": "056c131da2a0824719f2b60f44e894e157b71788671406285696fac0c43496bf",
+    "bridge.properties": "6c829e1a4ae99b343e315efccad20309995a5177e9483182084c1025b69eda8c",
+    "toolchain.json": "cbe8fa793219fb590213391544e723b315ba76bca4bbb5ab890f1a3b5cb11dff"
+  }
+}

@@ -1,0 +1,12 @@
+package com.example.editor.event.flow;
+
+/** Tipos neutrales de nodos visuales y ejecutables de un flujo. */
+public enum FlowNodeKind {
+    START, SUCCESS_END, ERROR_END,
+    EVENT_STEP, COMMAND_STEP, ACTION_STEP, OPERATION_STEP,
+    DECISION, MERGE, PARALLEL_SPLIT, JOIN,
+    TIMEOUT, RETRY, WAIT_FOR_EVENT, MANUAL_STEP,
+    COMPENSATION_STEP, FALLBACK, ERROR_HANDLER,
+    SOURCE, FILTER, MAP, ROUTE, DEDUPLICATE, EMIT,
+    WINDOW, AGGREGATE, SEQUENCE, PATTERN, ABSENCE
+}

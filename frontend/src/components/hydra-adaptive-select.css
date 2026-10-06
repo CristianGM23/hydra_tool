@@ -1,0 +1,61 @@
+.hydra-adaptive-select {
+    display: grid;
+    min-width: 0;
+    width: 100%;
+    gap: 5px;
+}
+.hydra-adaptive-select > select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 38px;
+}
+.hydra-adaptive-select optgroup {
+    color: var(--hydra-text-secondary);
+    font-weight: 700;
+}
+.hydra-adaptive-select option {
+    color: var(--hydra-text-primary);
+    font-weight: 400;
+}
+.hydra-adaptive-select-control {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 7px;
+}
+.hydra-adaptive-select-control > select {
+    box-sizing: border-box;
+    min-width: 0;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 38px;
+}
+.hydra-adaptive-select-control > .hydra-resizable-info {
+    align-self: center;
+}
+.hydra-adaptive-select-option-help {
+    display: grid !important;
+    gap: 12px;
+}
+.hydra-adaptive-select-option-group {
+    display: grid !important;
+    gap: 7px;
+}
+.hydra-adaptive-select-option-group > strong {
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--hydra-border-default);
+    color: var(--hydra-color-primary-700);
+}
+.hydra-adaptive-select-option-group > span {
+    display: grid !important;
+    gap: 2px;
+}
+.hydra-adaptive-select-option-group b {
+    color: var(--hydra-text-primary);
+    font-weight: 700;
+}
+.hydra-adaptive-select-option-group small {
+    color: var(--hydra-text-secondary);
+    font-size: .9em;
+    line-height: 1.4;
+}

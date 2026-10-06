@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0",
+  "id": "report:people-model:full",
+  "modelId": "people-model",
+  "metamodelId": "people",
+  "validationModelId": "people-validations",
+  "generatedAt": "2026-07-27T00:00:00Z",
+  "scope": { "kind": "MODEL" },
+  "diagnostics": [
+    {
+      "id": "diagnostic-example",
+      "kind": "VIOLATION",
+      "ruleId": "rule:positive-age",
+      "severity": "ERROR",
+      "message": "Age must be positive",
+      "location": { "modelElementId": "person:alice", "featureId": "attribute:Person:age" },
+      "quickFixIds": ["action:set-age-zero"],
+      "details": { "problemCode": "PERSON_AGE_POSITIVE", "targetClassId": "class:Person" }
+    }
+  ],
+  "metrics": { "evaluatedRules": 1, "skippedRules": 0, "durationMillis": 0 },
+  "planId": "people-validations-plan",
+  "mode": "FULL",
+  "startedAt": "2026-07-27T00:00:00Z",
+  "completedAt": "2026-07-27T00:00:00Z",
+  "executedRuleIds": ["rule:positive-age"],
+  "skippedRuleIds": []
+}

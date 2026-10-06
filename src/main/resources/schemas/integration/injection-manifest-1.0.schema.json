@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/injection-manifest-1.0.schema.json",
+  "title": "InjectionManifest 1.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "integrationProfileId", "targetTechnology", "targetVersion", "generatorVersion", "createdAt", "files", "dependencies", "installationSteps", "rollbackSteps", "annotations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "id": { "$ref": "#/$defs/documentId" },
+    "integrationProfileId": { "$ref": "#/$defs/documentId" },
+    "targetTechnology": { "enum": ["EMF", "SIRIUS_DESKTOP", "XTEXT", "LANGIUM", "BESSER_SDK", "BESSER_WEB_MODELING_EDITOR", "PLANTUML"] },
+    "targetVersion": { "type": "string" },
+    "generatorVersion": { "type": "string" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "files": { "type": "array", "items": { "$ref": "#/$defs/file" } },
+    "dependencies": { "type": "array", "items": { "$ref": "#/$defs/dependency" } },
+    "installationSteps": { "type": "array", "items": { "type": "string" } },
+    "rollbackSteps": { "type": "array", "items": { "type": "string" } },
+    "annotations": { "type": "object", "additionalProperties": { "type": "string" } }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "documentId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$" },
+    "sha": { "type": "string", "pattern": "^$|^[a-fA-F0-9]{64}$" },
+    "file": {
+      "type": "object",
+      "required": ["path", "changeKind", "ownership", "originalSha256", "generatedSha256", "reversible"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "changeKind": { "enum": ["ADD", "MODIFY", "DELETE"] },
+        "ownership": { "enum": ["GENERATED", "PATCHED", "PRESERVED"] },
+        "originalSha256": { "$ref": "#/$defs/sha" },
+        "generatedSha256": { "$ref": "#/$defs/sha" },
+        "reversible": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "dependency": {
+      "type": "object",
+      "required": ["ecosystem", "coordinate", "version", "scope", "action"],
+      "properties": {
+        "ecosystem": { "type": "string", "minLength": 1 },
+        "coordinate": { "type": "string", "minLength": 1 },
+        "version": { "type": "string" },
+        "scope": { "type": "string" },
+        "action": { "enum": ["ADD", "UPDATE", "KEEP", "REMOVE"] }
+      },
+      "additionalProperties": false
+    }
+  }
+}

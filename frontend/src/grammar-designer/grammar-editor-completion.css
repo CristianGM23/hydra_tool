@@ -1,0 +1,52 @@
+/* Shared grammar-aware completion overlay used by Monaco fallback hosts. */
+/* R12 — grammar-aware Ctrl+Space completion in Monaco and in the safe textarea host. */
+.grammar-safe-completion{
+    position:absolute;
+    z-index:8;
+    top:54px;
+    left:72px;
+    display:grid;
+    width:min(560px,calc(100% - 96px));
+    max-height:320px;
+    overflow:auto;
+    padding:5px;
+    border:1px solid var(--hydra-border-strong);
+    border-radius:9px;
+    background:var(--hydra-bg-surface);
+    box-shadow:0 14px 34px rgba(15,23,42,.18);
+}
+.grammar-safe-completion>button{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:2px 12px;
+    width:100%;
+    min-width:0;
+    padding:8px 10px;
+    border:0;
+    border-radius:6px;
+    background:transparent;
+    color:var(--hydra-text-primary);
+    font:inherit;
+    text-align:left;
+    cursor:pointer;
+}
+.grammar-safe-completion>button:hover,.grammar-safe-completion>button.selected{
+    background:var(--hydra-bg-selection);
+}
+.grammar-safe-completion>button strong{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.grammar-safe-completion>button span{
+    color:var(--hydra-text-secondary);
+    font-size:.72rem;
+    white-space:nowrap;
+}
+.grammar-safe-completion>button small{
+    grid-column:1/-1;
+    color:var(--hydra-text-muted);
+    font-size:.7rem;
+    line-height:1.35;
+}

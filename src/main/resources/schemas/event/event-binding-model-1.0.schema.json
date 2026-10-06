@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/event-binding-model-1.0.schema.json",
+  "title": "EventBindingModel 1.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "metamodelId", "eventDefinitionModelId", "expressionModelId", "bindings", "annotations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "id": { "$ref": "#/$defs/documentId" },
+    "metamodelId": { "$ref": "#/$defs/documentId" },
+    "eventDefinitionModelId": { "$ref": "#/$defs/documentId" },
+    "expressionModelId": { "type": "string" },
+    "bindings": { "type": "array", "items": { "$ref": "#/$defs/binding" } },
+    "annotations": { "$ref": "#/$defs/annotations" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "documentId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$" },
+    "elementId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,239}$" },
+    "annotations": { "type": "object", "additionalProperties": { "type": "string" } },
+    "mapping": {
+      "type": "object",
+      "required": ["targetFieldId", "sourcePath", "expressionId"],
+      "properties": {
+        "targetFieldId": { "$ref": "#/$defs/elementId" },
+        "sourcePath": { "type": "string" },
+        "expressionId": { "type": "string" },
+        "fixedValue": {}
+      },
+      "oneOf": [
+        { "properties": { "sourcePath": { "minLength": 1 }, "expressionId": { "maxLength": 0 } }, "not": { "required": ["fixedValue"] } },
+        { "properties": { "sourcePath": { "maxLength": 0 }, "expressionId": { "minLength": 1 } }, "not": { "required": ["fixedValue"] } },
+        { "properties": { "sourcePath": { "maxLength": 0 }, "expressionId": { "maxLength": 0 } }, "required": ["fixedValue"] }
+      ],
+      "additionalProperties": false
+    },
+    "binding": {
+      "type": "object",
+      "required": ["id", "name", "sourceEventTypeId", "targetEventTypeId", "conditionExpressionId", "payloadMappings", "enabled", "errorPolicy", "annotations"],
+      "properties": {
+        "id": { "$ref": "#/$defs/elementId" },
+        "name": { "type": "string", "minLength": 1 },
+        "sourceEventTypeId": { "$ref": "#/$defs/elementId" },
+        "targetEventTypeId": { "$ref": "#/$defs/elementId" },
+        "conditionExpressionId": { "type": "string" },
+        "payloadMappings": { "type": "array", "items": { "$ref": "#/$defs/mapping" } },
+        "enabled": { "type": "boolean" },
+        "errorPolicy": { "enum": ["SKIP", "REPORT", "DISABLE_BINDING"] },
+        "annotations": { "$ref": "#/$defs/annotations" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+from pathlib import Path
+R=Path(__file__).resolve().parents[2]
+checks=[]
+def text(p):return (R/p).read_text(encoding='utf-8')
+def check(n,c):checks.append((n,bool(c)));print(('PASS' if c else 'FAIL')+' - '+n)
+props=text('src/main/java/com/example/editor/security/process/HydraExternalProcessSecurityProperties.java')
+policy=text('src/main/java/com/example/editor/security/process/HydraExternalProcessPolicy.java')
+runner=text('src/main/java/com/example/editor/security/process/HydraExternalProcessRunner.java')
+check('Fix92 has a global external-process concurrency budget','maximumConcurrentProcesses' in props and 'Semaphore' in policy and 'acquireGlobalProcessPermit' in runner)
+check('Fix92 bounds timeout and captured output globally','maximumProcessTimeoutSeconds' in props and 'maximumCapturedOutputBytes' in props and 'validateRuntimeBudget' in runner)
+job=text('src/main/java/com/example/editor/runtime/job/HydraJobExecutionService.java')
+check('Fix93 propagates correlation into asynchronous jobs','AuditRequestContext.begin(effectiveCorrelation)' in job and 'MDC.put' in job and 'traces.record' in job)
+check('Fix93 exposes bounded correlated operation traces',(R/'src/main/java/com/example/editor/observability/HydraOperationTraceRegistry.java').exists() and 'correlationId=' in text('src/main/java/com/example/editor/security/process/HydraExternalProcessRunner.java'))
+fault=text('src/main/java/com/example/editor/testing/fault/HydraFaultInjectionService.java')
+check('Fix94 fault injection is explicit and disabled by default','ARTIFACT_TRANSACTION_AFTER_PREPARE' in fault and 'enabled=false' in text('src/main/java/com/example/editor/testing/fault/HydraFaultInjectionProperties.java'))
+check('Fix94 is wired into artifact transactions','faults.check' in text('src/main/java/com/example/editor/artifact/transaction/HydraArtifactTransactionService.java'))
+cache=text('src/main/java/com/example/editor/performance/cache/HydraCacheInventoryService.java')
+check('Fix95 inventories critical bounded caches','validation-plan' in cache and 'grammar-analysis' in cache and 'update-site-analysis' in cache)
+contract=text('src/main/java/com/example/editor/contracts/metamodel/MetamodelQueryPort.java')
+native=text('src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeExecutor.java')
+check('Fix96 introduces neutral metamodel query port','interface MetamodelQueryPort' in contract)
+check('Fix96 native transformation runtime depends on the port','MetamodelQueryPort' in native and 'metamodel.application.CanonicalMetamodelApplicationService' not in native)
+portable=text('src/main/java/com/example/editor/project/portability/ProjectPortablePackageService.java')
+check('Fix97 portable packages carry manifest and SHA-256','ProjectPortableManifest' in portable and 'sha256' in portable and 'project.zip' in portable)
+check('Fix97 explicitly forbids secrets','secretsIncluded' in text('src/main/java/com/example/editor/project/portability/ProjectPortableManifest.java'))
+api=text('src/main/java/com/example/editor/web/version/HydraApiVersionFilter.java')
+check('Fix98 emits standard deprecation metadata','Deprecation' in api and 'Sunset' in api and 'successor-version' in api)
+check('Fix98 exposes machine-readable compatibility metadata',(R/'src/main/java/com/example/editor/web/version/HydraApiCompatibilityController.java').exists())
+failed=[n for n,c in checks if not c]
+print(f'HYDRA_FIX92_98={len(checks)-len(failed)}/{len(checks)} '+('PASS' if not failed else 'FAIL'))
+raise SystemExit(1 if failed else 0)
