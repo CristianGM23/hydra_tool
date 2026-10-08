@@ -1217,3 +1217,260 @@ La segunda pasada real de RC2 sobre Windows cerró tres regresiones que solo apa
 - Cada capacidad se valida ahora mediante una aserción independiente, conservando exactamente el mismo contrato funcional: solo capacidades `FULL`, exclusión de `PARTIAL` y semántica específica de destinos de proyección.
 - `validate_r6c1_fix126.ps1` reanuda exclusivamente desde el build de producción porque backend, CSS, 16 tests frontend dirigidos e `IntegrationDesigner.test.tsx` 9/9 ya disponen de evidencia PASS en esta campaña.
 - No se modifica código de producto ni se relajan reglas TypeScript, Vitest o build.
+
+## R6C2 Fix127 — contrato neutral de preparación de entrega
+
+- Introduce `TechnologyDeliveryReadiness` y un estado por fase (`READY`, `READY_WITH_WARNINGS`, `BLOCKED`, `EXTERNAL`, `NOT_APPLICABLE`) separado de la madurez global de la tecnología.
+- Cada acción declara si HYDRA la ejecuta, si modifica el host, si necesita directorio destino, si exige preview y qué superficie REST la materializa.
+
+## R6C2 Fix128 — readiness derivado del perfil y de una compilación real
+
+- El cálculo reutiliza el `IntegrationCheckReport` del perfil persistido y, cuando la generación está implementada, realiza una compilación tecnológica en memoria sin ejecutar toolchains ni escribir en el host.
+- Un fallo de compilación conocido se convierte en bloqueo accionable del recorrido en lugar de ofrecer fases posteriores que no pueden cumplirse.
+- El número real de ficheros generados y de pasos nativos de verificación pasa a formar parte de la evidencia de readiness.
+
+## R6C2 Fix129 — API de readiness por perfil
+
+- Añade una API GET específica por ámbito/perfil bajo `/technology/readiness`, disponible tanto en rutas `semantic-contexts` como canónicas.
+- La consulta es estrictamente de solo lectura; la ejecución de toolchains continúa reservada al endpoint explícito `/technology/validate`.
+- El endpoint entra en el OpenAPI canónico y en `hydraApiClient.ts`, evitando una API manual no reflejada en el contrato público.
+
+## R6C2 Fix130 — recorrido guiado accionable
+
+- `IntegrationTechnologyJourney` superpone la preparación del perfil a la madurez tecnológica y muestra por etapa el estado real y la evidencia disponible.
+- Generar, previsualizar y aplicar respetan los bloqueos de readiness tanto en controles visuales como en los handlers, de forma que una invocación programática tampoco atraviesa un estado `BLOCKED`. La UI no ofrece una acción como operativa solo porque figure en el catálogo.
+- El resumen de entrega deriva la disponibilidad de la fase `GENERATE` y no de `compilationReady`; así una proyección PlantUML puede estar preparada sin fingir que existe un módulo compilado.
+
+## R6C2 Fix131 — verificación estructural y nativa desde el diseñador
+
+- El diseñador conecta el endpoint de validación de proyectos generado que ya existía en backend.
+- La verificación estructural es homogénea para todos los destinos con validador registrado; la verificación nativa es una acción explícita y solo aparece cuando el paquete generado declara pasos Maven/npm/Python/etc.
+- La ejecución del editor/runtime nativo continúa marcada como `EXTERNAL`; HYDRA no finge abrir o controlar un host externo.
+
+## R6C2 Fix132 — cierre dirigido de paridad de entrega
+
+- Añade pruebas backend del cálculo fail-closed, API, proyecciones y errores de compilación; añade normalización frontend fail-closed, tests de journey y API.
+- El gate `validate_r6c2_fix127_132.ps1` ejecuta exclusivamente los tests nuevos/afectados y el build frontend, sin reabrir R6C1 ni la cualificación RC2 congelada.
+- Documenta el contrato en `docs/integration/TECHNOLOGY_DELIVERY_READINESS.md` y añade cobertura española de toda la nueva superficie visible.
+- El generador OpenAPI fija UTF-8 y LF al escribir contrato, YAML y cliente TypeScript para que verificar la API en Windows no altere bytes canónicos por diferencias CRLF/LF.
+
+## R6C3 Fix133 — contrato neutral de equivalencia semántica
+
+- Añade `SemanticFidelity`, `SemanticDifference`, `SemanticEquivalenceReport` y `MetamodelSemanticComparator`.
+- La identidad semántica deja de depender de ids regenerados, provenance o igualdad textual y compara clases, atributos, tipos, enums, multiplicidades, relaciones y root explícito.
+- Una pérdida estructural se clasifica como `LOSSY`; la ausencia de material suficiente se clasifica como `UNAVAILABLE`.
+
+## R6C3 Fix134 — transporte no semántico y root estable
+
+- Conserva los wrappers auxiliares únicamente como reglas `HYDRA_TRANSPORT_RULE`, que se retiran antes de inferir el dominio.
+- Añade `HYDRA_SEMANTIC_ROOT` para preservar el entry/root real a través de exportación y reimportación.
+- Corrige Xtext para no emitir un `ID` anónimo cuando una clase no declara realmente `name`.
+
+## R6C3 Fix135 — round-trip neutral Xtext/Langium
+
+- Añade `TextualMetamodelRoundTripService` y `TextualMetamodelRoundTripResult`.
+- Ejecuta `MetaModel -> gramática -> reimportación -> comparación semántica` para Xtext y Langium.
+- `requireLossless` falla de forma cerrada cuando la proyección pierde significado.
+
+## R6C3 Fix136 — paridad cruzada de providers
+
+- Añade `TextualProviderParityService` para contrastar fuente↔Xtext, fuente↔Langium y Xtext↔Langium.
+- La paridad se declara únicamente cuando las tres reconstrucciones son semánticamente compatibles.
+
+## R6C3 Fix137 — capacidad nativa sin semántica sintética
+
+- Añade `TextualSemanticCapabilityAnalyzer` para separar fidelidad estructural de ejecutabilidad nativa.
+- Una cross-reference cuyo destino no tiene atributo string `name` se preserva, pero queda diagnosticada como `REFERENCE_SCOPE_REQUIRES_EXTERNAL_PROVIDER`; HYDRA no inventa `name=ID` para aparentar linking nativo.
+- Añade tests focales, documentación y los gates `verify_r6c3_semantic_roundtrip.py` / `validate_r6c3_fix133_137.ps1`.
+- La cualificación R6C3 es acumulativa respecto a R6C2: como Fix127–132 todavía no disponían de validación del usuario en el host objetivo, `validate_r6c3_fix133_137.ps1` ejecuta primero el gate completo R6C2 y solo después los tests R6C3. Las fases se etiquetan `R6C2-INHERITED-FIX127-132` y `R6C3-NEW-FIX133-137` para localizar el origen del primer fallo sin dar por probado el baseline heredado.
+
+
+## R6C3 Fix138 — hotfix acumulativo autosuficiente y cualificación heredada
+
+- Corrige el empaquetado de R6C3: el hotfix anterior se había calculado contra Fix132 y por tanto podía omitir los archivos de R6C2 en un workspace que todavía estuviera en R6C1 Fix126. El nuevo hotfix se calcula explícitamente desde R6C1 Fix126 e incluye R6C2 Fix127–132 y R6C3 Fix133–138 en una sola superposición.
+- `validate_r6c3_fix133_137.ps1` conserva su ruta por compatibilidad con el comando ya entregado, pero deja de invocar `validate_r6c2_fix127_132.ps1` como dependencia externa: ejecuta directamente toda la fase heredada R6C2 y después R6C3.
+- Añade un preflight de integridad del payload que comprueba verificadores Python, runner frontend, wrapper Maven y `package.json`. Una instalación incompleta falla con `[PACKAGE-INTEGRITY]` y una instrucción accionable antes de ejecutar tests.
+- La fase heredada continúa etiquetada `R6C2-INHERITED-FIX127-132`; la fase nueva pasa a `R6C3-NEW-FIX133-138`. Solo tras ambas aparece el PASS acumulativo.
+- No se altera el código semántico de Fix133–137; Fix138 corrige distribución y cualificación para el caso real en el que R6C2 no llegó a instalarse/probarse por separado.
+
+## R6C3 Fix139 — cierre del contrato documental y launcher canónico
+
+- Corrige el fallo real observado en Windows durante `r6c2-backend-docs`: los 25 métodos incorporados por R6C3 reciben documentación española conforme al contrato obligatorio `Descripción / Entradas / Salida`, sin introducir `@SuppressWarnings` ni marcadores de deuda.
+- `verify_backend_spanish_method_docs.py` vuelve a cubrir el 100 % del backend mantenido: 9856/9856 métodos documentados.
+- Añade el launcher canónico `validate_r6c3_fix127_139.ps1`; la ruta histórica `validate_r6c3_fix133_137.ps1` se conserva como wrapper compatible para que el comando ya utilizado por el usuario siga funcionando.
+- La cualificación ejecuta ahora el gate documental antes de OpenAPI, Maven, Vitest y build, de modo que una infracción barata de contrato falle inmediatamente y no consuma fases costosas.
+- `verify_r6c3_semantic_roundtrip.py` protege de forma permanente la documentación de las clases R6C3, el nuevo launcher y la compatibilidad del comando antiguo. No cambia la semántica Xtext/Langium de Fix133–137.
+
+## R6C3 Fix140 — equivalencia semántica de instancias canónicas
+
+- Añade `CanonicalModelSemanticComparator` y validación de invariantes para `CanonicalModelDocument`.
+- La equivalencia compara raíces, IDs estables de elementos, clases, atributos y destinos de relaciones; los IDs efímeros de instancias de relación y las anotaciones de transporte no forman parte de la identidad semántica.
+- Las invariantes bloquean clases/features inexistentes, cardinalidades inválidas, targets incompatibles, duplicados, múltiples contenedores, ciclos de contención y raíces incoherentes.
+
+## R6C3 Fix141 — codec de instancias alineado con la gramática generada
+
+- Añade `GeneratedTextualInstanceCodec` para Xtext y Langium sin introducir `name` sintético.
+- La identidad nativa solo es exacta cuando existe un atributo string `name`, su valor coincide con el ID canónico y cumple el subconjunto portable de `ID`.
+- Colisiones con keywords o features generadas, IDs no portables y cualquier ambigüedad léxica fallan de forma cerrada.
+
+## R6C3 Fix142 — contención profunda y referencias diferidas
+
+- Las relaciones `CONTAINMENT` se serializan como anidación real y se reconstruyen preservando la topología y las raíces.
+- Las referencias no contenedoras se resuelven después de analizar todos los documentos, permitiendo targets forward/backward y ciclos no contenedores.
+- Un ciclo de contención continúa siendo inválido y se rechaza antes de generar texto.
+
+## R6C3 Fix143 — multiarchivo y dependencias de workspace
+
+- Añade estrategias `SINGLE_DOCUMENT` y `ONE_DOCUMENT_PER_ROOT`.
+- Una contención nunca cruza documentos; las referencias sí pueden hacerlo y generan `TextualInstanceDocumentDependency` con `resolutionMode=WORKSPACE_SCOPE`.
+- No se inventan reglas `import` que las gramáticas actuales no publican. La necesidad de índice/scope de workspace queda declarada como evidencia explícita.
+
+## R6C3 Fix144 — source maps y bindings completos
+
+- El round-trip genera bindings `MODEL_ELEMENT`, `MODEL_FEATURE` y `MODEL_RELATION` con rango, metamodel element y grammar rule.
+- La identidad `name=ID` conserva su binding de feature además del rango del elemento completo.
+- Un source map incompleto bloquea `lossless`; no se declara fidelidad exacta si falta trazabilidad semántica reconstruible.
+
+## R6C3 Fix145 — paridad de instancias Xtext/Langium y campaña agresiva
+
+- `TextualInstanceRoundTripService` ejecuta invariantes → encode → decode → reconstrucción → equivalencia y ofrece `requireLossless` fail-closed.
+- `TextualInstanceProviderParityService` exige equivalencia source↔Xtext, source↔Langium y Xtext↔Langium.
+- Los tests cubren tres niveles de contención, referencias forward/backward, ciclos no contenedores, multiarchivo y una campaña determinista de 40 raíces/40 documentos.
+
+## R6C3 Fix146 — revisiones textuales idempotentes
+
+- Endurece `TextualModelSessionService.parse`: una revisión inferior continúa siendo stale; repetir la misma revisión con exactamente los mismos documentos es idempotente y no vuelve a parsear ni persistir.
+- Reutilizar la misma `draftRevision` con contenido distinto se rechaza explícitamente para impedir que una revisión lógica represente dos estados diferentes.
+
+## R6C3 Fix147 — protección last-known-good y snapshot fijado
+
+- Se consolida como contrato R6C3 que un borrador inválido conserva `lastValidSemanticModel` y `lastValidSourceMap`.
+- Las perspectivas continúan leyendo únicamente el último modelo válido y la sesión conserva el `grammarSnapshotId` fijado durante su creación.
+
+## R6C3 Fix148 — cancelación, límites y seguridad de documentos
+
+- La cualificación comprueba el `BoundedPermitPool`, la cancelación por interrupción, los límites de documentos/bytes/diagnósticos/source-map y el rechazo de rutas con traversal.
+- Los snapshots de sesión mantienen copias defensivas de colecciones y metadatos para evitar mutaciones posteriores desde el llamador.
+
+## R6C3 Fix149 — cierre acumulativo de resiliencia
+
+- Añade `TextualRuntimeResilienceTests`, `verify_r6c3_runtime_resilience.py` y `docs/grammar/R6C3_RUNTIME_RESILIENCE.md`.
+- El launcher canónico pasa a `validate_r6c3_fix127_149.ps1`; Fix145, Fix139 y el launcher histórico Fix133–137 permanecen como cadena de compatibilidad.
+- La cualificación acumulativa ejecuta R6C2 heredado, contrato de metamodelos, contrato de instancias, resiliencia runtime y los tests backend focales antes de declarar PASS.
+
+## R6C3 Fix150 — fixture canónico para ID no portable y cierre nativo del gate
+
+- Corrige el test `failsClosedForNonPortableNativeIds`: el fixture anterior (`../evil`) era inválido para `StableIdentifierPolicy` y fallaba al construir `CanonicalModelElement`, antes de alcanzar la validación Xtext/Langium que pretendía comprobar.
+- El nuevo fixture utiliza `node-1`, que es un identificador canónico HYDRA válido pero queda fuera del subconjunto portable común de `ID` (`[A-Za-z_][A-Za-z0-9_]*`), por lo que el test alcanza realmente `INSTANCE_ID_NOT_PORTABLE_ID`.
+- El gate `verify_r6c3_instance_roundtrip.py` protege esta precondición de forma permanente y rechaza fixtures que vuelvan a ser inválidos a nivel canónico.
+- Añade `validate_r6c3_fix127_150.ps1` como launcher canónico; Fix149 y los launchers anteriores permanecen en la cadena de compatibilidad.
+- Fix150 no cambia la semántica de producción del codec: corrige evidencia de test y cualificación para que el comportamiento fail-closed se valide en la capa correcta.
+
+
+## R6C4 Fix151 — contrato neutral de capacidades de interacción
+
+- Separa `HYDRA_NEUTRAL`, `PROVIDER_NATIVE_EXTERNAL` y `UNAVAILABLE`, evitando presentar un LSP externo como si estuviera embebido en HYDRA.
+
+## R6C4 Fix152 — índice semántico único de workspace
+
+- Añade `TextualWorkspaceIndex` inmutable para documentos, modelo canónico, elementos y source maps. Todas las capacidades leen el mismo snapshot.
+
+## R6C4 Fix153 — completion canónico y acotado
+
+- Reutiliza tipos, atributos, relaciones e identidades del `CanonicalModelDocument`, con filtrado por prefijo y orden determinista.
+
+## R6C4 Fix154 — hover contextual
+
+- Resuelve la entrada de source map más específica y muestra identidad, clase, metamodel binding y regla gramatical.
+
+## R6C4 Fix155 — navegación a definición
+
+- Las referencias navegan al `MODEL_ELEMENT` destino incluso entre documentos distintos.
+
+## R6C4 Fix156 — búsqueda de referencias
+
+- Reutiliza `targetElementId`, limita resultados y conserva posiciones estables compatibles con Monaco/LSP.
+
+## R6C4 Fix157 — rename preview-first
+
+- Valida la política de IDs, detecta colisiones y genera `GrammarTextEdit` para declaración y referencias sin persistir cambios ni saltarse ETag.
+
+## R6C4 Fix158 — formato determinista
+
+- Normaliza LF y espacios finales sin reindentar ni eliminar líneas vacías; solo devuelve una edición cuando existe un cambio real.
+
+## R6C4 Fix159 — document symbols
+
+- Deriva símbolos del source map canónico y mantiene rango, identidad y clase semántica.
+
+## R6C4 Fix160 — folding semántico
+
+- Solo pliega spans semánticos multilínea, sin inventar regiones a partir de texto no trazado.
+
+## R6C4 Fix161 — semantic tokens neutrales
+
+- Proyecta elementos, features y relaciones a `class`, `property` y `reference`; la UI conserva la responsabilidad de estilo.
+
+## R6C4 Fix162 — invalidación incremental cross-file
+
+- Construye el grafo inverso de referencias y calcula el cierre transitivo de documentos afectados antes del siguiente parse.
+
+## R6C4 Fix163 — compatibilidad y migración de snapshots
+
+- Distingue `EXACT`, `REPARSE_SAFE` y `MIGRATION_REQUIRED` según identidad de gramática, contrato semántico y provider.
+
+## R6C4 Fix164 — límites, cancelación y fijación a last-known-good
+
+- Completion, referencias, símbolos, tokens y rename están acotados; los bucles cooperan con interrupción y la fachada nunca usa un borrador roto como base semántica.
+
+## R6C4 Fix165 — REST, OpenAPI y cualificación focal
+
+- Añade 12 operaciones de interacción a `/api/textual-model-sessions/{id}/interactions/*`, regenera OpenAPI/cliente TypeScript, incorpora JUnit focal, documentación y `validate_r6c4_fix151_165.ps1`.
+
+## R6C4 Fix166 — cualificación autosuficiente y recuperación de empaquetado
+
+- Elimina la precondición accidental de `validate_r6c4_fix151_165.ps1` sobre `validate_r6c3_fix127_150.ps1`.
+- Añade `validate_r6c4_fix151_166.ps1`, que verifica directamente `verify_r6c3_semantic_roundtrip.py`, `verify_r6c3_instance_roundtrip.py` y `verify_r6c3_runtime_resilience.py` antes de cualificar R6C4.
+- Mantiene `validate_r6c4_fix151_165.ps1` como wrapper compatible para que el comando ya entregado siga siendo válido.
+- Endurece `verify_r6c4_textual_interactions.py` para impedir que futuras acumulativas vuelvan a depender de launchers históricos como sustituto de una comprobación real de capacidades.
+- No cambia la lógica de producción de las capacidades textuales; Fix166 corrige exclusivamente cualificación, preflight y empaquetado acumulativo.
+
+
+## R6C4 Fix167 — cualificación por inventario y overlay completo de recuperación
+
+- El launcher canónico pasa a `validate_r6c4_fix151_167.ps1` y deja de exigir por nombre cualquier `validate_r6c3_*` o `verify_r6c3_*`.
+- `MANIFEST_SHA256.txt` se convierte en la única precondición de inventario: si falta o diverge una ruta fuente canónica, la cualificación falla antes de Maven.
+- El JUnit focal ejecuta conjuntamente metamodel round-trip, import regression, instance semantic/aggressive round-trip, runtime resilience y R6C4 language features sobre el mismo árbol.
+- Los launchers Fix165 y Fix166 permanecen como wrappers compatibles hacia Fix167.
+- Se publica un overlay de source completo para recuperar workspaces que hayan recibido parcialmente overlays anteriores, sin borrar outputs o archivos propios fuera del inventario canónico.
+
+## R6C4 Fix168 — integridad canónica compatible con workspaces enriquecidos
+
+- Corrige el preflight de Fix167: `verify_manifest.py` ya no obliga al workspace de desarrollo a ser idéntico a un ZIP limpio cuando se ejecuta con `--allow-extra`.
+- El modo estricto permanece como comportamiento por defecto para validar artefactos extraídos y reproducibilidad; cualquier ruta canónica ausente o con hash distinto sigue bloqueando la cualificación.
+- `validate_r6c4_fix151_168.ps1` utiliza el modo workspace: valida todos los hashes canónicos y preserva archivos adicionales como documentación Archify, scripts de recuperación o desarrollos locales no incluidos todavía en el release congelado.
+- `validate_r6c4_fix151_167.ps1` permanece como wrapper compatible hacia Fix168.
+- La corrección no modifica la lógica Java/REST de R6C4; endurece la separación entre integridad de artefacto limpio e integridad de un repositorio de trabajo enriquecido.
+
+## R6C4 Fix169 — resolución precisa de definición y referencias cross-document
+
+- Corrige `TextualLanguageFeatureService.definition/references`: un cursor situado en el whitespace inmediatamente anterior a una referencia ya no cae en el rango amplio del `MODEL_ELEMENT` contenedor.
+- Para navegación se prioriza el `MODEL_RELATION` adyacente únicamente cuando está en la misma línea, a como máximo dos offsets y el texto intermedio es exclusivamente whitespace; no se modifican los rangos globales de source map usados por hover, folding o semantic tokens.
+- Añade una regresión que compara la navegación desde la posición adyacente y desde el token exacto y exige el mismo destino cross-file.
+- Añade `validate_r6c4_fix151_169.ps1`; Fix168 queda como wrapper compatible hacia el nuevo launcher.
+
+
+### R6C4 Fix170 — Global release qualification environment and React readiness
+
+- Corrects integration delivery-readiness state by binding asynchronous responses to the saved profile/revision. Invalid or unsaved models do not display readiness from an earlier revision; the effect no longer performs a synchronous state reset (React ESLint).
+- Adds `scripts/validation/validate_full_tree_fix170.ps1`, which creates an isolated Python qualification environment under `target/release`, installs the version-pinned `jsonschema` and `pytest` dependencies only when needed, and runs the unchanged global qualification gates.
+- `verify_final_tree.py` records complete failure output under `target/release/logs/final-tree` and includes a `logPath` in the readiness JSON. This prevents repeated intentional XML parser diagnostics at the end of Maven output from hiding the actual failing tests. No test is skipped, downgraded, or silenced.
+- R6C4 Fix169 textual interaction qualification remains available unchanged. Full Maven verification must pass on the target Windows host before release certification.
+
+### R6C4 Fix171 — Corrección del guard arquitectónico de Maven
+
+- Reestructura exclusivamente el formato del método `Parser.parseElement` en `GeneratedTextualInstanceCodec.java`, conservando todos sus tokens Java (salvo espacios de formato), tipos, mensajes, identificadores, decisiones semánticas y orden de operaciones. No cambia API, esquema ni funcionalidades Xtext/Langium.
+- El fallo Windows original era `StructuralArchitectureGuardTests.productionSourceFilesDoNotHideComplexityInGiantLines`: dos líneas de 2.672 y 2.562 caracteres rebasaban el techo compartido Java de 2.400 caracteres.
+- Añade `verify_r6c4_fix171_logical_size.py`, que valida antes de Maven los presupuestos globales Java/TS/TSX/CSS sin excepciones individuales y reproduce la medición UTF-16 del guard Java.
+- Añade `validate_full_tree_fix171.ps1`, que comprueba los hashes canónicos (preservando extras), ejecuta el nuevo preflight arquitectónico y delega en la cualificación global Fix170 íntegra; no deshabilita pruebas ni amplía presupuestos.
+- La aceptación definitiva requiere ejecutar el comando Fix171 en el Windows destino y obtener `FINAL_TREE_GATE=PASS`, incluyendo Maven completo.

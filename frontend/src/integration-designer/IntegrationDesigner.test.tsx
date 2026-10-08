@@ -17,7 +17,7 @@ vi.mock('./api',()=>({
  listIntegrationTechnologies:vi.fn(async()=>technologies),listIntegrationTechnologyWorkflows:vi.fn(async()=>workflows),listIntegrationProfiles:vi.fn(async()=>[]),loadIntegrationProfile:vi.fn(),
  checkIntegrationProfile:vi.fn(async model=>({profileId:model.id,diagnostics:[],artifactResolutions:[],valid:true})),
  createIntegrationProfile:vi.fn(),replaceIntegrationProfile:vi.fn(),deleteIntegrationProfile:vi.fn(),
- compileTechnologyIntegration:vi.fn(async()=>new Blob()),previewTechnologyIntegration:vi.fn(async()=>({plan:{status:'READY',fileChanges:[],diagnostics:[]},unchangedFiles:[],manualConflictFiles:[],generatedBytes:0})),applyTechnologyIntegration:vi.fn(async()=>({manifest:{id:'manifest-1'},writtenFiles:[],deletedFiles:[],restoredFiles:[]}))
+ compileTechnologyIntegration:vi.fn(async()=>new Blob()),loadTechnologyDeliveryReadiness:vi.fn(async()=>({profileId:'profile',technology:'ECLIPSE_GLSP',profileValid:true,compilationReady:true,generatedFileCount:10,nativeVerificationStepCount:1,nativeVerificationAvailable:true,actions:[],blockers:[],warnings:[]})),validateTechnologyIntegration:vi.fn(async()=>({technology:'ECLIPSE_GLSP',status:'PASSED',workspaceDirectory:'tmp',steps:[],metadata:{}})),previewTechnologyIntegration:vi.fn(async()=>({plan:{status:'READY',fileChanges:[],diagnostics:[]},unchangedFiles:[],manualConflictFiles:[],generatedBytes:0})),applyTechnologyIntegration:vi.fn(async()=>({manifest:{id:'manifest-1'},writtenFiles:[],deletedFiles:[],restoredFiles:[]}))
 }));
 describe('IntegrationDesigner',()=>{
  beforeEach(()=>vi.clearAllMocks());

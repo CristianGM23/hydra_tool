@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "hydraVersion": "4.32.107",
-  "operationCount": 558,
+  "operationCount": 573,
   "operations": [
     {
       "method": "get",
@@ -1094,6 +1094,24 @@
       "path": "/api/canonical-metamodels/{metamodelId}/validations/runtime/validate",
       "operationId": "ValidationRuntimeController_validate_post",
       "controller": "ValidationRuntimeController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{semanticScopeId}/integrations/technologies/workflows/",
+      "operationId": "TechnologyWorkflowController_list_get",
+      "controller": "TechnologyWorkflowController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{semanticScopeId}/integrations/technologies/workflows/{technology}",
+      "operationId": "TechnologyWorkflowController_find_get",
+      "controller": "TechnologyWorkflowController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{semanticScopeId}/integrations/{profileId}/technology/readiness/",
+      "operationId": "TechnologyDeliveryReadinessController_get_get",
+      "controller": "TechnologyDeliveryReadinessController"
     },
     {
       "method": "get",
@@ -2629,6 +2647,78 @@
       "method": "get",
       "path": "/api/textual-model-sessions/{id}",
       "operationId": "TextualModelSessionController_find_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}/interactions/capabilities",
+      "operationId": "TextualModelSessionController_interactionCapabilities_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}/interactions/completion",
+      "operationId": "TextualModelSessionController_completion_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}/interactions/definition",
+      "operationId": "TextualModelSessionController_definition_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}/interactions/folding",
+      "operationId": "TextualModelSessionController_folding_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{id}/interactions/format",
+      "operationId": "TextualModelSessionController_format_post",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}/interactions/hover",
+      "operationId": "TextualModelSessionController_hover_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{id}/interactions/invalidation",
+      "operationId": "TextualModelSessionController_invalidation_post",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}/interactions/references",
+      "operationId": "TextualModelSessionController_references_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{id}/interactions/rename/preview",
+      "operationId": "TextualModelSessionController_renamePreview_post",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}/interactions/semantic-tokens",
+      "operationId": "TextualModelSessionController_semanticTokens_get",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/textual-model-sessions/{id}/interactions/snapshot-compatibility",
+      "operationId": "TextualModelSessionController_snapshotCompatibility_post",
+      "controller": "TextualModelSessionController"
+    },
+    {
+      "method": "get",
+      "path": "/api/textual-model-sessions/{id}/interactions/symbols",
+      "operationId": "TextualModelSessionController_symbols_get",
       "controller": "TextualModelSessionController"
     },
     {

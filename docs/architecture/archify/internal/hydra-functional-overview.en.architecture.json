@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "HYDRA functional architecture",
+    "output": "hydra-functional-overview.en.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    { "id": "user", "type": "external", "label": "HYDRA Engineer", "sublabel": "end user", "pos": [20, 715], "size": [140, 60] },
+    { "id": "fe_workbench", "type": "frontend", "label": "HYDRA Workbench", "sublabel": "React SPA, hash-routed", "tag": "23 capability modules", "pos": [240, 40], "size": [180, 1420] },
+    { "id": "b_metamodel", "type": "backend", "label": "Metamodel Designer", "sublabel": "canonical + EMF/Ecore + diagram", "pos": [600, 40], "size": [210, 70] },
+    { "id": "b_model_editor", "type": "backend", "label": "Model Editor", "sublabel": "+ editor definition, dynamic EMF", "pos": [600, 190], "size": [210, 70] },
+    { "id": "b_transformation", "type": "backend", "label": "Transformation Engine", "sublabel": "M2M · M2T · T2M", "pos": [600, 340], "size": [210, 70] },
+    { "id": "b_project", "type": "backend", "label": "Project Management", "sublabel": "catalog, tree, import/export", "pos": [600, 490], "size": [210, 70] },
+    { "id": "b_validation", "type": "backend", "label": "Validation & Quick Fixes", "sublabel": "declarative engine", "pos": [600, 640], "size": [210, 70] },
+    { "id": "b_grammar", "type": "backend", "label": "Grammar Designer", "sublabel": "textual DSL · Xtext/Langium/ANTLR", "pos": [600, 790], "size": [210, 70] },
+    { "id": "b_event_gami", "type": "backend", "label": "Events & Gamification", "sublabel": "includes EventFlow, event-driven runtime", "pos": [600, 940], "size": [210, 70] },
+    { "id": "b_integration", "type": "backend", "label": "Integrations", "sublabel": "technology projection, roundtrip", "pos": [600, 1090], "size": [210, 70] },
+    { "id": "b_recovery", "type": "backend", "label": "External Recovery", "sublabel": "external projects + update sites", "pos": [600, 1240], "size": [210, 70] },
+    { "id": "b_publication", "type": "backend", "label": "Publication & Generation", "sublabel": "release gates + generated projects", "pos": [600, 1390], "size": [210, 70] },
+    { "id": "ext_toolchains", "type": "external", "label": "External MDE Engines", "sublabel": "ATL · ETL · Acceleo · EGL · Xtend", "tag": "administrator-installed", "pos": [990, 340], "size": [190, 70] },
+    { "id": "ext_remote", "type": "external", "label": "Remote Providers", "sublabel": "Git · storage · OAuth", "pos": [990, 1090], "size": [190, 70] },
+    { "id": "b_security", "type": "security", "label": "Security", "sublabel": "hardening + process sandboxing", "pos": [990, 1265], "size": [190, 90] },
+    { "id": "b_persistence", "type": "database", "label": "Canonical Persistence", "sublabel": "JSON documents, optimistic ETag", "pos": [990, 1390], "size": [190, 70] },
+    { "id": "b_audit", "type": "backend", "label": "Audit", "sublabel": "append-only JSONL log", "pos": [990, 1500], "size": [190, 70] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "HYDRA — local-first application", "wraps": ["fe_workbench", "b_project", "b_model_editor", "b_validation", "b_event_gami", "b_grammar", "b_metamodel", "b_integration", "b_transformation", "b_recovery", "b_publication", "b_persistence", "b_security", "b_audit"], "pad": 18 },
+    { "kind": "security-group", "label": "Spring Boot backend — local JVM process", "wraps": ["b_project", "b_model_editor", "b_validation", "b_event_gami", "b_grammar", "b_metamodel", "b_integration", "b_transformation", "b_recovery", "b_publication", "b_persistence", "b_security", "b_audit"], "pad": 12 }
+  ],
+  "connections": [
+    { "from": "user", "to": "fe_workbench", "label": "opens HYDRA", "variant": "emphasis" },
+    { "from": "fe_workbench", "to": "b_project", "label": "project", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_model_editor", "label": "edits models", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_validation", "label": "validates", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_event_gami", "label": "events", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_grammar", "label": "designs grammar", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_metamodel", "label": "designs metamodel", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_integration", "label": "integrates", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_transformation", "label": "transforms", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_recovery", "label": "recovers", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_publication", "label": "publishes", "fromSide": "right", "toSide": "left" },
+    { "from": "b_metamodel", "to": "b_model_editor", "label": "defines the language of", "variant": "emphasis", "fromSide": "bottom", "toSide": "top" },
+    { "from": "b_model_editor", "to": "b_transformation", "label": "starts from existing models", "variant": "emphasis", "fromSide": "bottom", "toSide": "top" },
+    { "from": "b_integration", "to": "ext_remote", "label": "syncs remote" },
+    { "from": "b_transformation", "to": "ext_toolchains", "label": "external engine", "variant": "security" },
+    { "from": "b_recovery", "to": "b_security", "label": "sandboxed process", "variant": "dashed" },
+    { "from": "b_publication", "to": "b_security", "label": "sandboxed process", "variant": "dashed" },
+    { "from": "b_publication", "to": "b_persistence", "label": "stores result", "variant": "dashed" },
+    { "from": "b_publication", "to": "b_audit", "label": "records provenance", "variant": "dashed" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "How the capabilities fit together", "items": [
+      "Each capability (metamodels, validation, models, grammars, transformations, events/gamification, integrations, recovery, publication) is an independent backend service, called directly by the workbench",
+      "All of them share the same canonical JSON document store; there is no central database and no direct coupling between sibling capabilities",
+      "Integrations and external recovery are the only doors out of the local process: third-party transformation engines and remote repositories"
+    ]},
+    { "dot": "cyan", "title": "The lifecycle of a typical capability", "items": [
+      "The workbench calls its capability service through that service's own REST resource",
+      "The service validates the request and applies its domain logic (e.g. compiling a grammar, running a transformation)",
+      "The result is stored in the shared canonical persistence and, where relevant, recorded in the audit log",
+      "An operation that needs to run something outside the process (an external engine, a remote repository) first goes through the sandboxed process launcher"
+    ]},
+    { "dot": "rose", "title": "What the security layer guarantees", "items": [
+      "Every incoming request passes through shape/size hardening before reaching any capability",
+      "Every external process (recovery, integration, native transformation, packaging) runs sandboxed, with a minimal environment and bounded output",
+      "A missing third-party MDE engine fails closed; its behavior is never simulated"
+    ]},
+    { "dot": "slate", "title": "Relationship to the other views", "items": [
+      "This view explains the HOW (subsystem responsibilities and interactions); it cites no files or code lines — that lives in hydra-architecture.en.html",
+      "The user view (hydra-user-overview.en.html) explains the WHAT, in non-technical language",
+      "All three views share the same canonical component IDs (for example b_transformation) for the capabilities that appear in more than one"
+    ]}
+  ]
+}

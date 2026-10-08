@@ -2,7 +2,7 @@ import { HydraButton } from '../design-system/HydraButton';
 import { artifactResolutionAdvice, integrationDiagnosticAdvice, integrationDiagnosticDisplayMessage } from './integrationDiagnosticAdvice';
 import { useEffect, useRef, useState } from 'react';
 import { DesignerCommandBar, DesignerCommandGroup } from '../designer-ui/DesignerCommandBar';
-import { applyTechnologyIntegration, checkIntegrationProfile, compileTechnologyIntegration, createIntegrationProfile as persistIntegrationProfile, deleteIntegrationProfile, listIntegrationProfiles, listIntegrationTechnologies, listIntegrationTechnologyWorkflows, loadIntegrationProfile, previewTechnologyIntegration, replaceIntegrationProfile } from './api';
+import { applyTechnologyIntegration, checkIntegrationProfile, compileTechnologyIntegration, createIntegrationProfile as persistIntegrationProfile, deleteIntegrationProfile, listIntegrationProfiles, listIntegrationTechnologies, listIntegrationTechnologyWorkflows, loadIntegrationProfile, loadTechnologyDeliveryReadiness, previewTechnologyIntegration, replaceIntegrationProfile, validateTechnologyIntegration } from './api';
 import { DesignerGuideButton, DesignerHelpedCheckbox, DesignerHelpedField, DesignerRequiredFieldsLegend } from '../designer-ui/DesignerFieldHelp';
 import { useResizableDesignerSidebar } from '../designer-ui/useResizableDesignerSidebar';
 import { HydraAdaptiveSelect } from '../components/HydraAdaptiveSelect';
@@ -34,7 +34,10 @@ import type {
     IntegrationProfileSummary,
     IntegrationTechnology,
     IntegrationTechnologyDescriptor,
+    TechnologyDeliveryReadiness,
     TechnologyInjectionPreview,
+    TechnologyProjectValidationReport,
+    TechnologyValidationMode,
     TechnologyWorkflowDescriptor
 } from './types';
 import './integration-designer.css';
@@ -143,6 +146,9 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
     const [query, setQuery] = useState('');
     const [injectionTarget, setInjectionTarget] = useState('generated-target');
     const [injectionPreview, setInjectionPreview] = useState<TechnologyInjectionPreview | null>(null);
+    // Asocia cada respuesta asíncrona al perfil/revisión que la solicitó.
+    const [readinessSnapshot, setReadinessSnapshot] = useState<{ key: string; value: TechnologyDeliveryReadiness } | null>(null);
+    const [technologyValidation, setTechnologyValidation] = useState<TechnologyProjectValidationReport | null>(null);
     const [view, setView] = useState<'GUIDED' | 'FORM' | 'STRUCTURE'>('GUIDED');
     const [guidedStep, setGuidedStep] = useState('identity');
     const [structureTabOpen, setStructureTabOpen] = useState(true);
@@ -182,11 +188,37 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
         })().catch(error => { if(active) onErrorRef.current(error instanceof Error ? error.message : 'Could not load integration profiles'); });
         return () => { active = false; };
     }, [metamodelId, persisted]);
+    const readinessProfileId = model?.id ?? null;
+    const readinessKey = model !== null && etag !== '' && !dirty
+        ? JSON.stringify([metamodelId, model.id, model.target.technology, etag])
+        : null;
+    const deliveryReadiness = readinessKey !== null && readinessSnapshot?.key === readinessKey
+        ? readinessSnapshot.value
+        : null;
+    useEffect(() => {
+        if (readinessKey === null || readinessProfileId === null) return;
+        let active = true;
+        void loadTechnologyDeliveryReadiness(metamodelId, readinessProfileId)
+            .then(value => {
+                if (active) setReadinessSnapshot({ key: readinessKey, value });
+            })
+            .catch(error => {
+                if (!active) return;
+                setReadinessSnapshot(null);
+                onErrorRef.current(error instanceof Error ? error.message : t('Could not load technology delivery readiness'));
+            });
+        return () => { active = false; };
+    }, [metamodelId, readinessProfileId, readinessKey, t]);
     const descriptor = descriptors.find(item => item.technology === model?.target.technology) ?? null;
     const technologyWorkflow = workflows.find(item => item.technology === model?.target.technology) ?? null;
+    const readinessAction = (stage:string) => deliveryReadiness?.actions.find(item => item.stage === stage) ?? null;
     const generationStage = technologyWorkflow?.stages.find(item => item.stage === 'GENERATE') ?? null;
     const previewStage = technologyWorkflow?.stages.find(item => item.stage === 'PREVIEW') ?? null;
     const applyStage = technologyWorkflow?.stages.find(item => item.stage === 'APPLY') ?? null;
+    const generationReadiness = readinessAction('GENERATE');
+    const verifyReadiness = readinessAction('VERIFY');
+    const previewReadiness = readinessAction('PREVIEW');
+    const applyReadiness = readinessAction('APPLY');
     const canCompileTechnology = generationStage?.applicable === true && generationStage.action === 'COMPILE_ARCHIVE' && generationStage.support === 'FULL';
     const projectionGeneration = generationStage?.applicable === true && generationStage.action === 'EXPORT_PROJECTION' && generationStage.support !== 'UNSUPPORTED';
     const canPreviewInjection = previewStage?.applicable === true && previewStage.action === 'PREVIEW_CHANGES' && previewStage.support === 'FULL';
@@ -207,6 +239,8 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
         setDirty(true);
         setReport(null);
         setInjectionPreview(null);
+        setReadinessSnapshot(null);
+        setTechnologyValidation(null);
     }
     function createNew(technology?: IntegrationTechnology): void {
         const selected = descriptors.find(item => item.technology === technology) ?? descriptors[0];
@@ -215,6 +249,8 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
         setModel(created);
         setInjectionTarget(created.target.projectId || 'generated-target');
         setInjectionPreview(null);
+        setReadinessSnapshot(null);
+        setTechnologyValidation(null);
         setEtag('');
         setReport(null);
         setDirty(true);
@@ -229,6 +265,8 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
             setInjectionTarget(loaded.model.target.projectId || 'generated-target');
             setInjectionPreview(null);
             setReport(null);
+            setReadinessSnapshot(null);
+            setTechnologyValidation(null);
             setDirty(false);
         } catch(error) { onError(error instanceof Error ? error.message : 'Could not load integration profile'); }
         finally { setBusy(false); }
@@ -446,6 +484,7 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
     }
     async function compileTechnology(): Promise<void> {
         if(model === null || etag === '' || dirty) { onError('Save the integration profile before compiling it.'); return; }
+        if(generationReadiness?.state === 'BLOCKED') { onError(generationReadiness.reason || t('Technology package generation is currently blocked.')); return; }
         try {
             setBusy(true);
             setOperation({ title:'Generating technology package', detail:'Collecting the required HYDRA layers and compiling the target project.', stage:'compile' });
@@ -460,8 +499,23 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
         } catch(error) { onError(error instanceof Error ? error.message : 'Could not compile technology module'); }
         finally { setBusy(false); setOperation(null); }
     }
+    async function verifyTechnology(mode:TechnologyValidationMode): Promise<void> {
+        if(model===null || etag==='' || dirty){onError(t('Save the integration profile before verifying the generated project.'));return;}
+        try{
+            setBusy(true);
+            setOperation({title:t(mode==='STRUCTURAL'?'Verifying generated project':'Running native technology verification'),detail:t(mode==='STRUCTURAL'?'Checking the generated project structure without invoking external tools.':'Materializing the generated project and invoking its declared native verification steps in an isolated workspace.'),stage:'review'});
+            const result=await validateTechnologyIntegration(metamodelId,model.id,mode);
+            setTechnologyValidation(result);
+            onMessage(result.status==='PASSED'?t('Technology project verification passed'):`${t('Technology project verification finished with')} ${result.status}`);
+            const readiness=await loadTechnologyDeliveryReadiness(metamodelId,model.id);
+            if (readinessKey !== null) setReadinessSnapshot({ key: readinessKey, value: readiness });
+        }catch(error){onError(error instanceof Error?error.message:t('Could not verify generated technology project'));}
+        finally{setBusy(false);setOperation(null);}
+    }
+
     async function previewInjection(): Promise<void> {
         if(model === null || etag === '' || dirty) { onError('Save the integration profile before previewing host-project changes.'); return; }
+        if(previewReadiness?.state === 'BLOCKED') { onError(previewReadiness.reason || t('The generated project is not ready.')); return; }
         try {
             setBusy(true);
             setOperation({ title:'Preparing change preview', detail:'Resolving the generated module against the authorized host folder.', stage:'resolve' });
@@ -474,6 +528,7 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
     }
     async function applyInjection(): Promise<void> {
         if(model === null || injectionPreview?.plan.status !== 'READY') { onError('Create a successful preview before applying the integration.'); return; }
+        if(applyReadiness?.state === 'BLOCKED') { onError(applyReadiness.reason || t('The generated project is not ready.')); return; }
         if(!await requestDecision({ title:t('Apply integration changes?'), description:`${injectionPreview.plan.fileChanges.length} ${t('file changes will be applied to')} ${injectionTarget}.`, confirmLabel:t('Apply changes'), cancelLabel:t('Cancel') })) return;
         try {
             setBusy(true);
@@ -498,6 +553,8 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
                 setEtag(loaded.etag);
                 setInjectionTarget(loaded.model.target.projectId || 'generated-target');
                 setInjectionPreview(null);
+                setReadinessSnapshot(null);
+                setTechnologyValidation(null);
                 setDirty(false);
             } else { createNew(model.target.technology); }
             setReport(null);
@@ -551,7 +608,7 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
                 { id: 'project', label: 'Host project identified', complete: model.target.projectId.trim() !== '', detail: model.target.projectId || 'Required' },
                 { id: 'generated-root', label: 'Safe generated root defined', complete: generatedRootValidation.valid, detail: generatedRootValidation.valid ? generatedRootValidation.normalized : generatedRootProblemMessage(generatedRootValidation.problem) }
             ],
-            content: <section className="integration-guided-fields"><DesignerHelpedField label="Integration technology" targetId="guided-integration-technology" help="External editor, runtime or projection target." example="Eclipse GLSP" required><HydraAdaptiveSelect id="guided-integration-technology" ariaLabel="Guided integration technology" value={model.target.technology} options={descriptors.map(item => ({ value:item.technology,label:item.displayName,description:item.notes.join(' ') || `Integrates HYDRA with ${item.displayName}.`,category:technologyCategory(item.technology) }))} onChange={technology => changeTechnology(technology as IntegrationTechnology)} /></DesignerHelpedField><DesignerHelpedField label="Host project" targetId="guided-integration-project" help="Project that will receive the generated integration." example="people-tools" required><input id="guided-integration-project" value={model.target.projectId} onChange={event => changeModel(current => ({ ...current,target:{...current.target,projectId:event.target.value} }))} /></DesignerHelpedField><DesignerHelpedField label="Delivery mode" targetId="guided-integration-delivery" help="Defines where the integration runtime and generated artifacts live in relation to the host project. Use the option descriptions below to choose the deployment boundary, not the implementation technology." example="Generated module" required options={orderedDeliveryModes(descriptor).map(item => ({ value:item,label:readableIntegrationValue(item),description:integrationDynamicDescription(item) }))}><HydraAdaptiveSelect id="guided-integration-delivery" ariaLabel="Guided delivery mode" value={model.deliveryMode} options={orderedDeliveryModes(descriptor).map(item => ({ value:item,label:readableIntegrationValue(item),description:integrationDynamicDescription(item),category:deliveryCategory(item) }))} onChange={deliveryMode => changeModel(current => ({ ...current,deliveryMode:deliveryMode as IntegrationProfileModel['deliveryMode'] }))} /></DesignerHelpedField><DesignerHelpedField label="Generated folder (relative)" targetId="guided-integration-root" help="Portable folder inside the active host project where HYDRA writes generated integration files. It is stored as a project-relative path so the profile works on another machine or repository checkout. Use Select folder when the host project is open, or type the relative path manually." example="generated-integration" required>{generatedRootControl('guided-integration-root')}</DesignerHelpedField><IntegrationMethodChooser descriptor={descriptor} value={model.injectionPolicy.strategy} onChange={strategy => changeModel(current => ({ ...current,injectionPolicy:{...current.injectionPolicy,strategy} }))} /><IntegrationTechnologyJourney workflow={technologyWorkflow} /><div className="integration-guided-actions"><HydraButton className="hydra-primary-button" disabled={technologyWorkflow === null || technologyWorkflow.maturity === 'DECLARED_ONLY'} type="button" onClick={applyRecommendedTechnologyProfile}>{t('Apply recommended technology profile')}</HydraButton></div><IntegrationRecipeChooser onApply={applyGuidedModelingRecipe} /></section>
+            content: <section className="integration-guided-fields"><DesignerHelpedField label="Integration technology" targetId="guided-integration-technology" help="External editor, runtime or projection target." example="Eclipse GLSP" required><HydraAdaptiveSelect id="guided-integration-technology" ariaLabel="Guided integration technology" value={model.target.technology} options={descriptors.map(item => ({ value:item.technology,label:item.displayName,description:item.notes.join(' ') || `Integrates HYDRA with ${item.displayName}.`,category:technologyCategory(item.technology) }))} onChange={technology => changeTechnology(technology as IntegrationTechnology)} /></DesignerHelpedField><DesignerHelpedField label="Host project" targetId="guided-integration-project" help="Project that will receive the generated integration." example="people-tools" required><input id="guided-integration-project" value={model.target.projectId} onChange={event => changeModel(current => ({ ...current,target:{...current.target,projectId:event.target.value} }))} /></DesignerHelpedField><DesignerHelpedField label="Delivery mode" targetId="guided-integration-delivery" help="Defines where the integration runtime and generated artifacts live in relation to the host project. Use the option descriptions below to choose the deployment boundary, not the implementation technology." example="Generated module" required options={orderedDeliveryModes(descriptor).map(item => ({ value:item,label:readableIntegrationValue(item),description:integrationDynamicDescription(item) }))}><HydraAdaptiveSelect id="guided-integration-delivery" ariaLabel="Guided delivery mode" value={model.deliveryMode} options={orderedDeliveryModes(descriptor).map(item => ({ value:item,label:readableIntegrationValue(item),description:integrationDynamicDescription(item),category:deliveryCategory(item) }))} onChange={deliveryMode => changeModel(current => ({ ...current,deliveryMode:deliveryMode as IntegrationProfileModel['deliveryMode'] }))} /></DesignerHelpedField><DesignerHelpedField label="Generated folder (relative)" targetId="guided-integration-root" help="Portable folder inside the active host project where HYDRA writes generated integration files. It is stored as a project-relative path so the profile works on another machine or repository checkout. Use Select folder when the host project is open, or type the relative path manually." example="generated-integration" required>{generatedRootControl('guided-integration-root')}</DesignerHelpedField><IntegrationMethodChooser descriptor={descriptor} value={model.injectionPolicy.strategy} onChange={strategy => changeModel(current => ({ ...current,injectionPolicy:{...current.injectionPolicy,strategy} }))} /><IntegrationTechnologyJourney workflow={technologyWorkflow} readiness={deliveryReadiness} /><div className="integration-guided-actions"><HydraButton className="hydra-primary-button" disabled={technologyWorkflow === null || technologyWorkflow.maturity === 'DECLARED_ONLY'} type="button" onClick={applyRecommendedTechnologyProfile}>{t('Apply recommended technology profile')}</HydraButton></div><IntegrationRecipeChooser onApply={applyGuidedModelingRecipe} /></section>
         },
         {
             id: 'capabilities', title: 'Capabilities and inputs', description: 'Choose what the integration must do. HYDRA can select the required model information automatically.',
@@ -584,11 +641,11 @@ function IntegrationDesignerSession({ metamodelId, persisted, onError, onMessage
                 { id: 'saved-delivery', label: 'Saved profile available', complete: etag !== '' && !dirty, detail: etag !== '' && !dirty ? 'Compile and preview enabled' : 'Save verified changes first' },
                 { id: 'preview-safety', label: 'Host-project changes remain preview-first and reversible', complete: !hostChangesApplicable || (model.injectionPolicy.previewRequired && model.injectionPolicy.rollbackRequired), detail: hostChangesApplicable ? 'Preview and rollback are mandatory' : 'Not applicable to projection-only delivery' }
             ],
-            content: <section className="integration-guided-delivery"><IntegrationTechnologyJourney workflow={technologyWorkflow} compact />{canCompileTechnology&&<article><strong>Generate module</strong><span>Create the technology-specific integration ZIP without modifying the host project.</span><HydraButton disabled={busy || dirty || etag === ''} type="button" onClick={() => void compileTechnology()}>Compile module</HydraButton></article>}{projectionGeneration&&<article><strong>{t('Generate projection')}</strong><span>{t("This technology is delivered through HYDRA's projection/export workflow rather than a host integration module.")}</span><small>{t('Use the metamodel export workspace to materialize the projection. Preview and host-project injection do not apply.')}</small></article>}{canPreviewInjection&&<article><strong>Apply to a host project</strong><span>Preview exact file changes first. Apply remains disabled until the preview reports READY.</span><div><HydraButton disabled={busy || dirty || etag === ''} type="button" onClick={() => void previewInjection()}>Preview changes</HydraButton>{canApplyInjection&&<HydraButton disabled={busy || injectionPreview?.plan.status !== 'READY'} type="button" onClick={() => void applyInjection()}>Apply integration</HydraButton>}</div></article>}{technologyWorkflow?.maturity==='DECLARED_ONLY'&&<article className="integration-guided-delivery-blocked"><strong>{t('Generation is not available yet')}</strong><span>{t('HYDRA knows this technology in the catalogue, but no executable adapter is registered. The profile remains inspectable without pretending that generation is operational.')}</span></article>}</section>
+            content: <section className="integration-guided-delivery"><IntegrationTechnologyJourney workflow={technologyWorkflow} readiness={deliveryReadiness} compact />{canCompileTechnology&&<article><strong>Generate module</strong><span>Create the technology-specific integration ZIP without modifying the host project.</span><HydraButton disabled={busy || dirty || etag === '' || generationReadiness?.state === 'BLOCKED'} type="button" onClick={() => void compileTechnology()}>Compile module</HydraButton></article>}{verifyReadiness&&verifyReadiness.state!=='NOT_APPLICABLE'&&<article><strong>{t('Verify generated project')}</strong><span>{t('Run the same structural contract for every technology, then opt into native toolchain verification when the generated package declares it.')}</span><div><HydraButton disabled={busy || dirty || etag==='' || verifyReadiness.state==='BLOCKED'} type="button" onClick={() => void verifyTechnology('STRUCTURAL')}>{t('Verify structure')}</HydraButton>{deliveryReadiness?.nativeVerificationAvailable&&<HydraButton disabled={busy || dirty || etag==='' || verifyReadiness.state==='BLOCKED'} type="button" onClick={() => void verifyTechnology('NATIVE_IF_AVAILABLE')}>{t('Verify native toolchain')}</HydraButton>}</div>{technologyValidation&&<small>{t('Last verification')}: {technologyValidation.status} · {technologyValidation.steps.length} {t('steps')}</small>}</article>}{projectionGeneration&&<article><strong>{t('Generate projection')}</strong><span>{t("This technology is delivered through HYDRA's projection/export workflow rather than a host integration module.")}</span><small>{t('Use the metamodel export workspace to materialize the projection. Preview and host-project injection do not apply.')}</small></article>}{canPreviewInjection&&<article><strong>Apply to a host project</strong><span>Preview exact file changes first. Apply remains disabled until the preview reports READY.</span><div><HydraButton disabled={busy || dirty || etag === '' || previewReadiness?.state === 'BLOCKED'} type="button" onClick={() => void previewInjection()}>Preview changes</HydraButton>{canApplyInjection&&<HydraButton disabled={busy || injectionPreview?.plan.status !== 'READY' || applyReadiness?.state === 'BLOCKED'} type="button" onClick={() => void applyInjection()}>Apply integration</HydraButton>}</div></article>}{technologyWorkflow?.maturity==='DECLARED_ONLY'&&<article className="integration-guided-delivery-blocked"><strong>{t('Generation is not available yet')}</strong><span>{t('HYDRA knows this technology in the catalogue, but no executable adapter is registered. The profile remains inspectable without pretending that generation is operational.')}</span></article>}</section>
         }
     ];
     return <section className="integration-designer">
-        <DesignerCommandBar className="integration-designer-header hydra-unified-workbench-toolbar" title="Technology integrations" description="Choose what HYDRA should expose to an external technology, review compatibility and deliver it through a reversible integration." status={<span className="integration-dirty-state">{dirty ? 'Unsaved changes' : 'Saved'}</span>} actions={<><DesignerCommandGroup label="Interchange">{model !== null && <IntegrationRemoteStorage model={model} metamodelId={metamodelId} onImported={next => { setModel(next); setEtag(''); setDirty(true); setReport(null); setInjectionPreview(null); }} />}</DesignerCommandGroup><DesignerCommandGroup label="Quality"><HydraButton disabled={busy} type="button" onClick={() => void analyze()}>Analyze</HydraButton></DesignerCommandGroup>{(canCompileTechnology||canPreviewInjection||canApplyInjection)&&<DesignerCommandGroup label="Generation">{canCompileTechnology&&<HydraButton disabled={busy || dirty || etag === ''} type="button" onClick={() => void compileTechnology()}>Compile module</HydraButton>}{canPreviewInjection&&<HydraButton disabled={busy || dirty || etag === ''} type="button" onClick={() => void previewInjection()}>Preview changes</HydraButton>}{canApplyInjection&&<HydraButton disabled={busy || injectionPreview?.plan.status !== 'READY'} type="button" onClick={() => void applyInjection()}>Apply integration</HydraButton>}</DesignerCommandGroup>}<DesignerCommandGroup label="Changes"><HydraButton disabled={busy || !dirty} type="button" onClick={() => void save()}>Save profile</HydraButton><HydraButton className="hydra-danger-button" disabled={busy || etag === ''} type="button" onClick={() => void remove()}>Delete</HydraButton></DesignerCommandGroup></>} viewsLabel="Workspace" viewsSummary={view} views={<nav className="event-subtabs integration-designer-tabs" aria-label="Integration designer views"><HydraButton className={view === 'GUIDED' ? 'active' : ''} type="button" onClick={() => setView('GUIDED')}>Guided</HydraButton><HydraButton className={view === 'FORM' ? 'active' : ''} type="button" onClick={() => setView('FORM')}>Definition</HydraButton>{structureTabOpen ? <span className={`designer-structure-tab-entry${view === 'STRUCTURE' ? ' active' : ''}`}><HydraButton className={view === 'STRUCTURE' ? 'active' : ''} type="button" onClick={() => setView('STRUCTURE')}>Structure tree</HydraButton><HydraButton aria-label="Close integration structure tree" className="designer-structure-tab-close hydra-window-close" type="button" onClick={() => { setStructureTabOpen(false); if (view === 'STRUCTURE') setView('FORM'); }}>×</HydraButton></span> : <HydraButton type="button" onClick={() => { setStructureTabOpen(true); setView('STRUCTURE'); }}>Structure tree</HydraButton>}</nav>} />
+        <DesignerCommandBar className="integration-designer-header hydra-unified-workbench-toolbar" title="Technology integrations" description="Choose what HYDRA should expose to an external technology, review compatibility and deliver it through a reversible integration." status={<span className="integration-dirty-state">{dirty ? 'Unsaved changes' : 'Saved'}</span>} actions={<><DesignerCommandGroup label="Interchange">{model !== null && <IntegrationRemoteStorage model={model} metamodelId={metamodelId} onImported={next => { setModel(next); setEtag(''); setDirty(true); setReport(null); setInjectionPreview(null); setReadinessSnapshot(null); setTechnologyValidation(null); }} />}</DesignerCommandGroup><DesignerCommandGroup label="Quality"><HydraButton disabled={busy} type="button" onClick={() => void analyze()}>Analyze</HydraButton></DesignerCommandGroup>{(canCompileTechnology||canPreviewInjection||canApplyInjection)&&<DesignerCommandGroup label="Generation">{canCompileTechnology&&<HydraButton disabled={busy || dirty || etag === '' || generationReadiness?.state === 'BLOCKED'} type="button" onClick={() => void compileTechnology()}>Compile module</HydraButton>}{canPreviewInjection&&<HydraButton disabled={busy || dirty || etag === '' || previewReadiness?.state === 'BLOCKED'} type="button" onClick={() => void previewInjection()}>Preview changes</HydraButton>}{canApplyInjection&&<HydraButton disabled={busy || injectionPreview?.plan.status !== 'READY' || applyReadiness?.state === 'BLOCKED'} type="button" onClick={() => void applyInjection()}>Apply integration</HydraButton>}</DesignerCommandGroup>}<DesignerCommandGroup label="Changes"><HydraButton disabled={busy || !dirty} type="button" onClick={() => void save()}>Save profile</HydraButton><HydraButton className="hydra-danger-button" disabled={busy || etag === ''} type="button" onClick={() => void remove()}>Delete</HydraButton></DesignerCommandGroup></>} viewsLabel="Workspace" viewsSummary={view} views={<nav className="event-subtabs integration-designer-tabs" aria-label="Integration designer views"><HydraButton className={view === 'GUIDED' ? 'active' : ''} type="button" onClick={() => setView('GUIDED')}>Guided</HydraButton><HydraButton className={view === 'FORM' ? 'active' : ''} type="button" onClick={() => setView('FORM')}>Definition</HydraButton>{structureTabOpen ? <span className={`designer-structure-tab-entry${view === 'STRUCTURE' ? ' active' : ''}`}><HydraButton className={view === 'STRUCTURE' ? 'active' : ''} type="button" onClick={() => setView('STRUCTURE')}>Structure tree</HydraButton><HydraButton aria-label="Close integration structure tree" className="designer-structure-tab-close hydra-window-close" type="button" onClick={() => { setStructureTabOpen(false); if (view === 'STRUCTURE') setView('FORM'); }}>×</HydraButton></span> : <HydraButton type="button" onClick={() => { setStructureTabOpen(true); setView('STRUCTURE'); }}>Structure tree</HydraButton>}</nav>} />
         <div className="hydra-designer-master-detail integration-master-detail" style={sidebar.layoutStyle}>
             <aside className="hydra-designer-sidebar">
                 <div className="hydra-sidebar-heading">

@@ -29,13 +29,46 @@ public final class GeneratedGrammarImportSupport {
     private static final Pattern QUOTED_LITERAL = Pattern.compile("'([^']+)'");
     private static final Pattern ANTLR_RULE = Pattern.compile("(?ms)^([a-z][A-Za-z0-9_]*)\\s*:\\s*(.*?)\\s*;");
     private static final Pattern TRANSPORT_RULE = Pattern.compile("(?ms)^\\s*//\\s*HYDRA_TRANSPORT_RULE\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*\\R\\s*(?:entry\\s+)?\\1\\s*:\\s*.*?;\\s*");
+    private static final Pattern SEMANTIC_ROOT = Pattern.compile("(?m)^\\s*//\\s*HYDRA_SEMANTIC_ROOT\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*$");
     private static final Pattern ANTLR_FEATURE = Pattern.compile("\\('([^']+)'\\s+([A-Za-z_][A-Za-z0-9_]*|\\([^)]*\\))\\s*(?:/\\*\\s*HYDRA_REFERENCE\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*\\*/\\s*)?\\)([?*+]?)");
 
     /** Descripción: Inicializa una instancia de GeneratedGrammarImportSupport con sus dependencias y datos de entrada. Entradas: no requiere parámetros de entrada. Salida: deja la instancia inicializada y lista para su uso. */ private GeneratedGrammarImportSupport() {
     }
 
     /** Descripción: Ejecuta la operación «parseTextual» correspondiente a la responsabilidad de AntlrClassBuilder. Entradas: content: valor de entrada que debe procesarse; grammarName: dato de entrada necesario para la operación; namespaceUri: dato de entrada necesario para la operación; sourceFormat: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public static ParsedGrammar parseTextual(String content, String grammarName, String namespaceUri, String sourceFormat) {
-        return TextualGrammarImportParser.parse(removeTransportRules(content), grammarName, namespaceUri, sourceFormat);
+        String source = content == null ? "" : content;
+        Matcher rootMatcher = SEMANTIC_ROOT.matcher(source);
+        String semanticRoot = rootMatcher.find() ? rootMatcher.group(1) : "";
+        ParsedGrammar parsed = TextualGrammarImportParser.parse(removeTransportRules(source), grammarName, namespaceUri, sourceFormat);
+        return semanticRoot.isBlank() ? parsed : applySemanticRoot(parsed, semanticRoot);
+    }
+
+    /**
+     * Descripción: Restaura sobre el metamodelo reimportado la raíz semántica marcada por HYDRA después de retirar las reglas auxiliares de transporte.
+     * Entradas: parsed: resultado de la importación textual; semanticRoot: nombre estable de la clase marcada como raíz semántica.
+     * Salida: devuelve una nueva importación con las anotaciones de raíz restauradas, o la original si la clase indicada no existe.
+     */
+    private static ParsedGrammar applySemanticRoot(ParsedGrammar parsed, String semanticRoot) {
+        MetaModel model = parsed.metamodel();
+        List<MetaClass> classes = new ArrayList<>();
+        String rootId = "";
+        for(MetaClass item : model.classes()) {
+            Map<String,String> annotations = new LinkedHashMap<>(item.annotations());
+            annotations.remove("root");
+            annotations.remove("entryRule");
+            if(item.name().equals(semanticRoot)) {
+                annotations.put("root", "true");
+                annotations.put("entryRule", "true");
+                rootId = item.id();
+            }
+            classes.add(new MetaClass(item.id(), item.name(), item.kind(), item.attributes(), item.operations(), annotations));
+        }
+        if(rootId.isBlank()) return parsed;
+        Map<String,String> annotations = new LinkedHashMap<>(model.annotations());
+        annotations.put("entryRule", semanticRoot);
+        annotations.put("rootClassId", rootId);
+        MetaModel rooted = new MetaModel(model.schemaVersion(), model.id(), model.name(), classes, model.enums(), model.dataTypes(), model.relations(), annotations);
+        return new ParsedGrammar(rooted, parsed.warnings());
     }
 
 

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "169da703-5f45-4d72-93f4-be71979b4c4e",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-howto-model-editor.es.workflow.json",
+  "output": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-howto-model-editor.es.html",
+  "specification": {
+    "sha256": "1f7f557d9a4c7ac5d68bdca5e9e660a53a571c4b94b6e46ed5bd081c3c92e484",
+    "bytes": 33560
+  },
+  "artifact": {
+    "sha256": "20f14f9b2fbe6ea31524d3b124fa78cb59901adb2ffc68ea2545b44353643942",
+    "bytes": 760474
+  }
+}

@@ -101,6 +101,19 @@ public final class GrammarGenerationSupport {
         return false;
     }
 
+    /**
+     * Descripción: Localiza la clase declarada explícitamente como raíz semántica del metamodelo sin inferir ni inventar una alternativa.
+     * Entradas: context: contexto neutral que contiene el metamodelo y sus anotaciones canónicas.
+     * Salida: devuelve la clase raíz declarada o {@code null} cuando el modelo no define una raíz semántica explícita.
+     */
+    public static MetaClass findSemanticRoot(NeutralMetamodelExportContext context) {
+        for(MetaClass item : context.neutralMetamodel().classes()) {
+            if("true".equalsIgnoreCase(item.annotations().get("root")) || "true".equalsIgnoreCase(item.annotations().get("entryRule"))) return item;
+        }
+        String rootId = context.neutralMetamodel().annotations().getOrDefault("rootClassId", "");
+        if(!rootId.isBlank()) for(MetaClass item : context.neutralMetamodel().classes()) if(rootId.equals(item.id())) return item;
+        return null;
+    }
 
     /** Nombres auxiliares reservados por los exportadores para envolver las reglas del dominio sin colisionar con clases reales. */
     public record AuxiliaryRuleNames(String rootRule, String elementRule) { }

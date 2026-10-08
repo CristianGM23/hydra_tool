@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-architecture.en.architecture.json",
+    "sha256": "ff49a531ce8482d624ba93b64a414c9943ff4eb0688fe43f26c9ce2f47093ff6",
+    "bytes": 12083
+  },
+  "artifact": {
+    "path": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-architecture.en.html",
+    "sha256": "d0e7e868dc1338656c44040e382a024ebc91a6882eb5a4a43486f5bfa2f354e9",
+    "bytes": 796394
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-architecture.en.finalize.json",
+    "summaryReceipt": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-architecture.en.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-architecture.en.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.0.1",
+    "availableVersion": "3.0.1",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-06T13:20:23.396Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 30182,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "resolvedCrossovers": 11,
+      "routesOverSuggestedBends": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [
+        {
+          "left": {
+            "from": "fe_workbench",
+            "to": "b_project",
+            "label": "/api/projects",
+            "collectionIndex": 1,
+            "artifactIndex": 2
+          },
+          "right": {
+            "from": "fe_workbench",
+            "to": "b_event_gami",
+            "label": "events · gamification",
+            "collectionIndex": 4,
+            "artifactIndex": 5
+          },
+          "point": [
+            444,
+            687
+          ],
+          "sharedNode": "fe_workbench"
+        },
+        {
+          "left": {
+            "from": "fe_workbench",
+            "to": "b_project",
+            "label": "/api/projects",
+            "collectionIndex": 1,
+            "artifactIndex": 2
+          },
+          "right": {
+            "from": "fe_workbench",
+            "to": "b_grammar",
+            "label": "/api/grammars",
+            "collectionIndex": 5,
+            "artifactIndex": 6
+          },
+          "point": [
+            510,
+            687
+          ],
+          "sharedNode": "fe_workbench"
+        },
+        {
+          "left": {
+            "from": "fe_workbench",
+            "to": "b_model_editor",
+            "label": "/api/models",
+            "collectionIndex": 2,
+            "artifactIndex": 3
+          },
+          "right": {
+            "from": "fe_workbench",
+            "to": "b_event_gami",
+            "label": "events · gamification",
+            "collectionIndex": 4,
+            "artifactIndex": 5
+          },
+          "point": [
+            444,
+            701
+          ],
+          "sharedNode": "fe_workbench"
+        },
+        {
+          "left": {
+            "from": "fe_workbench",
+            "to": "b_model_editor",
+            "label": "/api/models",
+            "collectionIndex": 2,
+            "artifactIndex": 3
+          },
+          "right": {
+            "from": "fe_workbench",
+            "to": "b_grammar",
+            "label": "/api/grammars",
+            "collectionIndex": 5,
+            "artifactIndex": 6
+          },
+          "point": [
+            510,
+            701
+          ],
+          "sharedNode": "fe_workbench"
+        },
+        {
+          "left": {
+            "from": "fe_workbench",
+            "to": "b_validation",
+            "label": "/api/.../validations",
+            "collectionIndex": 3,
+            "artifactIndex": 4
+          },
+          "right": {
+            "from": "fe_workbench",
+            "to": "b_event_gami",
+            "label": "events · gamification",
+            "collectionIndex": 4,
+            "artifactIndex": 5
+          },
+          "point": [
+            444,
+            715
+          ],
+          "sharedNode": "fe_workbench"
+        },
+        {
+          "left": {
+            "from": "fe_workbench",
+            "to": "b_validation",
+            "label": "/api/.../validations",
+            "collectionIndex": 3,
+            "artifactIndex": 4
+          },
+          "right": {
+            "from": "fe_workbench",
+            "to": "b_grammar",
+            "label": "/api/grammars",
+            "collectionIndex": 5,
+            "artifactIndex": 6
+          },
+          "point": [
+            510,
+            715
+          ],
+          "sharedNode": "fe_workbench"
+        },
+        {
+          "left": {
+            "from": "fe_workbench",
+            "to": "b_integration",
+            "label": "/api/remote-*",
+            "collectionIndex": 7,
+            "artifactIndex": 8
+          },
+          "right": {
+            "from": "fe_workbench",
+            "to": "b_transformation",
+            "label": "/api/transformations",
+            "collectionIndex": 8,
+            "artifactIndex": 9
+          },
+          "point": [
+            444,
+            785
+          ],
+          "sharedNode": "fe_workbench"
+        },
+        {
+          "left": {
+            "from": "fe_workbench",
+            "to": "b_integration",
+            "label": "/api/remote-*",
+            "collectionIndex": 7,
+            "artifactIndex": 8
+          },
+          "right": {
+            "from": "fe_workbench",
+            "to": "b_recovery",
+            "label": "external recovery",
+            "collectionIndex": 9,
+            "artifactIndex": 10
+          },
+          "point": [
+            444,
+            799
+          ],
+          "sharedNode": "fe_workbench"
+        }
+      ],
+      "detours": [
+        {
+          "relationship": {
+            "from": "fe_workbench",
+            "to": "b_transformation",
+            "label": "/api/transformations",
+            "collectionIndex": 8,
+            "artifactIndex": 9
+          },
+          "bends": 4,
+          "stretch": 1
+        }
+      ],
+      "truncated": true
+    },
+    "hints": [
+      "fe_workbench → b_project and fe_workbench → b_event_gami cross next to fe_workbench: move node b_project or b_event_gami so the two reach fe_workbench from different sides (for example one level with it, one directly above or below it).",
+      "fe_workbench → b_project and fe_workbench → b_grammar cross next to fe_workbench: move node b_project or b_grammar so the two reach fe_workbench from different sides (for example one level with it, one directly above or below it).",
+      "fe_workbench → b_model_editor and fe_workbench → b_event_gami cross next to fe_workbench: move node b_model_editor or b_event_gami so the two reach fe_workbench from different sides (for example one level with it, one directly above or below it).",
+      "fe_workbench → b_model_editor and fe_workbench → b_grammar cross next to fe_workbench: move node b_model_editor or b_grammar so the two reach fe_workbench from different sides (for example one level with it, one directly above or below it).",
+      "fe_workbench → b_validation and fe_workbench → b_event_gami cross next to fe_workbench: move node b_validation or b_event_gami so the two reach fe_workbench from different sides (for example one level with it, one directly above or below it).",
+      "fe_workbench → b_validation and fe_workbench → b_grammar cross next to fe_workbench: move node b_validation or b_grammar so the two reach fe_workbench from different sides (for example one level with it, one directly above or below it).",
+      "fe_workbench → b_integration and fe_workbench → b_transformation cross next to fe_workbench: move node b_integration or b_transformation so the two reach fe_workbench from different sides (for example one level with it, one directly above or below it).",
+      "fe_workbench → b_integration and fe_workbench → b_recovery cross next to fe_workbench: move node b_integration or b_recovery so the two reach fe_workbench from different sides (for example one level with it, one directly above or below it)."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

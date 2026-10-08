@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "HYDRA technical architecture",
+    "output": "hydra-architecture.en.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/CristianGM23/hydra_tool.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "864ed521e8d4e5fde8a0ed087c37bc3e5b89de36"
+    }
+  },
+  "components": [
+    { "id": "user", "type": "external", "label": "HYDRA Engineer", "sublabel": "end user", "pos": [20, 715], "size": [140, 60] },
+    { "id": "fe_workbench", "type": "frontend", "label": "HYDRA Workbench", "sublabel": "React SPA, hash-routed", "tag": "23 capability modules", "pos": [240, 40], "size": [180, 1420],
+      "sources": [
+        { "path": "frontend/src/App.tsx", "line": 44, "end_line": 708, "label": "router + model workbench" },
+        { "path": "frontend/src/application-shell/moduleRegistry.ts", "line": 9, "end_line": 37, "label": "module registry" },
+        { "path": "frontend/src/application-shell/HydraCapabilityModule.tsx", "line": 1, "end_line": 31, "label": "per-module lazy loading" }
+      ]
+    },
+    { "id": "b_project", "type": "backend", "label": "Project Management", "sublabel": "catalog, tree, import/export", "pos": [600, 40], "size": [210, 70],
+      "sources": [ { "path": "src/main/java/com/example/editor/project/web/ProjectController.java", "label": "project API" } ]
+    },
+    { "id": "b_model_editor", "type": "backend", "label": "Model Editor", "sublabel": "+ editor definition, dynamic EMF", "pos": [600, 190], "size": [210, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/model/ModelDocumentController.java", "line": 23 },
+        { "path": "src/main/java/com/example/editor/emf/DynamicModelService.java", "line": 19 }
+      ]
+    },
+    { "id": "b_validation", "type": "backend", "label": "Validation & Quick Fixes", "sublabel": "declarative engine", "pos": [600, 340], "size": [210, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/validation/runtime/ValidationEngine.java", "line": 38 },
+        { "path": "src/main/java/com/example/editor/validation/quickfix/QuickFixRuntimeService.java", "line": 43 }
+      ]
+    },
+    { "id": "b_event_gami", "type": "backend", "label": "Events & Gamification", "sublabel": "includes EventFlow, event-driven runtime", "pos": [600, 490], "size": [210, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeService.java", "line": 46 },
+        { "path": "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java", "line": 51 }
+      ]
+    },
+    { "id": "b_grammar", "type": "backend", "label": "Grammar Designer", "sublabel": "textual DSL · Xtext/Langium/ANTLR", "pos": [600, 640], "size": [210, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java", "line": 21 },
+        { "path": "src/main/java/com/example/editor/textual/runtime/TextualModelSessionService.java" }
+      ]
+    },
+    { "id": "b_metamodel", "type": "backend", "label": "Metamodel Designer", "sublabel": "canonical + EMF/Ecore + diagram", "pos": [600, 790], "size": [210, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/metamodel/web/CanonicalMetamodelController.java", "line": 35 },
+        { "path": "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java", "line": 32 }
+      ]
+    },
+    { "id": "b_integration", "type": "backend", "label": "Integrations", "sublabel": "technology projection, roundtrip", "pos": [600, 940], "size": [210, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java", "line": 30 },
+        { "path": "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java", "line": 24 }
+      ]
+    },
+    { "id": "b_transformation", "type": "backend", "label": "Transformation Engine", "sublabel": "M2M · M2T · T2M", "pos": [600, 1090], "size": [210, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/transformation/runtime/CanonicalTransformationRuntime.java", "line": 39 },
+        { "path": "src/main/java/com/example/editor/transformation/export/TransformationLanguageAdapterRegistry.java", "line": 10 }
+      ]
+    },
+    { "id": "b_recovery", "type": "backend", "label": "External Recovery", "sublabel": "external projects + update sites", "pos": [600, 1240], "size": [210, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryController.java", "line": 17 },
+        { "path": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryController.java", "line": 25 }
+      ]
+    },
+    { "id": "b_publication", "type": "backend", "label": "Publication & Generation", "sublabel": "release gates + generated projects", "pos": [600, 1390], "size": [210, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleController.java", "line": 13 },
+        { "path": "src/main/java/com/example/editor/release/HydraReleaseGateService.java", "line": 36 }
+      ]
+    },
+    { "id": "ext_remote", "type": "external", "label": "Remote Providers", "sublabel": "Git · storage · OAuth", "pos": [990, 940], "size": [190, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/remote/git/RemoteGitController.java", "line": 16 },
+        { "path": "src/main/java/com/example/editor/remote/storage/web/RemoteStorageController.java", "line": 29 }
+      ]
+    },
+    { "id": "ext_toolchains", "type": "external", "label": "External MDE Engines", "sublabel": "ATL · ETL · Acceleo · EGL · Xtend", "tag": "administrator-installed", "pos": [990, 1090], "size": [190, 70],
+      "sources": [ { "path": "toolchains/official/profiles/atl.properties" }, { "path": "distribution/transformation-toolchains/atl/hydra-official-bridge/2.1.0/package.json" } ]
+    },
+    { "id": "b_security", "type": "security", "label": "Security", "sublabel": "hardening + process sandboxing", "pos": [990, 1265], "size": [190, 90],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/security/input/HydraRequestHardeningFilter.java", "line": 27 },
+        { "path": "src/main/java/com/example/editor/security/process/HydraExternalProcessRunner.java", "line": 22 }
+      ]
+    },
+    { "id": "b_persistence", "type": "database", "label": "Canonical Persistence", "sublabel": "JSON documents, optimistic ETag", "pos": [990, 1390], "size": [190, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/persistence/CanonicalDocumentStore.java", "line": 15 },
+        { "path": "src/main/java/com/example/editor/persistence/LocalCanonicalDocumentStoreFactory.java", "line": 14 }
+      ]
+    },
+    { "id": "b_audit", "type": "backend", "label": "Audit", "sublabel": "append-only JSONL log", "pos": [990, 1500], "size": [190, 70],
+      "sources": [
+        { "path": "src/main/java/com/example/editor/audit/JsonlAuditLogStore.java", "line": 44 },
+        { "path": "src/main/java/com/example/editor/provenance/HydraDistributionProvenanceService.java", "line": 37 }
+      ]
+    }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "HYDRA — local-first application", "wraps": ["fe_workbench", "b_project", "b_model_editor", "b_validation", "b_event_gami", "b_grammar", "b_metamodel", "b_integration", "b_transformation", "b_recovery", "b_publication", "b_persistence", "b_security", "b_audit"], "pad": 18 },
+    { "kind": "security-group", "label": "Spring Boot backend — local JVM process", "wraps": ["b_project", "b_model_editor", "b_validation", "b_event_gami", "b_grammar", "b_metamodel", "b_integration", "b_transformation", "b_recovery", "b_publication", "b_persistence", "b_security", "b_audit"], "pad": 12 }
+  ],
+  "connections": [
+    { "from": "user", "to": "fe_workbench", "label": "opens HYDRA", "variant": "emphasis" },
+    { "from": "fe_workbench", "to": "b_project", "label": "/api/projects", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_model_editor", "label": "/api/models", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_validation", "label": "/api/.../validations", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_event_gami", "label": "events · gamification", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_grammar", "label": "/api/grammars", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_metamodel", "label": "canonical-metamodels", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_integration", "label": "/api/remote-*", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_transformation", "label": "/api/transformations", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_recovery", "label": "external recovery", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_publication", "label": "/api/generated-projects", "fromSide": "right", "toSide": "left" },
+    { "from": "b_integration", "to": "ext_remote", "label": "Git/OAuth/storage" },
+    { "from": "b_transformation", "to": "ext_toolchains", "label": "external engines", "variant": "security" },
+    { "from": "b_recovery", "to": "b_security", "label": "sandboxed process", "variant": "dashed" },
+    { "from": "b_publication", "to": "b_security", "label": "sandboxed process", "variant": "dashed" },
+    { "from": "b_publication", "to": "b_persistence", "label": "JSON", "variant": "dashed" },
+    { "from": "b_publication", "to": "b_audit", "label": "provenance", "variant": "dashed" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "Architectural principles", "items": [
+      "HYDRA's canonical model always uses the current schema; there are no migration chains before GA",
+      "External formats are execution/export adapters, never dependencies of the canonical model",
+      "Unknown project files are preserved as PROJECT_RESOURCE instead of being discarded",
+      "HYDRA never executes imported project code during analysis"
+    ]},
+    { "dot": "cyan", "title": "Persistence & concurrency", "items": [
+      "One JSON document per canonical artifact, with ETag optimistic concurrency (CanonicalDocumentStore)",
+      "No database: everything lives on the local filesystem, under data/ (excluded from distribution packages)",
+      "All ten capability services persist the same way; the diagram draws only the Publication edge as a representative",
+      "Every canonical mutation is automatically observed to feed the audit log"
+    ]},
+    { "dot": "rose", "title": "Security", "items": [
+      "HydraRequestHardeningFilter bounds the shape and size of every incoming HTTP request",
+      "HydraExternalProcessRunner is the single launcher for external processes: minimal environment, bounded output, timeout and process-tree teardown",
+      "Third-party MDE engines (ATL/ETL/Acceleo/EGL/Xtend) require explicit administrator installation; a missing engine fails closed rather than being simulated"
+    ]},
+    { "dot": "violet", "title": "Provenance of this diagram", "items": [
+      "Repository: github.com/CristianGM23/hydra_tool · branch main · commit 864ed52",
+      "Clean working tree (no local changes) at generation time",
+      "Initial generation: no previous Archify architecture existed to compare against",
+      "HYDRA version: 4.32.107 (config/hydra-version.json)"
+    ]},
+    { "dot": "slate", "title": "Out of scope for this diagram", "items": [
+      "CI/CD (.github/workflows/hydra-ci.yml) and the release/qualification scripts are build infrastructure, not runtime architecture",
+      "Build, CI and toolchain detail lives in docs/architecture/archify/README.md"
+    ]}
+  ]
+}

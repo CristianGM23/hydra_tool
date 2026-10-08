@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "workflow",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-howto-model-editor.es.workflow.json",
+    "sha256": "1f7f557d9a4c7ac5d68bdca5e9e660a53a571c4b94b6e46ed5bd081c3c92e484",
+    "bytes": 33560
+  },
+  "artifact": {
+    "path": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-howto-model-editor.es.html",
+    "sha256": "20f14f9b2fbe6ea31524d3b124fa78cb59901adb2ffc68ea2545b44353643942",
+    "bytes": 760474
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-howto-model-editor.es.finalize.json",
+    "summaryReceipt": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-howto-model-editor.es.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-howto-model-editor.es.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.0.1",
+    "availableVersion": "3.0.1",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-06T13:20:23.396Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 26703,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "routesOverSuggestedBends": 1,
+      "routesOverSuggestedStretch": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [],
+      "detours": [
+        {
+          "relationship": {
+            "id": "rules-quickfixes",
+            "from": "rules",
+            "to": "quickfixes",
+            "label": "cada regla puede tener reparación",
+            "collectionIndex": 5,
+            "artifactIndex": 6
+          },
+          "bends": 3,
+          "stretch": 1.509
+        }
+      ],
+      "truncated": false
+    },
+    "hints": [
+      "rules → quickfixes needs 3 bends: move node rules or quickfixes so they share a row or column with matching centers, or sit diagonally with a clear corner."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

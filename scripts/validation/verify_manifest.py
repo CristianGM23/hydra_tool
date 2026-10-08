@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-"""Verifica que MANIFEST_SHA256.txt describa exactamente el inventario fuente publicable."""
+"""Verifica hashes canónicos y, opcionalmente, tolera extras preservados del workspace."""
 
+import argparse
 import hashlib
 import json
 import sys
@@ -23,7 +24,21 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--allow-extra",
+        action="store_true",
+        help=(
+            "Verifica presencia y hash de todas las rutas canónicas, pero permite "
+            "rutas fuente adicionales del workspace que no figuren en el manifiesto."
+        ),
+    )
+    return parser.parse_args()
+
+
 def main() -> int:
+    args = parse_args()
     if not MANIFEST.is_file():
         print("FAIL missing MANIFEST_SHA256.txt")
         return 1
@@ -54,15 +69,28 @@ def main() -> int:
     missing = sorted(set(expected) - set(actual))
     extra = sorted(set(actual) - set(expected))
     changed = sorted(relative for relative, path in actual.items() if expected.get(relative) not in (None, sha256(path)))
-    if missing or extra or changed:
+    blocking_extra = [] if args.allow_extra else extra
+    if missing or blocking_extra or changed:
         for relative in missing:
             print(f"FAIL missing {relative}")
-        for relative in extra:
+        for relative in blocking_extra:
             print(f"FAIL unlisted {relative}")
         for relative in changed:
             print(f"FAIL changed {relative}")
         return 1
-    print(f"Manifest verified: {len(expected)}/{len(actual)} canonical source files")
+    if args.allow_extra:
+        print(
+            f"Manifest verified: {len(expected)}/{len(expected)} canonical source files; "
+            f"preserved workspace extras={len(extra)}"
+        )
+        if extra:
+            preview = extra[:12]
+            for relative in preview:
+                print(f"PRESERVE extra {relative}")
+            if len(extra) > len(preview):
+                print(f"PRESERVE ... {len(extra) - len(preview)} additional workspace extras")
+    else:
+        print(f"Manifest verified: {len(expected)}/{len(actual)} canonical source files")
     return 0
 
 

@@ -1,0 +1,7 @@
+import { describe,expect,it } from 'vitest';
+import { normalizeTechnologyDeliveryReadiness } from './technologyDeliveryReadinessNormalization';
+
+describe('technology delivery readiness normalization',()=>{
+ it('keeps actionable evidence from a valid backend descriptor',()=>{const value=normalizeTechnologyDeliveryReadiness({profileId:'people-xtext',technology:'XTEXT',profileValid:true,compilationReady:true,generatedFileCount:18,nativeVerificationStepCount:1,nativeVerificationAvailable:true,actions:[{stage:'GENERATE',action:'COMPILE_ARCHIVE',state:'READY',support:'FULL',hydraExecutable:true,mutatesHost:false,targetDirectoryRequired:false,previewRequired:false,apiSuffix:'/compile',httpMethod:'POST',reason:'Ready',prerequisites:[],evidence:['Generated files: 18']}],blockers:[],warnings:[]});expect(value.technology).toBe('XTEXT');expect(value.compilationReady).toBe(true);expect(value.generatedFileCount).toBe(18);expect(value.actions[0]?.state).toBe('READY');});
+ it('fails closed for unknown enum values and malformed collections',()=>{const value=normalizeTechnologyDeliveryReadiness({technology:'FUTURE_TECH',actions:[{stage:'FUTURE',action:'MAGIC',state:'MAYBE',support:'MAGIC'}],blockers:'bad'});expect(value.technology).toBe('ANTLR');expect(value.actions[0]).toMatchObject({stage:'CONFIGURE',action:'NONE',state:'BLOCKED',support:'UNSUPPORTED'});expect(value.blockers).toEqual([]);});
+});

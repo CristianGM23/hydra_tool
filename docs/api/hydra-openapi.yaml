@@ -1598,6 +1598,33 @@ paths:
           description: Successful HYDRA response
         '400':
           description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{semanticScopeId}/integrations/technologies/workflows/:
+    get:
+      operationId: TechnologyWorkflowController_list_get
+      tags: [TechnologyWorkflowController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{semanticScopeId}/integrations/technologies/workflows/{technology}:
+    get:
+      operationId: TechnologyWorkflowController_find_get
+      tags: [TechnologyWorkflowController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{semanticScopeId}/integrations/{profileId}/technology/readiness/:
+    get:
+      operationId: TechnologyDeliveryReadinessController_get_get
+      tags: [TechnologyDeliveryReadinessController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
   /api/capability-packages/archives/:
     get:
       operationId: CapabilityPackageArchiveController_cached_get
@@ -3870,6 +3897,114 @@ paths:
   /api/textual-model-sessions/{id}:
     get:
       operationId: TextualModelSessionController_find_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/capabilities:
+    get:
+      operationId: TextualModelSessionController_interactionCapabilities_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/completion:
+    get:
+      operationId: TextualModelSessionController_completion_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/definition:
+    get:
+      operationId: TextualModelSessionController_definition_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/folding:
+    get:
+      operationId: TextualModelSessionController_folding_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/format:
+    post:
+      operationId: TextualModelSessionController_format_post
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/hover:
+    get:
+      operationId: TextualModelSessionController_hover_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/invalidation:
+    post:
+      operationId: TextualModelSessionController_invalidation_post
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/references:
+    get:
+      operationId: TextualModelSessionController_references_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/rename/preview:
+    post:
+      operationId: TextualModelSessionController_renamePreview_post
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/semantic-tokens:
+    get:
+      operationId: TextualModelSessionController_semanticTokens_get
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/snapshot-compatibility:
+    post:
+      operationId: TextualModelSessionController_snapshotCompatibility_post
+      tags: [TextualModelSessionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/textual-model-sessions/{id}/interactions/symbols:
+    get:
+      operationId: TextualModelSessionController_symbols_get
       tags: [TextualModelSessionController]
       responses:
         '200':

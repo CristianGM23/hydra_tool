@@ -23,7 +23,9 @@ public class XtextMetamodelExporter implements MetamodelTextExporter {
         String grammarName = GrammarGenerationSupport.toPascalIdentifier(context.neutralMetamodel().name(), "GeneratedLanguage");
         StringBuilder result = new StringBuilder();
         var auxiliary = GrammarGenerationSupport.auxiliaryRuleNames(context, false);
+        MetaClass semanticRoot = GrammarGenerationSupport.findSemanticRoot(context);
         result.append("grammar generated.").append(grammarName).append(" with org.eclipse.xtext.common.Terminals\n\n");
+        if(semanticRoot != null) result.append("// HYDRA_SEMANTIC_ROOT ").append(ruleName(semanticRoot)).append("\n");
         result.append("import \"").append(context.targets().ecore().namespaceUri()).append("\" as model\n\n");
         result.append("// HYDRA_TRANSPORT_RULE ").append(auxiliary.rootRule()).append("\n").append(auxiliary.rootRule()).append(":\n    elements+=").append(auxiliary.elementRule()).append("*;\n\n");
         result.append("// HYDRA_TRANSPORT_RULE ").append(auxiliary.elementRule()).append("\n").append(auxiliary.elementRule()).append(":\n    ");
@@ -50,8 +52,6 @@ public class XtextMetamodelExporter implements MetamodelTextExporter {
 
             if(nameAttribute != null) {
                 result.append("name=ID ");
-            } else {
-                result.append("ID ");
             }
 
             result.append("'{' \n");

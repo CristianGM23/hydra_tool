@@ -1,0 +1,1654 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HYDRA — Arquitectura</title>
+<meta name="description" content="Punto de entrada único a la arquitectura de HYDRA: vista general, catálogo de capacidades y catálogo de procesos, en ES/EN, con exploración por capas y evidencia de código." />
+<style>
+  :root{
+    --bg:#f3f4f1; --panel:#ffffff; --ink:#15181c; --ink-dim:#5b6472;
+    --line:#d8dcd3; --accent:#1f8a6f; --accent-ink:#ffffff;
+    --chip:#eef1ec; --chip-ink:#374151; --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace;
+    --sidebar-w:380px; --header-h:56px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14171a; --panel:#1b1f23; --ink:#eef0ee; --ink-dim:#9aa4ab;
+      --line:#2b3136; --accent:#39b790; --accent-ink:#06120d;
+      --chip:#20262b; --chip-ink:#c7cdd1;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14171a; --panel:#1b1f23; --ink:#eef0ee; --ink-dim:#9aa4ab;
+    --line:#2b3136; --accent:#39b790; --accent-ink:#06120d;
+    --chip:#20262b; --chip-ink:#c7cdd1;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex; flex-direction:column; min-height:100vh;
+  }
+  header{
+    flex:0 0 auto; display:flex; align-items:center; gap:16px;
+    padding:10px 16px; border-bottom:1px solid var(--line); background:var(--panel);
+    flex-wrap:wrap; row-gap:8px; min-height:var(--header-h);
+  }
+  .brand{display:flex; align-items:center; gap:8px; font-weight:700; font-size:15px; white-space:nowrap;}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);display:inline-block;}
+  .seg{display:flex; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  .seg button{
+    appearance:none; border:none; background:transparent; color:var(--ink-dim);
+    font:inherit; font-weight:600; padding:8px 14px; cursor:pointer; white-space:nowrap;
+    border-right:1px solid var(--line);
+  }
+  .seg button:last-child{border-right:none;}
+  .seg button[aria-pressed="true"]{background:var(--accent); color:var(--accent-ink);}
+  .seg button:hover:not([aria-pressed="true"]){background:var(--chip); color:var(--ink);}
+  .spacer{flex:1 1 auto;}
+  .ghost-btn{
+    appearance:none; border:1px solid var(--line); background:var(--panel); color:var(--ink);
+    font:inherit; font-weight:600; padding:8px 12px; border-radius:8px; cursor:pointer; white-space:nowrap;
+  }
+  .ghost-btn:hover{background:var(--chip);}
+  .ghost-btn.small{font-size:12px; padding:6px 10px; font-weight:600;}
+  main{flex:1 1 auto; display:flex; min-height:0; position:relative;}
+  .view{flex:1 1 auto; display:flex; min-height:0; min-width:0;}
+  .stage{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; position:relative;}
+  .stage iframe{flex:1 1 auto; width:100%; height:100%; border:none; background:var(--panel);}
+  .stage .hint{
+    position:absolute; left:12px; bottom:12px; font-size:12px; color:var(--ink-dim);
+    background:color-mix(in srgb, var(--panel) 85%, transparent); padding:4px 8px; border-radius:6px;
+    border:1px solid var(--line); pointer-events:none;
+  }
+  aside{
+    width:var(--sidebar-w); flex:0 0 auto; border-left:1px solid var(--line); background:var(--panel);
+    display:flex; flex-direction:column; min-height:0;
+  }
+  aside .sidebar-head{padding:14px 16px 8px; border-bottom:1px solid var(--line); flex:0 0 auto;}
+  aside .sidebar-head h2{margin:0 0 4px; font-size:14px;}
+  aside .sidebar-head p{margin:0; font-size:12px; color:var(--ink-dim);}
+  .search{
+    margin:10px 16px 0; display:flex; align-items:center; gap:6px;
+    border:1px solid var(--line); border-radius:8px; padding:6px 10px; flex:0 0 auto;
+  }
+  .search input{border:none; outline:none; background:transparent; color:var(--ink); font:inherit; width:100%;}
+  .comp-list{overflow-y:auto; padding:10px 16px 24px; flex:1 1 auto;}
+  .card{border:1px solid var(--line); border-radius:10px; margin-bottom:10px; overflow:hidden; background:var(--panel);}
+  .card[data-kind="external"]{border-color:#c9994a66;}
+  .card[data-kind="security"]{border-color:#c2555566;}
+  .card[data-kind="database"]{border-color:#4a7ac966;}
+  .card summary{
+    list-style:none; cursor:pointer; padding:10px 12px; display:flex; align-items:center; gap:8px;
+  }
+  .card summary::-webkit-details-marker{display:none;}
+  .card summary::before{content:"▸"; color:var(--ink-dim); font-size:11px; transition:transform .15s;}
+  .card[open] > summary::before{transform:rotate(90deg);}
+  .kind-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;}
+  .kind-dot.frontend{background:#4a90c9;}
+  .kind-dot.backend{background:#1f8a6f;}
+  .kind-dot.database{background:#4a7ac9;}
+  .kind-dot.security{background:#c25555;}
+  .kind-dot.external{background:#c9994a;}
+  .kind-dot.messagebus{background:#8a5fc9;}
+  .kind-dot.cloud{background:#2aa7a0;}
+  .card summary .label{font-weight:700; font-size:13px; flex:1 1 auto;}
+  .card summary .tag{font-size:10px; color:var(--ink-dim); border:1px solid var(--line); border-radius:999px; padding:1px 7px;}
+  .tier-body{padding:0 12px 12px;}
+  .tier{border-top:1px solid var(--line); padding:10px 0 0; margin-top:10px;}
+  .tier:first-child{border-top:none; margin-top:4px; padding-top:0;}
+  .tier .tier-label{
+    font-size:10px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--accent); margin-bottom:4px;
+  }
+  .tier .tier-text{font-size:12.5px; color:var(--ink); margin:0 0 6px;}
+  .tier .tier-sub{font-size:12px; color:var(--ink-dim); margin:0;}
+  .reveal-btn{
+    appearance:none; border:1px dashed var(--line); background:transparent; color:var(--ink-dim);
+    font:inherit; font-size:11.5px; padding:5px 10px; border-radius:7px; cursor:pointer; margin-top:2px;
+  }
+  .reveal-btn:hover{background:var(--chip); color:var(--ink);}
+  .src-list{list-style:none; margin:6px 0 0; padding:0; display:flex; flex-direction:column; gap:4px;}
+  .src-list li{
+    font:11.5px/1.4 var(--mono); color:var(--ink-dim); background:var(--chip); border-radius:6px; padding:5px 8px;
+    word-break:break-all;
+  }
+  .src-list .src-label{color:var(--ink); font-family:inherit; font-weight:600; display:block; margin-bottom:1px;}
+  footer{
+    flex:0 0 auto; border-top:1px solid var(--line); background:var(--panel); padding:8px 16px;
+    font-size:11.5px; color:var(--ink-dim); display:flex; gap:14px; flex-wrap:wrap;
+  }
+  footer a{color:var(--ink-dim);}
+  .hidden{display:none !important;}
+
+  /* ---- Capabilities / Processes catalog views ---- */
+  .list-panel{width:300px; flex:0 0 auto; border-right:1px solid var(--line); background:var(--panel); overflow-y:auto; padding:14px 12px;}
+  .detail-panel{flex:1 1 auto; overflow-y:auto; padding:22px 28px; background:var(--bg);}
+  .detail-panel .empty{color:var(--ink-dim); font-size:13px;}
+  .nav-card{border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:8px; cursor:pointer; background:var(--panel);}
+  .nav-card:hover{border-color:var(--accent);}
+  .nav-card.active{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, var(--panel));}
+  .nav-card .nav-kind{font-size:10px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.04em; display:flex; align-items:center; gap:6px;}
+  .nav-card .nav-title{font-weight:700; font-size:13px; margin-top:3px;}
+  .proc-group-label{font-size:10px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-dim); margin:14px 2px 6px; }
+  .proc-group-label:first-child{margin-top:2px;}
+  .lvl-card{border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin-bottom:16px; background:var(--panel); max-width:980px;}
+  .lvl-card h3{margin:0 0 10px; font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--accent);}
+  .lvl-card p{margin:0 0 8px; font-size:13px;}
+  .lvl-card ul{margin:0 0 8px; padding-left:20px; font-size:13px;}
+  .lvl-card ul li{margin-bottom:4px;}
+  .detail-title{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+  .detail-title h2{margin:0; font-size:19px;}
+  .concept{border-top:1px dashed var(--line); padding:12px 0;}
+  .concept:first-child{border-top:none; padding-top:2px;}
+  .concept h4{margin:0 0 6px; font-size:13.5px;}
+  .concept .concept-field{font-size:12.5px; margin:0 0 5px; display:grid; grid-template-columns:128px 1fr; gap:4px 10px;}
+  .concept .concept-field b{color:var(--ink-dim); font-weight:600;}
+  .concept .concept-field ul{margin:0; padding-left:16px;}
+  .related-link{display:inline-block; margin:4px 8px 0 0;}
+  /* process flow */
+  .flow-start,.flow-result{border:2px solid var(--accent); border-radius:10px; padding:12px 16px; margin-bottom:10px; background:var(--panel);}
+  .flow-start .flow-kicker,.flow-result .flow-kicker{font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); font-weight:800;}
+  .flow-stage{border:1px solid var(--line); border-left-width:5px; border-left-style:solid; border-radius:8px; padding:10px 14px; margin:0 0 8px 18px; background:var(--panel);}
+  .flow-stage.optional{border-left-style:dashed; border-top-style:dashed; border-right-style:dashed; border-bottom-style:dashed;}
+  .flow-stage .stage-head{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .flow-stage .stage-cap{font-size:10px; text-transform:uppercase; color:var(--ink-dim); letter-spacing:.03em;}
+  .flow-stage .stage-opt-badge{font-size:10px; border:1px solid var(--line); border-radius:999px; padding:1px 7px; color:var(--ink-dim);}
+  .flow-stage .stage-label{font-weight:700; font-size:13.5px; margin:3px 0 2px;}
+  .flow-stage .stage-detail{font-size:12.5px; color:var(--ink-dim); margin:0;}
+  .flow-branch{margin:0 0 10px 34px; font-size:12px; color:var(--ink-dim); border-left:2px dotted var(--line); padding-left:10px;}
+  .flow-branch b{color:var(--ink);}
+  .evidence-row{font:11.5px/1.4 var(--mono); color:var(--ink-dim); background:var(--chip); border-radius:6px; padding:5px 8px; margin-bottom:4px; word-break:break-all;}
+  /* requiredness legend + badges (shared by Elements and Process views) */
+  .req-badge{display:inline-block; font-size:10px; font-weight:700; letter-spacing:.02em; text-transform:uppercase; padding:2px 8px; border-radius:999px; margin-left:8px; color:var(--ink); background:var(--chip);}
+  .req-badge[data-req="MANDATORY"]{border:2px solid var(--accent);}
+  .req-badge[data-req="OPTIONAL"]{border:2px dashed var(--ink-dim);}
+  .req-badge[data-req="CONDITIONAL"]{border:2px dotted #c9994a;}
+  .req-badge[data-req="ALTERNATIVE"]{border:2px double #4a90c9;}
+  .req-badge[data-req="REPEATABLE"]{border:2px solid #8a5fc9;}
+  .req-legend{display:flex; flex-wrap:wrap; gap:10px; font-size:11.5px; color:var(--ink-dim); margin-bottom:12px;}
+  .req-legend .req-badge{margin-left:0;}
+  .authoring-element{border-top:1px dashed var(--line); padding:10px 0;}
+  .authoring-element:first-child{border-top:none;}
+  .authoring-element h5{margin:0 0 6px; font-size:13px; display:flex; align-items:center; flex-wrap:wrap;}
+  .authoring-mode{margin:0 0 6px 4px; padding:6px 10px; background:var(--chip); border-radius:8px;}
+  .authoring-mode b{font-size:12px;}
+  .authoring-mode p{margin:3px 0 0; font-size:12px; color:var(--ink-dim);}
+
+  @media (max-width: 900px){
+    main{flex-direction:column;}
+    .view{flex-direction:column;}
+    aside{width:100%; max-height:46vh; border-left:none; border-top:1px solid var(--line);}
+    .list-panel{width:100%; max-height:34vh; border-right:none; border-bottom:1px solid var(--line);}
+    .stage{min-height:40vh;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><span class="dot"></span> HYDRA — Arquitectura</div>
+  <div class="seg" id="section-seg" role="tablist" aria-label="Sección">
+    <button type="button" data-section="overview" aria-pressed="true"></button>
+    <button type="button" data-section="capabilities" aria-pressed="false"></button>
+    <button type="button" data-section="processes" aria-pressed="false"></button>
+  </div>
+  <div class="seg" id="level-seg" role="tablist" aria-label="Nivel">
+    <button type="button" data-level="user" aria-pressed="true"></button>
+    <button type="button" data-level="functional" aria-pressed="false"></button>
+    <button type="button" data-level="technical" aria-pressed="false"></button>
+  </div>
+  <div class="seg" id="lang-seg" role="tablist" aria-label="Idioma">
+    <button type="button" data-lang="es" aria-pressed="true">ES</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+  <div class="spacer"></div>
+  <button type="button" class="ghost-btn" id="toggle-sidebar">Componentes ▸</button>
+</header>
+
+<main>
+  <div class="view" id="view-overview">
+    <div class="stage">
+      <iframe id="level-frame" title="Diagrama de arquitectura de HYDRA"></iframe>
+      <div class="hint" id="stage-hint"></div>
+    </div>
+    <aside id="sidebar">
+      <div class="sidebar-head">
+        <h2 id="sidebar-title">Explorar componentes</h2>
+        <p id="sidebar-sub">Mismo ID canónico en los tres niveles. Progresión: qué hace → cómo funciona → cómo está implementado → evidencia.</p>
+      </div>
+      <div class="search">
+        <span aria-hidden="true">🔎</span>
+        <input type="search" id="comp-search" placeholder="Buscar componente…" />
+      </div>
+      <div class="comp-list" id="comp-list"></div>
+    </aside>
+  </div>
+
+  <div class="view hidden" id="view-capabilities">
+    <div class="list-panel" id="cap-list"></div>
+    <div class="detail-panel" id="cap-detail"></div>
+  </div>
+
+  <div class="view hidden" id="view-processes">
+    <div class="list-panel" id="proc-list"></div>
+    <div class="detail-panel" id="proc-detail"></div>
+  </div>
+</main>
+
+<footer>
+  <span id="footer-provenance"></span>
+  <span>·</span>
+  <a href="internal/hydra-architecture.es.html" target="_blank" rel="noopener" id="footer-link-tech">Abrir diagrama técnico en pestaña nueva</a>
+  <span>·</span>
+  <a href="README.md" id="footer-link-readme">README</a>
+</footer>
+
+<script src="hydra-architecture-data.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ---------------------------------------------------------------------
+  // Canonical component data — derived from the already-validated
+  // *.architecture.json specs under internal/. No new architecture facts
+  // are introduced here; this only republishes label/sublabel/sources that
+  // already passed Archify's finalize gates, in a shared bilingual shape
+  // for the portal's component-exploration cards.
+  // ---------------------------------------------------------------------
+  var I18N = {
+    es: {
+      sidebarTitle: "Explorar componentes",
+      sidebarSub: "Mismo ID canónico en los tres niveles. Progresión: qué hace → cómo funciona → cómo está implementado → evidencia.",
+      search: "Buscar componente…",
+      toggleShow: "Componentes ▸",
+      toggleHide: "Componentes ◂",
+      levelUser: "USUARIO",
+      levelFunctional: "FUNCIONAL",
+      levelTechnical: "TÉCNICO",
+      levelHowto: "CÓMO SE HACE",
+      sectionOverview: "VISIÓN GENERAL",
+      sectionCapabilities: "CAPACIDADES",
+      sectionProcesses: "PROCESOS",
+      tierWhat: "QUÉ HACE",
+      tierLimits: "LÍMITES DE MODELADO",
+      tierRelations: "RELACIONES FUNCIONALES",
+      tierHow: "CÓMO FUNCIONA",
+      tierImpl: "CÓMO ESTÁ IMPLEMENTADO",
+      tierSrc: "EVIDENCIA EN EL CÓDIGO",
+      revealHow: "+ ver cómo funciona",
+      revealImpl: "+ ver cómo está implementado",
+      revealSrc: "+ ver evidencia en el código",
+      notInLevel: "No aparece en el nivel de usuario como capacidad propia; forma parte de la infraestructura de la aplicación.",
+      noRelations: "No depende funcionalmente de otra capacidad ni la alimenta de forma directa; otras capacidades pueden depender de esta (ver sus propias relaciones).",
+      openTab: "Abrir diagrama técnico en pestaña nueva",
+      readme: "README",
+      goToCapability: "Ver vista de capacidad",
+      capLevel1: "QUÉ ES Y QUÉ APORTA",
+      capLevel2: "QUÉ SE PUEDE DEFINIR",
+      capLevel3: "CÓMO SE RELACIONAN LOS ELEMENTOS",
+      capLevel4: "CÓMO FUNCIONA POR DENTRO",
+      capLevel5: "CÓMO INTERACTÚA CON EL RESTO DE HYDRA",
+      capLevel6: "CÓMO ESTÁ IMPLEMENTADO",
+      capInputs: "Entradas",
+      capOutputs: "Salidas",
+      capValue: "Para qué sirve",
+      capIncoming: "Depende de / recibe de",
+      capOutgoing: "Alimenta a / dispara en",
+      capRuntime: "Runtime",
+      capServices: "Servicios",
+      capApis: "APIs",
+      capEvidence: "Evidencia en el código",
+      capRelatedProcesses: "Procesos relacionados",
+      capAuthoring: "CÓMO SE DEFINE CADA ELEMENTO",
+      authoringModes: "Formas de crearlo/configurarlo",
+      reqLegendTitle: "Leyenda de obligatoriedad",
+      tabOverview: "Visión general",
+      tabElements: "Elementos",
+      tabProcess: "Proceso",
+      tabRelationships: "Relaciones",
+      tabImplementation: "Implementación",
+      byCapability: "Por capacidad",
+      crossCapability: "Cruzados (varias capacidades)",
+      conceptPurpose: "Propósito",
+      conceptWhen: "Cuándo se usa",
+      conceptProps: "Propiedades principales",
+      conceptRel: "Relaciones",
+      conceptCard: "Cardinalidad",
+      conceptIO: "Entradas / Salidas",
+      conceptLifecycle: "Rol en el ciclo de vida",
+      conceptExample: "Ejemplo real",
+      procTrigger: "Disparador",
+      procStart: "Estado de partida",
+      procStages: "Etapas",
+      procBranches: "Ramas opcionales / condicionales",
+      procResult: "Resultado",
+      procEvidence: "Evidencia",
+      procOpenDiagram: "Abrir el diagrama Archify detallado de este proceso",
+      procOptional: "opcional",
+      backToOverview: "← Volver a la visión general",
+      selectCapability: "Selecciona una capacidad de la lista para ver su detalle.",
+      selectProcess: "Selecciona un proceso de la lista para ver su detalle.",
+      hint: {
+        user: "Nivel USUARIO — qué puede hacer HYDRA, sin jerga técnica.",
+        functional: "Nivel FUNCIONAL — cómo encajan los subsistemas y qué se dicen entre sí.",
+        technical: "Nivel TÉCNICO — servicios reales, APIs, persistencia y seguridad, con evidencia de código.",
+        howto: "CÓMO SE HACE — un proceso real combinando varias capacidades (diagrama de flujo, no de arquitectura)."
+      },
+      provenance: "Repositorio: github.com/CristianGM23/hydra_tool · commit 864ed52 · generación inicial"
+    },
+    en: {
+      sidebarTitle: "Explore components",
+      sidebarSub: "Same canonical ID across all three levels. Progression: what it does → how it works → how it's implemented → evidence.",
+      search: "Search component…",
+      toggleShow: "Components ▸",
+      toggleHide: "Components ◂",
+      levelUser: "USER",
+      levelFunctional: "FUNCTIONAL",
+      levelTechnical: "TECHNICAL",
+      levelHowto: "HOW-TO",
+      sectionOverview: "OVERVIEW",
+      sectionCapabilities: "CAPABILITIES",
+      sectionProcesses: "PROCESSES",
+      tierWhat: "WHAT IT DOES",
+      tierLimits: "MODELING SCOPE & LIMITS",
+      tierRelations: "FUNCTIONAL RELATIONSHIPS",
+      tierHow: "HOW IT WORKS",
+      tierImpl: "HOW IT IS IMPLEMENTED",
+      tierSrc: "SOURCE EVIDENCE",
+      revealHow: "+ show how it works",
+      revealImpl: "+ show how it's implemented",
+      revealSrc: "+ show source evidence",
+      notInLevel: "Not shown as its own capability at the user level; it is part of the application's infrastructure.",
+      noRelations: "Does not functionally depend on, or directly feed, another capability; other capabilities may depend on this one (see their own relationships).",
+      openTab: "Open technical diagram in a new tab",
+      readme: "README",
+      goToCapability: "View capability",
+      capLevel1: "WHAT IT IS AND WHAT IT OFFERS",
+      capLevel2: "WHAT CAN BE DEFINED",
+      capLevel3: "HOW ELEMENTS RELATE",
+      capLevel4: "HOW IT WORKS INTERNALLY",
+      capLevel5: "HOW IT INTERACTS WITH THE REST OF HYDRA",
+      capLevel6: "HOW IT IS IMPLEMENTED",
+      capInputs: "Inputs",
+      capOutputs: "Outputs",
+      capValue: "What it's for",
+      capIncoming: "Depends on / receives from",
+      capOutgoing: "Feeds / triggers in",
+      capRuntime: "Runtime",
+      capServices: "Services",
+      capApis: "APIs",
+      capEvidence: "Source evidence",
+      capRelatedProcesses: "Related processes",
+      capAuthoring: "HOW EACH ELEMENT IS DEFINED",
+      authoringModes: "Ways to create/configure it",
+      reqLegendTitle: "Requiredness legend",
+      tabOverview: "Overview",
+      tabElements: "Elements",
+      tabProcess: "Process",
+      tabRelationships: "Relationships",
+      tabImplementation: "Implementation",
+      byCapability: "By capability",
+      crossCapability: "Cross-capability",
+      conceptPurpose: "Purpose",
+      conceptWhen: "When used",
+      conceptProps: "Main properties",
+      conceptRel: "Relationships",
+      conceptCard: "Cardinality",
+      conceptIO: "Inputs / Outputs",
+      conceptLifecycle: "Lifecycle role",
+      conceptExample: "Real example",
+      procTrigger: "Trigger",
+      procStart: "Starting state",
+      procStages: "Stages",
+      procBranches: "Optional / conditional branches",
+      procResult: "Result",
+      procEvidence: "Evidence",
+      procOpenDiagram: "Open this process's detailed Archify diagram",
+      procOptional: "optional",
+      backToOverview: "← Back to overview",
+      selectCapability: "Select a capability from the list to see its detail.",
+      selectProcess: "Select a process from the list to see its detail.",
+      hint: {
+        user: "USER level — what HYDRA can do, with no technical jargon.",
+        functional: "FUNCTIONAL level — how the subsystems fit together and what they say to each other.",
+        technical: "TECHNICAL level — real services, APIs, persistence and security, with source citations.",
+        howto: "HOW-TO — a real process combining several capabilities (a flow diagram, not an architecture one)."
+      },
+      provenance: "Repository: github.com/CristianGM23/hydra_tool · commit 864ed52 · initial generation"
+    }
+  };
+
+  // id -> { kind, inUser, es:{user,functional,technical}, en:{...}, detail:{es,en}[bullets],
+  //         relations:[{to,es,en}], sources:[{path,line,end_line,label}] }
+  // `detail` and `relations` paraphrase, in plain language, facts already present in the
+  // validated internal/*.architecture.json sublabels/cards and in the repository exploration
+  // notes behind them (EMF/Ecore, Xtext/Langium/ANTLR, ATL/ETL/Acceleo/EGL/Xtend, CanonicalMetamodelApplicationService
+  // dependents, etc.) — no new architecture is introduced here.
+  var COMPONENTS = {
+    fe_workbench: {
+      kind: "frontend", inUser: true,
+      es: {
+        user: ["HYDRA", "estación de trabajo"],
+        functional: ["Workbench HYDRA", "SPA React, enrutado por hash · 23 módulos de capacidad"],
+        technical: ["Workbench HYDRA", "SPA React, enrutado por hash · 23 módulos de capacidad"]
+      },
+      en: {
+        user: ["HYDRA", "workbench"],
+        functional: ["HYDRA Workbench", "React SPA, hash-routed · 23 capability modules"],
+        technical: ["HYDRA Workbench", "React SPA, hash-routed · 23 capability modules"]
+      },
+      detail: {
+        es: [
+          "Es la aplicación web que abres para trabajar con HYDRA: una sola página que cambia de pantalla según lo que elijas, sin recargar.",
+          "Ofrece 23 módulos de capacidad (metamodelos, modelos, gramáticas, transformaciones, eventos, integraciones, publicación…) cargados bajo demanda.",
+          "Tecnología: React, lienzos interactivos @xyflow/react para los diagramas y el editor Monaco (el mismo motor que VS Code) para el texto."
+        ],
+        en: [
+          "The web app you open to work with HYDRA: a single page that switches screens depending on what you pick, with no reload.",
+          "Offers 23 capability modules (metamodels, models, grammars, transformations, events, integrations, publication…) loaded on demand.",
+          "Technology: React, interactive @xyflow/react canvases for the diagrams, and the Monaco editor (the same engine behind VS Code) for text."
+        ]
+      },
+      limits: {
+        es: [
+          "Aquí no se modela ningún contenido de dominio: es el punto de entrada y el enrutado entre los demás módulos.",
+          "Todo lo que sí se modela (clases, reglas, transformaciones…) vive en su propio módulo de capacidad, nunca en el workbench."
+        ],
+        en: [
+          "No domain content is modeled here: it is the entry point and the routing between every other module.",
+          "Everything that is modeled (classes, rules, transformations…) lives in its own capability module, never in the workbench."
+        ]
+      },
+      relations: [],
+      sources: [
+        { path: "frontend/src/App.tsx", line: 44, end_line: 708, label: "router + workbench de modelo" },
+        { path: "frontend/src/application-shell/moduleRegistry.ts", line: 9, end_line: 37, label: "registro de módulos" },
+        { path: "frontend/src/application-shell/HydraCapabilityModule.tsx", line: 1, end_line: 31, label: "carga perezosa por módulo" }
+      ]
+    },
+    b_metamodel: {
+      kind: "backend", inUser: true,
+      es: {
+        user: ["Metamodelos", "diseño gráfico del lenguaje"],
+        functional: ["Diseñador de Metamodelos", "canónico + EMF/Ecore + diagrama"],
+        technical: ["Diseñador de Metamodelos", "canónico + EMF/Ecore + diagrama"]
+      },
+      en: {
+        user: ["Metamodels", "graphical language design"],
+        functional: ["Metamodel Designer", "canonical + EMF/Ecore + diagram"],
+        technical: ["Metamodel Designer", "canonical + EMF/Ecore + diagram"]
+      },
+      detail: {
+        es: [
+          "Diseña el 'lenguaje' en sí: qué tipos de elementos existen, qué propiedades tienen y cómo se relacionan entre ellos.",
+          "Ofrece un lienzo visual de clases, enumerados y tipos de datos, con diagramación automática.",
+          "Tecnología: EMF/Ecore (el estándar de modelado de Eclipse) como núcleo canónico."
+        ],
+        en: [
+          "Designs the 'language' itself: which element types exist, what properties they have, and how they relate to each other.",
+          "Offers a visual canvas for classes, enums and data types, with automatic layout.",
+          "Technology: EMF/Ecore (Eclipse's modeling standard) as the canonical core."
+        ]
+      },
+      limits: {
+        es: [
+          "Sí se modela aquí: clases, atributos, referencias y composiciones, herencia, enumerados, tipos de datos primitivos y multiplicidad.",
+          "No se modela aquí: comportamiento ejecutable (eso son Validaciones y Eventos y Gamificación) ni sintaxis textual (eso es Diseñador de Gramáticas)."
+        ],
+        en: [
+          "Modeled here: classes, attributes, references and compositions, inheritance, enums, primitive data types, and multiplicity.",
+          "Not modeled here: executable behavior (that's Validation and Events & Gamification) or textual syntax (that's the Grammar Designer)."
+        ]
+      },
+      relations: [],
+      sources: [
+        { path: "src/main/java/com/example/editor/metamodel/web/CanonicalMetamodelController.java", line: 35 },
+        { path: "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java", line: 32 }
+      ]
+    },
+    b_model_editor: {
+      kind: "backend", inUser: true,
+      es: {
+        user: ["Modelos", "crear y editar instancias"],
+        functional: ["Editor de Modelos", "+ definición de editor, EMF dinámico"],
+        technical: ["Editor de Modelos", "+ definición de editor, EMF dinámico"]
+      },
+      en: {
+        user: ["Models", "create and edit instances"],
+        functional: ["Model Editor", "+ editor definition, dynamic EMF"],
+        technical: ["Model Editor", "+ editor definition, dynamic EMF"]
+      },
+      detail: {
+        es: [
+          "Crea y edita instancias de tu lenguaje: los documentos reales que la gente rellena con datos.",
+          "Ofrece un lienzo visual con paleta de elementos y un inspector de propiedades para rellenar cada dato.",
+          "Tecnología: EMF dinámico — construye esos objetos sin necesidad de generar código Java."
+        ],
+        en: [
+          "Creates and edits instances of your language: the actual documents people fill in with data.",
+          "Offers a visual canvas with an element palette and a property inspector to fill in each value.",
+          "Technology: dynamic EMF — builds those objects without ever generating Java code."
+        ]
+      },
+      limits: {
+        es: [
+          "Sí se modela aquí: instancias concretas del metamodelo — objetos, sus valores de atributo y sus enlaces de referencia.",
+          "No se modela aquí: nuevos tipos (eso es Metamodelos) ni las reglas que comprueban si la instancia es válida (eso es Validaciones)."
+        ],
+        en: [
+          "Modeled here: concrete instances of the metamodel — objects, their attribute values, and their reference links.",
+          "Not modeled here: new types (that's Metamodels) or the rules that check whether the instance is valid (that's Validation)."
+        ]
+      },
+      relations: [
+        { to: "b_metamodel", es: "Usa el metamodelo como su lenguaje: un modelo solo puede contener los tipos que el metamodelo define.", en: "Uses the metamodel as its language: a model can only contain the types the metamodel defines." }
+      ],
+      sources: [
+        { path: "src/main/java/com/example/editor/model/ModelDocumentController.java", line: 23 },
+        { path: "src/main/java/com/example/editor/emf/DynamicModelService.java", line: 19 }
+      ]
+    },
+    b_validation: {
+      kind: "backend", inUser: true,
+      es: {
+        user: ["Validaciones", "reglas + reparaciones automáticas"],
+        functional: ["Validación y Quick Fixes", "motor declarativo"],
+        technical: ["Validación y Quick Fixes", "motor declarativo"]
+      },
+      en: {
+        user: ["Validations", "rules + automatic quick fixes"],
+        functional: ["Validation & Quick Fixes", "declarative engine"],
+        technical: ["Validation & Quick Fixes", "declarative engine"]
+      },
+      detail: {
+        es: [
+          "Define reglas que detectan errores en un modelo: campos obligatorios, referencias incorrectas, valores fuera de rango…",
+          "Ofrece también quick fixes: reparaciones automáticas que te propone y que tú decides aplicar o no.",
+          "Tecnología: un motor de expresiones propio de HYDRA; las reglas no requieren programar en Java."
+        ],
+        en: [
+          "Defines rules that catch errors in a model: required fields, broken references, out-of-range values…",
+          "Also offers quick fixes: automatic repairs it proposes, which you decide whether to apply.",
+          "Technology: HYDRA's own expression engine; rules never require writing Java."
+        ]
+      },
+      limits: {
+        es: [
+          "Sí se modela aquí: reglas de restricción sobre tipos y propiedades ya existentes (obligatoriedad, rango, unicidad, referencias cruzadas) y quick fixes ligados a esas reglas.",
+          "No se modela aquí: nuevos tipos de metamodelo; una regla solo observa un modelo y, como mucho, propone una reparación que tú decides aplicar."
+        ],
+        en: [
+          "Modeled here: constraint rules over already-existing types and properties (required fields, range, uniqueness, cross-references) and quick fixes tied to those rules.",
+          "Not modeled here: new metamodel types; a rule only observes a model and, at most, proposes a repair that you decide whether to apply."
+        ]
+      },
+      relations: [
+        { to: "b_metamodel", es: "Las reglas se escriben sobre los tipos y propiedades que define el metamodelo.", en: "Rules are written against the types and properties the metamodel defines." }
+      ],
+      sources: [
+        { path: "src/main/java/com/example/editor/validation/runtime/ValidationEngine.java", line: 38 },
+        { path: "src/main/java/com/example/editor/validation/quickfix/QuickFixRuntimeService.java", line: 43 }
+      ]
+    },
+    b_grammar: {
+      kind: "backend", inUser: true,
+      es: {
+        user: ["Lenguajes Textuales", "sintaxis y editor de texto"],
+        functional: ["Diseñador de Gramáticas", "DSL textual · Xtext/Langium/ANTLR"],
+        technical: ["Diseñador de Gramáticas", "DSL textual · Xtext/Langium/ANTLR"]
+      },
+      en: {
+        user: ["Textual Languages", "syntax and text editor"],
+        functional: ["Grammar Designer", "textual DSL · Xtext/Langium/ANTLR"],
+        technical: ["Grammar Designer", "textual DSL · Xtext/Langium/ANTLR"]
+      },
+      detail: {
+        es: [
+          "Diseña la sintaxis textual de tu lenguaje: cómo se escribe en texto plano en vez de con cajas y flechas.",
+          "Ofrece resaltado de sintaxis, autocompletado y detección de errores mientras escribes.",
+          "Tecnología: eliges entre Xtext, Langium o ANTLR para la gramática; el editor de texto usa Monaco."
+        ],
+        en: [
+          "Designs your language's textual syntax: how it's written as plain text instead of boxes and arrows.",
+          "Offers syntax highlighting, autocompletion and error detection as you type.",
+          "Technology: choose Xtext, Langium or ANTLR for the grammar; the text editor uses Monaco."
+        ]
+      },
+      limits: {
+        es: [
+          "Sí se modela aquí: la sintaxis concreta textual de tu lenguaje — tokens, reglas gramaticales, resaltado y autocompletado.",
+          "No se modela aquí: el significado de esos tipos (sigue siendo el metamodelo); el texto siempre se interpreta como instancias del mismo metamodelo, nunca como un modelo paralelo independiente."
+        ],
+        en: [
+          "Modeled here: your language's concrete textual syntax — tokens, grammar rules, highlighting and autocompletion.",
+          "Not modeled here: the meaning of those types (that remains the metamodel); text is always interpreted as instances of the same metamodel, never as an independent parallel model."
+        ]
+      },
+      relations: [
+        { to: "b_metamodel", es: "El texto escrito con esta gramática se interpreta como instancias del mismo metamodelo.", en: "Text written with this grammar is interpreted as instances of the same metamodel." }
+      ],
+      sources: [
+        { path: "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java", line: 21 },
+        { path: "src/main/java/com/example/editor/textual/runtime/TextualModelSessionService.java" }
+      ]
+    },
+    b_event_gami: {
+      kind: "backend", inUser: true,
+      es: {
+        user: ["Eventos y Gamificación", "comportamiento y motivación"],
+        functional: ["Eventos y Gamificación", "incluye EventFlow, runtime por eventos"],
+        technical: ["Eventos y Gamificación", "incluye EventFlow, runtime por eventos"]
+      },
+      en: {
+        user: ["Events & Gamification", "behavior and motivation"],
+        functional: ["Events & Gamification", "includes EventFlow, event-driven runtime"],
+        technical: ["Events & Gamification", "includes EventFlow, event-driven runtime"]
+      },
+      detail: {
+        es: [
+          "Define eventos del dominio (qué puede pasar) y los encadena en flujos de eventos (EventFlow).",
+          "Ofrece además gamificación: puntos, logros y niveles que reaccionan a eventos ya comprobados.",
+          "Tecnología: un runtime propio de HYDRA, headless y basado únicamente en eventos verificados."
+        ],
+        en: [
+          "Defines domain events (what can happen) and chains them into event flows (EventFlow).",
+          "Also offers gamification: points, achievements and levels that react to already-verified events.",
+          "Technology: HYDRA's own headless runtime, driven only by verified events."
+        ]
+      },
+      limits: {
+        es: [
+          "Sí se modela aquí: eventos del dominio y sus payloads, flujos de eventos (EventFlow) encadenados, y reglas de puntos/logros/niveles sobre eventos ya verificados.",
+          "No se modela aquí: la integridad del modelo (eso es Validaciones) ni ninguna transformación (eso es el Motor de Transformaciones)."
+        ],
+        en: [
+          "Modeled here: domain events and their payloads, chained event flows (EventFlow), and points/achievement/level rules over already-verified events.",
+          "Not modeled here: model integrity (that's Validation) or any transformation (that's the Transformation Engine)."
+        ]
+      },
+      relations: [
+        { to: "b_metamodel", es: "Los eventos y las reglas de gamificación se definen sobre los tipos del metamodelo.", en: "Events and gamification rules are defined over the metamodel's types." }
+      ],
+      sources: [
+        { path: "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeService.java", line: 46 },
+        { path: "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java", line: 51 }
+      ]
+    },
+    b_transformation: {
+      kind: "backend", inUser: true,
+      es: {
+        user: ["Transformaciones", "modelo ↔ modelo ↔ texto"],
+        functional: ["Motor de Transformaciones", "M2M · M2T · T2M"],
+        technical: ["Motor de Transformaciones", "M2M · M2T · T2M"]
+      },
+      en: {
+        user: ["Transformations", "model ↔ model ↔ text"],
+        functional: ["Transformation Engine", "M2M · M2T · T2M"],
+        technical: ["Transformation Engine", "M2M · M2T · T2M"]
+      },
+      detail: {
+        es: [
+          "Transforma modelo a modelo (M2M), modelo a texto/código (M2T) y texto a modelo (T2M).",
+          "Ofrece un motor de referencia propio de HYDRA, más adaptadores opcionales a motores externos.",
+          "Tecnología: motores externos admitidos — ATL, ETL, Acceleo, EGL y Xtend — cuando el administrador los instala."
+        ],
+        en: [
+          "Transforms model to model (M2M), model to text/code (M2T), and text to model (T2M).",
+          "Offers HYDRA's own reference engine, plus optional adapters to external engines.",
+          "Technology: supported external engines — ATL, ETL, Acceleo, EGL and Xtend — once the administrator installs them."
+        ]
+      },
+      limits: {
+        es: [
+          "Sí se modela aquí: reglas de correspondencia entre metamodelos origen/destino (M2M), plantillas de generación de texto/código (M2T), y la configuración de un parser hacia un metamodelo (T2M).",
+          "No se modela aquí: los modelos de entrada en sí (eso es el Editor de Modelos) ni la publicación del artefacto resultante (eso es Publicación)."
+        ],
+        en: [
+          "Modeled here: source/target metamodel correspondence rules (M2M), text/code generation templates (M2T), and a parser's configuration toward a metamodel (T2M).",
+          "Not modeled here: the input models themselves (that's the Model Editor) or publishing the resulting artifact (that's Publication)."
+        ]
+      },
+      relations: [
+        { to: "b_model_editor", es: "Parte de modelos ya creados con el editor de modelos; nunca inventa datos de entrada.", en: "Starts from models already created with the model editor; it never invents input data." }
+      ],
+      sources: [
+        { path: "src/main/java/com/example/editor/transformation/runtime/CanonicalTransformationRuntime.java", line: 39 },
+        { path: "src/main/java/com/example/editor/transformation/export/TransformationLanguageAdapterRegistry.java", line: 10 }
+      ]
+    },
+    b_publication: {
+      kind: "backend", inUser: true,
+      es: {
+        user: ["Publicación", "generar y distribuir proyectos"],
+        functional: ["Publicación y Generación", "release gates + proyectos generados"],
+        technical: ["Publicación y Generación", "release gates + proyectos generados"]
+      },
+      en: {
+        user: ["Publication", "generate and ship projects"],
+        functional: ["Publication & Generation", "release gates + generated projects"],
+        technical: ["Publication & Generation", "release gates + generated projects"]
+      },
+      detail: {
+        es: [
+          "Genera el resultado final (código, proyecto, paquete) a partir de tu modelo y lo publica tras pasar comprobaciones de calidad (release gates).",
+          "Ofrece varios generadores de código según la tecnología de destino elegida.",
+          "Nada se publica si no supera antes sus comprobaciones automáticas."
+        ],
+        en: [
+          "Generates the final result (code, project, package) from your model and publishes it after quality checks (release gates) pass.",
+          "Offers several code generators depending on the chosen target technology.",
+          "Nothing is published until it passes its automated checks."
+        ]
+      },
+      limits: {
+        es: [
+          "Sí se modela aquí: qué generar, hacia qué tecnología de destino, y qué comprobaciones de calidad (release gates) debe superar antes de publicarse.",
+          "No se modela aquí: el contenido en sí (modelo/metamodelo); solo su empaquetado, generación y las puertas de calidad previas a publicar."
+        ],
+        en: [
+          "Modeled here: what to generate, which target technology, and which quality checks (release gates) it must pass before publishing.",
+          "Not modeled here: the content itself (model/metamodel); only its packaging, generation, and the quality gates before publishing."
+        ]
+      },
+      relations: [
+        { to: "b_model_editor", es: "Genera el resultado a partir del modelo y del metamodelo que lo definen.", en: "Generates the result from the model and the metamodel that define it." }
+      ],
+      sources: [
+        { path: "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleController.java", line: 13 },
+        { path: "src/main/java/com/example/editor/release/HydraReleaseGateService.java", line: 36 }
+      ]
+    },
+    b_integration: {
+      kind: "backend", inUser: true,
+      es: {
+        user: ["Repositorios", "conectar herramientas externas"],
+        functional: ["Integraciones", "proyección tecnológica, roundtrip"],
+        technical: ["Integraciones", "proyección tecnológica, roundtrip"]
+      },
+      en: {
+        user: ["Repositories", "connect external tools"],
+        functional: ["Integrations", "technology projection, roundtrip"],
+        technical: ["Integrations", "technology projection, roundtrip"]
+      },
+      detail: {
+        es: [
+          "Conecta tu proyecto HYDRA con tecnologías externas: proyecta tu metamodelo/modelo hacia su formato nativo.",
+          "Ofrece sincronización de ida y vuelta (roundtrip) para mantener ambos lados alineados.",
+          "Se configura con perfiles de integración por tecnología, sin escribir código de integración a mano."
+        ],
+        en: [
+          "Connects your HYDRA project to external technologies: projects your metamodel/model into their native format.",
+          "Offers two-way (roundtrip) synchronization to keep both sides aligned.",
+          "Configured through per-technology integration profiles, with no hand-written integration code."
+        ]
+      },
+      limits: {
+        es: [
+          "Sí se modela aquí: perfiles de integración — a qué tecnología externa se proyecta el metamodelo/modelo, y la política de sincronización roundtrip.",
+          "No se modela aquí: código de integración a mano; el contenido proyectado sigue siendo el mismo metamodelo/modelo, no una copia independiente que pueda divergir sin control."
+        ],
+        en: [
+          "Modeled here: integration profiles — which external technology the metamodel/model is projected into, and the roundtrip sync policy.",
+          "Not modeled here: hand-written integration code; the projected content remains the same metamodel/model, not an independent copy that can drift uncontrolled."
+        ]
+      },
+      relations: [
+        { to: "b_metamodel", es: "Proyecta el metamodelo y el modelo hacia la representación nativa de la tecnología elegida.", en: "Projects the metamodel and model into the chosen technology's native representation." }
+      ],
+      sources: [
+        { path: "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java", line: 30 },
+        { path: "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java", line: 24 }
+      ]
+    },
+    b_project: {
+      kind: "backend", inUser: false,
+      es: {
+        user: ["Gestión de Proyectos", "Abre, organiza y gestiona el proyecto activo: su árbol de archivos y la importación/exportación de contenido."],
+        functional: ["Gestión de Proyectos", "catálogo, árbol, import/export"],
+        technical: ["Gestión de Proyectos", "catálogo, árbol, import/export"]
+      },
+      en: {
+        user: ["Project Management", "Opens, organizes and manages the active project: its file tree and content import/export."],
+        functional: ["Project Management", "catalog, tree, import/export"],
+        technical: ["Project Management", "catalog, tree, import/export"]
+      },
+      detail: {
+        es: [
+          "Abre, crea y organiza el proyecto en el que trabajas: su árbol de archivos, sus carpetas y sus recursos.",
+          "Ofrece importar y exportar el proyecto completo (o partes de él) y trabajar con varios proyectos a la vez.",
+          "Es el contenedor de todo lo demás: metamodelos, modelos, gramáticas, etc. viven dentro de un proyecto."
+        ],
+        en: [
+          "Opens, creates and organizes the project you're working in: its file tree, folders and resources.",
+          "Offers importing and exporting the whole project (or parts of it), and working with several projects at once.",
+          "The container for everything else: metamodels, models, grammars, etc. all live inside a project."
+        ]
+      },
+      limits: {
+        es: [
+          "Sí se modela aquí: la estructura del proyecto — su árbol de archivos, carpetas, metadatos y qué capacidades tiene habilitadas.",
+          "No se modela aquí: ningún lenguaje ni dato de dominio; el proyecto es el contenedor, no el contenido."
+        ],
+        en: [
+          "Modeled here: the project's structure — its file tree, folders, metadata, and which capabilities it has enabled.",
+          "Not modeled here: any language or domain data; the project is the container, not the content."
+        ]
+      },
+      relations: [],
+      sources: [ { path: "src/main/java/com/example/editor/project/web/ProjectController.java", label: "API de proyectos" } ]
+    },
+    b_recovery: {
+      kind: "backend", inUser: false,
+      es: {
+        user: ["Recuperación Externa", "Recupera e incorpora proyectos creados fuera de HYDRA, incluidos sitios de actualización de Eclipse."],
+        functional: ["Recuperación Externa", "proyectos externos + update sites"],
+        technical: ["Recuperación Externa", "proyectos externos + update sites"]
+      },
+      en: {
+        user: ["External Recovery", "Recovers and brings in projects created outside HYDRA, including Eclipse update sites."],
+        functional: ["External Recovery", "external projects + update sites"],
+        technical: ["External Recovery", "external projects + update sites"]
+      },
+      detail: {
+        es: [
+          "Recupera proyectos creados fuera de HYDRA, incluidos sitios de actualización (update sites) de Eclipse.",
+          "Ofrece un inventario no destructivo del contenido externo antes de incorporarlo, para que nada se pierda sin avisar.",
+          "Preserva lo que no puede reconciliar como PROJECT_RESOURCE en vez de descartarlo."
+        ],
+        en: [
+          "Recovers projects created outside HYDRA, including Eclipse update sites.",
+          "Offers a non-destructive inventory of the external content before bringing it in, so nothing is lost silently.",
+          "Preserves whatever it cannot reconcile as PROJECT_RESOURCE instead of discarding it."
+        ]
+      },
+      limits: {
+        es: [
+          "Sí se modela aquí: el inventario del contenido recuperado de un proyecto externo o un sitio de actualización, y su reconciliación.",
+          "No se modela aquí: contenido nuevo; solo se recupera e incorpora contenido ya existente creado fuera de HYDRA."
+        ],
+        en: [
+          "Modeled here: the inventory of content recovered from an external project or an update site, and its reconciliation.",
+          "Not modeled here: new content; it only recovers and brings in content already created outside HYDRA."
+        ]
+      },
+      relations: [],
+      sources: [
+        { path: "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryController.java", line: 17 },
+        { path: "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryController.java", line: 25 }
+      ]
+    },
+    b_persistence: {
+      kind: "database", inUser: false,
+      es: {
+        user: ["Persistencia Canónica", "Guarda todo tu trabajo en el disco local, en archivos JSON, sin necesidad de una base de datos."],
+        functional: ["Persistencia Canónica", "documentos JSON, ETag optimista"],
+        technical: ["Persistencia Canónica", "documentos JSON, ETag optimista"]
+      },
+      en: {
+        user: ["Canonical Persistence", "Saves all your work on the local disk, as JSON files, with no database required."],
+        functional: ["Canonical Persistence", "JSON documents, optimistic ETag"],
+        technical: ["Canonical Persistence", "JSON documents, optimistic ETag"]
+      },
+      detail: {
+        es: [
+          "Guarda automáticamente todo lo que creas — metamodelos, modelos, gramáticas, transformaciones… — cada uno como su propio documento.",
+          "Ofrece control de versiones optimista (ETag): si dos cambios chocan, se detecta en vez de perderse en silencio.",
+          "Vive enteramente en tu disco local, en archivos JSON; no requiere ni usa una base de datos."
+        ],
+        en: [
+          "Automatically saves everything you create — metamodels, models, grammars, transformations… — each as its own document.",
+          "Offers optimistic version control (ETag): a clash between two changes is detected instead of silently lost.",
+          "Lives entirely on your local disk, as JSON files; no database is required or used."
+        ]
+      },
+      limits: {
+        es: [
+          "Nada se modela aquí directamente: es el almacén común donde cada documento canónico (metamodelo, modelo, gramática…) se guarda tal y como lo define su propia capacidad.",
+          "No tiene esquema de dominio propio: respeta el que le entrega cada capacidad."
+        ],
+        en: [
+          "Nothing is modeled here directly: it is the shared store where every canonical document (metamodel, model, grammar…) is saved exactly as its own capability defines it.",
+          "It has no domain schema of its own: it honors whatever each capability hands it."
+        ]
+      },
+      relations: [],
+      sources: [
+        { path: "src/main/java/com/example/editor/persistence/CanonicalDocumentStore.java", line: 15 },
+        { path: "src/main/java/com/example/editor/persistence/LocalCanonicalDocumentStoreFactory.java", line: 14 }
+      ]
+    },
+    b_security: {
+      kind: "security", inUser: false,
+      es: {
+        user: ["Seguridad", "Protege HYDRA filtrando peticiones y aislando cualquier programa externo que se ejecute en tu nombre."],
+        functional: ["Seguridad", "hardening + sandboxing de procesos"],
+        technical: ["Seguridad", "hardening + sandboxing de procesos"]
+      },
+      en: {
+        user: ["Security", "Protects HYDRA by filtering requests and sandboxing any external program run on your behalf."],
+        functional: ["Security", "hardening + process sandboxing"],
+        technical: ["Security", "hardening + process sandboxing"]
+      },
+      detail: {
+        es: [
+          "Filtra y limita la forma y el tamaño de cada petición que llega a HYDRA, antes de que llegue a ninguna capacidad.",
+          "Ofrece también el único punto por el que HYDRA ejecuta programas externos: con entorno mínimo, salida acotada y apagado garantizado.",
+          "Un motor externo que falte se declara no disponible; nunca se simula su comportamiento."
+        ],
+        en: [
+          "Filters and bounds the shape and size of every request reaching HYDRA, before it reaches any capability.",
+          "Also offers the single point through which HYDRA runs external programs: minimal environment, bounded output, guaranteed teardown.",
+          "A missing external engine is declared unavailable; its behavior is never simulated."
+        ]
+      },
+      limits: {
+        es: [
+          "Nada de dominio se modela aquí: define políticas de forma/tamaño de petición y de aislamiento de procesos externos.",
+          "No conoce el contenido de metamodelos, modelos ni reglas; opera igual sin importar qué capacidad la esté usando."
+        ],
+        en: [
+          "No domain content is modeled here: it defines request shape/size policies and external-process sandboxing.",
+          "It knows nothing about metamodel, model or rule content; it behaves the same regardless of which capability is using it."
+        ]
+      },
+      relations: [],
+      sources: [
+        { path: "src/main/java/com/example/editor/security/input/HydraRequestHardeningFilter.java", line: 27 },
+        { path: "src/main/java/com/example/editor/security/process/HydraExternalProcessRunner.java", line: 22 }
+      ]
+    },
+    b_audit: {
+      kind: "backend", inUser: false,
+      es: {
+        user: ["Auditoría", "Lleva un registro de lo que ha ocurrido en el sistema, útil para depurar y para demostrar el origen de un resultado."],
+        functional: ["Auditoría", "registro JSONL append-only"],
+        technical: ["Auditoría", "registro JSONL append-only"]
+      },
+      en: {
+        user: ["Audit", "Keeps a record of what happened in the system, useful for debugging and for proving where a result came from."],
+        functional: ["Audit", "append-only JSONL log"],
+        technical: ["Audit", "append-only JSONL log"]
+      },
+      detail: {
+        es: [
+          "Registra qué ha pasado en el sistema: quién cambió qué y cuándo, en un registro de solo-añadir (append-only).",
+          "Ofrece esta evidencia para depurar problemas y para demostrar el origen de un resultado concreto.",
+          "Se alimenta automáticamente de cada cambio guardado en la persistencia canónica, sin que tengas que activarlo."
+        ],
+        en: [
+          "Records what happened in the system: who changed what and when, in an append-only log.",
+          "Offers that evidence for debugging problems and for proving where a specific result came from.",
+          "Fed automatically by every change saved in the canonical persistence, with nothing to turn on."
+        ]
+      },
+      limits: {
+        es: [
+          "Nada de dominio se modela aquí: registra el hecho de que algo cambió (qué documento, cuándo), no el contenido del cambio.",
+          "No es una capacidad de modelado; es un efecto automático de guardar en la persistencia canónica."
+        ],
+        en: [
+          "No domain content is modeled here: it records the fact that something changed (which document, when), not the content of the change.",
+          "It is not a modeling capability; it is an automatic side effect of saving to the canonical persistence."
+        ]
+      },
+      relations: [],
+      sources: [
+        { path: "src/main/java/com/example/editor/audit/JsonlAuditLogStore.java", line: 44 },
+        { path: "src/main/java/com/example/editor/provenance/HydraDistributionProvenanceService.java", line: 37 }
+      ]
+    },
+    ext_remote: {
+      kind: "external", inUser: true,
+      es: {
+        user: ["Repositorios Remotos", "Git, nube, control de versiones"],
+        functional: ["Proveedores Remotos", "Git · almacenamiento · OAuth"],
+        technical: ["Proveedores Remotos", "Git · almacenamiento · OAuth"]
+      },
+      en: {
+        user: ["Remote Repositories", "Git, cloud, version control"],
+        functional: ["Remote Providers", "Git · storage · OAuth"],
+        technical: ["Remote Providers", "Git · storage · OAuth"]
+      },
+      detail: {
+        es: [
+          "Representa tus proveedores externos de control de versiones y almacenamiento: Git, la nube, etc.",
+          "Ofrece autenticación mediante OAuth para conectarte sin guardar contraseñas en claro.",
+          "HYDRA solo se conecta cuando tú lo configuras explícitamente; nunca por defecto."
+        ],
+        en: [
+          "Represents your external version-control and storage providers: Git, the cloud, etc.",
+          "Offers OAuth-based authentication so you connect without storing plaintext passwords.",
+          "HYDRA only connects when you explicitly configure it; never by default."
+        ]
+      },
+      limits: {
+        es: [
+          "Nada se modela dentro de HYDRA aquí: es la identidad de un proveedor externo (URL, credenciales OAuth) al que te conectas.",
+          "El contenido que viaja por esta conexión se modela en Gestión de Proyectos/Integraciones, no aquí."
+        ],
+        en: [
+          "Nothing inside HYDRA is modeled here: it is the identity of an external provider (URL, OAuth credentials) you connect to.",
+          "The content that travels over this connection is modeled in Project Management/Integrations, not here."
+        ]
+      },
+      relations: [],
+      sources: [
+        { path: "src/main/java/com/example/editor/remote/git/RemoteGitController.java", line: 16 },
+        { path: "src/main/java/com/example/editor/remote/storage/web/RemoteStorageController.java", line: 29 }
+      ]
+    },
+    ext_toolchains: {
+      kind: "external", inUser: true,
+      es: {
+        user: ["Herramientas Externas", "ATL, ETL, Acceleo, EGL, Xtend…"],
+        functional: ["Motores MDE Externos", "ATL · ETL · Acceleo · EGL · Xtend · instalación del administrador"],
+        technical: ["Motores MDE Externos", "ATL · ETL · Acceleo · EGL · Xtend · instalación del administrador"]
+      },
+      en: {
+        user: ["External Tools", "ATL, ETL, Acceleo, EGL, Xtend…"],
+        functional: ["External MDE Engines", "ATL · ETL · Acceleo · EGL · Xtend · administrator-installed"],
+        technical: ["External MDE Engines", "ATL · ETL · Acceleo · EGL · Xtend · administrator-installed"]
+      },
+      detail: {
+        es: [
+          "Representa los motores de transformación de terceros que HYDRA puede usar: ATL, ETL, Acceleo, EGL y Xtend.",
+          "Requieren instalación explícita del administrador del equipo; no vienen incluidos con HYDRA.",
+          "Si falta un motor, la operación falla de forma visible en vez de simular un resultado."
+        ],
+        en: [
+          "Represents the third-party transformation engines HYDRA can use: ATL, ETL, Acceleo, EGL and Xtend.",
+          "They require explicit installation by the machine's administrator; they do not ship with HYDRA.",
+          "If an engine is missing, the operation fails visibly instead of simulating a result."
+        ]
+      },
+      limits: {
+        es: [
+          "Nada se modela aquí: es la identidad y el paquete verificado (checksum) de un motor de transformación de terceros instalado.",
+          "Las reglas de transformación que ese motor ejecuta se modelan en el Motor de Transformaciones, no aquí."
+        ],
+        en: [
+          "Nothing is modeled here: it is the identity and the checksum-verified package of an installed third-party transformation engine.",
+          "The transformation rules that engine executes are modeled in the Transformation Engine, not here."
+        ]
+      },
+      relations: [],
+      sources: [
+        { path: "toolchains/official/profiles/atl.properties" },
+        { path: "distribution/transformation-toolchains/atl/hydra-official-bridge/2.1.0/package.json" }
+      ]
+    }
+  };
+
+  var ORDER = ["fe_workbench","b_metamodel","b_model_editor","b_validation","b_grammar","b_event_gami",
+    "b_transformation","b_publication","b_integration","b_project","b_recovery",
+    "b_persistence","b_security","b_audit","ext_remote","ext_toolchains"];
+
+  var FRAME_SRC = {
+    user:       { es: "internal/hydra-user-overview.es.html",       en: "internal/hydra-user-overview.en.html" },
+    functional: { es: "internal/hydra-functional-overview.es.html", en: "internal/hydra-functional-overview.en.html" },
+    technical:  { es: "internal/hydra-architecture.es.html",        en: "internal/hydra-architecture.en.html" },
+    howto:      { es: "internal/hydra-howto-model-editor.es.html",  en: "internal/hydra-howto-model-editor.en.html" }
+  };
+  // Levels that are component-architecture projections (drive the sidebar explorer).
+  var ARCHITECTURE_LEVELS = { user: true, functional: true, technical: true };
+
+  // Display names for the CAPABILITIES entries (data file holds only ids + narrative content).
+  var CAPABILITY_NAMES = {
+    metamodel:             { es: "Metamodelos",                       en: "Metamodels" },
+    model_editor:          { es: "Editor de Modelos",                 en: "Model Editor" },
+    validation:            { es: "Validación y Quick Fixes",          en: "Validation & Quick Fixes" },
+    grammar:               { es: "Gramáticas y Lenguajes Textuales",  en: "Grammars & Textual Languages" },
+    transformation:        { es: "Transformaciones",                  en: "Transformations" },
+    events:                { es: "Eventos",                           en: "Events" },
+    gamification:          { es: "Gamificación",                      en: "Gamification" },
+    integration:           { es: "Integración de Tecnologías",        en: "Technology Integration" },
+    recovery:              { es: "Recuperación Externa",              en: "External Recovery" },
+    publication:           { es: "Publicación y Generación",          en: "Publication & Generation" },
+    project:               { es: "Gestión de Proyectos",              en: "Project Management" },
+    toolchains:            { es: "Toolchains",                        en: "Toolchains" },
+    external_repositories: { es: "Repositorios Externos",             en: "External Repositories" },
+    generated_projects:    { es: "Ciclo de Vida de Proyectos Generados", en: "Generated Project Lifecycle" },
+    portability:           { es: "Empaquetado y Portabilidad",        en: "Capability Packaging & Portability" }
+  };
+
+  // Visual legend for element/stage requiredness semantics (used by Elements and Process views).
+  var REQUIREDNESS_META = {
+    MANDATORY:   { es: "Obligatorio",  en: "Mandatory",   style: "solid"  },
+    OPTIONAL:    { es: "Opcional",     en: "Optional",    style: "dashed" },
+    CONDITIONAL: { es: "Condicional",  en: "Conditional", style: "dotted" },
+    ALTERNATIVE: { es: "Alternativa",  en: "Alternative", style: "double" },
+    REPEATABLE:  { es: "Repetible",    en: "Repeatable",  style: "solid"  }
+  };
+
+  // Reverse map: architecture component id -> [capability ids], computed from the data file
+  // so it can never drift out of sync with window.CAPABILITIES.
+  var CAP_BY_ARCH = {};
+  Object.keys(window.CAPABILITIES || {}).forEach(function(capId){
+    var archId = window.CAPABILITIES[capId].archComponentId;
+    (CAP_BY_ARCH[archId] = CAP_BY_ARCH[archId] || []).push(capId);
+  });
+
+  var state = { level: "user", lang: "es", sidebarOpen: true, section: "overview", selectedCapability: null, selectedProcess: null };
+  try {
+    var saved = JSON.parse(localStorage.getItem("hydra-portal-state") || "{}");
+    if (saved.level && FRAME_SRC[saved.level]) state.level = saved.level;
+    if (saved.lang === "en") state.lang = "en";
+    if (saved.section === "capabilities" || saved.section === "processes") state.section = saved.section;
+  } catch (e) { /* ignore storage errors, keep defaults */ }
+  try {
+    // URL params override saved state — enables direct deep links such as
+    // hydra-architecture.html?section=capabilities&capability=validation&lang=en
+    var params = new URLSearchParams(location.search);
+    var qLevel = params.get("level");
+    var qLang = params.get("lang");
+    var qSection = params.get("section");
+    var qCap = params.get("capability");
+    var qProc = params.get("process");
+    if (qLevel && FRAME_SRC[qLevel]) state.level = qLevel;
+    if (qLang === "en" || qLang === "es") state.lang = qLang;
+    if (qSection === "overview" || qSection === "capabilities" || qSection === "processes") state.section = qSection;
+    if (qCap && window.CAPABILITIES[qCap]) { state.selectedCapability = qCap; state.section = "capabilities"; }
+    if (qProc) { state.selectedProcess = qProc; state.section = "processes"; }
+  } catch (e) { /* ignore URL parsing errors, keep defaults */ }
+
+  function saveState(){
+    try { localStorage.setItem("hydra-portal-state", JSON.stringify(state)); } catch(e){}
+  }
+
+  function t(key){
+    var parts = key.split(".");
+    var node = I18N[state.lang];
+    for (var i=0;i<parts.length;i++){ node = node && node[parts[i]]; }
+    return node;
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(c){
+      return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];
+    });
+  }
+
+  function kindDotClass(kind){ return "kind-dot " + kind; }
+
+  function renderSourceList(sources){
+    if (!sources || !sources.length) return "";
+    var items = sources.map(function(s){
+      var loc = s.path + (s.line ? ":" + s.line + (s.end_line ? "-" + s.end_line : "") : "");
+      var label = s.label ? '<span class="src-label">' + escapeHtml(s.label) + "</span>" : "";
+      return "<li>" + label + escapeHtml(loc) + "</li>";
+    }).join("");
+    return '<ul class="src-list">' + items + "</ul>";
+  }
+
+  // ---------------------------------------------------------------------
+  // Chrome: header tabs + section switching
+  // ---------------------------------------------------------------------
+  function renderChrome(){
+    document.documentElement.lang = state.lang;
+    document.getElementById("sidebar-title").textContent = t("sidebarTitle");
+    document.getElementById("sidebar-sub").textContent = t("sidebarSub");
+    document.getElementById("comp-search").placeholder = t("search");
+    document.getElementById("toggle-sidebar").textContent = state.sidebarOpen ? t("toggleHide") : t("toggleShow");
+    document.getElementById("stage-hint").textContent = t("hint." + state.level);
+    document.getElementById("footer-provenance").textContent = t("provenance");
+    document.getElementById("footer-link-tech").textContent = t("openTab");
+    document.getElementById("footer-link-tech").href = FRAME_SRC.technical[state.lang];
+    document.getElementById("footer-link-readme").textContent = t("readme");
+
+    var sectionLabelKeys = { overview: "sectionOverview", capabilities: "sectionCapabilities", processes: "sectionProcesses" };
+    document.querySelectorAll("#section-seg button").forEach(function(b){
+      b.setAttribute("aria-pressed", String(b.dataset.section === state.section));
+      b.textContent = t(sectionLabelKeys[b.dataset.section]);
+    });
+
+    var levelLabelKeys = { user: "levelUser", functional: "levelFunctional", technical: "levelTechnical" };
+    document.querySelectorAll("#level-seg button").forEach(function(b){
+      b.setAttribute("aria-pressed", String(b.dataset.level === state.level));
+      b.textContent = t(levelLabelKeys[b.dataset.level]);
+    });
+    document.querySelectorAll("#lang-seg button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.lang === state.lang)); });
+
+    var isOverview = state.section === "overview";
+    document.getElementById("view-overview").classList.toggle("hidden", !isOverview);
+    document.getElementById("view-capabilities").classList.toggle("hidden", state.section !== "capabilities");
+    document.getElementById("view-processes").classList.toggle("hidden", state.section !== "processes");
+    document.getElementById("level-seg").classList.toggle("hidden", !isOverview);
+
+    if (isOverview) {
+      document.getElementById("level-frame").src = FRAME_SRC[state.level][state.lang];
+      var showSidebar = state.sidebarOpen && !!ARCHITECTURE_LEVELS[state.level];
+      document.getElementById("sidebar").classList.toggle("hidden", !showSidebar);
+      document.getElementById("toggle-sidebar").classList.toggle("hidden", !ARCHITECTURE_LEVELS[state.level]);
+    } else {
+      document.getElementById("toggle-sidebar").classList.add("hidden");
+    }
+  }
+
+  function renderSection(){
+    if (state.section === "overview") {
+      renderComponentList(document.getElementById("comp-search").value);
+    } else if (state.section === "capabilities") {
+      renderCapList();
+      renderCapDetail(state.selectedCapability);
+    } else if (state.section === "processes") {
+      renderProcList();
+      renderProcDetail(state.selectedProcess);
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // Overview sidebar (unchanged behavior, plus a "jump to capability" link)
+  // ---------------------------------------------------------------------
+  function renderComponentList(filterText){
+    var listEl = document.getElementById("comp-list");
+    var lang = state.lang;
+    var query = (filterText || "").trim().toLowerCase();
+    var html = "";
+
+    ORDER.forEach(function(id){
+      var c = COMPONENTS[id];
+      var userPair = c[lang].user;
+      var funcPair = c[lang].functional;
+      var techPair = c[lang].technical;
+      var detailBullets = (c.detail && c.detail[lang]) || [];
+      var limitsBullets = (c.limits && c.limits[lang]) || [];
+      var relations = c.relations || [];
+      var searchable = (id + " " + userPair[0] + " " + funcPair[0] + " " + techPair[0] + " " + detailBullets.join(" ")).toLowerCase();
+      if (query && searchable.indexOf(query) === -1) return;
+
+      var notInLevelNote = c.inUser ? "" : '<p class="tier-sub" style="margin-top:6px;font-style:italic;">' + escapeHtml(t("notInLevel")) + "</p>";
+      var detailHtml = detailBullets.length
+        ? '<ul style="margin:0 0 4px;padding-left:18px;">' + detailBullets.map(function(b){ return "<li class=\"tier-text\" style=\"margin-bottom:4px;\">" + escapeHtml(b) + "</li>"; }).join("") + "</ul>"
+        : "";
+      var limitsHtml = limitsBullets.length
+        ? '<ul style="margin:0;padding-left:18px;">' + limitsBullets.map(function(b){ return "<li class=\"tier-text\" style=\"margin-bottom:4px;\">" + escapeHtml(b) + "</li>"; }).join("") + "</ul>"
+        : "";
+      var relationsHtml = relations.length
+        ? '<ul style="margin:0;padding-left:18px;">' + relations.map(function(r){
+            var targetLabel = (COMPONENTS[r.to] && COMPONENTS[r.to][lang] && COMPONENTS[r.to][lang].functional[0]) || r.to;
+            return '<li class="tier-text" style="margin-bottom:4px;"><strong>&rarr; ' + escapeHtml(targetLabel) + ":</strong> " + escapeHtml(r[lang]) + "</li>";
+          }).join("") + "</ul>"
+        : '<p class="tier-sub">' + escapeHtml(t("noRelations")) + "</p>";
+
+      var caps = CAP_BY_ARCH[id] || [];
+      var capJumpHtml = "";
+      if (caps.length) {
+        capJumpHtml = '<div class="tier">' + caps.map(function(capId){
+          return '<button type="button" class="ghost-btn small related-link" data-goto-cap="' + capId + '">' +
+            escapeHtml(t("goToCapability")) + ": " + escapeHtml(CAPABILITY_NAMES[capId][lang]) + " →</button>";
+        }).join("") + "</div>";
+      }
+
+      html += '<details class="card" data-kind="' + c.kind + '">';
+      html += '<summary><span class="' + kindDotClass(c.kind) + '"></span>';
+      html += '<span class="label">' + escapeHtml(funcPair[0]) + "</span>";
+      html += '<span class="tag">' + id + "</span></summary>";
+      html += '<div class="tier-body">';
+
+      html += '<div class="tier">';
+      html += '<div class="tier-label">' + t("tierWhat") + "</div>";
+      html += detailHtml;
+      html += notInLevelNote;
+      html += "</div>";
+
+      html += '<div class="tier">';
+      html += '<div class="tier-label">' + t("tierLimits") + "</div>";
+      html += limitsHtml;
+      html += "</div>";
+
+      html += '<div class="tier">';
+      html += '<div class="tier-label">' + t("tierRelations") + "</div>";
+      html += relationsHtml;
+      html += "</div>";
+
+      html += capJumpHtml;
+
+      html += '<details class="tier-reveal"><summary class="reveal-btn" style="display:list-item;list-style:none;">' + t("revealHow") + "</summary>";
+      html += '<div class="tier">';
+      html += '<div class="tier-label">' + t("tierHow") + "</div>";
+      html += '<p class="tier-text">' + escapeHtml(funcPair[0]) + "</p>";
+      html += '<p class="tier-sub">' + escapeHtml(funcPair[1]) + "</p>";
+      html += "</div>";
+
+      html += '<details class="tier-reveal"><summary class="reveal-btn" style="display:list-item;list-style:none;">' + t("revealImpl") + "</summary>";
+      html += '<div class="tier">';
+      html += '<div class="tier-label">' + t("tierImpl") + "</div>";
+      html += '<p class="tier-text">' + escapeHtml(techPair[0]) + "</p>";
+      html += '<p class="tier-sub">' + escapeHtml(techPair[1]) + "</p>";
+      html += "</div>";
+
+      html += '<details class="tier-reveal"><summary class="reveal-btn" style="display:list-item;list-style:none;">' + t("revealSrc") + "</summary>";
+      html += '<div class="tier">';
+      html += '<div class="tier-label">' + t("tierSrc") + "</div>";
+      html += renderSourceList(c.sources);
+      html += "</div>";
+      html += "</details>"; // src reveal
+      html += "</details>"; // impl reveal
+      html += "</details>"; // how reveal
+
+      html += "</div></details>"; // tier-body, card
+    });
+
+    listEl.innerHTML = html || '<p style="color:var(--ink-dim);font-size:12px;">—</p>';
+  }
+
+  // ---------------------------------------------------------------------
+  // CAPABILITIES view
+  // ---------------------------------------------------------------------
+  function kindColor(kind){
+    return ({ frontend:"#4a90c9", backend:"#1f8a6f", database:"#4a7ac9", security:"#c25555", external:"#c9994a", messagebus:"#8a5fc9", cloud:"#2aa7a0" })[kind] || "#1f8a6f";
+  }
+
+  function renderCapList(){
+    var lang = state.lang;
+    var listEl = document.getElementById("cap-list");
+    var html = Object.keys(window.CAPABILITIES).map(function(capId){
+      var cap = window.CAPABILITIES[capId];
+      var active = state.selectedCapability === capId;
+      return '<div class="nav-card' + (active ? " active" : "") + '" data-cap-id="' + capId + '">' +
+        '<div class="nav-kind"><span class="' + kindDotClass(cap.kind) + '"></span>' + escapeHtml(cap.kind) + '</div>' +
+        '<div class="nav-title">' + escapeHtml(CAPABILITY_NAMES[capId][lang]) + '</div>' +
+      '</div>';
+    }).join("");
+    listEl.innerHTML = html;
+    if (!state.selectedCapability) {
+      state.selectedCapability = Object.keys(window.CAPABILITIES)[0];
+    }
+  }
+
+  function renderRequirednessBadge(req){
+    if (!req || !REQUIREDNESS_META[req]) return "";
+    return '<span class="req-badge" data-req="' + req + '">' + escapeHtml(REQUIREDNESS_META[req][state.lang]) + "</span>";
+  }
+
+  function renderRequirednessLegend(){
+    var html = '<div class="req-legend"><strong style="margin-right:4px;">' + t("reqLegendTitle") + ":</strong>";
+    Object.keys(REQUIREDNESS_META).forEach(function(key){
+      html += renderRequirednessBadge(key);
+    });
+    return html + "</div>";
+  }
+
+  function renderAuthoring(authoring, lang){
+    if (!authoring) return "";
+    var html = "<p>" + escapeHtml(authoring.summary) + "</p>";
+    html += renderRequirednessLegend();
+    html += (authoring.elements || []).map(function(el){
+      var modesHtml = (el.modes || []).map(function(m){
+        return '<div class="authoring-mode"><b>' + escapeHtml(m.mode) + "</b><p>" + escapeHtml(m.detail) + "</p></div>";
+      }).join("");
+      return '<div class="authoring-element"><h5>' + escapeHtml(el.element) + renderRequirednessBadge(el.requiredness) + "</h5>" +
+        '<div class="concept-field"><b>' + t("authoringModes") + "</b><span>" + modesHtml + "</span></div></div>";
+    }).join("");
+    return html;
+  }
+
+  function renderConcept(c, lang){
+    var ioLine = c.io ? (escapeHtml(c.io.inputs || "") + " → " + escapeHtml(c.io.outputs || "")) : "";
+    var propsHtml = (c.properties || []).length ? '<ul>' + c.properties.map(function(p){ return "<li>" + escapeHtml(p) + "</li>"; }).join("") + "</ul>" : "—";
+    var relHtml = (c.relationships || []).length ? '<ul>' + c.relationships.map(function(r){ return "<li>" + escapeHtml(r) + "</li>"; }).join("") + "</ul>" : "—";
+    var evidenceHtml = (c.evidence || []).length
+      ? c.evidence.map(function(ev){
+          var loc = ev.path + (ev.line ? ":" + ev.line + (ev.end_line ? "-" + ev.end_line : "") : "");
+          return '<div class="evidence-row">' + (ev.label ? "<strong>" + escapeHtml(ev.label) + "</strong><br>" : "") + escapeHtml(loc) + "</div>";
+        }).join("")
+      : "";
+    return (
+      '<div class="concept">' +
+      "<h4>" + escapeHtml(c.name) + "</h4>" +
+      "<p>" + escapeHtml(c.purpose) + "</p>" +
+      '<div class="concept-field"><b>' + t("conceptWhen") + "</b><span>" + escapeHtml(c.whenUsed || "") + "</span></div>" +
+      '<div class="concept-field"><b>' + t("conceptProps") + "</b><span>" + propsHtml + "</span></div>" +
+      '<div class="concept-field"><b>' + t("conceptRel") + "</b><span>" + relHtml + "</span></div>" +
+      '<div class="concept-field"><b>' + t("conceptCard") + "</b><span>" + escapeHtml(c.cardinality || "") + "</span></div>" +
+      '<div class="concept-field"><b>' + t("conceptIO") + "</b><span>" + ioLine + "</span></div>" +
+      '<div class="concept-field"><b>' + t("conceptLifecycle") + "</b><span>" + escapeHtml(c.lifecycle || "") + "</span></div>" +
+      '<div class="concept-field"><b>' + t("conceptExample") + "</b><span>" + escapeHtml(c.example || "") + "</span></div>" +
+      (evidenceHtml ? '<div class="concept-field"><b>' + t("capEvidence") + "</b><span>" + evidenceHtml + "</span></div>" : "") +
+      "</div>"
+    );
+  }
+
+  var CAP_SUBTABS = ["overview", "elements", "process", "relationships", "implementation"];
+  var capActiveTab = "overview";
+
+  function renderCapDetail(capId){
+    var lang = state.lang;
+    var detailEl = document.getElementById("cap-detail");
+    if (!capId || !window.CAPABILITIES[capId]) {
+      detailEl.innerHTML = '<p class="empty">' + escapeHtml(t("selectCapability")) + "</p>";
+      return;
+    }
+    var cap = window.CAPABILITIES[capId];
+    var data = cap[lang];
+    var tabLabelKeys = { overview: "tabOverview", elements: "tabElements", process: "tabProcess", relationships: "tabRelationships", implementation: "tabImplementation" };
+
+    var html = "";
+    html += '<div class="detail-title"><span class="' + kindDotClass(cap.kind) + '"></span><h2>' + escapeHtml(CAPABILITY_NAMES[capId][lang]) + "</h2></div>";
+
+    html += '<div class="seg" id="cap-subtabs" role="tablist" style="margin-bottom:16px;">' + CAP_SUBTABS.map(function(tab){
+      return '<button type="button" data-cap-tab="' + tab + '" aria-pressed="' + (tab === capActiveTab) + '">' + escapeHtml(t(tabLabelKeys[tab])) + "</button>";
+    }).join("") + "</div>";
+
+    // OVERVIEW panel: level1 (plain language) + level3 (conceptual relationships) summary
+    html += '<div class="cap-tab-panel" data-tab="overview"' + (capActiveTab!=="overview"?' style="display:none;"':'') + '>';
+    html += '<div class="lvl-card"><h3>' + t("capLevel1") + "</h3>";
+    html += "<p>" + escapeHtml(data.level1.what) + "</p>";
+    html += "<p><b>" + t("capValue") + ":</b> " + escapeHtml(data.level1.value) + "</p>";
+    html += '<div class="concept-field"><b>' + t("capInputs") + '</b><span><ul>' + data.level1.inputs.map(function(i){ return "<li>" + escapeHtml(i) + "</li>"; }).join("") + "</ul></span></div>";
+    html += '<div class="concept-field"><b>' + t("capOutputs") + '</b><span><ul>' + data.level1.outputs.map(function(o){ return "<li>" + escapeHtml(o) + "</li>"; }).join("") + "</ul></span></div>";
+    html += "</div>";
+    html += '<div class="lvl-card"><h3>' + t("capLevel3") + "</h3><p>" + escapeHtml(data.level3) + "</p></div>";
+    html += "</div>";
+
+    // ELEMENTS panel: level2 concepts + authoring (creation modes + requiredness)
+    html += '<div class="cap-tab-panel" data-tab="elements"' + (capActiveTab!=="elements"?' style="display:none;"':'') + '>';
+    if (data.authoring) {
+      html += '<div class="lvl-card"><h3>' + t("capAuthoring") + "</h3>" + renderAuthoring(data.authoring, lang) + "</div>";
+    }
+    html += '<div class="lvl-card"><h3>' + t("capLevel2") + "</h3>";
+    html += data.level2.map(function(c){ return renderConcept(c, lang); }).join("");
+    html += "</div>";
+    html += "</div>";
+
+    // PROCESS panel: level4 narrative + the inline capability-scoped process (if any) + related processes
+    html += '<div class="cap-tab-panel" data-tab="process"' + (capActiveTab!=="process"?' style="display:none;"':'') + '>';
+    html += '<div class="lvl-card"><h3>' + t("capLevel4") + "</h3><p>" + escapeHtml(data.level4) + "</p></div>";
+    var relatedProcs = (window.PROCESSES || []).filter(function(p){ return p.capabilities.indexOf(capId) !== -1; });
+    if (relatedProcs.length) {
+      html += '<div class="lvl-card"><h3>' + t("capRelatedProcesses") + "</h3>";
+      html += relatedProcs.map(function(p){
+        return '<button type="button" class="ghost-btn small related-link" data-goto-proc="' + p.id + '">' + escapeHtml(p[lang].title) + " →</button>";
+      }).join("");
+      html += "</div>";
+    }
+    html += "</div>";
+
+    // RELATIONSHIPS panel: level5 incoming/outgoing
+    html += '<div class="cap-tab-panel" data-tab="relationships"' + (capActiveTab!=="relationships"?' style="display:none;"':'') + '>';
+    html += '<div class="lvl-card"><h3>' + t("capLevel5") + "</h3>";
+    html += '<div class="concept-field"><b>' + t("capIncoming") + '</b><span><ul>' + data.level5.incoming.map(function(i){ return "<li>" + escapeHtml(i) + "</li>"; }).join("") + "</ul></span></div>";
+    html += '<div class="concept-field"><b>' + t("capOutgoing") + '</b><span><ul>' + data.level5.outgoing.map(function(o){ return "<li>" + escapeHtml(o) + "</li>"; }).join("") + "</ul></span></div>";
+    html += "</div></div>";
+
+    // IMPLEMENTATION panel: level6
+    html += '<div class="cap-tab-panel" data-tab="implementation"' + (capActiveTab!=="implementation"?' style="display:none;"':'') + '>';
+    html += '<div class="lvl-card"><h3>' + t("capLevel6") + "</h3>";
+    html += "<p><b>" + t("capRuntime") + ":</b> " + escapeHtml(data.level6.runtime) + "</p>";
+    html += '<div class="concept-field"><b>' + t("capServices") + '</b><span><ul>' + data.level6.services.map(function(s){ return "<li>" + escapeHtml(s) + "</li>"; }).join("") + "</ul></span></div>";
+    html += '<div class="concept-field"><b>' + t("capApis") + '</b><span><ul>' + data.level6.apis.map(function(a){ return "<li>" + escapeHtml(a) + "</li>"; }).join("") + "</ul></span></div>";
+    html += '<div class="concept-field"><b>' + t("capEvidence") + "</b><span>" + data.level6.sources.map(function(ev){
+      var loc = ev.path + (ev.line ? ":" + ev.line + (ev.end_line ? "-" + ev.end_line : "") : "");
+      return '<div class="evidence-row">' + (ev.label ? "<strong>" + escapeHtml(ev.label) + "</strong><br>" : "") + escapeHtml(loc) + "</div>";
+    }).join("") + "</span></div>";
+    html += "</div></div>";
+
+    detailEl.innerHTML = html;
+  }
+
+  // ---------------------------------------------------------------------
+  // PROCESSES view
+  // ---------------------------------------------------------------------
+  function renderProcCard(p, lang){
+    var active = state.selectedProcess === p.id;
+    return '<div class="nav-card' + (active ? " active" : "") + '" data-proc-id="' + p.id + '">' +
+      '<div class="nav-kind">' + p.capabilities.length + (lang === "es" ? " capacidades" : " capabilities") + '</div>' +
+      '<div class="nav-title">' + escapeHtml(p[lang].title) + '</div>' +
+    '</div>';
+  }
+
+  function renderProcList(){
+    var lang = state.lang;
+    var listEl = document.getElementById("proc-list");
+    var all = window.PROCESSES || [];
+    var byCapability = all.filter(function(p){ return p.capabilities.length === 1; });
+    var cross = all.filter(function(p){ return p.capabilities.length > 1; });
+    var html = "";
+    if (byCapability.length) {
+      html += '<div class="proc-group-label">' + escapeHtml(t("byCapability")) + "</div>";
+      html += byCapability.map(function(p){ return renderProcCard(p, lang); }).join("");
+    }
+    if (cross.length) {
+      html += '<div class="proc-group-label">' + escapeHtml(t("crossCapability")) + "</div>";
+      html += cross.map(function(p){ return renderProcCard(p, lang); }).join("");
+    }
+    listEl.innerHTML = html;
+    if (!state.selectedProcess && all.length) {
+      state.selectedProcess = all[0].id;
+    }
+  }
+
+  function renderProcDetail(procId){
+    var lang = state.lang;
+    var detailEl = document.getElementById("proc-detail");
+    var proc = (window.PROCESSES || []).filter(function(p){ return p.id === procId; })[0];
+    if (!proc) {
+      detailEl.innerHTML = '<p class="empty">' + escapeHtml(t("selectProcess")) + "</p>";
+      return;
+    }
+    var html = "";
+    html += '<div class="detail-title"><h2>' + escapeHtml(proc[lang].title) + "</h2></div>";
+
+    html += '<div class="flow-start"><div class="flow-kicker">' + t("procTrigger") + "</div>" + escapeHtml(proc[lang].trigger) + "</div>";
+    html += '<div class="lvl-card" style="margin-bottom:18px;"><h3>' + t("procStart") + "</h3><p>" + escapeHtml(proc[lang].startState) + "</p></div>";
+
+    html += '<div class="lvl-card"><h3>' + t("procStages") + "</h3>";
+    html += '<div class="req-legend"><strong style="margin-right:4px;">' + t("reqLegendTitle") + ':</strong>' +
+      renderRequirednessBadge("MANDATORY") + renderRequirednessBadge("OPTIONAL") + "</div>";
+    html += '<div class="flow">';
+    proc.stages.forEach(function(stage){
+      var capId = stage.capability;
+      var capName = (CAPABILITY_NAMES[capId] && CAPABILITY_NAMES[capId][lang]) || capId;
+      var color = window.CAPABILITIES[capId] ? kindColor(window.CAPABILITIES[capId].kind) : "#1f8a6f";
+      html += '<div class="flow-stage' + (stage.optional ? " optional" : "") + '" style="border-left-color:' + color + ';">';
+      html += '<div class="stage-head"><span class="stage-cap" data-goto-cap="' + capId + '" style="cursor:pointer;text-decoration:underline;">' + escapeHtml(capName) + "</span>";
+      if (stage.optional) html += '<span class="stage-opt-badge">' + t("procOptional") + "</span>";
+      html += "</div>";
+      html += '<div class="stage-label">' + escapeHtml(stage[lang].label) + "</div>";
+      html += '<p class="stage-detail">' + escapeHtml(stage[lang].detail) + "</p>";
+      html += "</div>";
+    });
+    html += "</div></div>";
+
+    if (proc.branches && proc.branches.length) {
+      html += '<div class="lvl-card"><h3>' + t("procBranches") + "</h3>";
+      proc.branches.forEach(function(b){
+        html += '<div class="flow-branch"><b>' + escapeHtml(b.fromStageId) + ":</b> " + escapeHtml(b[lang].label) + "</div>";
+      });
+      html += "</div>";
+    }
+
+    html += '<div class="flow-result"><div class="flow-kicker">' + t("procResult") + "</div>" + escapeHtml(proc.result[lang]) + "</div>";
+
+    if (proc.evidence && proc.evidence.length) {
+      html += '<div class="lvl-card"><h3>' + t("procEvidence") + "</h3>";
+      html += proc.evidence.map(function(ev){
+        var loc = ev.path + (ev.line ? ":" + ev.line + (ev.end_line ? "-" + ev.end_line : "") : "");
+        return '<div class="evidence-row">' + (ev.label ? "<strong>" + escapeHtml(ev.label) + "</strong><br>" : "") + escapeHtml(loc) + "</div>";
+      }).join("");
+      html += "</div>";
+    }
+
+    if (proc.archifyDiagram) {
+      html += '<p><a class="ghost-btn small" target="_blank" rel="noopener" href="' + escapeHtml(proc.archifyDiagram[lang]) + '">' + escapeHtml(t("procOpenDiagram")) + " ↗</a></p>";
+    }
+
+    detailEl.innerHTML = html;
+  }
+
+  // ---------------------------------------------------------------------
+  // Events
+  // ---------------------------------------------------------------------
+  function wireEvents(){
+    document.getElementById("section-seg").addEventListener("click", function(e){
+      var btn = e.target.closest("button[data-section]");
+      if (!btn) return;
+      state.section = btn.dataset.section;
+      saveState(); renderChrome(); renderSection();
+    });
+    document.getElementById("level-seg").addEventListener("click", function(e){
+      var btn = e.target.closest("button[data-level]");
+      if (!btn) return;
+      state.level = btn.dataset.level;
+      saveState(); renderChrome();
+    });
+    document.getElementById("lang-seg").addEventListener("click", function(e){
+      var btn = e.target.closest("button[data-lang]");
+      if (!btn) return;
+      state.lang = btn.dataset.lang;
+      saveState(); renderChrome(); renderSection();
+    });
+    document.getElementById("toggle-sidebar").addEventListener("click", function(){
+      state.sidebarOpen = !state.sidebarOpen;
+      saveState(); renderChrome();
+    });
+    document.getElementById("comp-search").addEventListener("input", function(e){
+      renderComponentList(e.target.value);
+    });
+    document.getElementById("comp-list").addEventListener("click", function(e){
+      var btn = e.target.closest("button[data-goto-cap]");
+      if (!btn) return;
+      state.section = "capabilities"; state.selectedCapability = btn.dataset.gotoCap; capActiveTab = "overview";
+      saveState(); renderChrome(); renderSection();
+    });
+    document.getElementById("cap-list").addEventListener("click", function(e){
+      var card = e.target.closest(".nav-card[data-cap-id]");
+      if (!card) return;
+      state.selectedCapability = card.dataset.capId; capActiveTab = "overview";
+      saveState(); renderCapList(); renderCapDetail(state.selectedCapability);
+    });
+    document.getElementById("cap-detail").addEventListener("click", function(e){
+      var tabBtn = e.target.closest("button[data-cap-tab]");
+      if (tabBtn) {
+        capActiveTab = tabBtn.dataset.capTab;
+        renderCapDetail(state.selectedCapability);
+        return;
+      }
+      var btn = e.target.closest("button[data-goto-proc]");
+      if (!btn) return;
+      state.section = "processes"; state.selectedProcess = btn.dataset.gotoProc;
+      saveState(); renderChrome(); renderSection();
+    });
+    document.getElementById("proc-list").addEventListener("click", function(e){
+      var card = e.target.closest(".nav-card[data-proc-id]");
+      if (!card) return;
+      state.selectedProcess = card.dataset.procId;
+      saveState(); renderProcList(); renderProcDetail(state.selectedProcess);
+    });
+    document.getElementById("proc-detail").addEventListener("click", function(e){
+      var el = e.target.closest("[data-goto-cap]");
+      if (!el) return;
+      state.section = "capabilities"; state.selectedCapability = el.dataset.gotoCap; capActiveTab = "overview";
+      saveState(); renderChrome(); renderSection();
+    });
+  }
+
+  renderChrome();
+  renderSection();
+  wireEvents();
+})();
+</script>
+</body>
+</html>

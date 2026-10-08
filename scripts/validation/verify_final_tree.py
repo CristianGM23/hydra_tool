@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -33,15 +34,32 @@ def run(name: str, cmd: list[str], *, cwd: Path = ROOT, required: bool = True,
     except Exception as exc:  # gate boundary: preserve diagnostic in readiness report
         passed = False
         output = str(exc)
+    # Preserve the complete diagnostic on failures: the final lines of Maven
+    # can be dominated by intentional XML parser rejection tests, obscuring
+    # the real JUnit/Surefire failure from release-readiness.json.
+    diagnostic_path = None
+    if not passed:
+        logs = ROOT / 'target/release/logs/final-tree'
+        logs.mkdir(parents=True, exist_ok=True)
+        filename = re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-') + '.log'
+        log = logs / filename
+        log.write_text(output + '\n', encoding='utf-8')
+        diagnostic_path = log.relative_to(ROOT).as_posix()
+    lines = output.splitlines()
+    diagnostic = [line for line in lines if re.search(
+        r'\[ERROR\]|\bFAILURE\b|\bFAILED\b|Tests run:|Failures:|Errors:|Failed to execute|\bBUILD FAILURE\b',
+        line, re.IGNORECASE)]
+    selected = diagnostic[-50:] if not passed and diagnostic else lines[-80:]
     steps.append({
         'name': name,
         'facet': facet or name,
         'passed': passed,
         'required': required,
         'seconds': round(time.time() - started, 3),
-        'outputTail': '\n'.join(output.splitlines()[-80:]),
+        'outputTail': '\n'.join(selected),
+        **({'logPath': diagnostic_path} if diagnostic_path is not None else {}),
     })
-    print(('PASS' if passed else 'FAIL'), name)
+    print(('PASS' if passed else 'FAIL'), name, f'log={diagnostic_path}' if diagnostic_path else '', flush=True)
     return passed or not required
 
 

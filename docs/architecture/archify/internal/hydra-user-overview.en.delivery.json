@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "6843eb4f-4fbd-4d25-95d9-3bb84ff84261",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-user-overview.en.architecture.json",
+  "output": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\internal\\hydra-user-overview.en.html",
+  "specification": {
+    "sha256": "d13042913e5534209c21eb4f8c6006bc81ef709aabc49fc74ff6b65906c29191",
+    "bytes": 5209
+  },
+  "artifact": {
+    "sha256": "4999448d08db29fef010d7a987898ab4697bc14ef050edcae832a98618af178d",
+    "bytes": 769105
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "mode": "initial-generation",
+  "generatedAt": "2026-10-06",
+  "repository": {
+    "url": "https://github.com/CristianGM23/hydra_tool.git",
+    "branch": "main",
+    "commit": "864ed521e8d4e5fde8a0ed087c37bc3e5b89de36",
+    "workingTree": "clean"
+  },
+  "previousArchitecture": null,
+  "note": "No previous Archify architecture existed under docs/architecture/archify/ to compare against. This run is the initial baseline, reconstructed from repository evidence (not from any prior diagram). Future runs should load this file's successor as the previous model and report ADDED/CHANGED/REMOVED/RECLASSIFIED entries here instead of regenerating unrelated parts.",
+  "added": {
+    "summary": "All 16 capability/cross-cutting nodes and 6 artifacts across 3 levels (technical ES/EN, functional ES/EN, user-overview ES/EN) are new.",
+    "canonicalComponentIds": [
+      "fe_workbench", "b_project", "b_model_editor", "b_validation", "b_event_gami",
+      "b_grammar", "b_metamodel", "b_integration", "b_transformation", "b_recovery",
+      "b_publication", "b_persistence", "b_security", "b_audit",
+      "ext_remote", "ext_toolchains", "user"
+    ],
+    "levels": {
+      "user": {
+        "artifacts": ["hydra-user-overview.es.html", "hydra-user-overview.en.html"],
+        "componentIds": ["user", "fe_workbench", "b_metamodel", "b_validation", "b_model_editor", "b_grammar", "b_transformation", "b_event_gami", "b_integration", "b_publication", "ext_toolchains", "ext_remote"],
+        "codeEvidence": false
+      },
+      "functional": {
+        "artifacts": ["hydra-functional-overview.es.html", "hydra-functional-overview.en.html"],
+        "componentIds": ["fe_workbench", "b_project", "b_model_editor", "b_validation", "b_event_gami", "b_grammar", "b_metamodel", "b_integration", "b_transformation", "b_recovery", "b_publication", "b_persistence", "b_security", "b_audit", "ext_remote", "ext_toolchains", "user"],
+        "codeEvidence": false,
+        "note": "Added in this correction pass. Same 16+1 canonical component IDs and topology as the technical level; interaction labels describe responsibility/purpose instead of REST paths; no meta.repository or per-component sources (omitting repository evidence entirely, since Archify's own validator requires at least one component source once meta.repository is declared — confirmed by a failing run: repository-evidence/source-required)."
+      },
+      "technical": {
+        "artifacts": ["hydra-architecture.es.html", "hydra-architecture.en.html"],
+        "componentIds": ["fe_workbench", "b_project", "b_model_editor", "b_validation", "b_event_gami", "b_grammar", "b_metamodel", "b_integration", "b_transformation", "b_recovery", "b_publication", "b_persistence", "b_security", "b_audit", "ext_remote", "ext_toolchains", "user"],
+        "codeEvidence": true
+      }
+    },
+    "canonicalSourceFormatVerified": "Archify 3.0.1's editable/source specification is the JSON-IR validated against schemas/architecture.schema.json + schemas/common.schema.json (confirmed against the installed skill's schemas/README.md). The *.architecture.json files in this folder are that canonical specification; no other format was invented.",
+    "portal": {
+      "artifact": "hydra-architecture.html",
+      "summary": "Single public entry point: a hand-authored static HTML/CSS/JS page (not an Archify output, not a modification to Archify itself) with level tabs [USUARIO|FUNCIONAL|TÉCNICO], language tabs [ES|EN], an iframe loading the corresponding internal/*.html unmodified, and a component-exploration sidebar with expandable cards per canonical component ID, progression WHAT IT DOES -> HOW IT WORKS -> HOW IT'S IMPLEMENTED -> SOURCE EVIDENCE. Supports deep links via ?level=&lang=.",
+      "dataSource": "The sidebar's bilingual per-component text and source citations were extracted verbatim from the already-validated internal/*.architecture.json files (label/sublabel/sources) — no new architectural facts were introduced; 4 components absent from the user-level topology (b_project, b_recovery, b_persistence, b_security, b_audit) got a plain-language 'what it does' sentence paraphrased from their existing functional/technical sublabel, not a new claim.",
+      "verifiedWith": "Headless Chrome screenshots (user+es default state, and technical+en via ?level=technical&lang=en deep link) confirmed the tab switching, iframe loading, translated chrome, and sidebar all render correctly."
+    }
+  },
+  "changed": [
+    {
+      "change": "Reorganized all six Archify-rendered artifact families (18 files each incl. receipts → 36 files) from docs/architecture/archify/ directly into docs/architecture/archify/internal/, and regenerated them in place (not just moved) so delivery provenance stays valid (a plain file move invalidates Archify's recorded absolute output path: delivery/provenance-output-indeterminate).",
+      "reason": "User requested a single public entry point (hydra-architecture.html) with the six per-level/per-language Archify HTML files treated as implementation artifacts, not independent public deliverables."
+    },
+    {
+      "change": "Added full 438-key es.json UI translation catalog to hydra-functional-overview.es and hydra-user-overview.es (previously only 3-12 legend/kind keys were translated, so the viewer chrome — buttons, tabs — rendered in English despite the ES file). hydra-architecture.es already used the full catalog.",
+      "reason": "Discovered during the real visual-check screenshot review of hydra-functional-overview.es.html: toolbar showed 'Classic'/'Export' instead of 'Clásico'/'Exportar'. Fixed for consistency across the ES family and reverified with a fresh screenshot."
+    },
+    {
+      "change": "Reordered the capability column in both the USER and FUNCTIONAL diagrams (ES+EN) so Metamodel Designer -> Model Editor -> Transformation Engine sit in adjacent rows, and added two real functional-dependency edges drawn directly in the SVG: b_metamodel -> b_model_editor ('defines the language of') and b_model_editor -> b_transformation ('starts from existing models'), styled as a solid emphasis arrow distinct from the gray workbench-navigation edges.",
+      "reason": "User feedback: the USER level was too thin on per-module detail and showed no visible relationships between HYDRA's layers based on functionality — every edge went only from the workbench hub to a capability, never between capabilities."
+    },
+    {
+      "change": "Significantly enriched the portal's (hydra-architecture.html) per-component sidebar data: the QUE HACE/WHAT IT DOES tier is now 3 bullet points per component (what it does, what it offers, which technology — e.g. EMF/Ecore, Xtext/Langium/ANTLR, Monaco, ATL/ETL/Acceleo/EGL/Xtend) instead of one short sentence reused from the diagram sublabel; added a new RELACIONES FUNCIONALES/FUNCTIONAL RELATIONSHIPS tier per component listing all of its real outgoing functional dependencies with a one-line explanation each (6 relationships total across the 16 components, not just the 2 drawn in the SVG).",
+      "reason": "Same user feedback. All added bullets paraphrase facts already verified in the backend/frontend exploration notes and the already-validated diagram sublabels — no new architecture was invented."
+    },
+    {
+      "change": "Fixed a pre-existing bug found while extending the portal: the level tabs (USUARIO/FUNCIONAL/TÉCNICO) were hardcoded in Spanish and never translated when switching to EN. Tab labels are now driven by I18N (levelUser/levelFunctional/levelTechnical/levelHowto) like every other portal string.",
+      "reason": "Noticed while adding the fourth tab; fixed for consistency rather than left as a known issue."
+    }
+  ],
+  "removed": [],
+  "reclassified": [],
+  "addedSecondCorrectionPass": {
+    "summary": "Added a fourth portal level, CÓMO SE HACE/HOW-TO, backed by a new Archify WORKFLOW diagram (not architecture) showing the real cross-capability process of designing a Model Editor, plus a new per-component LÍMITES DE MODELADO/MODELING SCOPE & LIMITS sidebar tier.",
+    "newArtifacts": {
+      "workflow": {
+        "files": ["hydra-howto-model-editor.es.workflow.json", "hydra-howto-model-editor.en.workflow.json", "hydra-howto-model-editor.es.html", "hydra-howto-model-editor.en.html"],
+        "diagramType": "workflow (schema_version 2, readable-v2 compiler) — a different Archify canonical model than architecture, chosen because it is literally a process/flow, matching Archify's own guidance for 'processes, approval gates... step-by-step life processes'.",
+        "lanes": ["Metamodelo (lenguaje) / Metamodel (language)", "Representación gráfica / Graphical representation", "Validación y Quick Fixes / Validation & Quick Fixes", "Definición de Editor / Editor Definition"],
+        "mainPath": ["classes (metamodel classes/relationships)", "notation_design (icons/shapes/colors)", "rules (validations)", "quickfixes", "editor_mapping (palette/forms)", "editor_runtime (generate & test)"],
+        "feedbackEdges": "Two dashed return-role edges show the process is iterative, not strictly linear: quickfixes->rules ('adjust the rule if needed') and editor_runtime->notation_design ('adjust the visual style if needed', route: outside-right).",
+        "legendOverride": "meta.legend.entries relabels the generic agent-workflow legend (frontend/backend/security) to 'Interfaz visual|Visual interface', 'Modelo/motor|Model/engine', 'Regla de calidad|Quality rule' since this is a design process, not an agent tool-call loop.",
+        "validation": "Both ES and EN pass validate/deliver/check/browser-check with 0 diagnostics. ES has an advisory visualReviewRecommendation (1 detour, 3 bends on the rules->quickfixes edge, caused by the nearby feedback-edge routing); EN has none. Inspected a real visual-check screenshot: fully legible, no overlaps."
+      },
+      "modelingLimitsTier": {
+        "summary": "New 'LÍMITES DE MODELADO'/'MODELING SCOPE & LIMITS' sidebar tier for all 16 architecture components, placed between QUÉ HACE and RELACIONES FUNCIONALES: 2 bullets each — what IS modeled at that capability, and what is NOT (with a cross-reference to whichever capability does cover it, e.g. Metamodel Designer's limits bullet points to Validation for executable behavior and to Grammar Designer for textual syntax).",
+        "groundedIn": "Paraphrases the same already-verified responsibility boundaries from the backend/frontend exploration notes (e.g. ValidationEngine depends on metamodel.behavior.OperationQueryRuntime, never creates new metamodel types) — no new architectural claims."
+      }
+    },
+    "portalChanges": [
+      "Added a 4th level tab (data-level=\"howto\") wired to FRAME_SRC.howto.{es,en}.",
+      "Added ARCHITECTURE_LEVELS map so the component-exploration sidebar and its toggle button auto-hide on the howto level (it is a different canonical model with no component list) and reappear on user/functional/technical.",
+      "Level tab button text is now set from I18N on every render (see the tab-translation bug fix above), including the new HOW-TO/CÓMO SE HACE label."
+    ],
+    "verifiedWith": "Headless Chrome screenshots for howto+es (default) and user+en (tab translation + sidebar toggle) confirmed correct rendering; DOM-dumped the full page to count exactly 16 rendered component cards (no duplicates) after adding the limits tier."
+  },
+  "addedThirdCorrectionPass": {
+    "summary": "Added two new portal-level dimensions requested explicitly as still-missing: (1) a CAPABILITIES catalog with a dedicated 6-level drill-down view per major HYDRA capability (11 entries), and (2) a PROCESSES catalog covering 8 real cross-capability processes (the previous single how-to workflow diagram was explicitly NOT meant to represent the complete set). Both are new data-driven content inside the portal, not new Archify-validated diagrams, and are fed by a new file, hydra-architecture-data.js, loaded by hydra-architecture.html before its own inline script.",
+    "discoveryMethod": "5 parallel source-backed exploration agents inspected the actual current implementation (metamodel/model-editor, validation/quickfix, transformation/grammar, events/gamification, integration/recovery/publication/project packages) rather than extrapolating from the existing architecture diagrams or the single prior how-to process. Explicit hypotheses given as investigative prompts (e.g. 'Validation -> Diagnostic -> optional QuickFix -> optional apply -> revalidation') were verified against source and corrected where the code showed something different (see 'correctedAssumptions' below) rather than assumed true.",
+    "capabilities": {
+      "count": 11,
+      "ids": ["metamodel", "model_editor", "validation", "grammar", "transformation", "events", "gamification", "integration", "recovery", "publication", "project"],
+      "archComponentMapping": "Each capability's archComponentId ties it back to one of the 16 canonical architecture-diagram components; events and gamification both map to b_event_gami (split into two capability views because the user's capability list treats them separately, without altering the already-validated architecture-diagram geometry).",
+      "levelsPerCapability": ["L1 what it is / value / inputs / outputs", "L2 definable domain concepts (name, purpose, whenUsed, properties, relationships, cardinality, io, lifecycle, example, evidence)", "L3 conceptual domain model narrative", "L4 internal lifecycle narrative", "L5 incoming/outgoing interactions with other capabilities", "L6 runtime services/APIs/source evidence"],
+      "noNewArchitectureDiagrams": true
+    },
+    "processes": {
+      "count": 8,
+      "ids": ["validation_quickfix_cycle", "transformation_execution_sync", "grammar_compile_infer_edit", "event_flow_gamification", "metamodel_lifecycle_delete_cascade", "external_recovery_preview_persist_rollback", "release_gate_verified_publication", "howto_model_editor_design"],
+      "structure": "Each process has a trigger, a starting state, an ordered stages[] array (each stage owned by one capability, flagged optional:true/false), a branches[] array for conditional/optional paths, a result, and file+line evidence.",
+      "onlyOneBackedByArchifyDiagram": "howto_model_editor_design links to the pre-existing hydra-howto-model-editor.es/.en.html workflow diagram via an archifyDiagram field; the other 7 processes are rendered purely from data, with no new Archify artifact."
+    },
+    "correctedAssumptions": [
+      "NotationDefinition registry exists in code but is never referenced by EditorDefinitionCompiler — confirmed disconnected from the real editor-compilation path by grep, not merely unused in one place.",
+      "Validation quick-fix apply() DOES mutate the live model (contradicts a 'side-effect-free' assumption); only preview() is side-effect-free. apply() also auto-revalidates in the same response.",
+      "Transformation's own quick-fix mechanism (TransformationQuickFixService) has no apply/mutate method at all — only suggest() — and is unrelated to Validation's quick-fix mechanism.",
+      "HYDRA's own transformation runtime supports real bidirectional incremental synchronization (diff/conflicts/merge over a rolling baseline), not merely 'directional parity' — that weaker guarantee applies only to bridges with external native toolchains (ATL etc.).",
+      "Grammar compilation mandatorily produces a real inferred MetaModel (a blocking pipeline stage fails the whole compile otherwise) — it is not an illustrative or best-effort projection.",
+      "Event publication is opt-in per editor session (runtimePolicy().publishEvents()), not automatic for every model mutation; the legacy EMF model-mutation path has no event hook at all.",
+      "A universal, always-on audit trail (AuditCanonicalDocumentMutationObserver) exists independently of the opt-in domain Events system, wired into every canonical document store unconditionally.",
+      "Project capability enable/disable (ProjectCapability, 24 values) is enforced server-side (ProjectIndexService.logicalRoot), not only hidden in the frontend UI.",
+      "The release gate (HydraReleaseGateService, 5 checks) contains no literal security/CVE check and does not inspect model/metamodel validation status; plain project generation/distribution does not require passing it at all."
+    ],
+    "portalChanges": [
+      "Added a top-level section-seg nav [VISIÓN GENERAL|CAPACIDADES|PROCESOS]; VISIÓN GENERAL keeps the previous 3-level (USUARIO/FUNCIONAL/TÉCNICO) + sidebar behavior unchanged. The 4th level tab (CÓMO SE HACE/HOW-TO) was removed from the level-seg and is now reachable only via the 'howto_model_editor_design' entry in PROCESOS (its archifyDiagram field links to the unchanged hydra-howto-model-editor.*.html).",
+      "Added #view-capabilities (list-panel of 11 capability cards + detail-panel rendering the 6 levels) and #view-processes (list-panel of 8 process cards + detail-panel rendering the START/STAGES/BRANCHES/RESULT flow, stage border colored and left-border style (solid/dashed) driven by the owning capability's kind and optional flag).",
+      "Added a 'Ver vista de capacidad ->' / 'View capability ->' button inside each VISIÓN GENERAL sidebar card's tier-body, for every canonical component id that maps to at least one capability (b_event_gami renders two buttons, one for events and one for gamification), implemented via event delegation rather than inline handlers.",
+      "Added a 'Procesos relacionados'/'Related processes' block at the end of each capability detail view, linking to every PROCESSES entry whose capabilities[] array includes that capability id.",
+      "state now also tracks section/selectedCapability/selectedProcess, persisted to localStorage and overridable via URL params (?section=&capability=&process=), so any capability or process view is directly linkable without manually opening filesystem HTML files.",
+      "The archComponentId -> capability id(s) reverse map (CAP_BY_ARCH) is computed at runtime from window.CAPABILITIES rather than hardcoded, so it cannot drift out of sync with the data file."
+    ],
+    "bugFixedDuringThisPass": "A process-level evidence label for howto_model_editor_design was initially written only in Spanish ('Diagrama Archify detallado (workflow)'), leaking into the English process view since PROCESSES evidence entries are shared across languages (unlike CAPABILITIES' per-language sources). Fixed by rewording it as a language-neutral technical label before final verification.",
+    "verifiedWith": "node --check on hydra-architecture-data.js and on the portal's extracted inline script; a Node require() smoke-check confirmed exactly 11 CAPABILITIES keys and 8 PROCESSES entries with the expected stage/branch counts; headless Chrome screenshots of VISIÓN GENERAL (user level), CAPACIDADES (validation capability, ES), and PROCESOS (validation_quickfix_cycle, ES, and howto_model_editor_design, EN) confirmed correct rendering, tab translation, colored/dashed stage flow, and the Archify-diagram link; a DOM dump confirmed all 11 'Ver vista de capacidad' jump buttons are present on the VISIÓN GENERAL sidebar (including both events and gamification for b_event_gami)."
+  },
+  "addedFourthCorrectionPass": {
+    "summary": "Added real creation-mode (authoring) documentation and an explicit requiredness taxonomy to every capability, restructured the capability detail view into 5 tabbed subviews (Overview/Elements/Process/Relationships/Implementation), added 4 newly-discovered capabilities (Toolchains, External Repositories, Generated Project Lifecycle, Capability Packaging & Portability — total now 15), and added 15 capability-scoped process entries alongside the existing 8 cross-capability ones (total 23), grouped visually in the portal as 'By capability' / 'Cross-capability'.",
+    "discoveryMethod": "6 additional parallel frontend+backend exploration agents (one relaunched as 3 narrower agents after it spawned its own sub-agents and was force-handed-back before they reported) read actual designer/editor React components directly (not just backend domain models) to determine HOW each capability's elements are really created in the UI, and performed a second completeness sweep of all 23 frontend modules and 47 backend packages to find any remaining undocumented capability.",
+    "authoringAndRequiredness": {
+      "newDataField": "Every capability in window.CAPABILITIES now has an `authoring` object (es/en) with a summary plus a list of {element, requiredness, modes:[{mode, detail}]}, derived from direct frontend component reads, not inferred from backend models alone.",
+      "requirednessTaxonomy": ["MANDATORY", "OPTIONAL", "CONDITIONAL", "ALTERNATIVE", "REPEATABLE"],
+      "nonTrivialFindings": [
+        "Events has a genuine BPMN/CEP-style drag/drop/connect visual flow designer (@xyflow canvas, all 28 FlowNodeKind values placeable) — confirmed, not assumed from the backend graph model.",
+        "Transformation's 'three-zone' designer is button-driven (select classes + 'Map properties'), not a drawn-line canvas — no connector-drawing UI exists for attribute/relation mapping.",
+        "Validation conditions, Quick Fix preconditions and Transformation rule guards/EXPRESSION-bindings all reuse the exact same recursive ExpressionBuilder component (clause-guided or advanced node-tree mode) — there is no free-text OCL/EVL/Java box anywhere in HYDRA's authoring UI.",
+        "The Metamodel Designer's canvas is click-to-add from the palette (not drag-and-drop) with all detailed field editing confined to the property panel; canvas nodes are visually read-only.",
+        "TRACE_EQUIVALENT (a TransformationBinding kind) is never exposed as a named, user-selectable option — it is only auto-assigned when mapping a relation.",
+        "The Model Editor has two distinct canvases: a basic palette+ReactFlow fallback (based on the legacy NotationDefinition) and the real Editor-Definition-driven EditorRuntimeCanvas, which takes over the entire workbench once a compiled editor exists for the metamodel.",
+        "Grammar's class-diagram/inferred-metamodel view is a pure read-only projection (reusing the Metamodel Designer's own read-only canvas component) — there is no path writing back from the diagram into grammar text.",
+        "The 5-check verified-publication gate (HydraReleaseGateService) is surfaced in the frontend inside External Recovery's 'Governance' tab, not inside the Publication Center, despite being conceptually a release/publication concern.",
+        "External Repositories supports exactly 6 providers (GitHub, GitLab, OneDrive, Google Drive, Dropbox, generic Git) with 2 real OAuth flows (Authorization Code+PKCE, Device Code); only 3 of the 6 support full Git operations; importing a project from a remote repository is a separate, simpler code path that does NOT feed External Recovery's semantic materialization pipeline.",
+        "There is no unified 'Toolchains' concept in the code: 3 independent subsystems (Transformation's installable native-engine bridges with real toolAvailable/executionAvailable states; a read-only generic-tool compatibility center branded 'Available tools' in the UI; Grammar's technology choice, which is a build-pipeline config, not an installable engine) happen to share the TOOL_UNAVAILABLE label across 3 separate enums — 'bridge available' and 'engine available' are NOT real coded states and were not invented."
+      ]
+    },
+    "newCapabilities": {
+      "count": 4,
+      "ids": ["toolchains", "external_repositories", "generated_projects", "portability"],
+      "archComponentMapping": "toolchains->ext_toolchains, external_repositories->ext_remote (both already existed as architecture-diagram nodes but had no dedicated capability view); generated_projects->b_project and portability->b_project (both newly discovered via the completeness sweep, mapped to the closest existing architecture node, same pattern as events/gamification sharing b_event_gami — no architecture-diagram SVG was regenerated)."
+    },
+    "portalRestructure": {
+      "capabilityTabs": "Replaced the single long scroll in #cap-detail with 5 tabbed subpanels (data-tab=overview|elements|process|relationships|implementation), a seg-style tab bar (#cap-subtabs), and a capActiveTab module variable reset to 'overview' whenever a different capability is selected (from the capability list, an overview sidebar jump link, or a process-stage jump link).",
+      "requirednessUi": "Added REQUIREDNESS_META (label+visual style per value), a renderRequirednessBadge()/renderRequirednessLegend() pair, and CSS border styles (solid/dashed/dotted/double) so the legend and badges are consistent everywhere they appear (capability Elements tab, process Stages legend).",
+      "authoringUi": "Added renderAuthoring() rendering each capability's authoring.summary, the full requiredness legend, and one block per definable element with its requiredness badge and a list of real creation modes with their detail text.",
+      "processGrouping": "renderProcList() now splits window.PROCESSES into 'by capability' (capabilities.length===1) and 'cross-capability' (capabilities.length>1) groups with a group-label header each, computed automatically from existing data — no schema field was needed since every capability-scoped process was authored with a single-entry capabilities array."
+    },
+    "newProcesses": {
+      "count": 15,
+      "scope": "One per capability (metamodel, model_editor, grammar, validation, transformation, events, gamification, integration, recovery, publication, project, toolchains, external_repositories, generated_projects, portability), each describing that capability's own internal definition/authoring/save lifecycle (distinct from the pre-existing 8 cross-capability execution/runtime processes)."
+    },
+    "scopeCutsDeclaredExplicitly": [
+      "No drawn node-edge domain-model diagrams per capability were built; element relationships are documented as structured text (relationships[]/cardinality per concept) inside the Elements tab rather than as an SVG graph, to avoid a large per-capability auto-layout engineering effort for marginal readability gain over the existing structured text.",
+      "Process stages still use a flat stages[]+branches[] schema (boolean optional), not a nodes[]+edges[] graph with drawn decision diamonds — branches remain textual notes below the stage flow, not visually connected yes/no paths. This is the clearest gap against the request's decision-node/branch visualization ask.",
+      "Stage-level requiredness only distinguishes MANDATORY/OPTIONAL (from the existing boolean), not the full 5-value taxonomy — the full taxonomy IS applied at the capability-element level, which is where it most mattered for answering 'do I need this?'.",
+      "The 3 Archify architecture-level diagrams (USER/FUNCTIONAL/TECHNICAL) were not regenerated with a drawn REQUIRED/OPTIONAL/CONDITIONAL/ALTERNATIVE/EXTERNAL relationship-kind legend in the SVG itself; only the 2 most central dependency edges are drawn, as in prior phases — the rest remain documented in text (now richer, via Capabilities' Elements/Relationships tabs) rather than redrawn, to avoid reopening the layout-diagnostic iteration cycle already closed in earlier phases."
+    ],
+    "verifiedWith": "node --check on the data file and the portal's extracted inline script after every edit; a Node require() smoke-check confirmed 15 CAPABILITIES (all with non-null es/en authoring blocks) and 23 PROCESSES (15 capability-scoped + 8 cross-capability); headless Chrome screenshots confirmed the 15-entry capability list, the 5-tab bar with Overview as the default active tab, the requiredness legend rendering with correct badge styles, and the Processes list correctly split into 'POR CAPACIDAD'/'CRUZADOS' (ES) and 'BY CAPABILITY'/'CROSS-CAPABILITY' (EN) groups; a DOM dump confirmed the Elements tab panel (hidden by default but present in the DOM) renders the authoring block with the expected number of authoring-element blocks and requiredness badges for a sampled capability (validation)."
+  },
+  "uncertaintiesAndEvidenceConflicts": [
+    "Architecture is reconstructed at a capability-layer granularity (~14 backend nodes for ~40 Java packages and ~50 frontend modules); many fine-grained REST resources and frontend modules are represented only in exploration notes, not as individual diagram nodes.",
+    "The technical and functional diagrams draw only one representative persistence edge (Publication -> Canonical Persistence) and one representative security-sandboxing pair (Recovery/Publication -> Security); the other seven capability services also persist through the same CanonicalDocumentStore and three more (Integration, Transformation) also use the sandboxed process runner — stated in cards, not drawn as edges, to keep the diagram readable.",
+    "All six finalize runs (technical ES/EN, functional ES/EN, user-overview ES/EN) report an advisory visualReviewRecommendation (crossings near fe_workbench/fe's edge fan-out, a few multi-bend detours). All four automated gates (validate/deliver/check/browser-check) passed with 0 diagnostics in every case. This was followed up with a REAL visual-check screenshot review (not just the JSON recommendation) for the technical, functional and user-overview ES artifacts, saved under internal/visual-check-es/: legibility confirmed in both themes at all four viewports, including the two new dependency edges; the crossings are visually dense but every edge stays traceable by label/color, no overlapping boxes or illegible text.",
+    "Only 2 of the 6 real cross-capability dependency relationships are drawn as SVG edges (Metamodel->Model, Model->Transformation); the other 4 (Metamodel->Validation/Grammar/Events, Model->Publication) would have required side-channel routing that produced chained composition/proper-crossing failures against the workbench's existing fan-out, so they are documented only in the portal's RELACIONES FUNCIONALES sidebar tier, not drawn in the diagram.",
+    "Verified programmatically that functional ES and EN, and user-overview ES and EN, each share identical component IDs, connection from/to pairs, and boundary membership (only label text differs)."
+  ]
+}

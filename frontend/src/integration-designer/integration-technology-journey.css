@@ -24,3 +24,8 @@
 .integration-technology-journey.compact .integration-technology-stage-grid{grid-template-columns:repeat(auto-fit,minmax(115px,1fr))}
 .integration-technology-journey.compact .integration-technology-stage{padding:8px}
 @media(max-width:900px){.integration-technology-journey>header{grid-template-columns:1fr}.integration-technology-journey-score{justify-items:start}}
+.integration-technology-stage.readiness-ready{box-shadow:inset 0 0 0 1px var(--hydra-success-border, currentColor)}
+.integration-technology-stage.readiness-ready-with-warnings{box-shadow:inset 0 0 0 1px var(--hydra-warning-border, currentColor)}
+.integration-technology-stage.readiness-blocked{opacity:.78}
+.integration-technology-delivery-summary{display:flex;gap:.35rem;flex-direction:column;margin-top:.75rem;padding:.75rem;border:1px solid var(--hydra-border-subtle,currentColor);border-radius:.5rem}
+.integration-technology-delivery-summary small{opacity:.78}

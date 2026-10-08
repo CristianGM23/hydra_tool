@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "HYDRA — user overview",
+    "output": "hydra-user-overview.en.html",
+    "quality_profile": "showcase",
+    "legend": { "mode": "hidden" }
+  },
+  "components": [
+    { "id": "user", "type": "external", "label": "Engineer / Analyst", "sublabel": "end user", "icon": "person", "pos": [20, 455], "size": [150, 60] },
+    { "id": "fe_workbench", "type": "frontend", "label": "HYDRA", "sublabel": "workbench", "pos": [250, 40], "size": [170, 950] },
+    { "id": "b_metamodel", "type": "backend", "label": "Metamodels", "sublabel": "graphical language design", "pos": [600, 40], "size": [210, 70] },
+    { "id": "b_model_editor", "type": "backend", "label": "Models", "sublabel": "create and edit instances", "pos": [600, 190], "size": [210, 70] },
+    { "id": "b_transformation", "type": "backend", "label": "Transformations", "sublabel": "model ↔ model ↔ text", "pos": [600, 340], "size": [210, 70] },
+    { "id": "b_validation", "type": "backend", "label": "Validations", "sublabel": "rules + automatic quick fixes", "pos": [600, 490], "size": [210, 70] },
+    { "id": "b_grammar", "type": "backend", "label": "Textual Languages", "sublabel": "syntax and text editor", "pos": [600, 640], "size": [210, 70] },
+    { "id": "b_event_gami", "type": "backend", "label": "Events & Gamification", "sublabel": "behavior and motivation", "pos": [600, 790], "size": [210, 70] },
+    { "id": "b_publication", "type": "backend", "label": "Publication", "sublabel": "generate and ship projects", "pos": [600, 940], "size": [210, 70] },
+    { "id": "b_integration", "type": "backend", "label": "Repositories", "sublabel": "connect external tools", "pos": [600, 1090], "size": [210, 70] },
+    { "id": "ext_toolchains", "type": "external", "label": "External Tools", "sublabel": "ATL, ETL, Acceleo, EGL, Xtend…", "pos": [990, 340], "size": [210, 70] },
+    { "id": "ext_remote", "type": "external", "label": "Remote Repositories", "sublabel": "Git, cloud, version control", "pos": [990, 1090], "size": [210, 70] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "HYDRA — modeling workbench", "wraps": ["fe_workbench", "b_metamodel", "b_validation", "b_model_editor", "b_grammar", "b_transformation", "b_event_gami", "b_integration", "b_publication"], "pad": 18 }
+  ],
+  "connections": [
+    { "from": "user", "to": "fe_workbench", "label": "opens HYDRA", "variant": "emphasis" },
+    { "from": "fe_workbench", "to": "b_metamodel", "label": "design", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_model_editor", "label": "edit", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_validation", "label": "validate", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_grammar", "label": "write", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_event_gami", "label": "define", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_transformation", "label": "transform", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_publication", "label": "publish", "fromSide": "right", "toSide": "left" },
+    { "from": "fe_workbench", "to": "b_integration", "label": "connect", "fromSide": "right", "toSide": "left" },
+    { "from": "b_metamodel", "to": "b_model_editor", "label": "defines the language of", "variant": "emphasis", "fromSide": "bottom", "toSide": "top" },
+    { "from": "b_model_editor", "to": "b_transformation", "label": "starts from existing models", "variant": "emphasis", "fromSide": "bottom", "toSide": "top" },
+    { "from": "b_transformation", "to": "ext_toolchains", "label": "external engine", "variant": "security" },
+    { "from": "b_integration", "to": "ext_remote", "label": "sync", "variant": "security" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "What HYDRA is", "items": [
+      "A local workbench for designing languages (metamodels and grammars), modeling with them, and transforming them",
+      "All your work lives on your own machine; it does not depend on a remote server",
+      "You can connect external tools (Git, transformation engines) whenever you need them, never by default"
+    ]},
+    { "dot": "cyan", "title": "How the capabilities relate", "items": [
+      "The metamodel is the foundation: models, validations, grammars and events are all defined over its types",
+      "An existing model is the starting point both for transforming it and for generating/publishing a result",
+      "Design (or import) a metamodel or a grammar for your language",
+      "Define validations to catch mistakes early",
+      "Create models with that language and transform them into other formats",
+      "Publish or generate a final project once it's ready"
+    ]},
+    { "dot": "slate", "title": "For more detail", "items": [
+      "How these capabilities fit together: hydra-functional-overview.en.html",
+      "Real services, APIs, persistence and security: hydra-architecture.en.html",
+      "This diagram is a deliberate simplification for a first read; it does not replace the other two views"
+    ]}
+  ]
+}

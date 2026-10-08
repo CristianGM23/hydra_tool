@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "How to design a Model Editor in HYDRA",
+    "output": "hydra-howto-model-editor.en.html",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": { "label": "Visual interface" },
+        "backend": { "label": "Model / engine" },
+        "security": { "label": "Quality rule" }
+      }
+    }
+  },
+  "lanes": [
+    { "id": "lang", "label": "Metamodel (language)" },
+    { "id": "notation", "label": "Graphical representation" },
+    { "id": "quality", "label": "Validation & Quick Fixes" },
+    { "id": "editor", "label": "Editor Definition" }
+  ],
+  "phases": [
+    { "id": "p1", "label": "Design the language", "fromCol": 0, "toCol": 1 },
+    { "id": "p2", "label": "Guarantee quality", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "p3", "label": "Build the editing experience", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["classes", "notation_design", "rules", "quickfixes", "editor_mapping", "editor_runtime"],
+  "nodes": [
+    { "id": "classes", "lane": "lang", "col": 0, "type": "backend", "label": "Classes & relationships", "sublabel": "metamodel (EMF/Ecore)", "width": 165 },
+    { "id": "notation_design", "lane": "notation", "col": 1, "type": "frontend", "label": "Graphical notation", "sublabel": "icons, shapes, colors", "tag": "does not change the metamodel", "width": 150 },
+    { "id": "rules", "lane": "quality", "col": 2, "type": "security", "label": "Validations", "sublabel": "rules over the metamodel", "width": 150 },
+    { "id": "quickfixes", "lane": "quality", "col": 3, "type": "security", "label": "Quick fixes", "sublabel": "repair tied to one rule", "width": 150 },
+    { "id": "editor_mapping", "lane": "editor", "col": 4, "type": "frontend", "label": "Palette & forms", "sublabel": "editor's visual mapping", "width": 150 },
+    { "id": "editor_runtime", "lane": "editor", "col": 5, "type": "backend", "label": "Generate & test", "sublabel": "compiled editor runtime", "tag": "ready to use", "width": 150 }
+  ],
+  "edges": [
+    { "id": "classes-notation", "from": "classes", "to": "notation_design", "label": "is drawn over", "variant": "emphasis" },
+    { "id": "notation-rules", "from": "notation_design", "to": "rules", "label": "already visible; now validate", "variant": "emphasis" },
+    { "id": "rules-quickfixes", "from": "rules", "to": "quickfixes", "label": "each rule may have a repair", "variant": "emphasis" },
+    { "id": "quickfixes-mapping", "from": "quickfixes", "to": "editor_mapping", "label": "already validated; map to editor", "variant": "emphasis" },
+    { "id": "mapping-runtime", "from": "editor_mapping", "to": "editor_runtime", "label": "compiled and opened", "variant": "emphasis" },
+    { "id": "quickfixes-feedback", "from": "quickfixes", "to": "rules", "label": "adjust the rule if needed", "variant": "dashed", "role": "return" },
+    { "id": "runtime-feedback", "from": "editor_runtime", "to": "notation_design", "label": "adjust the visual style if needed", "variant": "dashed", "role": "return", "route": "outside-right" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "What is modeled at each stage", "items": [
+      "Classes & relationships: only the metamodel (EMF/Ecore) — types, attributes, references, inheritance",
+      "Notation: only the visual appearance (icons, shapes, colors); it never adds or removes metamodel types",
+      "Validations & quick fixes: rules and repairs over already-existing types, never new types",
+      "Palette & forms: how a type looks and is edited on the canvas, not what that type is"
+    ]},
+    { "dot": "cyan", "title": "Why this order", "items": [
+      "The metamodel comes first because everything else (notation, rules, editor) is defined over its types",
+      "Notation is designed early so models can be seen while rules are added",
+      "Rules and their quick fixes are finished before mapping the editor, so the editor already knows what to repair",
+      "The editor is generated and tested last, once language + appearance + quality are ready"
+    ]},
+    { "dot": "slate", "title": "More detail per capability", "items": [
+      "Each capability in this process has its own 'modeling scope & limits' card in the portal: hydra-architecture.html",
+      "Metamodels, Validation & Quick Fixes, and Model Editor are the matching canonical IDs"
+    ]}
+  ]
+}

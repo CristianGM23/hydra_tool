@@ -1,9 +1,10 @@
 import { backendFetch } from '../api/backendFetch';
 import { readValidationJson } from '../validation/http';
-import type { IntegrationCheckReport,IntegrationProfileModel,IntegrationProfileSaveResponse,IntegrationProfileSummary,IntegrationTechnologyDescriptor,TechnologyInjectionExecutionResult,TechnologyWorkflowDescriptor,TechnologyInjectionPreview } from './types';
+import type { IntegrationCheckReport,IntegrationProfileModel,IntegrationProfileSaveResponse,IntegrationProfileSummary,IntegrationTechnologyDescriptor,TechnologyDeliveryReadiness,TechnologyInjectionExecutionResult,TechnologyProjectValidationReport,TechnologyValidationMode,TechnologyWorkflowDescriptor,TechnologyInjectionPreview } from './types';
 import { normalizeIntegrationProfile } from './integrationProfileNormalization';
 import { normalizeIntegrationTechnologyDescriptors } from './integrationTechnologyNormalization';
 import { normalizeTechnologyWorkflowDescriptors } from './technologyWorkflowNormalization';
+import { normalizeTechnologyDeliveryReadiness } from './technologyDeliveryReadinessNormalization';
 const route=(semanticScopeId:string):string=>`/api/semantic-contexts/${encodeURIComponent(semanticScopeId)}/integrations`;
 export async function listIntegrationProfiles(metamodelId:string):Promise<IntegrationProfileSummary[]>{return readValidationJson<IntegrationProfileSummary[]>(await backendFetch(route(metamodelId)));}
 export async function listIntegrationTechnologies(metamodelId:string):Promise<IntegrationTechnologyDescriptor[]>{return normalizeIntegrationTechnologyDescriptors(await readValidationJson<unknown>(await backendFetch(`${route(metamodelId)}/technologies`)));}
@@ -16,5 +17,7 @@ export async function deleteIntegrationProfile(metamodelId:string,profileId:stri
 
 const technologyRoute=(metamodelId:string,profileId:string):string=>`${route(metamodelId)}/${encodeURIComponent(profileId)}/technology`;
 export async function compileTechnologyIntegration(metamodelId:string,profileId:string):Promise<Blob>{const response=await backendFetch(`${technologyRoute(metamodelId,profileId)}/compile`,{method:'POST'});if(!response.ok)await readValidationJson<void>(response);return response.blob();}
+export async function loadTechnologyDeliveryReadiness(metamodelId:string,profileId:string):Promise<TechnologyDeliveryReadiness>{return normalizeTechnologyDeliveryReadiness(await readValidationJson<unknown>(await backendFetch(`${technologyRoute(metamodelId,profileId)}/readiness`)));}
+export async function validateTechnologyIntegration(metamodelId:string,profileId:string,mode:TechnologyValidationMode='STRUCTURAL'):Promise<TechnologyProjectValidationReport>{return readValidationJson<TechnologyProjectValidationReport>(await backendFetch(`${technologyRoute(metamodelId,profileId)}/validate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode,timeoutSeconds:300,keepWorkspace:false,environment:{}})}));}
 export async function previewTechnologyIntegration(metamodelId:string,profileId:string,targetDirectory:string):Promise<TechnologyInjectionPreview>{return readValidationJson<TechnologyInjectionPreview>(await backendFetch(`${technologyRoute(metamodelId,profileId)}/preview`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({targetDirectory})}));}
 export async function applyTechnologyIntegration(metamodelId:string,profileId:string,targetDirectory:string):Promise<TechnologyInjectionExecutionResult>{return readValidationJson<TechnologyInjectionExecutionResult>(await backendFetch(`${technologyRoute(metamodelId,profileId)}/apply`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({targetDirectory})}));}

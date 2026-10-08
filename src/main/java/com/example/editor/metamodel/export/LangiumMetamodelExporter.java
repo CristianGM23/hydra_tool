@@ -25,7 +25,9 @@ public class LangiumMetamodelExporter implements MetamodelTextExporter {
         String grammarName = GrammarGenerationSupport.toPascalIdentifier(context.neutralMetamodel().name(), "GeneratedLanguage");
         StringBuilder result = new StringBuilder();
         var auxiliary = GrammarGenerationSupport.auxiliaryRuleNames(context, false);
+        MetaClass semanticRoot = GrammarGenerationSupport.findSemanticRoot(context);
         result.append("grammar ").append(grammarName).append("\n\n");
+        if(semanticRoot != null) result.append("// HYDRA_SEMANTIC_ROOT ").append(ruleName(semanticRoot)).append("\n");
         result.append("// HYDRA_TRANSPORT_RULE ").append(auxiliary.rootRule()).append("\nentry ").append(auxiliary.rootRule()).append(":\n    elements+=").append(auxiliary.elementRule()).append("*;\n\n");
         result.append("// HYDRA_TRANSPORT_RULE ").append(auxiliary.elementRule()).append("\n");
         appendElementRule(result, context, auxiliary.elementRule());
