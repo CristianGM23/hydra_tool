@@ -1474,3 +1474,11 @@ La segunda pasada real de RC2 sobre Windows cerró tres regresiones que solo apa
 - Añade `verify_r6c4_fix171_logical_size.py`, que valida antes de Maven los presupuestos globales Java/TS/TSX/CSS sin excepciones individuales y reproduce la medición UTF-16 del guard Java.
 - Añade `validate_full_tree_fix171.ps1`, que comprueba los hashes canónicos (preservando extras), ejecuta el nuevo preflight arquitectónico y delega en la cualificación global Fix170 íntegra; no deshabilita pruebas ni amplía presupuestos.
 - La aceptación definitiva requiere ejecutar el comando Fix171 en el Windows destino y obtener `FINAL_TREE_GATE=PASS`, incluyendo Maven completo.
+
+
+## R6C4 Fix172 - GitHub Actions Windows/Linux parity
+
+- Anclaje del checkout de archivos canónicos a sus bytes originales con una política de `.gitattributes` portable: LF por defecto y excepciones CRLF explícitas para los archivos históricos ya firmados.
+- El wrapper de Maven se invoca mediante Bash en CI para evitar errores de permisos de ejecución tras checkout en Ubuntu; se recomienda guardar también el modo ejecutable del archivo `mvnw` en el índice Git.
+- Gate de integridad del manifiesto inmediatamente después de configurar Python en CI, antes de ejecutar las pruebas completas.
+- Se mantienen sin modificaciones los 40 esquemas JSON y sus referencias SHA-256 previamente aprobadas.

@@ -1,2 +1,30 @@
+# HYDRA: canonical sources have byte-exact hashes in MANIFEST_SHA256.txt.
+# Every text checkout is LF unless an individually reviewed source is CRLF.
+* text=auto eol=lf
+
+# Windows launchers in this signed source tree are normally LF.
+*.cmd text eol=lf
 /mvnw text eol=lf
-*.cmd text eol=crlf
+
+# Explicit binary data must never be line-ending converted.
+*.png binary
+
+# Historical reviewed CRLF source bytes, preserved on every platform.
+/VALIDAR_HYDRA_V4.32.106_WINDOWS.cmd text eol=crlf
+/docs/i18n/HYDRA_ES_GLOSSARY.csv text eol=crlf
+/frontend/src/components/MarkerDefinitions.tsx text eol=crlf
+/frontend/src/components/SemanticEdge.tsx text eol=crlf
+/frontend/src/model/modelUtils.ts text eol=crlf
+/frontend/src/notation/notationUtils.tests.ts text eol=crlf
+/frontend/src/notation/notationUtils.ts text eol=crlf
+/src/main/java/com/example/editor/diagram/DiagramDocument.java text eol=crlf
+/src/main/java/com/example/editor/editor/EditorBootstrapResponse.java text eol=crlf
+/src/main/java/com/example/editor/metamodel/MetamodelDescriptor.java text eol=crlf
+/src/main/java/com/example/editor/metamodel/registry/RegisteredMetamodel.java text eol=crlf
+/src/main/java/com/example/editor/model/ModelDocumentResponse.java text eol=crlf
+/src/main/java/com/example/editor/model/SavedModelSummary.java text eol=crlf
+/src/main/java/com/example/editor/notation/NotationDefinition.java text eol=crlf
+/src/test/resources/metamodels/introspection.ecore text eol=crlf
+/src/test/resources/metamodels/malformed.ecore text eol=crlf
+/src/test/resources/metamodels/sample.ecore text eol=crlf
+/src/test/resources/notations/introspection.notation.json text eol=crlf

@@ -1,4 +1,6 @@
 HELP.md
+# The canonical source inventory deliberately includes HELP.md.
+!HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -8,7 +10,9 @@ target/
 .apt_generated
 .classpath
 .factorypath
+# IDE .project files are ignored except reviewed Sirius fixture inputs.
 .project
+!src/test/resources/fixtures/sirius-complete/**/.project
 .settings
 .springBeans
 .sts4-cache
