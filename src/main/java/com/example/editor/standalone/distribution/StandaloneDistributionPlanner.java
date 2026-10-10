@@ -24,6 +24,14 @@ public final class StandaloneDistributionPlanner {
         if(profile.targets().stream().anyMatch(target -> target != StandaloneDistributionTarget.PWA)){
             artifacts.add(new StandaloneDistributionArtifact(
                     "src-tauri/tauri.conf.json", "application/json", tauriConfiguration(profile)));
+            artifacts.add(new StandaloneDistributionArtifact(
+                    "src-tauri/Cargo.toml", "text/plain", tauriCargo(profile)));
+            artifacts.add(new StandaloneDistributionArtifact(
+                    "src-tauri/build.rs", "text/x-rust", "fn main() { tauri_build::build(); }\n"));
+            artifacts.add(new StandaloneDistributionArtifact(
+                    "src-tauri/src/main.rs", "text/x-rust", tauriMain()));
+            artifacts.add(new StandaloneDistributionArtifact(
+                    "src-tauri/capabilities/default.json", "application/json", tauriCapabilities()));
         }
         return artifacts.stream().sorted(Comparator.comparing(StandaloneDistributionArtifact::path)).toList();
     }
@@ -85,6 +93,33 @@ public final class StandaloneDistributionPlanner {
                 "    \"fileAssociations\": [{ \"ext\": [" + extensions + "] }]\n" +
                 "  }\n" +
                 "}\n";
+    }
+
+    /**Descripción: Genera la configuración Cargo mínima para construir el ejecutable nativo Tauri 2. Entradas: datos validados por el contrato. Salida: resultado verificable de la operación. */
+    private String tauriCargo(StandaloneDistributionProfile profile) {
+        String version = profile.version();
+        if(!version.matches("[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?")) {
+            throw new IllegalArgumentException("Tauri distribution version must be valid SemVer");
+        }
+        String packageName = identifier(profile.productName()).substring("org.hydra.".length());
+        return "[package]\nname = \"hydra-" + packageName + "\"\nversion = \"" + version +
+                "\"\nedition = \"2021\"\nbuild = \"build.rs\"\n" +
+                "\n[build-dependencies]\ntauri-build = { version = \"2\", features = [] }\n" +
+                "\n[dependencies]\ntauri = { version = \"2\", features = [] }\n";
+    }
+
+    /**Descripción: Define el punto de entrada de escritorio reutilizando el build web generado. Entradas: datos validados por el contrato. Salida: resultado verificable de la operación. */
+    private String tauriMain() {
+        return "#![cfg_attr(not(debug_assertions), windows_subsystem = \"windows\")]\n" +
+                "fn main() {\n    tauri::Builder::default()\n" +
+                "        .run(tauri::generate_context!())\n" +
+                "        .expect(\"Could not start generated HYDRA editor\");\n}\n";
+    }
+
+    /**Descripción: Restringe permisos nativos al conjunto básico de Tauri, sin acceso arbitrario a shell o sistema de archivos. Entradas: datos validados por el contrato. Salida: resultado verificable de la operación. */
+    private String tauriCapabilities() {
+        return "{\n  \"identifier\": \"default\",\n  \"description\": \"Generated editor basic window\",\n" +
+                "  \"windows\": [\"main\"],\n  \"permissions\": [\"core:default\"]\n}\n";
     }
 
     /** Descripción: Ejecuta la operación «shortName» correspondiente a la responsabilidad de StandaloneDistributionPlanner. Entradas: productName: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String shortName(String productName){

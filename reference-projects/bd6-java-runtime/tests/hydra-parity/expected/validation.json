@@ -1,0 +1,7 @@
+[
+  {
+    "code": "NAME_REQUIRED",
+    "field": "name",
+    "message": "Name is required"
+  }
+]

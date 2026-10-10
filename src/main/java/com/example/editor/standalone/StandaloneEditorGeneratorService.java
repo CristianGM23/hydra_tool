@@ -588,8 +588,13 @@ public class StandaloneEditorGeneratorService {
                 Después abra `http://127.0.0.1:%d`.
 
                 El editor incluye un servidor Java sin dependencias externas y persistencia local atómica con ETag.
+                Para evitar perder los modelos al actualizar la aplicación, se recomienda ejecutar directamente:
+                `java -cp backend/out HydraStandaloneServer --root=. --port=%d --data-root=/ruta/persistente/modelos`
+                (en Windows, indique una ruta persistente bajo AppData del usuario).
+                Los guardados nuevos requieren `If-None-Match: *`; las modificaciones requieren `If-Match`
+                con el ETag del modelo cargado. No se aceptan escrituras que oculten conflictos.
                 No contiene las pantallas de diseño de HYDRA.
-                """.formatted(descriptor.name(), descriptor.semanticScopeId(), descriptor.editorId(), descriptor.port());
+                """.formatted(descriptor.name(), descriptor.semanticScopeId(), descriptor.editorId(), descriptor.port(), descriptor.port());
         if(!isTextual(descriptor)) return base + """
 
                 ## Runtime visual

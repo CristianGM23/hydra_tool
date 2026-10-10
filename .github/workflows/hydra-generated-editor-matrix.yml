@@ -1,0 +1,142 @@
+name: HYDRA generated-editor web and native smoke
+on:
+  workflow_dispatch:
+    inputs:
+      native_os_smoke:
+        description: "Opt in to executing trusted native OS installers and applications on ephemeral CI"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  generated-editor:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Linux Tauri system dependencies
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev librsvg2-dev libayatana-appindicator3-dev patchelf xvfb
+      - name: Install optional signed-release verification dependency
+        run: python -m pip install -r scripts/distribution/requirements-signing.txt
+      - name: B4+D4 cross-technology parity, signed release and installer regression
+        run: python scripts/validation/verify_bd_block4.py
+      - name: B5+D5 native portfolio and local generated-editor regression
+        run: python scripts/validation/verify_bd_block5.py
+      - name: Fix180 B8+B9 canonical cardinalities, export provenance and loss detection
+        run: python scripts/validation/verify_fix180_b8_b9.py
+      - name: Fix180 B9 real generated JavaScript semantic runtime behavior
+        run: node scripts/validation/verify_fix180_runtime_semantics.mjs
+      - name: Fix180 D8+D9 declarative model migration, rollback and crash recovery
+        run: python scripts/validation/verify_fix180_d8_d9.py
+      - name: Fix180 real generated Java editor migration through HTTP and restart
+        run: python scripts/validation/fix180_real_editor_migration_e2e.py
+      - name: Fix180 native OS verifier fail-closed regressions
+        run: python scripts/validation/verify_fix180_native_runner.py
+      - name: Fix180 D8 generated editor real Java HTTP model lifecycle (not OS installer certification)
+        run: python scripts/validation/verify_fix180_generated_model_lifecycle.py
+      - name: Fix180 generated visual and textual JavaScript syntax
+        shell: bash
+        run: |
+          node --check src/main/resources/standalone-template/frontend/app.js
+          node --check src/main/resources/standalone-template/frontend/textual-app.js
+      - name: Fix179 B6+B7+D6+D7 portable regression tests
+        run: python scripts/validation/verify_bd_megablock6_7.py
+      - name: Fix179 real Java/Node parity and signed installation lifecycle
+        run: python scripts/validation/bd67_real_e2e.py
+      - name: B5+D5 actual Node to Java to dual-signed local HTTP editor
+        run: python scripts/validation/bd5_real_e2e.py
+      - name: B4+D4 native runtime -> signed Java web publication
+        run: python scripts/validation/bd4_real_e2e.py
+      - name: B3+D3 behavioral parity and immutable-release regression
+        run: python scripts/validation/verify_bd_block3.py
+      - name: Real native behavior and Java deployable release (reference editor)
+        run: python scripts/validation/bd3_real_e2e.py
+      - name: Native editor per-capability parity evidence (fresh challenge)
+        run: >-
+          python scripts/validation/run_native_parity_suite.py
+          --root reference-projects --project bd2-standalone-smoke
+          --profile generated-web --execute --timeout-seconds 900
+          --report target/bd3/generated-editor-parity.json
+      - name: Build and qualify independently deployable web editor
+        run: >-
+          python scripts/distribution/build_generated_editor.py
+          --allowed-root reference-projects
+          --editor bd2-standalone-smoke --web --offline
+          --execute-project-build --prepare-offline-shell
+          --timeout-seconds 900 --report target/bd2/native-smoke-web.json
+      - name: Install official Tauri CLI 2 toolchain
+        run: cargo install tauri-cli --version '^2' --locked
+      - name: Compile generated editor into native platform bundles
+        run: >-
+          python scripts/distribution/build_generated_editor.py
+          --allowed-root reference-projects
+          --editor bd2-standalone-smoke --web --native --offline
+          --execute-project-build --prepare-offline-shell
+          --timeout-seconds 3600 --report target/bd2/native-smoke-result.json
+      - name: Independently verify Windows installer artifact inventory
+        if: runner.os == 'Windows'
+        run: >-
+          python scripts/distribution/verify_native_installer.py
+          --editor reference-projects/bd2-standalone-smoke
+          --build-report target/bd2/native-smoke-result.json
+          --platform windows --report target/bd2/windows-installer-inventory.json
+      - name: Independently verify Linux installer artifact inventory
+        if: runner.os == 'Linux'
+        run: >-
+          python scripts/distribution/verify_native_installer.py
+          --editor reference-projects/bd2-standalone-smoke
+          --build-report target/bd2/native-smoke-result.json
+          --platform linux --report target/bd2/linux-installer-inventory.json
+      - name: Independently verify macOS installer artifact inventory
+        if: runner.os == 'macOS'
+        run: >-
+          python scripts/distribution/verify_native_installer.py
+          --editor reference-projects/bd2-standalone-smoke
+          --build-report target/bd2/native-smoke-result.json
+          --platform macos --report target/bd2/macos-installer-inventory.json
+      - name: Native OS installation and actual process launch (opt-in; NO model round-trip claim)
+        if: ${{ inputs.native_os_smoke }}
+        shell: bash
+        run: |
+          case "${{ runner.os }}" in
+            Windows) target=windows ;;
+            Linux) target=linux ;;
+            macOS) target=macos ;;
+            *) exit 1 ;;
+          esac
+          python scripts/distribution/run_native_installer_smoke.py \
+            --bundle-dir reference-projects/bd2-standalone-smoke/src-tauri/target/release/bundle \
+            --platform "$target" --execute --report "target/bd2/${target}-actual-launch.json"
+      - name: Publish real build evidence and bundles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hydra-generated-editor-${{ matrix.os }}
+          path: |
+            target/bd2/*.json
+            target/bd3/*.json
+            reference-projects/bd2-standalone-smoke/src-tauri/target/release/bundle/**
+          if-no-files-found: warn
+          retention-days: 7

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "scenarios": [
+    {
+      "id": "validation",
+      "capability": "VALIDATION",
+      "input": "tests/hydra-parity/inputs/invalid.json",
+      "expected": "tests/hydra-parity/expected/validation.json",
+      "evidence": "target/hydra-parity/validation.json"
+    },
+    {
+      "id": "quickfix",
+      "capability": "QUICK_FIX",
+      "input": "tests/hydra-parity/inputs/invalid.json",
+      "expected": "tests/hydra-parity/expected/quickfix.json",
+      "evidence": "target/hydra-parity/quickfix.json"
+    },
+    {
+      "id": "operation",
+      "capability": "OPERATION",
+      "input": "tests/hydra-parity/inputs/valid.json",
+      "expected": "tests/hydra-parity/expected/operation.json",
+      "evidence": "target/hydra-parity/operation.json"
+    },
+    {
+      "id": "events",
+      "capability": "EVENT_FLOW",
+      "input": "tests/hydra-parity/inputs/valid.json",
+      "expected": "tests/hydra-parity/expected/events.json",
+      "evidence": "target/hydra-parity/events.json"
+    },
+    {
+      "id": "gamification",
+      "capability": "GAMIFICATION",
+      "input": "tests/hydra-parity/inputs/valid.json",
+      "expected": "tests/hydra-parity/expected/gamification.json",
+      "evidence": "target/hydra-parity/gamification.json"
+    },
+    {
+      "id": "persistence",
+      "capability": "PERSISTENCE",
+      "input": "tests/hydra-parity/inputs/valid.json",
+      "expected": "tests/hydra-parity/expected/persistence.json",
+      "evidence": "target/hydra-parity/persistence.json"
+    },
+    {
+      "id": "roundtrip",
+      "capability": "ROUND_TRIP",
+      "input": "tests/hydra-parity/inputs/valid.json",
+      "expected": "tests/hydra-parity/expected/roundtrip.json",
+      "evidence": "target/hydra-parity/roundtrip.json"
+    }
+  ]
+}

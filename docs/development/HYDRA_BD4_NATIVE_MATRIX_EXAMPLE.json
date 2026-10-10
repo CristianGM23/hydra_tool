@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "groups": [
+    {
+      "id": "editor-domain-semantic-parity",
+      "minimumPlatforms": 2,
+      "requiredCapabilities": ["VALIDATION", "QUICK_FIX", "PERSISTENCE", "ROUND_TRIP"],
+      "members": [
+        {
+          "id": "xtext",
+          "profile": "xtext",
+          "project": "native/xtext-domain-editor",
+          "suite": "tests/hydra-parity/scenarios.json"
+        },
+        {
+          "id": "langium",
+          "profile": "langium",
+          "project": "native/langium-domain-editor",
+          "suite": "tests/hydra-parity/scenarios.json"
+        }
+      ]
+    }
+  ]
+}

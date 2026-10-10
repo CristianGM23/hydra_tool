@@ -56,6 +56,19 @@ public class TechnologyIntegrationApplicationService {
         return validation.validate(compile(metamodelId, profileId), request);
     }
 
+    /**Descripción: Compila una sola vez, ejecuta el gate nativo real y contrasta las pruebas funcionales declaradas por el generador. Entradas: datos validados por el contrato. Salida: resultado verificable de la operación. */
+    public com.example.editor.integration.parity.NativeParityCertificationReport certifyNativeParity(String metamodelId,
+            String profileId, com.example.editor.integration.parity.NativeParityCertificationRequest request) {
+        if(request == null) throw new IllegalArgumentException("Native parity certification request is required");
+        TechnologyCompilationResult result = compile(metamodelId, profileId);
+        TechnologyProjectValidationRequest nativeRequest = new TechnologyProjectValidationRequest(
+                com.example.editor.integration.verification.TechnologyValidationMode.NATIVE_REQUIRED,
+                null, request.timeoutSeconds(), false, java.util.Map.of());
+        TechnologyProjectValidationReport evidence = validation.validate(result, nativeRequest);
+        return new com.example.editor.integration.parity.NativeParityEvidenceAssessor()
+                .assess(evidence, result.verificationSteps(), request.capabilities());
+    }
+
     /** Descripción: Ejecuta la operación «preview» correspondiente a la responsabilidad de TechnologyIntegrationApplicationService. Entradas: metamodelId: identificador que delimita el recurso objetivo; profileId: identificador que delimita el recurso objetivo; targetDirectory: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public TechnologyInjectionPreview preview(String metamodelId, String profileId, String targetDirectory){
         IntegrationProfileModel profile = profiles.find(metamodelId, profileId).profile();
         return injection.preview(profile, compile(metamodelId, profileId), targetDirectory);

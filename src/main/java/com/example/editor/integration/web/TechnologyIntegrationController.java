@@ -49,6 +49,14 @@ public class TechnologyIntegrationController {
         return service.validate(metamodelId, profileId, validationRequest);
     }
 
+    @PostMapping("/native-parity/certify")
+    /**Descripción: Ejecuta la certificación de evidencias nativas para las capacidades solicitadas sin permitir comandos aportados por el navegador. Entradas: datos validados por el contrato. Salida: resultado verificable de la operación. */
+    public com.example.editor.integration.parity.NativeParityCertificationReport certifyNativeParity(
+            @PathVariable String metamodelId, @PathVariable String profileId,
+            @RequestBody com.example.editor.integration.parity.NativeParityCertificationRequest request) {
+        return service.certifyNativeParity(metamodelId, profileId, request);
+    }
+
     @PostMapping("/sync/preview")
     /** Descripción: Actualiza el estado gestionado por TechnologyIntegrationController mediante la operación «syncPreview». Entradas: metamodelId: identificador que delimita el recurso objetivo; profileId: identificador que delimita el recurso objetivo; request: solicitud con los datos necesarios para ejecutar la operación. Salida: devuelve el resultado definido por el contrato del método. */ public RoundTripSyncPreview syncPreview(@PathVariable String metamodelId, @PathVariable String profileId,
             @RequestBody RoundTripSyncRequest request){return service.syncPreview(metamodelId, profileId, request);}

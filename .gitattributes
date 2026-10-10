@@ -8,6 +8,8 @@
 
 # Explicit binary data must never be line-ending converted.
 *.png binary
+*.ico binary
+*.icns binary
 
 # Historical reviewed CRLF source bytes, preserved on every platform.
 /VALIDAR_HYDRA_V4.32.106_WINDOWS.cmd text eol=crlf

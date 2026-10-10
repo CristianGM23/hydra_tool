@@ -95,6 +95,8 @@ public class StandaloneDistributionPackager {
             /** Descripción: Ejecuta la operación «visitFile» correspondiente a la responsabilidad de StandaloneDistributionPackager. Entradas: file: archivo o contenido que debe procesarse; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 if(attrs.isSymbolicLink()) throw new IOException("Symbolic links are not portable in standalone distributions: " + normalized(root.relativize(file)));
                 if(!attrs.isRegularFile() || excluded(root.relativize(file))) return FileVisitResult.CONTINUE;
+                if(sensitive(root.relativize(file))) throw new IOException(
+                        "Sensitive file must not be packaged: " + normalized(root.relativize(file)));
                 if(files.size() >= maximumEntries) throw new IOException("Standalone distribution exceeds configured entry limit of " + maximumEntries);
                 files.add(file);
                 return FileVisitResult.CONTINUE;
@@ -102,6 +104,15 @@ public class StandaloneDistributionPackager {
         });
         files.sort(Comparator.comparing(path -> normalized(root.relativize(path))));
         return List.copyOf(files);
+    }
+
+    /** Descripción: Rechaza secretos y credenciales antes de que entren en el ZIP distribuible. Entradas: ruta relativa del archivo. Salida: true si el archivo es sensible. */
+    private boolean sensitive(Path relative) {
+        String name = relative.getFileName().toString().toLowerCase(java.util.Locale.ROOT);
+        return name.equals(".env") || name.startsWith(".env.") || name.equals("id_rsa")
+                || name.equals("id_ed25519") || name.equals("credentials.json")
+                || name.endsWith(".pem") || name.endsWith(".key") || name.endsWith(".p12")
+                || name.endsWith(".pfx") || name.endsWith(".jks") || name.endsWith(".keystore");
     }
 
     /** Descripción: Determina si una ruta pertenece a un segmento excluido del paquete standalone. Entradas: relative: ruta relativa. Salida: true si contiene un directorio no publicable. */

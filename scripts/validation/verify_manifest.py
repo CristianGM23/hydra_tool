@@ -68,15 +68,27 @@ def main() -> int:
         return 1
     missing = sorted(set(expected) - set(actual))
     extra = sorted(set(actual) - set(expected))
-    changed = sorted(relative for relative, path in actual.items() if expected.get(relative) not in (None, sha256(path)))
+    # Unlisted workspace files are not part of the signed manifest. Never read
+    # their contents: generators such as Archify can remove temporary files
+    # between source discovery and verification.
+    changed: list[str] = []
+    unreadable: list[str] = []
+    for relative in sorted(set(expected) & set(actual)):
+        try:
+            if sha256(actual[relative]) != expected[relative]:
+                changed.append(relative)
+        except OSError:
+            unreadable.append(relative)
     blocking_extra = [] if args.allow_extra else extra
-    if missing or blocking_extra or changed:
+    if missing or blocking_extra or changed or unreadable:
         for relative in missing:
             print(f"FAIL missing {relative}")
         for relative in blocking_extra:
             print(f"FAIL unlisted {relative}")
         for relative in changed:
             print(f"FAIL changed {relative}")
+        for relative in unreadable:
+            print(f"FAIL unreadable canonical source {relative}")
         return 1
     if args.allow_extra:
         print(

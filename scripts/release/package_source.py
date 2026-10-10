@@ -37,7 +37,34 @@ for stale in (Path('config/config'), Path('docs/docs'), Path('scripts/validation
     if (ROOT / stale).exists():
         raise SystemExit(f'Refusing to package stale duplicated tree: {stale.as_posix()}')
 
-files = source_files(ROOT, version)
+# The workspace may contain versioned Archify documentation and temporary
+# outputs that are intentionally *not* in the canonical signed source manifest.
+# Reproducible release archives contain only the reviewed manifest members.
+manifest = ROOT / 'MANIFEST_SHA256.txt'
+if not manifest.is_file():
+    raise SystemExit('Missing MANIFEST_SHA256.txt')
+expected: dict[str, str] = {}
+for number, line in enumerate(manifest.read_text(encoding='utf-8').splitlines(), 1):
+    if not line.strip():
+        continue
+    if '  ' not in line:
+        raise SystemExit(f'Malformed manifest line {number}')
+    digest, relative = line.split('  ', 1)
+    if (len(digest) != 64 or any(c not in '0123456789abcdef' for c in digest.lower())
+            or relative in expected or relative == 'MANIFEST_SHA256.txt'
+            or Path(relative).is_absolute() or '..' in Path(relative).parts):
+        raise SystemExit(f'Invalid canonical manifest entry on line {number}')
+    expected[relative] = digest.lower()
+
+inventory = {path.relative_to(ROOT).as_posix(): path for path in source_files(ROOT, version)}
+missing = sorted(set(expected) - set(inventory))
+if missing:
+    raise SystemExit(f'Missing canonical source files: {missing[:10]}')
+for relative, digest in expected.items():
+    if sha256_file(inventory[relative]) != digest:
+        raise SystemExit(f'Canonical source hash mismatch: {relative}')
+files = [inventory[relative] for relative in sorted(expected)] + [manifest]
+files.sort(key=lambda path: path.relative_to(ROOT).as_posix())
 with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as output:
     for path in files:
         write_file(output, path, path.relative_to(ROOT).as_posix())

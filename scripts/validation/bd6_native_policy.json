@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "groups": [
+    {
+      "id": "java-and-javascript-model-runtime",
+      "requiredProfiles": [
+        "generated-web",
+        "java-standalone"
+      ],
+      "requireAllMembers": true,
+      "capabilityCoverage": {
+        "VALIDATION": {
+          "minProfiles": 2,
+          "minScenarios": 1
+        },
+        "QUICK_FIX": {
+          "minProfiles": 2,
+          "minScenarios": 1
+        },
+        "OPERATION": {
+          "minProfiles": 2,
+          "minScenarios": 1
+        },
+        "EVENT_FLOW": {
+          "minProfiles": 2,
+          "minScenarios": 1
+        },
+        "GAMIFICATION": {
+          "minProfiles": 2,
+          "minScenarios": 1
+        },
+        "PERSISTENCE": {
+          "minProfiles": 2,
+          "minScenarios": 1
+        },
+        "ROUND_TRIP": {
+          "minProfiles": 2,
+          "minScenarios": 1
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "hydra-bd2-independent-editor-fixture",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test scripts/editor.test.mjs"
+  }
+}

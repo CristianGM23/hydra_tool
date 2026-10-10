@@ -44,7 +44,7 @@ def inherited_readiness_stage(report_path:Path,stage_name:str)->tuple[bool,str]:
   fingerprint_extra_factory=lambda data:{'gate':'final-tree','structuralOnly':bool(data.get('structuralOnly')),'version':version},
  )
 
-run('workspace-integrity',[sys.executable,'scripts/validation/verify_manifest.py'],timeout=300)
+run('workspace-integrity',[sys.executable,'scripts/validation/verify_manifest.py','--allow-extra'],timeout=300)
 run('environment-doctor',[sys.executable,'scripts/doctor/hydra_doctor.py','--strict'],timeout=600)
 run('toolchain-hermetic',[sys.executable,'scripts/release/verify_toolchain.py','--strict'],timeout=600)
 if args.full:

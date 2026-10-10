@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "groups": [
+    {
+      "id": "java-and-javascript-model-runtime",
+      "minimumPlatforms": 2,
+      "requiredCapabilities": [
+        "VALIDATION",
+        "QUICK_FIX",
+        "OPERATION",
+        "EVENT_FLOW",
+        "GAMIFICATION",
+        "PERSISTENCE",
+        "ROUND_TRIP"
+      ],
+      "members": [
+        {
+          "id": "node-editor",
+          "profile": "generated-web",
+          "project": "bd2-standalone-smoke",
+          "suite": "tests/hydra-parity/scenarios.json"
+        },
+        {
+          "id": "java-editor",
+          "profile": "java-standalone",
+          "project": "bd6-java-runtime",
+          "suite": "tests/hydra-parity/scenarios.json"
+        }
+      ]
+    }
+  ]
+}

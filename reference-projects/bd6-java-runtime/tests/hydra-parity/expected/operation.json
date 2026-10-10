@@ -1,0 +1,13 @@
+{
+  "model": {
+    "id": "x",
+    "name": "after"
+  },
+  "events": [
+    {
+      "type": "MODEL_RENAMED",
+      "element": "x"
+    }
+  ],
+  "score": 1
+}

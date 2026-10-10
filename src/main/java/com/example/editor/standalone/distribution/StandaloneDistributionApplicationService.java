@@ -45,6 +45,45 @@ public class StandaloneDistributionApplicationService {
         return validator.validate(resolveEditorRoot(request.editorDirectory()), request.profile());
     }
 
+    /**Descripción: Calcula la preparación estática para el despliegue sin afirmar que el instalador está compilado. Entradas: datos validados por el contrato. Salida: resultado verificable de la operación. */
+    public StandaloneDistributionValidationReport releaseReadiness(StandaloneDistributionRequest request) {
+        Path editorRoot = resolveEditorRoot(request.editorDirectory());
+        return new StandaloneProductionReadinessService().assess(editorRoot, request.profile(),
+                validator.validate(editorRoot, request.profile()));
+    }
+
+    /**Descripción: Empaqueta el editor solo cuando los artefactos web y de distribución superan el gate de publicación. Entradas: datos validados por el contrato. Salida: resultado verificable de la operación. */
+    public StandaloneDistributionDownload packageReleaseReady(StandaloneDistributionRequest request) {
+        Path editorRoot = resolveEditorRoot(request.editorDirectory());
+        StandaloneDistributionValidationReport readiness = releaseReadiness(request);
+        if(!readiness.valid()) throw new IllegalStateException("Standalone distribution is not release-ready: "
+                + readiness.diagnostics().stream().filter(d -> d.severity() == StandaloneDistributionDiagnosticSeverity.ERROR)
+                        .map(StandaloneDistributionDiagnostic::code).distinct().toList());
+        Path archive = allowedRoot.resolve(".hydra-packages")
+                .resolve(token(request.profile().productName()) + "-" + token(request.profile().version()) + "-release-source.zip").normalize();
+        if(archive.startsWith(editorRoot)) throw new IllegalArgumentException("Package directory must be outside the editor root");
+        try {
+            Files.createDirectories(archive.getParent());
+            StandaloneDistributionPackageResult result = packager.packageProject(editorRoot, archive, readiness);
+            return new StandaloneDistributionDownload(archive.getFileName().toString(), result.sha256(),
+                    com.example.editor.io.BoundedIo.readInternal(result.archive()));
+        } catch(IOException exception) { throw new IllegalStateException("Could not read standalone release-source archive", exception); }
+    }
+
+    /** Descripción: Empaqueta solo recursos web compilados con integridad verificada. Entradas: solicitud de distribución. Salida: ZIP web descargable sin afirmar que sea instalador nativo. */
+    public StandaloneDistributionDownload packageDeployableWeb(StandaloneDistributionRequest request) {
+        Path editorRoot = resolveEditorRoot(request.editorDirectory());
+        StandaloneDistributionValidationReport readiness = releaseReadiness(request);
+        if(!readiness.valid()) throw new IllegalStateException("Built web editor is not release-ready");
+        Path archive = allowedRoot.resolve(".hydra-packages")
+                .resolve(token(request.profile().productName()) + "-" + token(request.profile().version()) + "-web.zip");
+        StandaloneDistributionPackageResult result = new StandaloneWebDeploymentPackager()
+                .packageWeb(editorRoot, archive, request.profile(), readiness);
+        try { return new StandaloneDistributionDownload(archive.getFileName().toString(), result.sha256(),
+                    com.example.editor.io.BoundedIo.readInternal(result.archive())); }
+        catch(IOException exception) { throw new IllegalStateException("Could not read deployable web package", exception); }
+    }
+
     /** Descripción: Ejecuta la operación «packageEditor» correspondiente a la responsabilidad de StandaloneDistributionApplicationService. Entradas: request: solicitud con los datos necesarios para ejecutar la operación. Salida: devuelve el resultado definido por el contrato del método. */ public StandaloneDistributionDownload packageEditor(StandaloneDistributionRequest request){
         Path editorRoot = resolveEditorRoot(request.editorDirectory());
         StandaloneDistributionValidationReport validation = validator.validate(editorRoot, request.profile());

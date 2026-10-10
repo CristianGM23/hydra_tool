@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "groups": [
+    {
+      "id": "emf-and-langium-example",
+      "requiredProfiles": ["emf", "langium"],
+      "requireAllMembers": true,
+      "capabilityCoverage": {
+        "VALIDATION": {"minProfiles": 2, "minScenarios": 2},
+        "QUICK_FIX": {"minProfiles": 2, "minScenarios": 1},
+        "ROUND_TRIP": {"minProfiles": 2, "minScenarios": 1}
+      }
+    }
+  ]
+}

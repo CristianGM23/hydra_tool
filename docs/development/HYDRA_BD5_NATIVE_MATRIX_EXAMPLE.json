@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "groups": [
+    {
+      "id": "emf-and-langium-example",
+      "minimumPlatforms": 2,
+      "requiredCapabilities": ["VALIDATION", "QUICK_FIX", "ROUND_TRIP"],
+      "members": [
+        {"id": "editor-emf", "profile": "emf", "project": "REPLACE_WITH_REAL_EMF_PROJECT", "suite": "tests/hydra-parity/scenarios.json"},
+        {"id": "editor-langium", "profile": "langium", "project": "REPLACE_WITH_REAL_LANGIUM_PROJECT", "suite": "tests/hydra-parity/scenarios.json"}
+      ]
+    }
+  ]
+}

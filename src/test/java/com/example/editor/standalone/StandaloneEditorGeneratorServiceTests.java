@@ -159,6 +159,9 @@ class StandaloneEditorGeneratorServiceTests {
         assertThat(source).contains("ATOMIC_MOVE", "If-Match", "MAXIMUM_MODEL_BYTES",
                 "X-Content-Type-Options", "safeId", "Files.newInputStream(file)", "input.transferTo(output)");
         assertThat(source).doesNotContain("Files.readAllBytes");
+        assertThat(source).contains("If-None-Match", "ModelJsonSyntax.verifyObject",
+                "--data-root=", "Files.isSymbolicLink(model)",
+                "LinkOption.NOFOLLOW_LINKS", "application/json", "If-Match");
     }
 
     @Test void generatedJavaServerCompilesWithoutThirdPartyDependencies() throws Exception {

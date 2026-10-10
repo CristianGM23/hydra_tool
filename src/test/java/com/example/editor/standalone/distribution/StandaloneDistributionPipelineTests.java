@@ -49,6 +49,18 @@ class StandaloneDistributionPipelineTests {
     }
 
     @Test
+    void refusesToPublishPrivateKeysOrEnvironmentSecrets() throws Exception {
+        new StandaloneDistributionMaterializer().materialize(root, new StandaloneDistributionPlanner().plan(profile));
+        Files.writeString(root.resolve("index.html"), "<main>HYDRA</main>");
+        Files.writeString(root.resolve(".env"), "SECRET_TOKEN=do-not-publish");
+        StandaloneDistributionValidationReport ready = new StandaloneDistributionValidationService(
+                JsonMapper.builder().build()).validate(root, profile);
+        assertThatThrownBy(() -> new StandaloneDistributionPackager().packageProject(
+                root, root.getParent().resolve("private.zip"), ready))
+                .isInstanceOf(IllegalStateException.class).hasMessageContaining("package");
+    }
+
+    @Test
     void refusesPackagingWhenValidationContainsErrors(){
         StandaloneDistributionValidationReport invalid = new StandaloneDistributionValidationReport(false,
                 List.of(new StandaloneDistributionDiagnostic("INVALID", StandaloneDistributionDiagnosticSeverity.ERROR, "", "invalid")), java.util.Map.of());

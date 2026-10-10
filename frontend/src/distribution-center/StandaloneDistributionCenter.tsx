@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useHydraLanguage } from '../i18n';
 import { HydraActionableErrorNotice, HydraButton, HydraCheckbox, HydraCreationModeSwitch, HydraDiagnosticList, HydraFormField, HydraGuidedWorkflow, HydraOperationProgress, HydraSelect } from '../design-system';
-import { materializeStandaloneDistribution, packageStandaloneDistribution, planStandaloneDistribution, validateStandaloneDistribution } from './api';
+import { assessStandaloneReleaseReadiness, materializeStandaloneDistribution, packageStandaloneDistribution, planStandaloneDistribution, validateStandaloneDistribution } from './api';
 import type { StandaloneDistributionArtifact, StandaloneDistributionPreparationResult, StandaloneDistributionProfile, StandaloneDistributionTarget, StandaloneDistributionValidationReport } from './types';
 import './distribution-center.css';
 
@@ -52,6 +52,7 @@ export function StandaloneDistributionCenter() {
     const [artifacts, setArtifacts] = useState<StandaloneDistributionArtifact[]>([]);
     const [preparation, setPreparation] = useState<StandaloneDistributionPreparationResult | null>(null);
     const [validation, setValidation] = useState<StandaloneDistributionValidationReport | null>(null);
+    const [releaseReadiness, setReleaseReadiness] = useState<StandaloneDistributionValidationReport | null>(null);
     const [downloadSha, setDownloadSha] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -65,7 +66,7 @@ export function StandaloneDistributionCenter() {
     const request = useMemo(() => ({ editorDirectory, profile }), [editorDirectory, profile]);
     const validationProblems = validation?.diagnostics.filter(diagnostic => diagnostic.severity !== 'INFO') ?? [];
 
-    function clearVerification(): void { setValidation(null); setDownloadSha(''); }
+    function clearVerification(): void { setValidation(null); setReleaseReadiness(null); setDownloadSha(''); }
     function toggleTarget(target: StandaloneDistributionTarget, checked: boolean): void {
         setSelectedTargets(current => checked ? [...current, target].filter((value, index, values) => values.indexOf(value) === index) : current.filter(value => value !== target));
         clearVerification();
@@ -87,11 +88,11 @@ export function StandaloneDistributionCenter() {
         catch (exception) { setError(exception instanceof Error ? exception.message : 'Distribution operation failed'); }
         finally { setLoading(false); setOperation(null); }
     }
-    async function download(): Promise<boolean> {
+    async function download(packageLevel: 'project' | 'release-source' | 'web' = 'project'): Promise<boolean> {
         setLoading(true);
         setOperation({title:'Packaging standalone distribution',detail:'Creating the verified deterministic archive.',stage:'package'});
         try {
-            const result = await packageStandaloneDistribution(request);
+            const result = await packageStandaloneDistribution(request, packageLevel);
             setOperation({title:'Packaging standalone distribution',detail:'Archive created. Preparing the download.',stage:'download'});
             const url = URL.createObjectURL(result.blob); const anchor = document.createElement('a');
             anchor.href = url; anchor.download = result.fileName; anchor.click(); URL.revokeObjectURL(url);
@@ -119,9 +120,10 @@ export function StandaloneDistributionCenter() {
         <HydraCheckbox checked={offlineEnabled} description="Caches the application shell so the generated PWA can start without a network connection after it has been installed." label="Offline application shell" onChange={event => { setOfflineEnabled(event.target.checked); clearVerification(); }} /></>;
     const verificationActions = <div className="distribution-guided-verification"><div className="distribution-actions">
         <HydraButton loading={loading} disabled={selectedTargets.length === 0} onClick={() => void execute(() => planStandaloneDistribution(request), setArtifacts)}>Preview artifacts</HydraButton>
-        <HydraButton loading={loading} disabled={selectedTargets.length === 0} variant="primary" onClick={() => void execute(() => materializeStandaloneDistribution(request), result => { setPreparation(result); setValidation(result.validation); }, 'materialize')}>Materialize and validate</HydraButton>
+        <HydraButton loading={loading} disabled={selectedTargets.length === 0} variant="primary" onClick={() => void execute(() => materializeStandaloneDistribution(request), result => { setPreparation(result); setValidation(result.validation); setReleaseReadiness(null); }, 'materialize')}>Materialize and validate</HydraButton>
         <HydraButton loading={loading} disabled={selectedTargets.length === 0} onClick={() => void execute(() => validateStandaloneDistribution(request), setValidation, 'validate')}>Validate existing editor</HydraButton>
-    </div>{validation !== null && <><div className={validation.valid ? 'distribution-guided-result valid' : 'distribution-guided-result invalid'}><strong>{t(validation.valid ? 'Distribution valid' : 'Distribution blocked')}</strong><span>{validationProblems.length} {t('problem(s)')}</span></div><HydraDiagnosticList diagnostics={validationProblems} context="distribution" title={t('Distribution diagnostics')} emptyText={t('No distribution problem remains.')} /></>}</div>;
+        <HydraButton loading={loading} disabled={selectedTargets.length === 0} onClick={() => void execute(() => assessStandaloneReleaseReadiness(request), setReleaseReadiness, 'validate')}>{t('Check release readiness')}</HydraButton>
+    </div>{releaseReadiness !== null && <div className={releaseReadiness.valid ? 'distribution-guided-result valid' : 'distribution-guided-result invalid'}><strong>{t('Release readiness')}</strong><span>{t(releaseReadiness.valid ? 'Ready for release-source ZIP' : 'Distribution blocked')}</span><HydraDiagnosticList diagnostics={releaseReadiness.diagnostics.filter(item => item.severity !== 'INFO')} context="distribution" title={t('Distribution diagnostics')} emptyText={t('No distribution problem remains.')} /></div>}{validation !== null && <><div className={validation.valid ? 'distribution-guided-result valid' : 'distribution-guided-result invalid'}><strong>{t(validation.valid ? 'Distribution valid' : 'Distribution blocked')}</strong><span>{validationProblems.length} {t('problem(s)')}</span></div><HydraDiagnosticList diagnostics={validationProblems} context="distribution" title={t('Distribution diagnostics')} emptyText={t('No distribution problem remains.')} /></>}</div>;
 
     const guidedSteps = [
         { id:'source', title:'Editor source', description:'Identify the generated editor directory that will be packaged.', checks:[{ id:'directory', label:'Editor directory is defined', complete:editorDirectory.trim() !== '', detail:'Use a relative folder inside HYDRA’s configured safe distribution root.' }], content:sourceFields },
@@ -141,15 +143,19 @@ export function StandaloneDistributionCenter() {
                 {sourceFields}{identityFields}{targetFields}
                 <div className="distribution-actions">
                     <HydraButton loading={loading} disabled={selectedTargets.length === 0} onClick={() => void execute(() => planStandaloneDistribution(request), setArtifacts)}>Preview artifacts</HydraButton>
-                    <HydraButton loading={loading} disabled={selectedTargets.length === 0} variant="primary" onClick={() => void execute(() => materializeStandaloneDistribution(request), result => { setPreparation(result); setValidation(result.validation); }, 'materialize')}>Materialize and validate</HydraButton>
+                    <HydraButton loading={loading} disabled={selectedTargets.length === 0} variant="primary" onClick={() => void execute(() => materializeStandaloneDistribution(request), result => { setPreparation(result); setValidation(result.validation); setReleaseReadiness(null); }, 'materialize')}>Materialize and validate</HydraButton>
                     <HydraButton loading={loading} disabled={selectedTargets.length === 0} onClick={() => void execute(() => validateStandaloneDistribution(request), setValidation, 'validate')}>Validate existing editor</HydraButton>
+                    <HydraButton loading={loading} disabled={selectedTargets.length === 0} onClick={() => void execute(() => assessStandaloneReleaseReadiness(request), setReleaseReadiness, 'validate')}>{t('Check release readiness')}</HydraButton>
                     <HydraButton loading={loading} disabled={validation?.valid !== true} variant="primary" onClick={() => void download()}>Package ZIP</HydraButton>
+                    <HydraButton loading={loading} disabled={releaseReadiness?.valid !== true} onClick={() => void download('release-source')}>{t('Package release source ZIP')}</HydraButton>
+                    <HydraButton loading={loading} disabled={releaseReadiness?.valid !== true || !selectedTargets.includes('PWA')} onClick={() => void download('web')}>{t('Download deployable web ZIP')}</HydraButton>
                 </div>
             </form>
             <aside>
                 <section><h3>{t('Planned artifacts')}</h3>{artifacts.length === 0 ? <p>{t('No preview yet.')}</p> : <ul>{artifacts.map(artifact => <li key={artifact.path}><code>{artifact.path}</code><span>{artifact.mediaType}</span></li>)}</ul>}</section>
                 {preparation !== null && <section><h3>{t('Materialization')}</h3><p>{t(`${preparation.materialization.writtenPaths.length} file(s) written below:`)}</p><code>{preparation.materialization.root}</code></section>}
                 {validation !== null && <section className={validation.valid ? 'valid' : 'invalid'}><h3>{t(validation.valid ? 'Distribution valid' : 'Distribution blocked')}</h3><HydraDiagnosticList diagnostics={validationProblems} context="distribution" title={t('Distribution diagnostics')} emptyText={t('No distribution problem remains.')} /></section>}
+                {releaseReadiness !== null && <section className={releaseReadiness.valid ? 'valid' : 'invalid'}><h3>{t('Release readiness')}</h3><p>{t(releaseReadiness.valid ? 'Static distribution checks pass. Native installers still require a real build and platform tests.' : 'Generated application not release-ready; review required artifacts and builds.')}</p><HydraDiagnosticList diagnostics={releaseReadiness.diagnostics.filter(item => item.severity !== 'INFO')} context="distribution" title={t('Distribution diagnostics')} emptyText={t('No distribution problem remains.')} /></section>}
                 {downloadSha !== '' && <section className="distribution-download-result"><h3>{t('Package downloaded')}</h3><span>SHA-256</span><code>{downloadSha}</code></section>}
             </aside>
         </div>}

@@ -1361,6 +1361,15 @@ paths:
           description: Successful HYDRA response
         '400':
           description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/native-parity/certify:
+    post:
+      operationId: TechnologyIntegrationController_certifyNativeParity_post
+      tags: [TechnologyIntegrationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
   /api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/preview:
     post:
       operationId: TechnologyIntegrationController_preview_post
@@ -3727,9 +3736,36 @@ paths:
           description: Successful HYDRA response
         '400':
           description: Actionable HYDRA problem response
+  /api/standalone-distributions/package-deployable-web:
+    post:
+      operationId: StandaloneDistributionController_packageDeployableWeb_post
+      tags: [StandaloneDistributionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/standalone-distributions/package-release-source:
+    post:
+      operationId: StandaloneDistributionController_packageReleaseSource_post
+      tags: [StandaloneDistributionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
   /api/standalone-distributions/plan:
     post:
       operationId: StandaloneDistributionController_plan_post
+      tags: [StandaloneDistributionController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/standalone-distributions/release-readiness:
+    post:
+      operationId: StandaloneDistributionController_releaseReadiness_post
       tags: [StandaloneDistributionController]
       responses:
         '200':

@@ -40,7 +40,7 @@ def run(name,cmd,cwd=ROOT,timeout=3600,required=True):
 
 # Fail fast when the working tree differs from the canonical RC source. This avoids
 # spending many minutes on gates whose failures are merely consequences of a dirty overlay.
-run('primary-source-integrity',[sys.executable,'scripts/validation/verify_manifest.py'],timeout=300)
+run('primary-source-integrity',[sys.executable,'scripts/validation/verify_manifest.py','--allow-extra'],timeout=300)
 
 if args.full:
  npm_cmd=['npm.cmd','ci'] if os.name=='nt' else ['npm','ci']

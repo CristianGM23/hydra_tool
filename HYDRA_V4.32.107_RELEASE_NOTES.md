@@ -1,3 +1,11 @@
+## R6C4 Fix178 — B5+D5, cobertura nativa exigible y ejecución segura de editores publicados
+
+- Amplía la matriz de paridad con una política explícita de perfiles tecnológicos, capacidades obligatorias y umbrales mínimos de evidencias semánticas por tecnología. Solo una ejecución nativa fresca puede certificar los destinos declarados; los informes importados quedan en modo diagnóstico.
+- Refuerza el empaquetado web: los metadatos publicados declaran `offlineEnabled`, y el preflight independiente examina scripts, estilos, manifiesto y service worker reales del ZIP, bloqueando referencias ausentes o remotas.
+- Añade un runtime local y de solo lectura para editores web autónomos **ya publicados y verificados**, vinculado a `127.0.0.1`, con control Host, CSP, SHA-256 de cada recurso servido, aislamiento del registro y rutas seguras; no modifica la aplicación web principal HYDRA.
+- Incorpora tests de seguridad, regresiones B1–B4, demostración Node → Java → doble firma Ed25519 → publicación inmutable → HTTP, launcher único de PowerShell y matriz manual en GitHub Actions.
+- El alcance certificado se limita al editor de referencia. Toolchains EMF/Sirius/Xtext/Langium/GLSP/BESSER/ANTLR, instaladores Tauri nativos y suites globales Maven/Vitest/Playwright continúan pendientes de ejecución externa.
+
 ## R6C1 Fix124 — recuperación focalizada de workers Vitest en Windows
 
 - Corrige el validador de R6C1 después de comprobar en Windows/JDK 25 que los 5 tests backend pasan y que los cinco ficheros frontend ligeros ejecutan 16/16 tests, mientras `IntegrationDesigner.test.tsx` no llega a arrancar por un timeout de bootstrap del pool `forks`.
@@ -1482,3 +1490,97 @@ La segunda pasada real de RC2 sobre Windows cerró tres regresiones que solo apa
 - El wrapper de Maven se invoca mediante Bash en CI para evitar errores de permisos de ejecución tras checkout en Ubuntu; se recomienda guardar también el modo ejecutable del archivo `mvnw` en el índice Git.
 - Gate de integridad del manifiesto inmediatamente después de configurar Python en CI, antes de ejecutar las pruebas completas.
 - Se mantienen sin modificaciones los 40 esquemas JSON y sus referencias SHA-256 previamente aprobadas.
+
+## R6C4 Fix173 - Release qualification and supplemental Archify outputs
+
+- Workspace integrity (`qualify_release.py`, `qualify_rc1.py`, `qualify_rc2.py`) now validates every hash of `MANIFEST_SHA256.txt` with `--allow-extra` while retaining supplemental Archify and other working-tree documentation. A missing, changed or unreadable canonical file still fails the gate.
+- `verify_manifest.py` hashes **only listed canonical files**, preventing an unlisted temporary `.archify-delivery-*` file that disappears during traversal from causing `FileNotFoundError`.
+- `package_source.py` selects only files already declared and hashed in the reviewed source manifest, plus the manifest itself; it rejects changed or missing canonical files. Supplemental workspace/Archify outputs remain in the repository but are **not automatically signed or distributed** in the reproducible source ZIP.
+- Strict verification continues unchanged for extracted source packages (release and RC2) and installation-matrix smoke cases. The RC1 workspace requalification permits preserved extras.
+- Adds `verify_r6c4_fix173_release_boundary.py` to test canonical drift, disappearing extras, archive membership, strict extraction and byte-identical reproduction; `validate_full_tree_fix173.ps1` chains this gate with the previous full validation.
+- GitHub Actions uploads diagnostic artifacts after failing jobs to avoid diagnosing release stages from a truncated console tail alone.
+- **Do not regenerate `MANIFEST_SHA256.txt` using a dirty workspace with supplementary generated documentation.** Generate manifests only from the canonical source baseline; review newly introduced canonical files explicitly.
+
+## B+D Block 1 — Native functional evidence and standalone distribution hardening
+
+This block preserves the HYDRA web application as the main MDE design environment.
+There is no second "HYDRA Studio" product. Generated editors remain independently distributable products.
+
+- **B:** added a reviewed proof catalog for native verification steps, an explicit
+  capability coverage contract, a fail-closed evidence assessor, and
+  `POST .../technology/native-parity/certify`. The service compiles once, runs existing
+  sandboxed native verification in `NATIVE_REQUIRED` mode and distinguishes
+  proven scopes from missing/failed evidence. A version check or a successful
+  generic build does not imply complete metamodel/editor/event parity.
+- **D:** retained source ZIP packaging and added an independent distribution
+  readiness gate (`POST /api/standalone-distributions/release-readiness`) and a
+  guarded release-source archive (`.../package-release-source`). Materialized Tauri
+  descriptors now include Cargo, Rust entry, build script and minimal capabilities.
+  The readiness gate checks built web assets, bundled PWA worker, local JS/CSS,
+  and native project scaffolding. The guarded ZIP is *source*, not a compiled or
+  signed Windows/macOS/Linux installer.
+- **Security:** blocks obvious secret files from standalone archives and rejects
+  remote executable assets in the built web application readiness check.
+- **Regression:** standalone Java 21 executable harness, isolated parity JUnit
+  and distribution JUnit suites, portable static guards, OpenAPI client regeneration,
+  Spanish translations for the release readiness UI.
+
+**Remaining acceptance gates:** real Langium/Xtext/Sirius/EMF/GLSP/BESSER native
+integration executions on installed compatible toolchains; semantic equivalence
+fixtures for every supported capability; actual Rust/Tauri builds and installer
+smoke tests; offline/online runtime behavior with real models; full Java/React
+qualification and GitHub Actions Windows/Linux. No unverified capability or native
+installer is represented as fully certified.
+
+## R6C4 B+D Macrobloque 2 — Fix175 (integración nativa y editor independiente)
+
+- B2: ejecución opt-in de planes acotados de compilación y tests nativos para EMF/Sirius/Xtext/Langium/GLSP/BESSER/ANTLR, sin afirmar paridad funcional cuando solo pasan builds.
+- D2: nuevo empaquetador web de recursos `dist` independientes, con hashes por archivo, metadatos de despliegue y verificador autónomo sin extracción; control de rutas, secretos, símbolos y límites de recursos.
+- Build seguro de editores generados con npm/Tauri y service worker offline específico por contenido, editor y alcance; diferenciación expresa de instaladores reales y ZIP fuente.
+- Fixture de editor independiente con validación, Quick Fix, operaciones, eventos, puntuación y round-trip de persistencia; pruebas Java/Node/Python ejecutables y matriz CI manual Windows/Linux/macOS.
+- `docs/development/HYDRA_BD_MACROBLOQUE_2_FIX175.md` documenta alcance, limitaciones, herramientas, comandos y certificación pendiente.
+
+## R6C4 B+D Macrobloque 3 — Fix176 (paridad funcional verificable y releases inmutables)
+
+- B3: suites de paridad semántica por capacidad, con entradas/outputs JSON y evidencias frescas vinculadas a cada ejecución de tests nativos; rechazo de evidencias antiguas, discrepancias, pruebas simuladas y funcionalidades no certificadas. Siete casos reales del editor neutral de referencia.
+- D3: registro local de releases web con integridad de ZIP y archivos desplegados, directorios inmutables, canales versionados y rollback controlado. Detecta rutas peligrosas y colisiones de nombres en distintos sistemas de archivos.
+- Cadena E2E Node → ejecución semántica → PWA offline → ZIP generado por código Java → verificación externa → promoción de release.
+- Matriz manual Windows/Linux/macOS ampliada para estas verificaciones, con nuevas pruebas Python y validador agrupado `validate_bd_block3.ps1`.
+- No se certifican todavía toolchains nativas externas, instaladores Tauri ni autenticidad de publicaciones sin firma verificable. Detalle en `docs/development/HYDRA_BD_MACROBLOQUE_3_FIX176.md`.
+
+## R6C4 B+D Macrobloque 4 — Fix177 (paridad intertecnológica y publicación de confianza)
+
+- B4: matriz real de paridad entre tecnologías con perfiles de ejecución distintos, escenarios canónicos comparables, cobertura exigida y evidencias por capacidad; rechaza paridad falsa por usar dos veces el mismo toolchain, salidas semánticas divergentes y ejecuciones únicamente estructurales.
+- D4: manifiestos de confianza y firmas Ed25519 con umbral de firmantes; identidad vinculada a producto/canal/versión/SHA-256. Integración fail-closed con promoción, verificación y rollback del registro de editores independientes, preservando la vía legacy sin autenticidad acreditada cuando no se configura política.
+- D4: inventario real de instaladores Tauri con hashes, tamaños, rutas y comprobación de destino Windows/Linux/macOS, sin prometer firma OS o instalación probada. Workflow CI manual ampliado.
+- Cadena E2E Node (siete escenarios semánticos) → offline → empaquetado Java real → ZIP verificable → publicación inmutable firmada por dos claves generadas efímeramente para la prueba.
+- Incluye la corrección Windows 8.3 de `verify_bd_block2.py` posterior al Fix176. Documentación y comando de validación global en `docs/development/HYDRA_BD_MACROBLOQUE_4_FIX177.md`.
+- Sin cambios en Java/React de producción, sin nuevos permisos REST, sin nueva HYDRA Studio, sin usuarios/workspaces/MongoDB.
+
+
+## R6C4 Fix179 — Megabloque B6+B7+D6+D7
+
+- Incorporado runner independiente Java 21 y matriz de equivalencia de siete escenarios Java/Node, con evidencias de ejecución frescas vinculadas por SHA-256.
+- Incorporada instalación autónoma local de editores web generados, actualización monótona, verificación de firmas Ed25519 y rollback seguro con datos del usuario intactos.
+- Workflow manual multiplataforma y nueva cualificación agrupada `validate_bd_megablock6_7.ps1`.
+- Alcance: proyectos de referencia concretos; EMF/Sirius/Xtext/GLSP y bundles instalables nativos continúan pendientes de certificación.
+
+
+## R6C4 Fix180 — Primera entrega funcional: modelo persistente del editor generado
+
+- Inicio de los megabloques B8+B9+D8+D9 con una corrección en **código de producción realmente generado** (servidor Java de editores independientes); no certifica todavía los destinos nativos externos.
+- ETag y precondiciones HTTP obligatorias al crear/actualizar/borrar, sin sobreescribir modificaciones concurrentes.
+- Comprobación de sintaxis de JSON UTF-8, identidad del modelo, presupuestos de tamaño y symlinks; almacenamiento `--data-root` independiente de los archivos de aplicación para preparar actualizaciones reales.
+- 21 pruebas reales de Java/HTTP sobre el template de producción, incluidas ocho escrituras concurrentes y persistencia tras sustitución de los recursos de la aplicación; revisión de ambas interfaces generadas, gráfica y textual.
+- Gate Windows `scripts/validation/validate_fix180_stage1.ps1`, CI multiplataforma ampliada; se mantiene una única cualificación global heredada de Fix179.
+- P0 pendientes: exporter→runtime EMF/Langium con procedencia real y paridad semántica, corpus mayor, MSI/DMG/DEB instalados, actualización Tauri firmada con verificación post-instalar y recuperación del modelo. **No declarar Fix180 completo.**
+
+
+## R6C4 Fix180 — Entrega conjunta B8+B9+D8+D9 (incremento acumulativo sobre Stage1)
+
+- B8: verificador estricto para ZIPs de proyectos completos **reales** emitidos por el exportador HYDRA, con hashes por archivo, instantánea de generación, fingerprint Java reconstruido y cotejo opt-in de bytes canónicos originales; runner allowlisted para EMF y Langium con toolchains oficiales cuando estén disponibles.
+- B9: corpus canónico avanzado de cardinalidades, referencias, herencia, contención y tests de pérdida estructural; ocho escenarios adicionales ejecutados sobre el **runtime JavaScript de producción** de los editores exportados (EVL, Quick Fixes, eventos y puntos). Estos no certifican EMF/Langium nativos.
+- D8: runner opt-in de instalación/copia y lanzamiento OS de bundles Tauri con estados de evidencia separados, preparado para GitHub Actions Windows/Linux/macOS; **no ejecutado en OS nativos en el entorno de preparación**.
+- D9: migración declarativa reversible de modelos con backups SHA-256, prevalidación, recuperación tras interrupción y prohibición de sobrescritura de nuevas modificaciones de usuario. E2E real HTTP del servidor Java generado por HYDRA: dos modelos, migración, reinicio y rollback íntegro.
+- Gate único `scripts/validation/validate_fix180_megablock8_9.ps1`, heredando una sola cualificación global en modo completo.
+- **NO certifica** todavía equivalencia nativa EMF/Langium, instalación con edición de modelos Tauri, firma del SO ni Tauri updater. La aceptación final de Fix180 continúa condicionada a estas pruebas.

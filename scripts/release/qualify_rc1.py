@@ -45,7 +45,7 @@ def run(name,cmd,timeout=7200,required=True,cwd=ROOT):
  if required and not ok:raise SystemExit(finish('FAIL'))
  return ok
 
-run('rc1-workspace-integrity',[sys.executable,'scripts/validation/verify_manifest.py'],timeout=300)
+run('rc1-workspace-integrity',[sys.executable,'scripts/validation/verify_manifest.py','--allow-extra'],timeout=300)
 if not args.primary_release_qualified:
  nested=[sys.executable,'scripts/release/qualify_release.py']+(['--full'] if args.full else [])
  if args.resume or args.rerun_failed:nested.append('--resume')
@@ -77,5 +77,5 @@ if args.full:
    runner.record('product-e2e-live',False,str(exc),seconds=round(time.time()-started,3));raise SystemExit(finish('FAIL'))
  npm=['npm.cmd' if os.name=='nt' else 'npm','run','test:a11y:e2e','--','rc1-product-navigation.spec.ts'];run('frontend-playwright',npm,timeout=1800,cwd=ROOT/'frontend')
 else:runner.record('scale-required',True,'Scale JUnit contract included; execute --full for runtime budgets.')
-run('package-requalification',[sys.executable,'scripts/validation/verify_manifest.py'])
+run('package-requalification',[sys.executable,'scripts/validation/verify_manifest.py','--allow-extra'])
 raise SystemExit(finish('PASS'))

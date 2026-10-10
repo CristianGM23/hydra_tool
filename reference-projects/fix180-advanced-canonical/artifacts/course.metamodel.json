@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "2.1",
+  "id": "course",
+  "name": "Course modeling",
+  "classes": [
+    {
+      "id": "class:Course",
+      "name": "Course",
+      "kind": "CLASS",
+      "attributes": [
+        {
+          "id": "attr:course:title",
+          "name": "title",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "STRING"
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "unique": true
+        }
+      ],
+      "operations": []
+    },
+    {
+      "id": "class:Lesson",
+      "name": "Lesson",
+      "kind": "CLASS",
+      "attributes": [
+        {
+          "id": "attr:lesson:duration",
+          "name": "duration",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "INTEGER"
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "unique": true
+        },
+        {
+          "id": "attr:lesson:tags",
+          "name": "tags",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "STRING"
+          },
+          "multiplicity": {
+            "lowerBound": 0,
+            "upperBound": 4
+          },
+          "unique": true
+        }
+      ],
+      "operations": []
+    },
+    {
+      "id": "class:VideoLesson",
+      "name": "VideoLesson",
+      "kind": "CLASS",
+      "attributes": [
+        {
+          "id": "attr:video:published",
+          "name": "published",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "BOOLEAN"
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "unique": true
+        }
+      ],
+      "operations": []
+    },
+    {
+      "id": "class:Student",
+      "name": "Student",
+      "kind": "CLASS",
+      "attributes": [
+        {
+          "id": "attr:student:name",
+          "name": "name",
+          "type": {
+            "kind": "PRIMITIVE",
+            "targetId": "STRING"
+          },
+          "multiplicity": {
+            "lowerBound": 1,
+            "upperBound": 1
+          },
+          "unique": true
+        }
+      ],
+      "operations": []
+    }
+  ],
+  "enums": [],
+  "dataTypes": [],
+  "relations": [
+    {
+      "id": "rel:video:inherits",
+      "name": "extends",
+      "sourceTypeId": "class:VideoLesson",
+      "targetTypeId": "class:Lesson",
+      "kind": "INHERITANCE",
+      "sourceMultiplicity": null,
+      "targetMultiplicity": null,
+      "unique": true
+    },
+    {
+      "id": "rel:course:lessons",
+      "name": "lessons",
+      "sourceTypeId": "class:Course",
+      "targetTypeId": "class:Lesson",
+      "kind": "CONTAINMENT",
+      "targetMultiplicity": {
+        "lowerBound": 1,
+        "upperBound": 2
+      },
+      "unique": true
+    },
+    {
+      "id": "rel:lesson:participants",
+      "name": "participants",
+      "sourceTypeId": "class:Lesson",
+      "targetTypeId": "class:Student",
+      "kind": "REFERENCE",
+      "targetMultiplicity": {
+        "lowerBound": 0,
+        "upperBound": 2
+      },
+      "unique": true
+    }
+  ],
+  "annotations": {}
+}

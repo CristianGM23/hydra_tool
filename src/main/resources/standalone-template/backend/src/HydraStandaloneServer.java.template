@@ -8,6 +8,10 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
+import java.nio.file.LinkOption;
 import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,10 +30,15 @@ public final class HydraStandaloneServer {
     private final Path frontend;
     private final Path models;
 
-    private HydraStandaloneServer(Path root) throws IOException {
+    private HydraStandaloneServer(Path root, Path dataRoot) throws IOException {
         this.root = root.toAbsolutePath().normalize();
         this.frontend = this.root.resolve("frontend").normalize();
-        this.models = this.root.resolve("models").normalize();
+        this.models = (dataRoot == null ? this.root.resolve("models") : dataRoot)
+                .toAbsolutePath().normalize();
+        if(this.models.startsWith(this.frontend) || this.models.equals(this.root))
+            throw new IOException("Model data cannot overwrite application resources");
+        if(Files.isSymbolicLink(this.root) || Files.isSymbolicLink(this.frontend)
+                || Files.isSymbolicLink(this.models)) throw new IOException("Linked editor storage is forbidden");
         Files.createDirectories(models);
     }
 
@@ -37,12 +46,14 @@ public final class HydraStandaloneServer {
         int port = __DEFAULT_PORT__;
         String host = "127.0.0.1";
         Path root = Path.of(".");
+        Path dataRoot = null;
         for(String argument : args) {
             if(argument.startsWith("--port=")) port = Integer.parseInt(argument.substring("--port=".length()));
             else if(argument.startsWith("--host=")) host = safeHost(argument.substring("--host=".length()));
             else if(argument.startsWith("--root=")) root = Path.of(argument.substring("--root=".length()));
+            else if(argument.startsWith("--data-root=")) dataRoot = Path.of(argument.substring("--data-root=".length()));
         }
-        HydraStandaloneServer application = new HydraStandaloneServer(root);
+        HydraStandaloneServer application = new HydraStandaloneServer(root, dataRoot);
         HttpServer server = HttpServer.create(new InetSocketAddress(host, port), 0);
         server.createContext("/api/health", application::health);
         server.createContext("/api/config", application::config);
@@ -71,12 +82,16 @@ public final class HydraStandaloneServer {
         sendFile(exchange, root.resolve("standalone-editor.json"), "application/json; charset=utf-8");
     }
 
-    private void models(HttpExchange exchange) throws IOException {
+    private synchronized void models(HttpExchange exchange) throws IOException {
         String relative = exchange.getRequestURI().getPath().substring("/api/models".length());
         if(relative.isBlank() || "/".equals(relative)) { listModels(exchange); return; }
-        String id = safeId(URLDecoder.decode(relative.substring(1), StandardCharsets.UTF_8));
+        String id;
+        try { id = safeId(relative.substring(1)); }
+        catch(IllegalArgumentException problem) { response(exchange, 400, "text/plain; charset=utf-8", "Invalid model identifier".getBytes(StandardCharsets.UTF_8)); return; }
         Path model = models.resolve(id + ".model.json").normalize();
-        if(!model.startsWith(models)) { response(exchange, 400, "text/plain; charset=utf-8", "Unsafe model identifier".getBytes(StandardCharsets.UTF_8)); return; }
+        if(!model.startsWith(models) || Files.isSymbolicLink(model)) {
+            response(exchange, 400, "text/plain; charset=utf-8", "Unsafe model location".getBytes(StandardCharsets.UTF_8)); return;
+        }
         switch(exchange.getRequestMethod()) {
             case "GET" -> sendFile(exchange, model, "application/json; charset=utf-8");
             case "PUT" -> saveModel(exchange, model);
@@ -89,7 +104,8 @@ public final class HydraStandaloneServer {
         if(!"GET".equals(exchange.getRequestMethod())) { methodNotAllowed(exchange); return; }
         List<String> ids = new ArrayList<>();
         try(var stream = Files.list(models)) {
-            stream.filter(path -> path.getFileName().toString().endsWith(".model.json"))
+            stream.filter(path -> !Files.isSymbolicLink(path) && Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS)
+                            && path.getFileName().toString().endsWith(".model.json"))
                     .sorted(Comparator.comparing(path -> path.getFileName().toString()))
                     .forEach(path -> ids.add(path.getFileName().toString().replaceFirst("\\.model\\.json$", "")));
         }
@@ -100,9 +116,31 @@ public final class HydraStandaloneServer {
     private void saveModel(HttpExchange exchange, Path model) throws IOException {
         byte[] body = exchange.getRequestBody().readNBytes((int)Math.min(Integer.MAX_VALUE, MAXIMUM_MODEL_BYTES + 1));
         if(body.length > MAXIMUM_MODEL_BYTES) { response(exchange, 413, "text/plain; charset=utf-8", "Model exceeds configured limit".getBytes(StandardCharsets.UTF_8)); return; }
+        if(!"application/json".equalsIgnoreCase(String.valueOf(exchange.getRequestHeaders().getFirst("Content-Type")).split(";", 2)[0].trim())) {
+            response(exchange, 415, "text/plain; charset=utf-8", "Model must be application/json".getBytes(StandardCharsets.UTF_8)); return;
+        }
+        String json;
+        String submittedId;
+        try {
+            json = StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(body)).toString();
+            submittedId = ModelJsonSyntax.verifyObject(json);
+            if(!submittedId.equals(model.getFileName().toString().replaceFirst("\\.model\\.json$", "")))
+                throw new IllegalArgumentException("Model JSON id differs from requested model id");
+        } catch(CharacterCodingException | IllegalArgumentException problem) {
+            response(exchange, 400, "text/plain; charset=utf-8", "Invalid UTF-8 JSON model".getBytes(StandardCharsets.UTF_8)); return;
+        }
+        boolean exists = Files.isRegularFile(model, LinkOption.NOFOLLOW_LINKS);
         String expected = exchange.getRequestHeaders().getFirst("If-Match");
-        if(expected != null && Files.isRegularFile(model) && !matches(expected, etag(model))) {
-            response(exchange, 412, "text/plain; charset=utf-8", "Model changed since it was loaded".getBytes(StandardCharsets.UTF_8)); return;
+        String mustNotExist = exchange.getRequestHeaders().getFirst("If-None-Match");
+        if((exists && mustNotExist != null) || (!exists && expected != null)) {
+            response(exchange, 412, "text/plain; charset=utf-8", "Concurrent model change".getBytes(StandardCharsets.UTF_8)); return;
+        }
+        if(exists ? expected == null : !"*".equals(mustNotExist)) {
+            response(exchange, 428, "text/plain; charset=utf-8", "Create requires If-None-Match: *; update requires If-Match".getBytes(StandardCharsets.UTF_8)); return;
+        }
+        if(exists && !matches(expected, etag(model))) {
+            response(exchange, 412, "text/plain; charset=utf-8", "Concurrent model change".getBytes(StandardCharsets.UTF_8)); return;
         }
         atomicWrite(model, body);
         Headers headers = exchange.getResponseHeaders();
@@ -111,9 +149,10 @@ public final class HydraStandaloneServer {
     }
 
     private void deleteModel(HttpExchange exchange, Path model) throws IOException {
-        if(!Files.exists(model)) { response(exchange, 404, "text/plain; charset=utf-8", "Model not found".getBytes(StandardCharsets.UTF_8)); return; }
+        if(!Files.isRegularFile(model, LinkOption.NOFOLLOW_LINKS)) { response(exchange, 404, "text/plain; charset=utf-8", "Model not found".getBytes(StandardCharsets.UTF_8)); return; }
         String expected = exchange.getRequestHeaders().getFirst("If-Match");
-        if(expected != null && !matches(expected, etag(model))) {
+        if(expected == null) { response(exchange, 428, "text/plain; charset=utf-8", "Delete requires If-Match".getBytes(StandardCharsets.UTF_8)); return; }
+        if(!matches(expected, etag(model))) {
             response(exchange, 412, "text/plain; charset=utf-8", "Model changed since it was loaded".getBytes(StandardCharsets.UTF_8)); return;
         }
         Files.delete(model);
@@ -126,12 +165,12 @@ public final class HydraStandaloneServer {
         String requestPath = exchange.getRequestURI().getPath();
         String relative = "/".equals(requestPath) ? "index.html" : requestPath.substring(1);
         Path candidate = frontend.resolve(relative).normalize();
-        if(!candidate.startsWith(frontend) || !Files.isRegularFile(candidate)) { response(exchange, 404, "text/plain; charset=utf-8", "Not found".getBytes(StandardCharsets.UTF_8)); return; }
+        if(!candidate.startsWith(frontend) || !safeRegularFile(frontend, candidate)) { response(exchange, 404, "text/plain; charset=utf-8", "Not found".getBytes(StandardCharsets.UTF_8)); return; }
         sendFile(exchange, candidate, contentType(candidate));
     }
 
     private void sendFile(HttpExchange exchange, Path file, String contentType) throws IOException {
-        if(!Files.isRegularFile(file)) { response(exchange, 404, "text/plain; charset=utf-8", "Not found".getBytes(StandardCharsets.UTF_8)); return; }
+        if(!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS) || Files.isSymbolicLink(file)) { response(exchange, 404, "text/plain; charset=utf-8", "Not found".getBytes(StandardCharsets.UTF_8)); return; }
         long size = Files.size(file);
         exchange.getResponseHeaders().set("Content-Type", contentType);
         exchange.getResponseHeaders().set("X-Content-Type-Options", "nosniff");
@@ -140,6 +179,16 @@ public final class HydraStandaloneServer {
         try(InputStream input = Files.newInputStream(file); OutputStream output = exchange.getResponseBody()) {
             input.transferTo(output);
         }
+    }
+
+    private static boolean safeRegularFile(Path base, Path candidate) {
+        if(!candidate.startsWith(base)) return false;
+        Path cursor = base;
+        for(Path segment : base.relativize(candidate)) {
+            cursor = cursor.resolve(segment);
+            if(Files.isSymbolicLink(cursor)) return false;
+        }
+        return Files.isRegularFile(candidate, LinkOption.NOFOLLOW_LINKS);
     }
 
     private static void atomicWrite(Path target, byte[] bytes) throws IOException {
@@ -154,7 +203,11 @@ public final class HydraStandaloneServer {
 
     private static String safeId(String value) {
         String result = value == null ? "" : value.trim();
-        if(result.isBlank() || !result.matches("[A-Za-z0-9._:-]{1,160}") || ".".equals(result) || "..".equals(result)) throw new IllegalArgumentException("Invalid model identifier");
+        if(result.isBlank() || !result.matches("[A-Za-z0-9._-]{1,160}") || ".".equals(result) || "..".equals(result))
+            throw new IllegalArgumentException("Invalid model identifier");
+        String stem = result.split("\\.", 2)[0].toUpperCase(java.util.Locale.ROOT);
+        if(stem.matches("CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9]"))
+            throw new IllegalArgumentException("Reserved filesystem model identifier");
         return result;
     }
 
@@ -187,6 +240,90 @@ public final class HydraStandaloneServer {
     }
 
     private static boolean matches(String expected, String actual) { return expected.replace("\"", "").equals(actual); }
+    /** Dependency-free, bounded JSON grammar checker. Rejects malformed model writes. */
+    private static final class ModelJsonSyntax {
+        private final String s;
+        private int i;
+        private String rootId;
+        private ModelJsonSyntax(String source) { s = source; }
+        static String verifyObject(String source) {
+            ModelJsonSyntax p = new ModelJsonSyntax(source);
+            p.ws(); p.object(0); p.ws();
+            if(p.i != source.length()) throw new IllegalArgumentException("Trailing JSON content");
+            if(p.rootId == null || p.rootId.isBlank()) throw new IllegalArgumentException("Model id missing");
+            return p.rootId;
+        }
+        private void ws() { while(i<s.length() && " \t\r\n".indexOf(s.charAt(i))>=0) i++; }
+        private boolean take(char c) { ws(); if(i<s.length() && s.charAt(i)==c) { i++; return true; } return false; }
+        private void need(char c) { if(!take(c)) throw new IllegalArgumentException("Expected JSON delimiter"); }
+        private void object(int depth) {
+            if(depth>80) throw new IllegalArgumentException("JSON nesting too deep");
+            need('{'); if(take('}')) return;
+            do {
+                String key = string(); need(':');
+                if(depth == 0 && "id".equals(key)) {
+                    if(rootId != null) throw new IllegalArgumentException("Duplicate model id");
+                    rootId = string();
+                } else value(depth+1);
+            } while(take(','));
+            need('}');
+        }
+        private void array(int depth) {
+            if(depth>80) throw new IllegalArgumentException("JSON nesting too deep");
+            need('['); if(take(']')) return;
+            do { value(depth+1); } while(take(','));
+            need(']');
+        }
+        private String string() {
+            need('"');
+            int start=i;
+            while(i<s.length()) {
+                char c=s.charAt(i++);
+                if(c=='"') return s.substring(start, i-1);
+                if(c<32) throw new IllegalArgumentException("Control character in JSON string");
+                if(c=='\\') {
+                    if(i==s.length()) throw new IllegalArgumentException("Unterminated escape");
+                    char escaped=s.charAt(i++);
+                    if("\"\\/bfnrt".indexOf(escaped)<0) {
+                        if(escaped!='u' || i+4>s.length()) throw new IllegalArgumentException("Invalid escape");
+                        for(int n=0;n<4;n++) if(Character.digit(s.charAt(i++),16)<0) throw new IllegalArgumentException("Invalid unicode escape");
+                    }
+                }
+            }
+            throw new IllegalArgumentException("Unterminated string");
+        }
+        private void value(int depth) {
+            if(depth>80) throw new IllegalArgumentException("JSON nesting too deep");
+            ws(); if(i>=s.length()) throw new IllegalArgumentException("Missing JSON value");
+            char c=s.charAt(i);
+            if(c=='{') { object(depth); return; }
+            if(c=='[') { array(depth); return; }
+            if(c=='"') { string(); return; }
+            for(String keyword : new String[]{"true","false","null"}) {
+                if(s.startsWith(keyword,i)) { i+=keyword.length(); return; }
+            }
+            int start=i;
+            if(c=='-') i++;
+            if(i>=s.length()) throw new IllegalArgumentException("Invalid JSON number");
+            if(s.charAt(i)=='0') i++;
+            else if(s.charAt(i)>='1'&&s.charAt(i)<='9') {
+                do { i++; } while(i<s.length()&&Character.isDigit(s.charAt(i)));
+            } else throw new IllegalArgumentException("Invalid JSON value");
+            if(i<s.length()&&s.charAt(i)=='.') {
+                i++; int point=i;
+                while(i<s.length()&&s.charAt(i)>='0'&&s.charAt(i)<='9') i++;
+                if(i==point) throw new IllegalArgumentException("Invalid decimal");
+            }
+            if(i<s.length()&&(s.charAt(i)=='e'||s.charAt(i)=='E')) {
+                i++; if(i<s.length()&&(s.charAt(i)=='+'||s.charAt(i)=='-')) i++;
+                int exp=i;
+                while(i<s.length()&&s.charAt(i)>='0'&&s.charAt(i)<='9') i++;
+                if(i==exp) throw new IllegalArgumentException("Invalid exponent");
+            }
+            if(i==start) throw new IllegalArgumentException("Invalid JSON number");
+        }
+    }
+
     private static String quote(String value) { return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\""; }
     private static void json(HttpExchange exchange, int status, String value) throws IOException { response(exchange, status, "application/json; charset=utf-8", value.getBytes(StandardCharsets.UTF_8)); }
     private static void methodNotAllowed(HttpExchange exchange) throws IOException { response(exchange, 405, "text/plain; charset=utf-8", "Method not allowed".getBytes(StandardCharsets.UTF_8)); }

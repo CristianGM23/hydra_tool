@@ -28,6 +28,10 @@ jobs:
       - name: Backend full gate
         run: bash ./mvnw -B clean verify
         shell: bash
+      - name: Generated-editor B+D block 2 integration checks
+        run: python scripts/validation/verify_bd_block2.py
+      - name: Generated-editor behavioral smoke
+        run: node --test reference-projects/bd2-standalone-smoke/scripts/editor.test.mjs
       - name: HYDRA final-tree gate
         run: python scripts/validation/verify_final_tree.py --ci
       - name: Source package and SBOM
@@ -39,3 +43,15 @@ jobs:
 
       - name: RC2 stabilization qualification
         run: python scripts/release/qualify_rc2.py --full --primary-rc1-qualified
+
+      - name: Upload qualification diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hydra-qualification-diagnostics-${{ matrix.os }}
+          path: |
+            target/release/logs/**
+            target/release/*qualification*.json
+            target/release/release-readiness.json
+          if-no-files-found: warn
+          retention-days: 7

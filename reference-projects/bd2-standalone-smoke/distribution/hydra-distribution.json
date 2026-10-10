@@ -1,0 +1,1 @@
+{"schemaVersion":"1.0","productName":"HYDRA Generated Editor Fixture","version":"1.0.0","targets":["PWA","TAURI_WINDOWS","TAURI_MACOS","TAURI_LINUX"],"offlineEnabled":true,"fileAssociations":[],"updateChannel":"test"}

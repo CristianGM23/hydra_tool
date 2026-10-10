@@ -1,6 +1,13 @@
 /** Preparación operativa por perfil y verificación tecnológica (R6C2 Fix127-132). */
 export const CURRENT_SPANISH_PART_19: Readonly<Record<string, string>> = {
     'When a saved profile is available, HYDRA also evaluates delivery readiness from its resolved inputs and a side-effect-free technology compilation.': 'Cuando existe un perfil guardado, HYDRA también evalúa la preparación de la entrega a partir de sus entradas resueltas y de una compilación tecnológica sin efectos laterales.',
+    'Check release readiness': 'Comprobar preparación para publicación',
+    'Release readiness': 'Preparación para publicación',
+    'Ready for release-source ZIP': 'Preparado para generar el ZIP de fuentes de distribución',
+    'Download deployable web ZIP': 'Descargar ZIP web desplegable',
+    'Package release source ZIP': 'Empaquetar fuentes de distribución verificadas',
+    'Static distribution checks pass. Native installers still require a real build and platform tests.': 'Las comprobaciones estáticas de distribución han pasado. Los instaladores nativos todavía requieren compilación real y pruebas por plataforma.',
+    'Generated application not release-ready; review required artifacts and builds.': 'La aplicación generada aún no está preparada para su publicación; revisa los archivos y las compilaciones necesarios.',
     'Ready': 'Preparado',
     'Ready with warnings': 'Preparado con avisos',
     'Blocked': 'Bloqueado',

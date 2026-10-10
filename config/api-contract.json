@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "hydraVersion": "4.32.107",
-  "operationCount": 573,
+  "operationCount": 577,
   "operations": [
     {
       "method": "get",
@@ -931,6 +931,12 @@
       "method": "post",
       "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/compile",
       "operationId": "TechnologyIntegrationController_compile_post",
+      "controller": "TechnologyIntegrationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/integrations/{profileId}/technology/native-parity/certify",
+      "operationId": "TechnologyIntegrationController_certifyNativeParity_post",
       "controller": "TechnologyIntegrationController"
     },
     {
@@ -2531,8 +2537,26 @@
     },
     {
       "method": "post",
+      "path": "/api/standalone-distributions/package-deployable-web",
+      "operationId": "StandaloneDistributionController_packageDeployableWeb_post",
+      "controller": "StandaloneDistributionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/standalone-distributions/package-release-source",
+      "operationId": "StandaloneDistributionController_packageReleaseSource_post",
+      "controller": "StandaloneDistributionController"
+    },
+    {
+      "method": "post",
       "path": "/api/standalone-distributions/plan",
       "operationId": "StandaloneDistributionController_plan_post",
+      "controller": "StandaloneDistributionController"
+    },
+    {
+      "method": "post",
+      "path": "/api/standalone-distributions/release-readiness",
+      "operationId": "StandaloneDistributionController_releaseReadiness_post",
       "controller": "StandaloneDistributionController"
     },
     {

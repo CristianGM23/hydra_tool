@@ -1,0 +1,16 @@
+{
+  "schemaVersion":"1.0","id":"course-sample","metamodelId":"course","rootElementIds":["object:course"],
+  "elements":[
+    {"id":"object:course","classId":"class:Course","attributes":{"attr:course:title":"Architecture of modeling"}},
+    {"id":"object:lesson-one","classId":"class:Lesson","attributes":{"attr:lesson:duration":45,"attr:lesson:tags":["mde","semantics"]}},
+    {"id":"object:video","classId":"class:VideoLesson","attributes":{"attr:lesson:duration":50,"attr:video:published":true}},
+    {"id":"object:alice","classId":"class:Student","attributes":{"attr:student:name":"Alice"}},
+    {"id":"object:bruno","classId":"class:Student","attributes":{"attr:student:name":"Bruno"}}
+  ],
+  "relations":[
+    {"id":"edge:1","relationId":"rel:course:lessons","sourceElementId":"object:course","targetElementId":"object:lesson-one"},
+    {"id":"edge:2","relationId":"rel:course:lessons","sourceElementId":"object:course","targetElementId":"object:video"},
+    {"id":"edge:3","relationId":"rel:lesson:participants","sourceElementId":"object:lesson-one","targetElementId":"object:alice"},
+    {"id":"edge:4","relationId":"rel:lesson:participants","sourceElementId":"object:video","targetElementId":"object:bruno"}
+  ],"annotations":{}
+}
