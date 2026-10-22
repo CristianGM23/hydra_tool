@@ -183,8 +183,8 @@ export function ProjectExplorerWorkspace({ children, onWorkspaceReload, workbenc
 
     async function handleImportRepository(request: { profileId: string; remotePath: string; parentDirectory: string; projectName: string }): Promise<void> { await applyImportedSession(await importRemoteProject(request)); }
 
-    async function handleImportExternal(parent: string, name: string, file: File): Promise<void> {
-        const result = await importExternalProjectArchive(parent, name, file);
+    async function handleImportExternal(parent: string, name: string, file: File, confirmedFingerprint: string): Promise<void> {
+        const result = await importExternalProjectArchive(parent, name, file, confirmedFingerprint);
         await applyImportedSession(result.session);
         setStatus(`External project imported · ${result.recovery.resourceCount} resources · metamodel ${result.materialization.metamodelId || 'pending review'} · ${result.materialization.editorIds.length} editor(s) · ${result.materialization.visualValidationsImported + result.materialization.validationRulesImported} validation(s) · ${result.materialization.quickFixesImported} quick fix(es)`);
     }

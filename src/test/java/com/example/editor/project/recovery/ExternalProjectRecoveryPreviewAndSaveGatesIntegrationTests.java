@@ -165,9 +165,12 @@ class ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests {
 
     private JsonNode importProject(byte[] archive, String parentFolder, String projectName) throws Exception {
         Path parent = Files.createDirectories(workspaces.resolve(parentFolder));
+        String fingerprint = JSON.readTree(body(mvc.perform(multipart("/api/external-project-recovery/analyze")
+                .file(new MockMultipartFile("file", "external.zip", "application/zip", archive))).andReturn().getResponse())).get("fingerprint").asString();
         MockHttpServletResponse response = mvc.perform(multipart("/api/external-project-recovery/import")
                 .file(new MockMultipartFile("file", "external.zip", "application/zip", archive))
-                .param("parentDirectory", parent.toString()).param("projectName", projectName)).andReturn().getResponse();
+                .param("parentDirectory", parent.toString()).param("projectName", projectName)
+                .param("confirmedFingerprint", fingerprint)).andReturn().getResponse();
         assertThat(response.getStatus()).as(body(response)).isEqualTo(200);
         return JSON.readTree(body(response));
     }

@@ -242,9 +242,14 @@ class ProjectImportOriginsEffectsIntegrationTests {
     @DisplayName("x_project_lifecycle_overview.d1: solo el archivo de proyecto externo genera recuperacion semantica y metamodelo canonico")
     void onlyAnExternalProjectArchiveTriggersSemanticRecovery() throws Exception {
         Path parent = Files.createDirectories(root.resolve("ws-external"));
+        byte[] archive = siriusZip();
+        String fingerprint = JSON.readTree(mvc.perform(multipart("/api/external-project-recovery/analyze")
+                .file(new MockMultipartFile("file", "sirius-fixture.zip", "application/zip", archive))).andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8)).get("fingerprint").asString();
         MockHttpServletResponse response = mvc.perform(multipart("/api/external-project-recovery/import")
-                .file(new MockMultipartFile("file", "sirius-fixture.zip", "application/zip", siriusZip()))
-                .param("parentDirectory", parent.toString()).param("projectName", "External Origin")).andReturn().getResponse();
+                .file(new MockMultipartFile("file", "sirius-fixture.zip", "application/zip", archive))
+                .param("parentDirectory", parent.toString()).param("projectName", "External Origin")
+                .param("confirmedFingerprint", fingerprint)).andReturn().getResponse();
         assertThat(response.getStatus()).as(response.getContentAsString(StandardCharsets.UTF_8)).isEqualTo(200);
         JsonNode result = JSON.readTree(response.getContentAsString(StandardCharsets.UTF_8));
         Path imported = Path.of(result.get("session").get("directory").asString());

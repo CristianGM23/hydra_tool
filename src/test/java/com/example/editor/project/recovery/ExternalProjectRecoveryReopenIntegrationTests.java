@@ -154,9 +154,13 @@ class ExternalProjectRecoveryReopenIntegrationTests {
     @DisplayName("x_recover_external_project.pj: tras importar, cerrar y reabrir el proyecto por la API, el resultado de la recuperacion sigue en el proyecto")
     void theRecoveryResultSurvivesClosingAndReopeningTheProject() throws Exception {
         Path parent = Files.createDirectories(root.resolve("ws"));
+        byte[] archive = zip();
+        String fingerprint = JSON.readTree(body(mvc.perform(multipart("/api/external-project-recovery/analyze")
+                .file(new MockMultipartFile("file", "sirius-fixture.zip", "application/zip", archive))).andReturn().getResponse())).get("fingerprint").asString();
         MockHttpServletResponse response = mvc.perform(multipart("/api/external-project-recovery/import")
-                .file(new MockMultipartFile("file", "sirius-fixture.zip", "application/zip", zip()))
-                .param("parentDirectory", parent.toString()).param("projectName", "Sirius Reopen")).andReturn().getResponse();
+                .file(new MockMultipartFile("file", "sirius-fixture.zip", "application/zip", archive))
+                .param("parentDirectory", parent.toString()).param("projectName", "Sirius Reopen")
+                .param("confirmedFingerprint", fingerprint)).andReturn().getResponse();
         assertThat(response.getStatus()).as(body(response)).isEqualTo(200);
         JsonNode imported = JSON.readTree(body(response));
         projectDirectory = text(imported.get("session").get("directory"));

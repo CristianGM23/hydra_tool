@@ -128,9 +128,14 @@ class ExternalProjectRecoveryEndToEndIntegrationTests {
     @DisplayName("x_recover_external_project.pj: importar crea el proyecto HYDRA, preserva el original y materializa capas")
     void importCreatesTheHydraProjectPreservesTheSourceAndMaterializesLayers() throws Exception {
         Path parent = Files.createDirectories(ROOT.resolve("projects"));
+        byte[] archive = zip();
+        String confirmedPreview = JSON.readTree(mvc.perform(multipart("/api/external-project-recovery/analyze")
+                .file(new MockMultipartFile("file", "sirius-fixture.zip", "application/zip", archive))).andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8)).get("fingerprint").asString();
         MockHttpServletResponse response = mvc.perform(multipart("/api/external-project-recovery/import")
-                .file(new MockMultipartFile("file", "sirius-fixture.zip", "application/zip", zip()))
-                .param("parentDirectory", parent.toString()).param("projectName", "Sirius Fixture")).andReturn().getResponse();
+                .file(new MockMultipartFile("file", "sirius-fixture.zip", "application/zip", archive))
+                .param("parentDirectory", parent.toString()).param("projectName", "Sirius Fixture")
+                .param("confirmedFingerprint", confirmedPreview)).andReturn().getResponse();
         assertThat(response.getStatus()).as(response.getContentAsString(StandardCharsets.UTF_8)).isEqualTo(200);
         JsonNode result = JSON.readTree(response.getContentAsString(StandardCharsets.UTF_8));
 

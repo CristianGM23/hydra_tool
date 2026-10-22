@@ -66,6 +66,12 @@ public class ExternalProjectSemanticMaterializationService {
 
     /** Descripción: Ejecuta la operación «materialize» correspondiente a la responsabilidad de VisualOutcome. Entradas: entries: colección de elementos que debe procesarse; report: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ ExternalProjectMaterializationResult materialize(List<ExternalProjectArchiveEntry> entries,
             ExternalProjectRecoveryReport report) {
+        return materialize(entries, report, ExternalImportListener.NONE);
+    }
+
+    /** Materializa notificando al listener, antes de que ocurra, cada efecto sobre los almacenes canónicos (para poder compensarlo). */
+    /** Descripción: Ejecuta la operación «materialize» correspondiente a la responsabilidad de VisualOutcome. Entradas: entries: colección de elementos que debe procesarse; report: dato de entrada necesario para la operación; listener: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ ExternalProjectMaterializationResult materialize(List<ExternalProjectArchiveEntry> entries,
+            ExternalProjectRecoveryReport report, ExternalImportListener listener) {
         List<String> diagnostics = new ArrayList<>();
         List<String> sources = new ArrayList<>();
         List<String> editorIds = new ArrayList<>();
@@ -93,16 +99,19 @@ public class ExternalProjectSemanticMaterializationService {
                 return ExternalProjectMaterializationResult.empty(diagnostics);
             }
             metamodel = existing;
+            listener.metamodelReused(metamodel.id());
             diagnostics.add("Reused the existing canonical metamodel '" + metamodel.id() + "' because it is structurally identical to the imported source.");
         } catch(MetamodelApplicationException exception) {
             if(exception.getReason() != MetamodelApplicationException.Reason.NOT_FOUND) throw exception;
+            listener.metamodelAboutToBeCreated(metamodel);
             MetamodelImportSaveResult saved = metamodelImports.importPrepared(preview, false);
             metamodel = saved.preview().metamodel();
+            listener.metamodelCreated(metamodel.id());
             created = true;
             sources.add(candidate.entry().path());
         }
 
-        VisualOutcome visual = materializeVisuals(metamodel, entries, diagnostics, null);
+        VisualOutcome visual = materializeVisuals(metamodel, entries, diagnostics, null, listener);
         editorIds.addAll(visual.editorIds());
         nativeVisualValidations += visual.validationsImported();
         sources.addAll(visual.sources());
@@ -151,7 +160,7 @@ public class ExternalProjectSemanticMaterializationService {
                 .filter(java.util.Objects::nonNull).map(value -> value.replace('\\','/'))
                 .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
         List<String> diagnostics = new ArrayList<>();
-        VisualOutcome visual = materializeVisuals(metamodel, entries, diagnostics, normalizedSelection);
+        VisualOutcome visual = materializeVisuals(metamodel, entries, diagnostics, normalizedSelection, ExternalImportListener.NONE);
         ExternalValidationRecoveryResult validation = validationRecovery.recover(metamodel.id(), metamodel, entries);
         diagnostics.addAll(validation.diagnostics());
         if(validation.rulesImported() > 0 || visual.validationsImported() > 0)
@@ -192,7 +201,7 @@ public class ExternalProjectSemanticMaterializationService {
     }
 
     /** Descripción: Ejecuta la operación «materializeVisuals» correspondiente a la responsabilidad de VisualOutcome. Entradas: metamodel: dato de entrada necesario para la operación; entries: colección de elementos que debe procesarse; diagnostics: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private VisualOutcome materializeVisuals(MetaModel metamodel, List<ExternalProjectArchiveEntry> entries,
-            List<String> diagnostics, Set<String> selectedVisualSources) {
+            List<String> diagnostics, Set<String> selectedVisualSources, ExternalImportListener listener) {
         List<String> editorIds = new ArrayList<>(); List<String> sources = new ArrayList<>(); int validations = 0;
         List<MultipartFile> javaSources = entries.stream().filter(value -> lower(value.path()).endsWith(".java"))
                 .filter(value -> StaticSourceInspectionPolicy.inspectText(value).isPresent())
@@ -203,8 +212,9 @@ public class ExternalProjectSemanticMaterializationService {
                 .sorted(Comparator.comparing(ExternalProjectArchiveEntry::path)).toList()) {
             try {
                 VisualDefinitionImportResult result = visualImports.importSirius(metamodel.id(), multipart("odesign", entry), javaSources, "EXISTING", List.of());
-                PersistedVisual persisted = persistVisual(result, metamodel, entry.path(), entries, diagnostics);
+                PersistedVisual persisted = persistVisual(result, metamodel, entry.path(), entries, diagnostics, listener);
                 if(persisted.persisted()) { editorIds.add(persisted.editorId()); sources.add(entry.path()); validations += persisted.validations(); }
+            } catch(ExternalImportJournalException journalFailure) { throw journalFailure;
             } catch(RuntimeException exception) { diagnostics.add("Sirius adapter failed for " + entry.path() + ": " + safeMessage(exception)); }
         }
 
@@ -218,8 +228,9 @@ public class ExternalProjectSemanticMaterializationService {
                         .filter(value -> StaticSourceInspectionPolicy.inspectText(value).isPresent())
                         .forEach(value -> resources.add(multipart("resources", value)));
                 VisualDefinitionImportResult result = visualImports.importGmf(metamodel.id(), resources, "EXISTING", List.of());
-                PersistedVisual persisted = persistVisual(result, metamodel, gmf.get(0).path(), entries, diagnostics);
+                PersistedVisual persisted = persistVisual(result, metamodel, gmf.get(0).path(), entries, diagnostics, listener);
                 if(persisted.persisted()) { editorIds.add(persisted.editorId()); gmf.forEach(value -> sources.add(value.path())); validations += persisted.validations(); }
+            } catch(ExternalImportJournalException journalFailure) { throw journalFailure;
             } catch(RuntimeException exception) { diagnostics.add("GMF adapter failed: " + safeMessage(exception)); }
         }
 
@@ -229,8 +240,9 @@ public class ExternalProjectSemanticMaterializationService {
         if(!drawio.isEmpty()) {
             try {
                 VisualDefinitionImportResult result = visualImports.importDrawio(metamodel.id(), drawio.stream().map(value -> multipart("resources",value)).toList(), "EXISTING", List.of());
-                PersistedVisual persisted = persistVisual(result, metamodel, drawio.get(0).path(), entries, diagnostics);
+                PersistedVisual persisted = persistVisual(result, metamodel, drawio.get(0).path(), entries, diagnostics, listener);
                 if(persisted.persisted()) { editorIds.add(persisted.editorId()); drawio.forEach(value -> sources.add(value.path())); validations += persisted.validations(); }
+            } catch(ExternalImportJournalException journalFailure) { throw journalFailure;
             } catch(RuntimeException exception) { diagnostics.add("draw.io adapter failed: " + safeMessage(exception)); }
         }
 
@@ -241,24 +253,25 @@ public class ExternalProjectSemanticMaterializationService {
                 List<MultipartFile> resources = new ArrayList<>(siriusWeb.stream().map(value -> multipart("resources",value)).toList());
                 resources.addAll(javaSources);
                 VisualDefinitionImportResult result = visualImports.importSiriusWeb(metamodel.id(), resources, "EXISTING", List.of());
-                PersistedVisual persisted = persistVisual(result, metamodel, siriusWeb.get(0).path(), entries, diagnostics);
+                PersistedVisual persisted = persistVisual(result, metamodel, siriusWeb.get(0).path(), entries, diagnostics, listener);
                 if(persisted.persisted()) { editorIds.add(persisted.editorId()); siriusWeb.forEach(value -> sources.add(value.path())); validations += persisted.validations(); }
+            } catch(ExternalImportJournalException journalFailure) { throw journalFailure;
             } catch(RuntimeException exception) { diagnostics.add("Sirius Web adapter failed: " + safeMessage(exception)); }
         }
 
         for(ExternalCodeVisualRecoveryService.RecoveredCodeEditor recovered : selectedVisualSources == null
                 ? codeVisualRecovery.recover(metamodel, entries) : List.<ExternalCodeVisualRecoveryService.RecoveredCodeEditor>of()) {
             diagnostics.addAll(recovered.diagnostics());
-            PersistedVisual persisted = persistRecoveredEditor(recovered.editor(), metamodel, recovered.technology(), entries, diagnostics);
+            PersistedVisual persisted = persistRecoveredEditor(recovered.editor(), metamodel, recovered.technology(), entries, diagnostics, listener);
             if(persisted.persisted()) { editorIds.add(persisted.editorId()); sources.addAll(recovered.sources()); }
         }
         return new VisualOutcome(editorIds.stream().distinct().toList(), validations, sources.stream().distinct().toList());
     }
 
     /** Descripción: Ejecuta la operación «persistVisual» correspondiente a la responsabilidad de VisualOutcome. Entradas: result: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación; source: dato de entrada necesario para la operación; entries: colección de elementos que debe procesarse; diagnostics: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private PersistedVisual persistVisual(VisualDefinitionImportResult result, MetaModel metamodel, String source,
-            List<ExternalProjectArchiveEntry> entries, List<String> diagnostics) {
+            List<ExternalProjectArchiveEntry> entries, List<String> diagnostics, ExternalImportListener listener) {
         if(!result.analysis().importReady()) diagnostics.add("Visual adapter analysed " + source + " with unresolved external semantics that require review. HYDRA will still materialize the structurally safe subset instead of discarding the whole visual layer. " + summary(result));
-        EditorDefinitionModel analysedEditor = rebaseProjectAssets(result.editorDefinition(), entries, diagnostics);
+        EditorDefinitionModel analysedEditor = rebaseProjectAssets(result.editorDefinition(), entries, diagnostics, listener);
         var preflight = editors.checkDefinition(metamodel.id(), analysedEditor);
         if(!preflight.valid()) {
             diagnostics.add("Visual adapter preserved " + source + " but the recovered canonical editor still contains blocking structural errors: " + preflight.diagnostics().stream().map(value -> value.code()+":"+value.message()).limit(12).toList());
@@ -289,8 +302,8 @@ public class ExternalProjectSemanticMaterializationService {
     }
 
     /** Descripción: Ejecuta la operación «persistRecoveredEditor» correspondiente a la responsabilidad de VisualOutcome. Entradas: candidate: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación; technology: dato de entrada necesario para la operación; entries: colección de elementos que debe procesarse; diagnostics: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private PersistedVisual persistRecoveredEditor(EditorDefinitionModel candidate, MetaModel metamodel, String technology,
-            List<ExternalProjectArchiveEntry> entries, List<String> diagnostics) {
-        EditorDefinitionModel editor = rebaseProjectAssets(candidate, entries, diagnostics);
+            List<ExternalProjectArchiveEntry> entries, List<String> diagnostics, ExternalImportListener listener) {
+        EditorDefinitionModel editor = rebaseProjectAssets(candidate, entries, diagnostics, listener);
         var preflight = editors.checkDefinition(metamodel.id(), editor);
         if(!preflight.valid()) {
             diagnostics.add(technology + " editor recovery was preserved but not materialized because the canonical preflight reported: " + preflight.diagnostics().stream().map(value -> value.code()+":"+value.message()).limit(12).toList());
@@ -310,7 +323,7 @@ public class ExternalProjectSemanticMaterializationService {
         }
     }
 
-    /** Descripción: Ejecuta la operación «rebaseProjectAssets» correspondiente a la responsabilidad de VisualOutcome. Entradas: editor: dato de entrada necesario para la operación; entries: colección de elementos que debe procesarse; diagnostics: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private EditorDefinitionModel rebaseProjectAssets(EditorDefinitionModel editor, List<ExternalProjectArchiveEntry> entries, List<String> diagnostics) {
+    /** Descripción: Ejecuta la operación «rebaseProjectAssets» correspondiente a la responsabilidad de VisualOutcome. Entradas: editor: dato de entrada necesario para la operación; entries: colección de elementos que debe procesarse; diagnostics: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private EditorDefinitionModel rebaseProjectAssets(EditorDefinitionModel editor, List<ExternalProjectArchiveEntry> entries, List<String> diagnostics, ExternalImportListener listener) {
         boolean[] changed = new boolean[]{false};
         var representations = editor.representations().stream().map(rep -> {
             var nodes = rep.nodeMappings().stream().map(mapping -> {
@@ -320,8 +333,17 @@ public class ExternalProjectSemanticMaterializationService {
                         .filter(entry -> portableAssetReference(entry.path()).endsWith(wanted)).toList();
                 if(matches.size()!=1) { diagnostics.add("Project image '"+wanted+"' could not be uniquely rebound to an imported archive resource; the original workspace path remains preserved for review."); return mapping; }
                 String rebound;
-                try { rebound = visualAssets == null ? "external-source/" + matches.get(0).path().replace('\\','/')
-                        : visualAssets.store(matches.get(0).path(), matches.get(0).bytes()); }
+                try {
+                    if(visualAssets == null) rebound = "external-source/" + matches.get(0).path().replace('\\','/');
+                    else {
+                        String portable = visualAssets.portablePath(matches.get(0).path(), matches.get(0).bytes());
+                        listener.assetAboutToBeStored(portable, visualAssets.exists(portable));
+                        var storedAsset = visualAssets.storeTracked(matches.get(0).path(), matches.get(0).bytes());
+                        rebound = storedAsset.path();
+                        listener.assetStored(storedAsset.path(), storedAsset.created());
+                    }
+                }
+                catch(ExternalImportJournalException exception) { throw exception; }
                 catch(RuntimeException exception) { diagnostics.add("Project image '"+wanted+"' was found but could not be promoted to the canonical editor asset store: " + safeMessage(exception)); return mapping; }
                 changed[0]=true;
                 Map<String,String> annotations = new java.util.LinkedHashMap<>(mapping.annotations());
