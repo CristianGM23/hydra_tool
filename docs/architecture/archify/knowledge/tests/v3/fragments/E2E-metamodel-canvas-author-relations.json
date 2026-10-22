@@ -1,0 +1,111 @@
+[
+  {
+    "id": "pw:e2e/real/metamodel/canvas-author-relations.spec.ts",
+    "name": {
+      "es": "Lienzo del metamodelo de extremo a extremo: paleta, relaciones por clic y validación de herencia",
+      "en": "Metamodel canvas end to end: palette, click relations and inheritance validation"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["delivery"],
+    "caps": ["metamodel", "persistence"],
+    "procs": [
+      { "id": "metamodel_author_canvas", "stages": ["pal", "d1", "kind", "cc", "val", "art", "ed"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/metamodel-designer/MetamodelDesigner.tsx",
+      "frontend/src/metamodel-designer/MetamodelCanvas.tsx",
+      "frontend/src/metamodel-designer/MetamodelPalette.tsx",
+      "frontend/src/metamodel-designer/MetamodelHandles.tsx",
+      "frontend/src/metamodel-designer/connectionValidation.ts",
+      "frontend/src/metamodel-designer/MetamodelPropertyPanel.tsx",
+      "src/main/java/com/example/editor/metamodel/web/CanonicalMetamodelController.java",
+      "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java"
+    ],
+    "pre": {
+      "es": "Backend real con almacenamiento temporal propio y aplicación compilada en un navegador real; cada prueba crea su propio metamodelo con nombre único.",
+      "en": "Real backend with its own temporary storage and the built application in a real browser; each test creates its own metamodel with a unique name."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, ventana de 1700x1000 y encaje del lienzo antes de cada gesto; los puertos se localizan por su identificador estable. Sin simulaciones: el oráculo lee .metamodel.json y .metamodel-diagram.json del disco del backend y hace GET a la API real.",
+      "en": "Playwright with Chromium, a 1700x1000 window and canvas fit before each gesture; ports are located by their stable id. No simulations: the oracle reads .metamodel.json and .metamodel-diagram.json from the backend disk and issues GET calls to the real API."
+    },
+    "executes": {
+      "es": "Abre #/metamodel en modo visual/manual, pulsa los cinco botones de elemento de la paleta, elige cada clase de relación, conecta con clic en puerto de origen y destino, intenta herencias e implementaciones inválidas, edita el nombre en el panel y guarda con 'Save metamodel'.",
+      "en": "Opens #/metamodel in visual/manual mode, presses the five palette element buttons, picks each relation kind, connects by clicking the source and target ports, tries invalid inheritance and implementation links, edits the name in the panel and saves with 'Save metamodel'."
+    },
+    "asserts": {
+      "es": "Sin clase de relación activa los clics no crean relación (relations=[] en disco y GET); con clic-clic quedan REFERENCE, CONTAINMENT y DEPENDENCY, con extremos y puertos correctos; herencia clase-interfaz, implementación entre clases y ciclo se rechazan con aviso y no llegan al fichero; solo quedan INHERITANCE e IMPLEMENTATION válidas.",
+      "en": "With no relation kind active clicks create no relation (relations=[] on disk and GET); click-click leaves REFERENCE, CONTAINMENT and DEPENDENCY, with the right endpoints and ports; class-interface inheritance, class-class implementation and a cycle are rejected with a notice and never reach the file; only the valid ones remain."
+    },
+    "behavior": {
+      "es": "Una persona dibuja un metamodelo en el lienzo: añade elementos con un clic, elige el tipo de relación y conecta con dos clics; las uniones inválidas se rechazan en el momento y lo guardado refleja solo lo válido.",
+      "en": "A person draws a metamodel on the canvas: adds elements with one click, picks the relation kind and connects with two clicks; invalid links are rejected on the spot and what is saved reflects only the valid ones."
+    },
+    "rule": {
+      "es": "Sin elegir antes el tipo de relación no se crea ninguna unión; la herencia solo une dos clases o dos interfaces y sin ciclos, y la implementación solo une una clase con una interfaz.",
+      "en": "Without picking the relation kind first no link is created; inheritance only joins two classes or two interfaces and never forms a cycle, and implementation only joins a class with an interface."
+    },
+    "scenario": {
+      "es": "Metamodelos nuevos con clases, interfaz, enumerado y tipo de datos; relaciones creadas por clic-clic de los seis tipos disponibles y tres intentos inválidos de herencia o implementación.",
+      "en": "New metamodels with classes, an interface, an enumeration and a data type; relations created by click-click of the available kinds and three invalid attempts at inheritance or implementation."
+    },
+    "result": {
+      "es": "El servidor guarda los elementos creados, las relaciones del tipo elegido con sus extremos y puertos, y ninguna de las uniones rechazadas.",
+      "en": "The server stores the created elements, the relations of the chosen kind with their endpoints and ports, and none of the rejected links."
+    },
+    "expected": {
+      "es": "Una ejecución correcta guarda exactamente las relaciones válidas dibujadas y deja visible el aviso en cada rechazo.",
+      "en": "A passing run saves exactly the valid relations drawn and shows the notice on every rejection."
+    },
+    "guarantee": {
+      "es": "Dibujar y validar relaciones en el lienzo funciona en un navegador real y lo guardado en el servidor coincide con lo dibujado.",
+      "en": "Drawing and validating relations on the canvas works in a real browser and what the server stores matches what was drawn."
+    },
+    "limits": {
+      "es": "La edición en el panel cubre nombre y un atributo de una clase seleccionada. No prueba el arrastre entre puertos ni, por tanto, que los dos gestos den la misma relación (el gesto no completó la conexión en las pasadas reales y no se reclama), la herencia entre interfaces, mover o redimensionar nodos, ni el idioma español; la posición de los puertos depende de la ventana.",
+      "en": "Panel editing covers the name and one attribute of a selected class. It does not test dragging between ports nor, therefore, that both gestures give the same relation (the gesture did not complete the connection in the real runs and is not claimed), inheritance between interfaces, node moves or resizing, nor the Spanish interface; port positions depend on the window."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Gestos reales de usuario en navegador, backend real, ficheros guardados leídos desde Node y rechazos comprobados.",
+      "en": "Real user gestures in a browser, real backend, saved files read from Node and rejections checked."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "la paleta crea los cinco tipos de elemento, sin clase de relación no se conecta nada y el panel renombra antes de guardar",
+        "scenario": { "es": "Se pulsan los cinco botones de la paleta, se intenta unir sin elegir relación y se renombra una clase.", "en": "The five palette buttons are pressed, a link is attempted without choosing a relation and a class is renamed." },
+        "result": { "es": "Se guardan cuatro clases, un enumerado, un tipo de datos y ninguna relación.", "en": "Four classes, an enumeration, a data type and no relation are saved." }
+      },
+      {
+        "n": "referencia, contención y dependencia se crean con clic-clic con el tipo elegido y se guardan con sus extremos",
+        "scenario": { "es": "Se crean tres relaciones con dos clics cada una.", "en": "Three relations are created with two clicks each." },
+        "result": { "es": "El servidor guarda las tres con su tipo, extremos y puertos.", "en": "The server stores all three with their kind, endpoints and ports." }
+      },
+      {
+        "n": "la herencia y la implementación se validan en vivo: las conexiones inválidas se rechazan y las válidas se guardan",
+        "scenario": { "es": "Se intentan tres uniones inválidas y dos válidas de herencia e implementación.", "en": "Three invalid and two valid inheritance and implementation links are attempted." },
+        "result": { "es": "Solo las dos válidas llegan al servidor.", "en": "Only the two valid ones reach the server." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.metamodel.web.MetamodelAuthoringSaveGateHttpIntegrationTests",
+      "pw:e2e/real/metamodel/property-panel-edit.spec.ts",
+      "pw:e2e/real/real-backend-smoke.spec.ts"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/metamodel/canvas-author-relations.spec.ts", "line": 51 },
+      { "path": "frontend/e2e/real/metamodel/canvas-author-relations.spec.ts", "line": 65 },
+      { "path": "frontend/e2e/real/metamodel/canvas-author-relations.spec.ts", "line": 92 },
+      { "path": "frontend/e2e/real/metamodel/canvas-author-relations.spec.ts", "line": 103 },
+      { "path": "frontend/e2e/real/metamodel/canvas-author-relations.spec.ts", "line": 117 },
+      { "path": "frontend/e2e/real/metamodel/canvas-author-relations.spec.ts", "line": 143 },
+      { "path": "frontend/e2e/real/metamodel/canvas-author-relations.spec.ts", "line": 150 },
+      { "path": "frontend/e2e/real/metamodel/canvas-author-relations.spec.ts", "line": 159 },
+      { "path": "frontend/e2e/real/metamodel/canvas-author-relations.spec.ts", "line": 175 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "pw:e2e/real/gamification/source-json.spec.ts",
+    "name": {
+      "es": "JSON fuente de gamificación: rechazar lo inválido y guardar lo válido con backend real",
+      "en": "Gamification source JSON: refuse invalid input and save valid input with a real backend"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["gamification"],
+    "procs": [
+      { "id": "gamification_author_source", "stages": ["ed", "ap", "lc", "sv"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/gamification-designer/GamificationDesigner.tsx",
+      "frontend/src/gamification-designer/gamificationValidation.ts",
+      "frontend/src/gamification-designer/api.ts",
+      "src/main/java/com/example/editor/gamification/web/CanonicalGamificationController.java",
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackPolicyResolver.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationBindingRepository.java"
+    ],
+    "pre": {
+      "es": "Metamodelo y catálogo con un tipo de puntos y una regla sembrados por la API real.",
+      "en": "Metamodel and catalog with one point type and one rule seeded through the real API."
+    },
+    "setup": {
+      "es": "Sin simulaciones de la API. Las peticiones del navegador se observan sin interceptarlas.",
+      "en": "No API simulation. Browser requests are observed without being intercepted."
+    },
+    "executes": {
+      "es": "En la pestaña de origen edita el JSON y pulsa Aplicar con un metamodelo distinto, con una regla de error bloqueante y con texto que no es JSON; luego aplica un JSON válido con ajustes de aviso por regla, guarda y recarga.",
+      "en": "In the source tab it edits the JSON and presses Apply with a different metamodel, with a rule that has a blocking error and with text that is not JSON; then applies valid JSON with per-rule notice settings, saves and reloads."
+    },
+    "asserts": {
+      "es": "En cada rechazo hay aviso, no sale ninguna petición de escritura, el catálogo del servidor no cambia y Guardar sigue deshabilitado; el JSON válido se aplica solo como borrador y tras guardar está en disco y en la API, y gobierna el aviso real siguiente.",
+      "en": "Each refusal shows a notice, no write request is sent, the server catalog does not change and Save stays disabled; valid JSON is applied only as a draft and after saving it is on disk and in the API, and governs the next real notice."
+    },
+    "behavior": {
+      "es": "El usuario edita el catálogo como JSON; lo inválido se rechaza en la propia pantalla sin tocar el servidor y lo válido se aplica como borrador y se guarda en el backend.",
+      "en": "The user edits the catalog as JSON; invalid input is refused on the screen itself without touching the server and valid input is applied as a draft and saved in the backend."
+    },
+    "rule": {
+      "es": "Se rechazan los errores bloqueantes, el JSON ilegible y un metamodelo que no coincide; aplicar solo cambia el borrador y hay que guardar.",
+      "en": "Blocking errors, unreadable JSON and a mismatching metamodel are refused; applying only changes the draft and saving is required."
+    },
+    "scenario": {
+      "es": "Tres intentos inválidos seguidos de uno válido con anotaciones por regla de superficie, duración y activación; guardar y recargar; un evento real después.",
+      "en": "Three invalid attempts followed by a valid one with per-rule surface, duration and enablement annotations; save and reload; a real event afterwards."
+    },
+    "result": {
+      "es": "Tras los rechazos el servidor conserva el catálogo sembrado; tras guardar, las anotaciones por regla están en disco, la pestaña recargada las muestra y el aviso real usa un diálogo de un segundo.",
+      "en": "After the refusals the server keeps the seeded catalog; after saving, the per-rule annotations are on disk, the reloaded tab shows them and the real notice uses a one-second dialog."
+    },
+    "expected": {
+      "es": "Ninguna escritura durante los rechazos y el contenido aplicado idéntico en disco tras guardar.",
+      "en": "No writes during the refusals and the applied content identical on disk after saving."
+    },
+    "guarantee": {
+      "es": "La pestaña de origen no deja pasar JSON inválido al servidor y lo que se aplica y guarda llega al backend.",
+      "en": "The source tab does not let invalid JSON reach the server and what is applied and saved reaches the backend."
+    },
+    "limits": {
+      "es": "Solo anotaciones por regla; no cambia elementos ni referencias, ni importa archivos, ni cubre un JSON válido que el servidor rechace.",
+      "en": "Only per-rule annotations; it does not change elements or references, import files, or cover valid JSON the server refuses."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones de usuario reales, backend real, observación pasiva de peticiones, lectura del servidor y de los ficheros escritos.",
+      "en": "Real user actions, real backend, passive request observation, reading of the server and of the written files."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/gamification/source-json.spec.ts", "line": 25 },
+      { "path": "frontend/e2e/real/gamification/source-json.spec.ts", "line": 27 },
+      { "path": "frontend/e2e/real/gamification/source-json.spec.ts", "line": 37 },
+      { "path": "frontend/e2e/real/gamification/source-json.spec.ts", "line": 62 },
+      { "path": "frontend/e2e/real/gamification/source-json.spec.ts", "line": 71 },
+      { "path": "frontend/e2e/real/gamification/source-json.spec.ts", "line": 73 },
+      { "path": "frontend/e2e/real/gamification/source-json.spec.ts", "line": 80 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

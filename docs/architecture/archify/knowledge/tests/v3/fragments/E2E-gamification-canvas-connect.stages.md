@@ -1,0 +1,5 @@
+- gamification_author_canvas.n: los siete elementos añadidos desde la paleta aparecen con su id en los ficheros del backend (l.65-68); el 2.º test añade cinco más (l.94-98).
+- gamification_author_canvas.dr: cinco conexiones con la herramienta de conexión por clic en puertos (l.24-28) y tres arrastrando el ratón entre puertos (l.104, l.108-109).
+- gamification_author_canvas.ty: puntos->regla se rechaza por clic (l.32-35) y arrastrando (l.113-117): aviso, sin peticiones de escritura y sin catálogo en disco; las permitidas se persisten (l.59-62, l.127-129).
+- gamification_author_canvas.wr: pointTypeId/rewardId/pointsTypeId/achievementId en el JSON escrito por el backend (l.59-62) y, tras arrastrar, pointTypeId/rewardId/pointsTypeId (l.127-131).
+- gamification_author_canvas.rm: «Eliminar relación» (l.41-46) deja rewardId vacío en disco conservando el resto (l.60-64); el diagrama guardado conserva las conexiones vigentes y no la quitada (l.74-76); tras recargar no existe (l.85).

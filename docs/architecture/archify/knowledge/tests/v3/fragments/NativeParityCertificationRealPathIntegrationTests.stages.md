@@ -1,0 +1,4 @@
+- integration_native_parity.req: invalidCapabilityListsAreRejectedBeforeCompiling (lines 91-98: empty, repeated and unknown names give 400, zero compilations) and allCapabilitiesAreAcceptedAndOnlyTheRegisteredProofIsReported (lines 148-150, fifteen accepted).
+- integration_native_parity.to: timeoutDefaultsToThreeMinutesAndIsCappedAtNineHundredSeconds (lines 107-115: 0 and -1 become 180, 900 accepted, 901 rejected by the request and by HTTP).
+- integration_native_parity.cmp: compilesOnceAndLeavesAnUncoveredCapabilityUnverified (line 126 exactly one compile call; lines 127-135 uncertified, unverified with the explicit reason, native-required validation failed because the build tool is unavailable).
+- x_integrate_technology_native.sec: lines 93 (unknown capability name rejected), 152-160 (only the catalog proof is reported, none for the uncovered capability) and 176-177 (smuggled command left no trace). The ignore-or-reject behaviour of the extra fields is not pinned.

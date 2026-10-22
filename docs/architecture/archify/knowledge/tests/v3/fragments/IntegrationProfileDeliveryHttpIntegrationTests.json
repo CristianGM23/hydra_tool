@@ -1,0 +1,347 @@
+[
+  {
+    "id": "java:com.example.editor.integration.web.IntegrationProfileDeliveryHttpIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Perfil de integración por HTTP: guardar, analizar, estado de entrega, generar y verificar",
+      "en": "Integration profile over HTTP: save, analyse, delivery readiness, generate and verify"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "layers2": [
+      "definition"
+    ],
+    "caps": [
+      "integration",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "integration_author_wizard",
+        "stages": [
+          "vf",
+          "id",
+          "ok"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "integration_author_wizard",
+        "stages": [
+          "dl"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "integration_deliver",
+        "stages": [
+          "conf",
+          "ana",
+          "ver",
+          "exe",
+          "exp",
+          "ok"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_integrate_technology_native",
+        "stages": [
+          "prof",
+          "chk",
+          "gen",
+          "ok",
+          "rd"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "integration_readiness",
+        "stages": [
+          "load",
+          "diag",
+          "comp",
+          "stg",
+          "val",
+          "rep"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/integration/web/CanonicalIntegrationProfileController.java",
+      "src/main/java/com/example/editor/integration/IntegrationProfileApplicationService.java",
+      "src/main/java/com/example/editor/integration/IntegrationProfileChecker.java",
+      "src/main/java/com/example/editor/integration/workflow/TechnologyDeliveryReadinessService.java",
+      "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+      "src/main/java/com/example/editor/integration/verification/TechnologyProjectValidationService.java",
+      "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring completo con todos los directorios dsl.* en un directorio temporal y un metamodelo canónico creado por la API.",
+      "en": "Full Spring context with every dsl.* directory in a temporary directory and a canonical metamodel created through the API."
+    },
+    "setup": {
+      "es": "Metamodelo y definiciones de eventos reales; el perfil se guarda por HTTP. El oráculo es el fichero guardado en disco, el ZIP descomprimido y verificado por la prueba, nombres de clases del metamodelo y estados literales.",
+      "en": "Real metamodel and event definitions; the profile is saved over HTTP. The oracle is the stored file on disk, the ZIP unzipped and checked by the test, the metamodel class names and literal states."
+    },
+    "executes": {
+      "es": "POST check, POST/PUT/GET de perfiles, GET readiness, POST compile y POST validate (modo estructural) por controladores, servicios, checker, repositorio y adaptador EMF reales.",
+      "en": "POST check, POST/PUT/GET of profiles, GET readiness, POST compile and POST validate (structural mode) through the real controllers, services, checker, repository and EMF adapter."
+    },
+    "asserts": {
+      "es": "El análisis marca errores; un borrador inválido o sin tecnología o modo no se guarda; el perfil válido se guarda con el nombre igual al id; la entrega bloquea generar, verificar, previsualizar y aplicar sin un insumo obligatorio y los abre al restaurarlo; ejecutar es externo; el ZIP coincide con sus hashes; la validación estructural pasa y cuenta 1 paso nativo.",
+      "en": "Analysis reports errors; an invalid draft or one without technology or mode is not saved; the valid profile is saved with the name equal to the id; readiness blocks generate, verify, preview and apply without a required input and opens them when restored; execute is external; the ZIP matches its hashes; structural validation passes and counts 1 native step."
+    },
+    "behavior": {
+      "es": "Un perfil de integración solo se guarda si está completo y sin errores; HYDRA indica en cada etapa de la entrega si se puede avanzar, qué la bloquea y cuándo algo queda fuera de HYDRA, y genera un paquete descargable cuyo contenido se puede verificar.",
+      "en": "An integration profile is saved only when complete and error-free; HYDRA states for each delivery stage whether it can proceed, what blocks it and when something stays outside HYDRA, and produces a downloadable package whose content can be verified."
+    },
+    "rule": {
+      "es": "Los errores del análisis bloquean las etapas posteriores y los avisos solo las marcan; ejecutar con la herramienta nativa nunca lo hace HYDRA; la verificación estructural no lanza herramientas externas.",
+      "en": "Analysis errors block later stages while warnings only flag them; executing with the native tool is never done by HYDRA; structural verification launches no external tool."
+    },
+    "scenario": {
+      "es": "Analizar un borrador incorrecto, intentar guardar perfiles incompletos, guardar y reemplazar uno válido, borrar y restaurar un insumo obligatorio, un perfil con aviso, una tecnología solo de proyección, descargar el ZIP y verificar la estructura.",
+      "en": "Analyse a wrong draft, try to save incomplete profiles, save and replace a valid one, delete and restore a required input, a profile with a warning, a projection-only technology, download the ZIP and verify the structure."
+    },
+    "result": {
+      "es": "Los borradores incorrectos no llegan a disco; el perfil guardado se relee igual; el estado de entrega cambia a bloqueado y vuelve a listo; el ZIP es determinista y íntegro; la verificación estructural pasa y limpia su espacio temporal.",
+      "en": "Wrong drafts never reach the disk; the stored profile reads back unchanged; readiness switches to blocked and back to ready; the ZIP is deterministic and intact; structural verification passes and cleans its temporary workspace."
+    },
+    "expected": {
+      "es": "Los códigos HTTP, los estados de cada etapa, el contenido del fichero guardado y el contenido y hashes del ZIP coinciden con los valores literales esperados.",
+      "en": "HTTP codes, the state of each stage, the stored file content and the ZIP content and hashes match the expected literal values."
+    },
+    "guarantee": {
+      "es": "Evidencia real del recorrido de definición y entrega de un perfil de integración sobre persistencia real, sin simulaciones.",
+      "en": "Real evidence of the definition and delivery path of an integration profile on real persistence, with no simulation."
+    },
+    "limits": {
+      "es": "No ejecuta ninguna herramienta nativa ni compila el proyecto con Maven; no recorre la interfaz del asistente; el fallo de compilación como bloqueo no se provoca; solo se prueba EMF y una tecnología de proyección.",
+      "en": "No native tool is run and the project is not built with Maven; the wizard interface is not exercised; a compilation failure turned into a blocker is not provoked; only EMF and one projection technology are tested."
+    },
+    "strengthWhy": {
+      "es": "Cadena HTTP, servicios y almacén reales, oráculos independientes en disco y en el ZIP, y casos de rechazo reales.",
+      "en": "Real HTTP chain, services and store, independent oracles on disk and in the ZIP, and real rejection cases."
+    },
+    "cases": [
+      {
+        "n": "profileIsAnalysedAndOnlySavedWhenCompleteAndValid",
+        "scenario": {
+          "es": "Borrador con errores, perfiles sin tecnología o modo, reemplazo con versión obsoleta.",
+          "en": "Draft with errors, profiles without technology or mode, replacement with a stale version."
+        },
+        "result": {
+          "es": "Nada se guarda salvo el perfil válido; el obsoleto da 412 y el disco no cambia.",
+          "en": "Nothing is saved except the valid profile; the stale one gives 412 and the disk is unchanged."
+        }
+      },
+      {
+        "n": "readinessBlocksDeliveryWhileARequiredInputIsMissingAndOpensAfterTheFix",
+        "scenario": {
+          "es": "Borrar y restaurar las definiciones de eventos que el perfil exige.",
+          "en": "Delete and restore the event definitions the profile requires."
+        },
+        "result": {
+          "es": "Etapas bloqueadas con causa, compilar da 422 y al restaurar vuelven a estar listas.",
+          "en": "Stages blocked with a cause, compile gives 422 and they are ready again once restored."
+        }
+      },
+      {
+        "n": "compileDownloadsAZipThatMatchesItsManifest",
+        "scenario": {
+          "es": "Descargar el paquete dos veces y descomprimirlo.",
+          "en": "Download the package twice and unzip it."
+        },
+        "result": {
+          "es": "Mismos bytes, hashes correctos y módulo con el metamodelo esperado.",
+          "en": "Same bytes, correct hashes and a module with the expected metamodel."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 127
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 135
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 149
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 164
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 197
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 207
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 211
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 230
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 258
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 284
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 309
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationProfileDeliveryHttpIntegrationTests.java",
+        "line": 313
+      }
+    ]
+  },
+  {
+    "id": "java:com.example.editor.integration.web.IntegrationDeliveryHttpTestSupport",
+    "name": {
+      "es": "Soporte HTTP real compartido de entrega de integración",
+      "en": "Shared real HTTP support for integration delivery"
+    },
+    "type": "OTHER",
+    "layer": "behavior",
+    "caps": [
+      "integration",
+      "persistence"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "No contiene casos de prueba: construye el entorno real que usan las pruebas de entrega.",
+      "en": "Contains no test cases: it builds the real environment used by the delivery tests."
+    },
+    "asserts": {
+      "es": "No hay aserciones sobre el producto.",
+      "en": "There are no assertions on the product."
+    },
+    "behavior": {
+      "es": "No verifica comportamiento por sí mismo; prepara el entorno real sobre directorios temporales.",
+      "en": "Verifies no behaviour by itself; it prepares the real environment over temporary directories."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Ninguno: soporte o herramienta de la certificación, sin ejecución propia en Maven.",
+      "en": "None: certification support or tooling, with no Maven execution of its own."
+    },
+    "result": {
+      "es": "No produce resultado de prueba del producto.",
+      "en": "Produces no product test result."
+    },
+    "expected": {
+      "es": "No aplica.",
+      "en": "Not applicable."
+    },
+    "guarantee": {
+      "es": "Ninguna sobre el producto.",
+      "en": "None about the product."
+    },
+    "limits": {
+      "es": "No es una prueba y no debe contarse como evidencia.",
+      "en": "It is not a test and must not be counted as evidence."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Es una utilidad de soporte sin aserciones.",
+      "en": "It is a support utility without assertions."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.integration.web.IntegrationProfileDeliveryHttpIntegrationTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/integration/web/IntegrationDeliveryHttpTestSupport.java",
+        "line": 20
+      }
+    ],
+    "confidence": "SKIMMED"
+  },
+  {
+    "id": "script:scripts/archify/v3/tests/test_v3.py",
+    "name": {
+      "es": "Pruebas unitarias del ejecutor de certificación V3",
+      "en": "Unit tests of the V3 certification runner"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "integration",
+      "persistence"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "Ejecuta con unittest las reglas del ejecutor V3: validación del manifiesto, lotes, veredictos, captura inmutable y puerta de fragmentos.",
+      "en": "Runs with unittest the V3 runner rules: manifest validation, batching, verdicts, immutable capture and fragment gate."
+    },
+    "asserts": {
+      "es": "No hay aserciones sobre el producto.",
+      "en": "There are no assertions on the product."
+    },
+    "behavior": {
+      "es": "Comprueba la herramienta de certificación, no el producto HYDRA.",
+      "en": "Checks the certification tool, not the HYDRA product."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Ninguno: soporte o herramienta de la certificación, sin ejecución propia en Maven.",
+      "en": "None: certification support or tooling, with no Maven execution of its own."
+    },
+    "result": {
+      "es": "No produce resultado de prueba del producto.",
+      "en": "Produces no product test result."
+    },
+    "expected": {
+      "es": "No aplica.",
+      "en": "Not applicable."
+    },
+    "guarantee": {
+      "es": "Ninguna sobre el producto.",
+      "en": "None about the product."
+    },
+    "limits": {
+      "es": "Prueba la herramienta de certificación, no el comportamiento del producto; no demuestra ninguna etapa.",
+      "en": "Tests the certification tool, not product behaviour; it proves no stage."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Es una prueba unitaria de una herramienta auxiliar.",
+      "en": "It is a unit test of an auxiliary tool."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.integration.web.IntegrationProfileDeliveryHttpIntegrationTests"
+    ],
+    "src": [
+      {
+        "path": "scripts/archify/v3/tests/test_v3.py",
+        "line": 30
+      }
+    ],
+    "confidence": "SKIMMED"
+  }
+]

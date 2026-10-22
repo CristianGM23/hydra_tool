@@ -1,0 +1,200 @@
+[
+  {
+    "id": "java:com.example.editor.definition.runtime.session.EditorSessionEventPublicationIntegrationTests",
+    "name": {
+      "es": "Publicación de eventos de una sesión: política, retención hasta guardar y búfer",
+      "en": "Session event publication: policy, retention until save and buffer"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "model_editor",
+      "events",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "events_publish_session",
+        "stages": [
+          "d1",
+          "a1",
+          "d2",
+          "a3",
+          "a4"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_validate_fix_revalidate_reward",
+        "stages": [
+          "sv"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_event_flow_to_reward",
+        "stages": [
+          "pol"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java",
+      "src/main/java/com/example/editor/definition/runtime/session/EditorSessionEventPublisher.java",
+      "src/main/java/com/example/editor/definition/runtime/session/EditorSessionPendingEventBuffer.java",
+      "src/main/java/com/example/editor/definition/runtime/session/persistence/JsonEditorModelSessionRepository.java",
+      "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "Sesión, publicador, buffer, repositorio JSON en @TempDir y bus en memoria reales; dos suscriptores reales (uno lanza excepción); tres políticas de editor compiladas por el compilador real.",
+      "en": "Real session, publisher, buffer, JSON repository in @TempDir and in-memory bus; two real subscribers (one throws); three editor policies compiled by the real compiler."
+    },
+    "executes": {
+      "es": "EditorModelSessionService.create/createNode/updateElement/save/discardWorkingCopy con publicación desactivada, con autoguardado y sin autoguardado, y con límites pequeños de memoria y de sesiones del buffer.",
+      "en": "EditorModelSessionService.create/createNode/updateElement/save/discardWorkingCopy with publication disabled, with autosave and without autosave, and with small buffer memory and session limits."
+    },
+    "asserts": {
+      "es": "Sin publicación no hay eventos; con autoguardado salen de inmediato con origen, contexto, sujeto, transacción y correlación esperados; sin autoguardado quedan retenidos hasta guardar (disco y buffer lo prueban) y salen en orden; el suscriptor que falla se invoca una vez por evento; descartar no publica; el búfer vuelca a JSONL y rechaza con conflicto.",
+      "en": "Without publication there are no events; with autosave they leave immediately with expected source, context, subject, transaction and correlation; without autosave they stay held until save (disk and buffer prove it) and leave in order; the failing subscriber is called once per event; discarding publishes nothing; the buffer spills to JSONL and refuses with a conflict."
+    },
+    "behavior": {
+      "es": "La sesión solo publica cuando la política lo permite y, sin autoguardado, retiene los eventos hasta que el guardado tiene éxito; descartar los elimina.",
+      "en": "The session publishes only when policy allows and, without autosave, holds events until the save succeeds; discarding drops them."
+    },
+    "rule": {
+      "es": "Solo tras guardar con éxito salen los eventos retenidos; un fallo de un suscriptor no se reintenta ni bloquea a los demás; si el búfer se llena es un conflicto.",
+      "en": "Held events leave only after a successful save; a subscriber failure is neither retried nor blocks others; a full buffer is a conflict."
+    },
+    "scenario": {
+      "es": "Tres políticas (sin publicación, autoguardado, sin autoguardado); crear, editar, guardar y descartar; búfer con un evento en memoria y el resto en disco; segunda sesión con el búfer lleno.",
+      "en": "Three policies (no publication, autosave, no autosave); create, edit, save and discard; buffer with one event in memory and the rest on disk; second session with a full buffer."
+    },
+    "result": {
+      "es": "Tipos y orden de eventos, recuentos del buffer y contenido de los JSON de disco coinciden con los literales esperados.",
+      "en": "Event types and order, buffer counts and the content of the JSON on disk match the expected literals."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan.",
+      "en": "All assertions pass."
+    },
+    "guarantee": {
+      "es": "La publicación de eventos de sesión respeta la política y no emite hechos de cambios sin confirmar.",
+      "en": "Session event publication honors the policy and does not emit facts for unconfirmed changes."
+    },
+    "limits": {
+      "es": "No cubre los enlaces de eventos ni la validación y Quick Fix que emiten sus eventos (events_publish_session.a5); el plan del editor lo sirve un runtime que entrega planes compilados.",
+      "en": "Does not cover event bindings nor validation and Quick Fix emitting their events (events_publish_session.a5); the editor plan is served by a runtime that serves compiled plans."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Sesión, publicador, buffer, repositorio y bus reales con oráculo independiente (JSON y JSONL de disco, literales) y casos negativos.",
+      "en": "Real session, publisher, buffer, repository and bus with an independent oracle (disk JSON and JSONL, literals) and negative cases."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorSessionEventPublicationIntegrationTests.java",
+        "line": 62
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorSessionEventPublicationIntegrationTests.java",
+        "line": 73
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorSessionEventPublicationIntegrationTests.java",
+        "line": 103
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorSessionEventPublicationIntegrationTests.java",
+        "line": 111
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorSessionEventPublicationIntegrationTests.java",
+        "line": 116
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorSessionEventPublicationIntegrationTests.java",
+        "line": 123
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorSessionEventPublicationIntegrationTests.java",
+        "line": 146
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorSessionEventPublicationIntegrationTests.java",
+        "line": 172
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorSessionEventPublicationIntegrationTests.java",
+        "line": 63
+      }
+    ],
+    "confidence": "ANALYZED"
+  },
+  {
+    "id": "java:com.example.editor.definition.runtime.session.EditorSessionRealStackFixtures",
+    "name": {
+      "es": "Entorno real compartido de sesiones de editor",
+      "en": "Shared real editor-session environment"
+    },
+    "type": "OTHER",
+    "layer": "behavior",
+    "caps": [
+      "events"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "No contiene casos de prueba: es un soporte que construye el entorno real que usan las pruebas de integración nuevas.",
+      "en": "Contains no test cases: it is support code that builds the real environment used by the new integration tests."
+    },
+    "asserts": {
+      "es": "No hay aserciones.",
+      "en": "There are no assertions."
+    },
+    "behavior": {
+      "es": "No verifica comportamiento por sí mismo; prepara colaboradores reales sobre directorios temporales.",
+      "en": "Verifies no behaviour by itself; it prepares real collaborators over temporary directories."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Ninguno: es un soporte de pruebas, sin ejecución propia.",
+      "en": "None: it is test support, with no execution of its own."
+    },
+    "result": {
+      "es": "No produce resultado de prueba.",
+      "en": "Produces no test result."
+    },
+    "expected": {
+      "es": "No aplica: no es un caso ejecutable.",
+      "en": "Not applicable: not an executable case."
+    },
+    "guarantee": {
+      "es": "Ninguna por sí solo; se ejerce en los tests que lo usan.",
+      "en": "None by itself; it is exercised in the tests that use it."
+    },
+    "limits": {
+      "es": "No es una prueba y no debe contarse como evidencia.",
+      "en": "It is not a test and must not be counted as evidence."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Es una utilidad de soporte sin aserciones.",
+      "en": "It is a support utility without assertions."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.definition.runtime.session.EditorSessionEventPublicationIntegrationTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorSessionRealStackFixtures.java",
+        "line": 20
+      }
+    ],
+    "confidence": "SKIMMED"
+  }
+]

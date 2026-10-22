@@ -1,0 +1,68 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalProjectRecoveryEndToEndIntegrationTests",
+    "name": {"es": "Recuperación de un proyecto externo de punta a punta", "en": "External project recovery end to end"},
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["recovery", "project"],
+    "procs": [
+      {"id": "x_recover_external_project", "stages": ["src", "pj"], "match": "direct"},
+      {"id": "x_recover_external_project", "stages": ["rev", "integ"], "match": "indirect"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryController.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalValidationRecoveryService.java"
+    ],
+    "pre": {"es": "Fixture sirius-complete empaquetado como ZIP por el propio test; almacenes y registro de proyectos en un directorio temporal.", "en": "sirius-complete fixture zipped by the test itself; stores and project registry in a temp directory."},
+    "executes": {
+      "es": "SpringBootTest con el contexto real y MockMvc: POST multipart a /api/external-project-recovery/analyze e /import con el ZIP del fixture; creación real de un proyecto HYDRA en disco y materialización semántica real.",
+      "en": "SpringBootTest with the real context and MockMvc: multipart POST to /api/external-project-recovery/analyze and /import with the fixture ZIP; real creation of a HYDRA project on disk and real semantic materialization."
+    },
+    "asserts": {
+      "es": "analyze devuelve recursos y tecnologías y rechaza un ZIP vacío; import crea el proyecto, copia byte a byte los ficheros originales bajo external-source/, persiste el análisis (misma huella que la respuesta) y materializa el metamodelo canónico.",
+      "en": "analyze returns resources and technologies and rejects an empty ZIP; import creates the project, copies the original files byte for byte under external-source/, persists the analysis (same fingerprint as the response) and materializes the canonical metamodel."
+    },
+    "behavior": {
+      "es": "Un proyecto externo se analiza sin destruir nada, se conserva íntegro dentro de un proyecto HYDRA nuevo y de él se recupera el metamodelo.",
+      "en": "An external project is analyzed without destroying anything, kept intact inside a new HYDRA project and its metamodel is recovered."
+    },
+    "rule": {
+      "es": "El original se preserva siempre bajo external-source/ junto con el informe de análisis.",
+      "en": "The original is always preserved under external-source/ together with the analysis report."
+    },
+    "scenario": {
+      "es": "Analizar el ZIP del fixture, rechazar un ZIP vacío e importarlo en un directorio temporal.",
+      "en": "Analyze the fixture ZIP, reject an empty ZIP and import it into a temp directory."
+    },
+    "result": {
+      "es": "Bytes comparados con el fixture, JSON de análisis persistido y metamodelo materializado.",
+      "en": "Bytes compared with the fixture, persisted analysis JSON and materialized metamodel."
+    },
+    "expected": {
+      "es": "Ambos casos pasan.",
+      "en": "Both cases pass."
+    },
+    "guarantee": {
+      "es": "La importación de un proyecto externo conserva el original y deja el resultado dentro del proyecto abierto.",
+      "en": "Importing an external project keeps the original and leaves the result inside the open project."
+    },
+    "limits": {
+      "es": "Solo se comprueba que el adaptador Sirius ya no falla por un id de documento no estable; no se afirma el número de editores ni de reglas materializados. Tampoco verifica rev ni integ (la importación solo sugiere el perfil en el informe). No hay caso de rechazo de importación con fallo parcial.",
+      "en": "It only checks that the Sirius adapter no longer fails on a non-stable document id; the number of materialized editors or rules is not asserted. Neither verifies rev nor integ (import only suggests the profile in the report). There is no partial-failure import rejection case."
+    },
+    "strength": "MEDIUM",
+    "external": "none",
+    "src": [
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryEndToEndIntegrationTests.java", "line": 117},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryEndToEndIntegrationTests.java", "line": 124},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryEndToEndIntegrationTests.java", "line": 152},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryEndToEndIntegrationTests.java", "line": 152},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryEndToEndIntegrationTests.java", "line": 162},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryEndToEndIntegrationTests.java", "line": 163}
+    ],
+    "confidence": "ANALYZED"
+  }
+]

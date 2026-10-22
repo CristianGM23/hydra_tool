@@ -21,7 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.editor.persistence.CanonicalDocumentMutation;
+import com.example.editor.persistence.CanonicalDocumentMutationKind;
+import com.example.editor.persistence.CanonicalDocumentMutationObserver;
+import com.example.editor.scope.ResourceScope;
 import com.example.editor.portability.CapabilityPackageCheckReport;
 import com.example.editor.portability.CapabilityPackageChecker;
 import com.example.editor.portability.HydraCapabilityPackage;
@@ -47,19 +52,46 @@ public class CapabilityLayerTransactionService {
             ArtifactKind.GAMIFICATION_DEFINITION_MODEL, ArtifactKind.GAMIFICATION_BINDING_MODEL,
             ArtifactKind.INTEGRATION_PROFILE);
     private static final Set<ArtifactKind> SUPPORTED = Set.copyOf(DEFAULT_ORDER);
+    /** Espacio de nombres con el que las capas portables aparecen en el registro de actividad. */
+    static final String MUTATION_NAMESPACE = "portability.capability-layer";
     private final CapabilityLayerTransactionProperties properties;
     private final CapabilityPackageChecker checker;
     private final ProjectWorkspaceContributionRegistry registry;
     private final ProjectArtifactClassifier classifier;
     private final ObjectMapper mapper;
     private final ObjectWriter writer;
+    private final List<CanonicalDocumentMutationObserver> mutationObservers;
 
-    /** Descripción: Inicializa una instancia de CapabilityLayerTransactionService con sus dependencias y datos de entrada. Entradas: properties: configuración que gobierna el comportamiento; checker: dato de entrada necesario para la operación; registry: dato de entrada necesario para la operación; classifier: dato de entrada necesario para la operación; mapper: componente de conversión utilizado durante el procesamiento. Salida: deja la instancia inicializada y lista para su uso. */ public CapabilityLayerTransactionService(CapabilityLayerTransactionProperties properties,
+    /** Descripción: Inicializa una instancia de CapabilityLayerTransactionService sin observadores de mutación (constructor de compatibilidad). Entradas: properties: configuración que gobierna el comportamiento; checker: dato de entrada necesario para la operación; registry: dato de entrada necesario para la operación; classifier: dato de entrada necesario para la operación; mapper: componente de conversión utilizado durante el procesamiento. Salida: deja la instancia inicializada y lista para su uso. */ public CapabilityLayerTransactionService(CapabilityLayerTransactionProperties properties,
             CapabilityPackageChecker checker, ProjectWorkspaceContributionRegistry registry,
             ProjectArtifactClassifier classifier, ObjectMapper mapper) {
+        this(properties, checker, registry, classifier, mapper, List.of());
+    }
+
+    /** Descripción: Inicializa una instancia de CapabilityLayerTransactionService con sus dependencias y los observadores transversales (auditoría) de mutación canónica. Entradas: properties: configuración que gobierna el comportamiento; checker: dato de entrada necesario para la operación; registry: dato de entrada necesario para la operación; classifier: dato de entrada necesario para la operación; mapper: componente de conversión utilizado durante el procesamiento; mutationObservers: observadores que reciben cada capa escrita o restaurada (puede ser nulo). Salida: deja la instancia inicializada y lista para su uso. */ @Autowired public CapabilityLayerTransactionService(CapabilityLayerTransactionProperties properties,
+            CapabilityPackageChecker checker, ProjectWorkspaceContributionRegistry registry,
+            ProjectArtifactClassifier classifier, ObjectMapper mapper,
+            List<CanonicalDocumentMutationObserver> mutationObservers) {
         this.properties = properties; this.checker = checker; this.registry = registry;
         this.classifier = classifier; this.mapper = mapper;
         this.writer = mapper.writer(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
+        this.mutationObservers = mutationObservers == null ? List.of() : List.copyOf(mutationObservers);
+    }
+
+    /** Descripción: Notifica a los observadores transversales (auditoría) que una capa se creó, actualizó o eliminó fuera de un store canónico. Entradas: documentPath: ruta canónica de la capa; kind: tipo de mutación; before: bytes JSON previos o nulo; after: bytes JSON resultantes o nulo. Salida: no devuelve valor; un fallo del observador nunca altera la transacción ya realizada. */ private void notifyMutation(String documentPath, CanonicalDocumentMutationKind kind, byte[] before, byte[] after) {
+        if(mutationObservers.isEmpty()) return;
+        CanonicalDocumentMutation mutation = new CanonicalDocumentMutation(MUTATION_NAMESPACE, ResourceScope.local(),
+                documentPath, kind, snapshot(before), snapshot(after));
+        for(CanonicalDocumentMutationObserver observer : mutationObservers) {
+            try { observer.onMutation(mutation); }
+            catch(RuntimeException ignored) { com.example.editor.observability.HydraBestEffortDiagnostics.record("com/example/editor/portability/transaction/CapabilityLayerTransactionService.java",ignored); }
+        }
+    }
+
+    /** Descripción: Convierte los bytes JSON de una capa en un objeto neutral apto para el diff de auditoría. Entradas: content: bytes de la capa o nulo. Salida: objeto JSON genérico, o nulo si no hay contenido o no es JSON legible. */ private Object snapshot(byte[] content) {
+        if(content == null || content.length == 0) return null;
+        try { return mapper.readValue(content, Object.class); }
+        catch(RuntimeException exception) { return null; }
     }
 
     /** Descripción: Ejecuta la operación «preview» correspondiente a la responsabilidad de Prepared. Entradas: request: solicitud con los datos necesarios para ejecutar la operación. Salida: devuelve el resultado definido por el contrato del método. */ public CapabilityLayerTransactionPreview preview(CapabilityLayerTransactionRequest request) {
@@ -158,6 +190,11 @@ public class CapabilityLayerTransactionService {
                     throw new IllegalStateException("Applied layer differs from its staged checksum: " + item.documentPath());
                 }
             }
+            for(CapabilityLayerTransactionJournalItem item : journalItems) {
+                byte[] before = item.existed() ? Base64.getDecoder().decode(item.originalBase64()) : null;
+                notifyMutation(item.documentPath(), item.existed() ? CanonicalDocumentMutationKind.UPDATE : CanonicalDocumentMutationKind.CREATE,
+                        before, documentBytes(request.capabilityPackage(), item.documentPath()));
+            }
             deleteRecursively(staging);
             return new CapabilityLayerTransactionResult(preview, transactionId, true, true, appliedEtags, List.of());
         } catch(RuntimeException | IOException exception) {
@@ -191,8 +228,11 @@ public class CapabilityLayerTransactionService {
                 updated.add(item); continue;
             }
             try {
+                byte[] applied = read(target);
                 if(item.existed()) atomicWrite(target, Base64.getDecoder().decode(item.originalBase64()));
                 else Files.deleteIfExists(target);
+                notifyMutation(item.documentPath(), item.existed() ? CanonicalDocumentMutationKind.UPDATE : CanonicalDocumentMutationKind.DELETE,
+                        applied, item.existed() ? Base64.getDecoder().decode(item.originalBase64()) : null);
                 restored.add(item.documentPath());
                 updated.add(new CapabilityLayerTransactionJournalItem(item.documentPath(), item.targetPath(), item.existed(), item.originalBase64(), item.appliedEtag(), true));
             } catch(IOException exception) {

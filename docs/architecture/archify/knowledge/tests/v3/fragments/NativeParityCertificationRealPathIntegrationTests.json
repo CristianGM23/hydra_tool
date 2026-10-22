@@ -1,0 +1,100 @@
+[
+  {
+    "id": "java:com.example.editor.integration.parity.NativeParityCertificationRealPathIntegrationTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Certificación de paridad nativa por HTTP sin herramientas nativas: petición, tiempo límite y resultado sin verificar",
+      "en": "Native parity certification over HTTP without native tools: request, timeout and unverified outcome"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "layers2": [
+      "platform"
+    ],
+    "caps": [
+      "integration",
+      "security"
+    ],
+    "procs": [
+      { "id": "integration_native_parity", "stages": ["req", "to", "cmp"], "match": "direct" },
+      { "id": "x_integrate_technology_native", "stages": ["sec"], "match": "direct" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/integration/parity/NativeParityCertificationRequest.java",
+      "src/main/java/com/example/editor/integration/parity/NativeParityEvidenceAssessor.java",
+      "src/main/java/com/example/editor/integration/parity/NativeParityProofCatalog.java",
+      "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+      "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java",
+      "src/main/java/com/example/editor/integration/verification/TechnologyProjectValidationService.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring completo con todos los directorios dsl.* en un directorio temporal y una política que solo permite ejecutar git, de modo que la herramienta de compilación nativa figura como no disponible.",
+      "en": "Full Spring context with every dsl.* directory in a temporary directory and a policy that only allows running git, so the native build tool is reported as unavailable."
+    },
+    "setup": {
+      "es": "Perfil EMF creado por la API. El compilador se envuelve con un espía que delega en el real y solo cuenta llamadas. El oráculo son los códigos HTTP, los valores literales del informe, el número de compilaciones y la ausencia de ficheros que un comando colado habría creado.",
+      "en": "EMF profile created through the API. The compiler is wrapped by a spy that delegates to the real one and only counts calls. The oracle is the HTTP codes, the literal report values, the number of compilations and the absence of files a smuggled command would have created."
+    },
+    "executes": {
+      "es": "POST native-parity/certify por el controlador, la fachada (una compilación, validación en modo nativo obligatorio con validadores estructurales reales) y el evaluador de evidencias con el catálogo de pruebas.",
+      "en": "POST native-parity/certify through the controller, the facade (one compilation, validation in required-native mode with real structural validators) and the evidence assessor with the proof catalog."
+    },
+    "asserts": {
+      "es": "Listas vacías, repetidas o con nombres desconocidos dan 400 sin compilar; 0 y negativo valen 180 s, 900 se acepta y 901 se rechaza; una capacidad sin prueba del generador queda sin verificar y sin certificar tras una sola compilación; con las 15 capacidades solo la prueba registrada figura como fallida y nada se certifica.",
+      "en": "Empty, repeated or unknown-name lists give 400 without compiling; 0 and negative mean 180 s, 900 is accepted and 901 rejected; a capability without a generator proof stays unverified and uncertified after a single compilation; with all 15 capabilities only the registered proof is reported as failed and nothing is certified."
+    },
+    "behavior": {
+      "es": "La certificación solo admite una lista de capacidades conocidas, no admite órdenes ni pruebas escritas por quien la pide, y una capacidad que el generador no prueba nunca se da por certificada.",
+      "en": "Certification accepts only a list of known capabilities, accepts no commands or proofs written by the requester, and a capability the generator does not prove is never reported as certified."
+    },
+    "rule": {
+      "es": "Capacidades únicas y no vacías; tiempo por defecto 180 s y máximo 900 s; compilar una sola vez; sin prueba registrada el resultado es sin verificar; sin herramienta nativa nada se certifica.",
+      "en": "Unique, non-empty capabilities; default timeout 180 s and maximum 900 s; compile once; with no registered proof the result is unverified; without the native tool nothing is certified."
+    },
+    "scenario": {
+      "es": "Peticiones inválidas, límites del tiempo, una petición válida con una capacidad sin prueba, otra con las quince capacidades y una petición con una orden y un identificador de prueba colados.",
+      "en": "Invalid requests, timeout limits, a valid request with an uncovered capability, another with all fifteen capabilities and a request with a smuggled command and proof identifier."
+    },
+    "result": {
+      "es": "Rechazos 400 sin compilar, informe sin certificar con motivo explícito, la única prueba registrada reportada como fallida por falta de herramienta y ningún efecto de la orden colada.",
+      "en": "400 rejections without compiling, an uncertified report with an explicit reason, the only registered proof reported as failed for lack of the tool and no effect from the smuggled command."
+    },
+    "expected": {
+      "es": "Códigos HTTP, cuentas y estados del informe, la cuenta de compilaciones y los valores del tiempo coinciden con los literales esperados.",
+      "en": "HTTP codes, report counts and statuses, the compilation count and the timeout values match the expected literals."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la certificación rechaza lo inválido, compila una vez y no certifica sin pruebas del generador ni herramienta nativa.",
+      "en": "Real evidence that certification rejects invalid input, compiles once and does not certify without generator proofs or the native tool."
+    },
+    "limits": {
+      "es": "No cubre el caso certificado ni las pruebas superadas, que exigen herramientas nativas; el tiempo efectivo solo se comprueba sobre la petición, no en el proceso lanzado; la orden colada no demuestra por sí sola si el campo se ignora o se rechaza.",
+      "en": "It does not cover the certified case or passed proofs, which need native tools; the effective timeout is checked on the request, not on the launched process; the smuggled command does not show by itself whether the field is ignored or rejected."
+    },
+    "cases": [
+      {
+        "n": "compilesOnceAndLeavesAnUncoveredCapabilityUnverified",
+        "scenario": { "es": "Capacidad de editor gráfico sin prueba del generador y tiempo de 5 s.", "en": "Graphical editor capability with no generator proof and a 5 s timeout." },
+        "result": { "es": "Una compilación, sin verificar, sin certificar y validación nativa fallida.", "en": "One compilation, unverified, uncertified and failed native validation." }
+      },
+      {
+        "n": "allCapabilitiesAreAcceptedAndOnlyTheRegisteredProofIsReported",
+        "scenario": { "es": "Las quince capacidades con tiempo 0.", "en": "All fifteen capabilities with timeout 0." },
+        "result": { "es": "Catorce sin verificar y la construcción nativa fallida con su prueba registrada.", "en": "Fourteen unverified and the native build failed with its registered proof." }
+      }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/integration/parity/NativeParityCertificationRealPathIntegrationTests.java", "line": 95 },
+      { "path": "src/test/java/com/example/editor/integration/parity/NativeParityCertificationRealPathIntegrationTests.java", "line": 107 },
+      { "path": "src/test/java/com/example/editor/integration/parity/NativeParityCertificationRealPathIntegrationTests.java", "line": 113 },
+      { "path": "src/test/java/com/example/editor/integration/parity/NativeParityCertificationRealPathIntegrationTests.java", "line": 126 },
+      { "path": "src/test/java/com/example/editor/integration/parity/NativeParityCertificationRealPathIntegrationTests.java", "line": 132 },
+      { "path": "src/test/java/com/example/editor/integration/parity/NativeParityCertificationRealPathIntegrationTests.java", "line": 148 },
+      { "path": "src/test/java/com/example/editor/integration/parity/NativeParityCertificationRealPathIntegrationTests.java", "line": 154 },
+      { "path": "src/test/java/com/example/editor/integration/parity/NativeParityCertificationRealPathIntegrationTests.java", "line": 176 }
+    ]
+  }
+]

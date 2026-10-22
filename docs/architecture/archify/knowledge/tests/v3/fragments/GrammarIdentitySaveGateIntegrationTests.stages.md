@@ -1,0 +1,4 @@
+- grammar_author_identity.id: invalidIdentifiersBlankNamesAndDuplicateNamesAreRejectedWithNothingStored (lines 96-108: invalid ids, blank name, duplicate name rejected; zero stored files at 101).
+- grammar_author_identity.tc: unknownOrIncompatibleToolchainProfilesAreRejectedAndTheCatalogListsTheOfferedOnes (line 116 catalogue of four profiles, 119 unknown profile, 121 incompatible profile, 123 nothing stored).
+- grammar_author_identity.er: aBlankEntryRuleIsRejectedAndAValidIdentityIsPersistedAndReadBack (line 135 blank entry rule rejected, 141-146 valid grammar persisted and re-read).
+- grammar_author_identity.er: analysisReportsDifferentEntryRuleMethodsForExplicitAndInferredEntries (lines 158-161: EXPLICIT_ENTRY versus a different inference method).

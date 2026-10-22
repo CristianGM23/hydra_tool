@@ -1,0 +1,6 @@
+- publication_author_distribution.m: el asistente guiado y el modo completo producen la distribución con los mismos datos (jornadas 1 y 2; líneas 58 y 114).
+- publication_author_distribution.so: la carpeta escrita se genera en esa carpeta del disco y sin página de entrada se bloquea (líneas 58 y 125).
+- publication_author_distribution.idn: nombre y versión llegan al descriptor, al manifiesto web y a la configuración de escritorio (líneas 58, 62).
+- publication_author_distribution.tg: por defecto web y Windows (línea 45); con solo web no se escribe nada de escritorio (línea 111).
+- publication_author_distribution.ad: asociación .hydra y canal beta en el descriptor y la configuración (líneas 58, 63); sin conexión cambia el trabajador (línea 114).
+- ZIP: el hash mostrado es el del fichero descargado y el de la petición independiente (líneas 74 y 79).

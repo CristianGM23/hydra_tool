@@ -1,0 +1,54 @@
+[
+  {
+    "id": "pw:e2e/real/project/export-selection-zip.spec.ts",
+    "name": { "es": "Exportar la selección del árbol como ZIP con los mismos bytes", "en": "Export the tree selection as a ZIP with the same bytes" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["project"],
+    "procs": [
+      { "id": "project_author_tree", "stages": ["d"], "match": "direct" },
+      { "id": "project_import_export", "stages": ["x1"], "match": "direct" },
+      { "id": "project_author_export", "stages": ["a"], "match": "direct" },
+      { "id": "project_import_export", "stages": ["x2"], "match": "direct" }
+    ],
+    "pre": null,
+    "executes": { "es": "Navegador real sobre la aplicación compilada y el backend real: selecciona dos ficheros del árbol con clic y Ctrl+clic, abre el menú contextual, elige exportar la selección como ZIP y captura la descarga.", "en": "Real browser on the built application and the real backend: selects two tree files with click and Ctrl+click, opens the context menu, chooses to export the selection as ZIP and captures the download." },
+    "asserts": { "es": "El ZIP, abierto con un lector independiente, contiene exactamente los dos ficheros elegidos con los mismos bytes que en el disco y no el tercero ni el descriptor del proyecto; la raíz y las selecciones vacías o inexistentes se rechazan.", "en": "The ZIP, opened with an independent reader, contains exactly the two chosen files with the same bytes as on disk and neither the third nor the project descriptor; the root and empty or missing selections are rejected." },
+    "behavior": { "es": "El usuario elige varios elementos del árbol y se descarga un ZIP solo con lo elegido, sin modificar el proyecto.", "en": "The user picks several tree items and downloads a ZIP with only the chosen ones, without changing the project." },
+    "rule": { "es": "La raíz del proyecto no se puede exportar como selección y la selección vacía o con rutas inexistentes se rechaza.", "en": "The project root cannot be exported as a selection, and an empty selection or one with missing paths is rejected." },
+    "scenario": { "es": "Proyecto con tres ficheros, dos seleccionados con Ctrl+clic y exportados; después, intento de exportar con la raíz seleccionada y con peticiones vacías o a rutas que no existen.", "en": "A project with three files, two selected with Ctrl+click and exported; then an attempt to export with the root selected and with empty requests or missing paths." },
+    "result": { "es": "El archivo descargado trae solo los dos ficheros elegidos con idéntico contenido, y las exportaciones no válidas se rechazan.", "en": "The downloaded archive holds only the two chosen files with identical content, and the invalid exports are rejected." },
+    "expected": { "es": "Nombre de descarga esperado, dos ficheros idénticos al disco, el tercero ausente y todos los rechazos efectivos.", "en": "The expected download name, two files identical to disk, the third absent and every rejection effective." },
+    "guarantee": { "es": "Lo que se selecciona en el árbol es exactamente lo que se exporta en el ZIP local.", "en": "What is selected in the tree is exactly what is exported in the local ZIP." },
+    "limits": { "es": "La elección de destino se prueba como decisión: con la misma selección, el ZIP descarga sin conexión y «Exportar a repositorio» abre su diálogo, exige un perfil configurado y no descarga ni empaqueta nada. La exportación remota completa NO se prueba (necesita un servicio externo). No prueba selecciones de carpetas enteras. Interfaz en inglés.", "en": "The destination choice is tested as a decision: with the same selection, the ZIP downloads offline and «Export to repository» opens its dialog, requires a configured profile and neither downloads nor packages anything. The complete remote export is NOT tested (it needs an external service). It does not test whole-folder selections. English interface." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Selección y exportación hechas por el usuario en navegador, backend real y comparación byte a byte con un lector ZIP independiente.", "en": "Selection and export done by the user in a browser, real backend and a byte-for-byte comparison with an independent ZIP reader." },
+    "external": "none",
+    "cases": [
+      { "n": "exportar dos ficheros", "scenario": { "es": "Clic y Ctrl+clic en dos ficheros y exportar como ZIP.", "en": "Click and Ctrl+click on two files and export as ZIP." }, "result": { "es": "El ZIP trae esos dos ficheros idénticos y nada más.", "en": "The ZIP holds those two identical files and nothing else." } },
+      { "n": "raíz y vacío", "scenario": { "es": "Raíz seleccionada y peticiones vacías o con rutas inexistentes.", "en": "Root selected and empty requests or missing paths." }, "result": { "es": "La opción queda deshabilitada y el backend rechaza las peticiones.", "en": "The option is disabled and the backend rejects the requests." } },
+      { "n": "elegir destino", "scenario": { "es": "Misma selección: primero «Exportar a repositorio» y luego «Exportar selección como ZIP».", "en": "Same selection: first «Export to repository», then «Export selection as ZIP»." }, "result": { "es": "El repositorio abre su diálogo, exige perfil y no descarga nada; el ZIP descarga sin conexión.", "en": "The repository opens its dialog, requires a profile and downloads nothing; the ZIP downloads offline." } }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/project/export-selection-zip.spec.ts", "line": 30 },
+      { "path": "frontend/e2e/real/project/export-selection-zip.spec.ts", "line": 48 },
+      { "path": "frontend/e2e/real/project/export-selection-zip.spec.ts", "line": 49 },
+      { "path": "frontend/e2e/real/project/export-selection-zip.spec.ts", "line": 52 },
+      { "path": "frontend/e2e/real/project/export-selection-zip.spec.ts", "line": 67 },
+      { "path": "frontend/e2e/real/project/export-selection-zip.spec.ts", "line": 72 },
+      { "path": "frontend/e2e/real/project/export-selection-zip.spec.ts", "line": 110 },
+      { "path": "frontend/e2e/real/project/export-selection-zip.spec.ts", "line": 120 },
+      { "path": "frontend/e2e/real/project/export-selection-zip.spec.ts", "line": 129 }
+    ],
+    "prod": [
+      "frontend/src/project-explorer/ProjectTree.tsx",
+      "frontend/src/project-explorer/ProjectExplorerWorkspace.tsx",
+      "frontend/src/project-explorer/projectExplorerWorkspaceModel.ts",
+      "frontend/src/project-explorer/ProjectSelectionRemoteExportDialog.tsx",
+      "src/main/java/com/example/editor/project/web/ProjectController.java",
+      "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

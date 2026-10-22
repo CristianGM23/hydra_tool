@@ -50,7 +50,7 @@ export function normalizeNodeMapping(mapping: NodeMapping): NodeMapping {
 }
 
 function normalizeEdgeMapping(mapping:EdgeMapping):EdgeMapping{
-    return {...mapping,styles:stringRecord(mapping.styles),conditionalStyles:arrayOrEmpty(mapping.conditionalStyles).map(rule=>({...rule,styles:stringRecord(rule.styles)})),annotations:stringRecord(mapping.annotations),semanticEdge:mapping.semanticEdge===undefined?undefined:{...mapping.semanticEdge,defaultValues:unknownRecord(mapping.semanticEdge.defaultValues),annotations:stringRecord(mapping.semanticEdge.annotations)}};
+    return {...mapping,styles:stringRecord(mapping.styles),conditionalStyles:arrayOrEmpty(mapping.conditionalStyles).map(rule=>({...rule,styles:stringRecord(rule.styles)})),annotations:stringRecord(mapping.annotations),semanticEdge:mapping.semanticEdge==null?undefined:{...mapping.semanticEdge,defaultValues:unknownRecord(mapping.semanticEdge.defaultValues),annotations:stringRecord(mapping.semanticEdge.annotations)}};
 }
 
 function normalizeRepresentation(representation:RepresentationDefinition):RepresentationDefinition{
@@ -60,7 +60,7 @@ function normalizeRepresentation(representation:RepresentationDefinition):Repres
 function normalizeTool(tool:EditorTool):EditorTool{
     const base={...tool,representationIds:arrayOrEmpty(tool.representationIds)};
     if(base.kind==='CREATE_NODE')return {...base,defaultValues:unknownRecord(base.defaultValues)};
-    if(base.kind==='CREATE_EDGE')return {...base,sourceClassIds:arrayOrEmpty(base.sourceClassIds),targetClassIds:arrayOrEmpty(base.targetClassIds),semanticEdge:base.semanticEdge===undefined?undefined:{...base.semanticEdge,defaultValues:unknownRecord(base.semanticEdge.defaultValues),annotations:stringRecord(base.semanticEdge.annotations)}};
+    if(base.kind==='CREATE_EDGE')return {...base,sourceClassIds:arrayOrEmpty(base.sourceClassIds),targetClassIds:arrayOrEmpty(base.targetClassIds),semanticEdge:base.semanticEdge==null?undefined:{...base.semanticEdge,defaultValues:unknownRecord(base.semanticEdge.defaultValues),annotations:stringRecord(base.semanticEdge.annotations)}};
     return base;
 }
 

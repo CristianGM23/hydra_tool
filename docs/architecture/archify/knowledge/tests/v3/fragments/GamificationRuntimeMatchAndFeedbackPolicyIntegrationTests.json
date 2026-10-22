@@ -1,0 +1,109 @@
+[
+  {
+    "id": "java:com.example.editor.gamification.GamificationRuntimeMatchAndFeedbackPolicyIntegrationTests",
+    "name": {
+      "es": "Regla que encaja y política de avisos en el runtime de gamificación",
+      "en": "Matching rule and notice policy in the gamification runtime"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "gamification",
+      "events"
+    ],
+    "procs": [
+      {
+        "id": "gamification_award",
+        "stages": [
+          "match"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "gamification_define",
+        "stages": [
+          "pol"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+      "src/main/java/com/example/editor/gamification/runtime/GamificationEventMatcher.java",
+      "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackPolicyResolver.java",
+      "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackProjector.java",
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationRuntimeRepository.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "Catálogo guardado por el servicio real en JSON, runtime con repositorio JSON, metamodelo real y motor de expresiones real, todo en @TempDir; sin Mockito.",
+      "en": "Catalog saved by the real service as JSON, runtime with JSON repository, real metamodel and real expression engine, all in @TempDir; no Mockito."
+    },
+    "executes": {
+      "es": "GamificationRuntimeService.process con cuatro eventos reales (EQUALS, GREATER_THAN, EXISTS, sin condición) y feedback() con anotaciones hydra.feedback.* globales y por regla, y tras reemplazar el catálogo.",
+      "en": "GamificationRuntimeService.process with four real events (EQUALS, GREATER_THAN, EXISTS, no condition) and feedback() with global and per-rule hydra.feedback.* annotations, and after replacing the catalog."
+    },
+    "asserts": {
+      "es": "Solo puntúan las reglas activas con tipo y condición coincidentes (total 38 calculado a mano, 8 apuntes en el libro de disco, ninguno de reglas inactivas o de otro tipo); la política oculta una regla, acota duración y máximo, muestra rechazos y se limita con el límite pedido.",
+      "en": "Only active rules with matching type and condition score (total 38 computed by hand, 8 ledger entries on disk, none from inactive or other-type rules); the policy hides a rule, bounds duration and maximum, shows rejections and honors the requested limit."
+    },
+    "behavior": {
+      "es": "El runtime concede solo por la regla activa cuyo evento y condición encajan, y los avisos se muestran, ocultan o limitan según la política guardada.",
+      "en": "The runtime grants only for the active rule whose event and condition match, and notices are shown, hidden or limited per the saved policy."
+    },
+    "rule": {
+      "es": "Se evalúan solo reglas activas: primero el tipo de evento y después la condición; la política por regla prevalece sobre la global y los valores se acotan.",
+      "en": "Only active rules are evaluated: event type first, then the condition; the per-rule policy overrides the global one and values are bounded."
+    },
+    "scenario": {
+      "es": "Seis reglas (activa, inactiva, otro tipo, con tres operadores y sin condición) ante cuatro eventos; después cuatro reglas con política global y por regla, un rechazo por máximo y el catálogo reemplazado sin política.",
+      "en": "Six rules (active, inactive, other type, three operators and no condition) against four events; then four rules with global and per-rule policy, a maximum rejection and the catalog replaced without policy."
+    },
+    "result": {
+      "es": "Los puntos, apuntes y presentaciones coinciden con los literales esperados.",
+      "en": "Points, entries and presentations match the expected literals."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan, incluida la vuelta a la presentación por defecto al guardar sin política.",
+      "en": "All assertions pass, including the return to the default presentation when saved without policy."
+    },
+    "guarantee": {
+      "es": "El runtime solo puntúa lo que encaja y aplica la política de avisos guardada.",
+      "en": "The runtime scores only what matches and applies the saved notice policy."
+    },
+    "limits": {
+      "es": "Sin condiciones sobre campos ausentes ni not equals/CONTAINS/less than; los campos showProgress, dedupe y aggregate solo se comprueban como presentación resuelta, no como comportamiento de la interfaz.",
+      "en": "No conditions over absent fields nor not equals/CONTAINS/less than; showProgress, dedupe and aggregate are only checked as resolved presentation, not as UI behavior."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Runtime, catálogo y persistencia reales con oráculo independiente (libro JSON leído de disco y totales calculados a mano).",
+      "en": "Real runtime, catalog and persistence with an independent oracle (ledger JSON read from disk and hand-computed totals)."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationRuntimeMatchAndFeedbackPolicyIntegrationTests.java",
+        "line": 90
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationRuntimeMatchAndFeedbackPolicyIntegrationTests.java",
+        "line": 109
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationRuntimeMatchAndFeedbackPolicyIntegrationTests.java",
+        "line": 127
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationRuntimeMatchAndFeedbackPolicyIntegrationTests.java",
+        "line": 162
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationRuntimeMatchAndFeedbackPolicyIntegrationTests.java",
+        "line": 167
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

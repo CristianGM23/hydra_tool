@@ -32,10 +32,10 @@ public class HydraReleaseCandidateService {
     /** Descripción: Ejecuta la operación «assertPublishable» correspondiente a la responsabilidad de HydraReleaseCandidateService. Entradas: reportId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ public HydraReleaseGateReport assertPublishable(String reportId) {
         HydraReleaseCandidateReport candidate = assess(reportId);
         if(!candidate.releaseGatePassed()){
-            throw new IllegalStateException("Release gate contains blocking checks");
+            throw new HydraPublicationGateRejectedException("Release gate contains blocking checks");
         }
         if(!candidate.platformReady()){
-            throw new IllegalStateException("HYDRA platform readiness contains blocking checks");
+            throw new HydraPublicationGateRejectedException("HYDRA platform readiness contains blocking checks");
         }
         return gates.find(reportId);
     }

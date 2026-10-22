@@ -1,0 +1,99 @@
+[
+  {
+    "id": "java:com.example.editor.gamification.persistence.GamificationRuntimeResetIntegrationTests",
+    "name": {
+      "es": "Reinicio real del historial de gamificación sobre disco",
+      "en": "Real reset of the gamification history on disk"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "gamification"
+    ],
+    "procs": [
+      {
+        "id": "gamification_author_ledger",
+        "stages": [
+          "do",
+          "rs"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationRuntimeRepository.java",
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+      "src/main/java/com/example/editor/gamification/GamificationProperties.java",
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeSnapshot.java",
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible y una regla de concesion real ya procesada.",
+      "en": "Writable temp directory and a real award rule already processed."
+    },
+    "executes": {
+      "es": "GamificationRuntimeService.process y .reset reales sobre un JsonGamificationRuntimeRepository real con ficheros en @TempDir (no un doble en memoria).",
+      "en": "Real GamificationRuntimeService.process and .reset over a real JsonGamificationRuntimeRepository with files on @TempDir (not an in-memory double)."
+    },
+    "asserts": {
+      "es": "Tras una concesion real, los ficheros de estado y libro existen en disco; tras reset(), ambos ficheros reales dejan de existir, el repositorio ya no los encuentra, el estado y el libro reconstruidos estan vacios, y la cache de avisos queda invalidada.",
+      "en": "After a real grant, the state and ledger files exist on disk; after reset(), both real files no longer exist, the repository can no longer find them, the rebuilt state and ledger are empty, and the feedback cache is invalidated."
+    },
+    "behavior": {
+      "es": "Reiniciar el historial de gamificacion de un metamodelo borra de verdad sus documentos de estado y libro en disco, no solo una referencia en memoria, y limpia tambien los avisos en cache asociados.",
+      "en": "Resetting a metamodel's gamification history genuinely deletes its state and ledger documents on disk, not just an in-memory reference, and also clears the associated cached feedback."
+    },
+    "rule": {
+      "es": "Un reinicio borra ambos documentos reales y la cache de avisos para ese metamodelo.",
+      "en": "A reset deletes both real documents and the feedback cache for that metamodel."
+    },
+    "scenario": {
+      "es": "Concesion real de 10 puntos seguida de una llamada real a reset sobre el mismo metamodelo.",
+      "en": "A real 10-point grant followed by a real reset call on the same metamodel."
+    },
+    "result": {
+      "es": "Ambos ficheros reales desaparecen, el estado y el libro quedan vacios y los avisos en cache tambien.",
+      "en": "Both real files disappear, the state and ledger are empty and so is the cached feedback."
+    },
+    "expected": {
+      "es": "Tras reset(), no queda ningun rastro real en disco ni en la cache del metamodelo reiniciado.",
+      "en": "After reset(), no real trace remains on disk or in the cache for the reset metamodel."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que el reinicio del historial borra de verdad los documentos en disco, respaldando la decision de reinicio de la interfaz de usuario.",
+      "en": "Real evidence that resetting the history genuinely deletes the documents on disk, backing the UI's reset decision."
+    },
+    "limits": {
+      "es": "Un solo metamodelo y actor; no cubre el dialogo de confirmacion de la interfaz ni el reinicio concurrente de varios metamodelos a la vez.",
+      "en": "A single metamodel and actor; does not cover the UI confirmation dialog or concurrent reset of several metamodels at once."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Prueba nueva de integracion real sin mocks (traits.mocks=false) de GamificationRuntimeService con JsonGamificationRuntimeRepository real sobre ficheros reales en @TempDir (no un doble en memoria como las demas pruebas del runtime), verificando la desaparicion real de ambos documentos en disco tras reset(), cubriendo directamente la etapa 'do' descrita por el modelo.",
+      "en": "New real, mock-free integration test (traits.mocks=false) of GamificationRuntimeService with a real JsonGamificationRuntimeRepository over real files on @TempDir (unlike the runtime's other in-memory-double tests), verifying the real disappearance of both documents on disk after reset(), directly covering the model-described 'do' stage."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.gamification.GamificationPenaltyRuntimeTests",
+      "java:com.example.editor.gamification.GamificationCompensationRuntimeTests",
+      "java:com.example.editor.gamification.diagram.GamificationDiagramRepositoryTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/gamification/persistence/GamificationRuntimeResetIntegrationTests.java",
+        "line": 68
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/persistence/GamificationRuntimeResetIntegrationTests.java",
+        "line": 83
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/persistence/GamificationRuntimeResetIntegrationTests.java",
+        "line": 84
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

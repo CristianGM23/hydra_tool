@@ -1,0 +1,5 @@
+- events_author_form.a1: espacio de nombres propuesto desde el metamodelo (l.19), inválido rechazado sin escribir (l.23-24) y el corregido guardado (l.79).
+- events_author_form.a2: valores por defecto del tipo nuevo en pantalla (l.31-35) y en el fichero (l.84-88).
+- events_author_form.a3: categoría de la lista (l.90) y personalizada (l.98).
+- events_author_form.a4: campo por defecto «value» de texto (l.44-45) y campos renombrados/tipados en el fichero (l.93-94).
+- events_author_form.a5: enumerado u objeto sin tipo rechazado por el servidor sin fichero (l.65-68) y completados persistidos (l.96-97).

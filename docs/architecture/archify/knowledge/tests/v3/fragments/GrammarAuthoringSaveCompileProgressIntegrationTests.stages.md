@@ -1,0 +1,3 @@
+- grammar_author_save_compile.sv: savingUpdatesTheDraftHonoursTheETagAndNeverStartsACompilation (line 106 new ETag, 109 stale ETag rejected, 115-117 no snapshots, no active version, zero compilation files).
+- grammar_author_save_compile.pg: progressOfASuccessfulCompilationReachesTwelveOfTwelveStages (lines 132-134 and 142-143: SUCCESS with 12 of 12 stages for both inactive and active compilation).
+- grammar_author_save_compile.pg: progressOfABrokenCompilationFailsAtAStageAndKeepsTheActiveVersion (lines 163-166: FAILED with stage, fewer than 12 completed, original active version kept).

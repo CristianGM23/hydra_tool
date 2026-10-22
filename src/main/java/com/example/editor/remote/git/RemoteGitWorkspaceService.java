@@ -32,8 +32,8 @@ public class RemoteGitWorkspaceService {
     private static final Pattern BRANCH=Pattern.compile("[A-Za-z0-9][A-Za-z0-9._/-]{0,199}");
     private static final char FIELD_SEPARATOR='\u001F';
     private static final char RECORD_SEPARATOR='\u001E';
-    private static final Pattern TRACK_AHEAD=Pattern.compile("(?:^|[,\\s])ahead\\s+(\\d+)");
-    private static final Pattern TRACK_BEHIND=Pattern.compile("(?:^|[,\\s])behind\\s+(\\d+)");
+    private static final Pattern TRACK_AHEAD=Pattern.compile("(?:^|[\\[,\\s])ahead\\s+(\\d+)");
+    private static final Pattern TRACK_BEHIND=Pattern.compile("(?:^|[\\[,\\s])behind\\s+(\\d+)");
     private final ProjectApplicationService projects;
     private final RemoteStorageProperties storage;
     private final RemoteStorageCredentialResolver credentials;
@@ -135,7 +135,7 @@ public class RemoteGitWorkspaceService {
         return branches;
     }
 
-    /** Descripción: Construye el comando acotado que recupera los metadatos de ramas y el estado ahead/behind en una sola consulta Git. Entradas: limit: máximo de ramas a recuperar. Salida: devuelve los argumentos de `for-each-ref` sin ejecutar todavía el proceso. */ private List<String> branchListingCommand(int limit){return new ArrayList<>(List.of("for-each-ref","--count="+limit,"--sort=-committerdate","--format=%(refname)%x1f%(refname:short)%x1f%(upstream:short)%x1f%(upstream:track)%x1f%(objectname:short)%x1f%(committerdate:iso-strict)%x1f%(subject)"));}
+    /** Descripción: Construye el comando acotado que recupera los metadatos de ramas y el estado ahead/behind en una sola consulta Git. Entradas: limit: máximo de ramas a recuperar. Salida: devuelve los argumentos de `for-each-ref` sin ejecutar todavía el proceso. */ private List<String> branchListingCommand(int limit){return new ArrayList<>(List.of("for-each-ref","--count="+limit,"--sort=-committerdate","--format=%(refname)%1f%(refname:short)%1f%(upstream:short)%1f%(upstream:track)%1f%(objectname:short)%1f%(committerdate:iso-strict)%1f%(subject)"));}
 
     /** Descripción: Convierte la salida acotada de `for-each-ref` en nodos de rama, descartando referencias simbólicas HEAD y cargando solo el historial reciente configurado. Entradas: root: raíz Git; result: salida de Git; local/remote: tipo de grupo; current: rama activa; remoteName: remoto seleccionado. Salida: devuelve nodos inmutables de ramas. */ private List<RemoteGitBranchNode> branchNodes(Path root,NativeGitRunner.Result result,boolean local,boolean remote,String current,String remoteName){
         if(!result.successful()||result.output().isBlank())return List.of();

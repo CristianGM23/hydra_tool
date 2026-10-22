@@ -1,0 +1,5 @@
+- gamification_author_policy.sf: superficies y duración (99999 y luego 2000) escritas en el editor y guardadas (l.49, 67); el servidor acota a 30 s y aplica 2 s (l.59, 71).
+- gamification_author_policy.mx: máximo visible y ventanas de agrupación y duplicados guardados y aplicados a los avisos (l.49, 59).
+- gamification_author_policy.dt: puntos y progreso ocultos y rechazos visibles: anotaciones (l.49) y avisos reales con rechazo (l.59-62), frente a la línea base sin rechazo (l.28).
+- gamification_author_policy.sv: «Guardar» (catálogo y diagrama) escribe las anotaciones en el JSON del backend (l.49, 67).
+- gamification_author_policy.art: avisos reales posteriores al guardado llevan la política guardada (l.59, 71-73).

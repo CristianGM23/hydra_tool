@@ -1,0 +1,112 @@
+[
+  {
+    "id": "java:com.example.editor.remote.storage.RemoteGithubLoopbackTransferIntegrationTests",
+    "external": "mocked",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Exportar e importar proyectos y capas contra un servidor local que imita la API de GitHub",
+      "en": "Exporting and importing projects and layers against a local server that imitates the GitHub API"
+    },
+    "type": "INTEGRATION",
+    "layer": "external",
+    "caps": ["external_repositories"],
+    "procs": [
+      { "id": "repos_author_transfer", "stages": ["a", "b", "c", "d", "r"], "match": "direct" },
+      { "id": "repos_connect_sync", "stages": ["a5"], "match": "direct" },
+      { "id": "repos_file_transfer", "stages": ["a", "b", "c", "d", "r"], "match": "direct" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/remote/storage/RemoteProjectTransferService.java",
+      "src/main/java/com/example/editor/remote/storage/RemoteStorageService.java",
+      "src/main/java/com/example/editor/remote/storage/provider/GitHubRemoteStorageProvider.java",
+      "src/main/java/com/example/editor/remote/storage/provider/RemoteStorageHttpClient.java",
+      "src/main/java/com/example/editor/remote/storage/RemotePathPolicy.java",
+      "src/main/java/com/example/editor/project/storage/ProjectZipService.java"
+    ],
+    "pre": {
+      "es": "Puerto local libre en 127.0.0.1 para el servidor simulado; sin red externa ni credenciales reales.",
+      "en": "A free local port on 127.0.0.1 for the simulated server; no external network or real credentials."
+    },
+    "setup": {
+      "es": "Servidor HTTP en 127.0.0.1 con estado en memoria que imita lectura y escritura de contenidos con versión, conflictos y ausencia; proyecto real sobre almacenamiento local en @TempDir; el oráculo lee el ZIP recibido y recalcula las versiones.",
+      "en": "HTTP server on 127.0.0.1 with in-memory state imitating versioned content reads and writes, conflicts and absence; real project on local storage in @TempDir; the oracle reads the received ZIP and recomputes the versions."
+    },
+    "executes": {
+      "es": "RemoteProjectTransferService.exportActive/importProject y RemoteStorageService.write/read con GitHubRemoteStorageProvider, RemoteStorageHttpClient y RemotePathPolicy reales contra el servidor local, con ProjectApplicationService real.",
+      "en": "RemoteProjectTransferService.exportActive/importProject and RemoteStorageService.write/read with real GitHubRemoteStorageProvider, RemoteStorageHttpClient and RemotePathPolicy against the local server, with a real ProjectApplicationService."
+    },
+    "asserts": {
+      "es": "Ruta final bajo la raíz del perfil; ZIP recibido con las entradas esperadas; versión igual al SHA-1 de blob recalculado; proyecto importado con el contenido original; cabecera de autorización sin token en la URL; RemoteStorageException PRECONDITION_FAILED, CONFLICT, NOT_FOUND, FILE_TOO_LARGE e INVALID_REQUEST sin peticiones indebidas.",
+      "en": "Final path under the profile root; received ZIP with the expected entries; version equal to the recomputed blob SHA-1; imported project with the original content; authorization header and no token in the URL; RemoteStorageException PRECONDITION_FAILED, CONFLICT, NOT_FOUND, FILE_TOO_LARGE and INVALID_REQUEST without improper requests."
+    },
+    "behavior": {
+      "es": "Un proyecto completo viaja en un ZIP bajo la raíz del perfil y se importa a un proyecto nuevo con el mismo contenido; una capa viaja como fichero y vuelve con los mismos bytes; una versión esperada obsoleta o un cambio concurrente se rechazan sin pisar lo del servidor; y los modos de escritura, las rutas peligrosas y el exceso de tamaño se respetan.",
+      "en": "A whole project travels as a ZIP under the profile root and is imported into a new project with the same content; a layer travels as a file and comes back with the same bytes; an obsolete expected version or a concurrent change is rejected without overwriting the server's content; and write modes, unsafe paths and oversize are respected."
+    },
+    "rule": {
+      "es": "No se pisan cambios ajenos: con una versión esperada distinta de la actual, o con un cambio entre la lectura y la escritura, la escritura se rechaza; las rutas no pueden salir de la raíz del perfil.",
+      "en": "Other people's changes are not overwritten: with an expected version different from the current one, or with a change between reading and writing, the write is rejected; paths cannot leave the profile root."
+    },
+    "scenario": {
+      "es": "Proyecto con un metamodelo exportado en solo-crear, importado a una carpeta nueva y reexportado con ruta y mensaje por defecto; una capa con espacios en la ruta; servidor modificado, versión vieja y carrera de escritura o de creación; los tres modos; rutas con barras raras, con «..» o vacías, tamaño excesivo y artefacto inexistente.",
+      "en": "Project with a metamodel exported as create-only, imported into a new folder and re-exported with default path and message; a layer with spaces in the path; server modified, old version and write or creation races; the three modes; paths with odd slashes, with \"..\" or empty, excessive size and a missing artifact."
+    },
+    "result": {
+      "es": "El servidor guarda el ZIP en la ruta esperada con la versión recalculada, el proyecto importado contiene el metamodelo original, los rechazos dejan el contenido del servidor intacto y no generan peticiones, y la aceptación con la versión vigente produce la versión nueva.",
+      "en": "The server stores the ZIP at the expected path with the recomputed version, the imported project contains the original metamodel, rejections leave the server content intact and generate no requests, and acceptance with the current version produces the new version."
+    },
+    "expected": {
+      "es": "Rutas, bytes, versiones, tipos de error y cuenta de peticiones coinciden con los literales esperados en los cinco casos.",
+      "en": "Paths, bytes, versions, error kinds and request counts match the expected literals in the five cases."
+    },
+    "guarantee": {
+      "es": "Evidencia de que el flujo de exportar e importar con control de versión funciona de extremo a extremo contra un servidor que sigue el protocolo de contenidos de GitHub, sin pisar cambios ajenos.",
+      "en": "Evidence that the export and import flow with version control works end to end against a server following the GitHub contents protocol, without overwriting other people's changes."
+    },
+    "limits": {
+      "es": "El proveedor es un servidor local que imita la API según su descripción: no demuestra que GitHub real acepte esas peticiones ni cubre otros proveedores, ficheros grandes, redes lentas ni la autenticación real.",
+      "en": "The provider is a local server imitating the API from its description: it does not prove that real GitHub accepts those requests nor does it cover other providers, large files, slow networks or real authentication."
+    },
+    "strengthWhy": {
+      "es": "Todo es real salvo el proveedor, que está simulado, por lo que no alcanza el nivel máximo.",
+      "en": "Everything is real except the provider, which is simulated, so it does not reach the top level."
+    },
+    "cases": [
+      {
+        "n": "aWholeProjectTravelsAsAZipUnderTheProfileRootAndImportsIntoANewProject",
+        "scenario": { "es": "Exportar el proyecto activo e importarlo a una carpeta nueva.", "en": "Export the active project and import it into a new folder." },
+        "result": { "es": "ZIP en la ruta esperada y proyecto importado con el contenido original.", "en": "ZIP at the expected path and imported project with the original content." }
+      },
+      {
+        "n": "anObsoleteExpectedVersionOrAConcurrentChangeIsRejectedWithoutOverwritingTheServer",
+        "scenario": { "es": "Versión vieja, carrera de escritura y carrera de creación.", "en": "Old version, write race and creation race." },
+        "result": { "es": "Rechazo sin pisar el contenido del servidor.", "en": "Rejection without overwriting the server content." }
+      },
+      {
+        "n": "theThreeWriteModesAreRespected",
+        "scenario": { "es": "Solo crear, solo actualizar y sobrescribir.", "en": "Create only, update only and overwrite." },
+        "result": { "es": "Cada modo se cumple y el servidor no cambia en los rechazos.", "en": "Each mode is honoured and the server does not change on rejections." }
+      },
+      {
+        "n": "pathsAreNormalizedUnderTheRootAndUnsafeOversizedOrMissingArtifactsAreRejected",
+        "scenario": { "es": "Rutas raras, con «..», vacías, tamaño excesivo e inexistente.", "en": "Odd paths, with \"..\", empty, oversize and missing." },
+        "result": { "es": "Ruta normalizada bajo la raíz; los rechazos no llegan al servidor.", "en": "Path normalized under the root; rejections do not reach the server." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.remote.storage.AggressiveRemoteRepositoryRoundTripTests",
+      "java:com.example.editor.remote.storage.AggressiveRemoteProviderProtocolTests"
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/remote/storage/RemoteGithubLoopbackTransferIntegrationTests.java", "line": 109 },
+      { "path": "src/test/java/com/example/editor/remote/storage/RemoteGithubLoopbackTransferIntegrationTests.java", "line": 127 },
+      { "path": "src/test/java/com/example/editor/remote/storage/RemoteGithubLoopbackTransferIntegrationTests.java", "line": 132 },
+      { "path": "src/test/java/com/example/editor/remote/storage/RemoteGithubLoopbackTransferIntegrationTests.java", "line": 168 },
+      { "path": "src/test/java/com/example/editor/remote/storage/RemoteGithubLoopbackTransferIntegrationTests.java", "line": 187 },
+      { "path": "src/test/java/com/example/editor/remote/storage/RemoteGithubLoopbackTransferIntegrationTests.java", "line": 212 },
+      { "path": "src/test/java/com/example/editor/remote/storage/RemoteGithubLoopbackTransferIntegrationTests.java", "line": 247 }
+    ]
+  }
+]

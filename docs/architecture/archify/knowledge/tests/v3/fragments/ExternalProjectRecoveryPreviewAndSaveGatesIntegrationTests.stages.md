@@ -1,0 +1,6 @@
+ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests (grupo B3)
+- x_recover_external_project.mat (direct): analyzingIsOnlyAPreviewThatStoresNothing (l.190-208, l.196/203: la vista previa no guarda) + confirmingTheImportStoresMetamodelEditorLayersAndRulesWithVersionMarks (l.238-308: representaciones l.285, mapeos l.286, paleta, reglas l.260) + twoEquallyPlausibleSourcesKeepTheOriginalAndStoreNoLanguageLayer (l.211-235, negativa l.225).
+- x_recover_external_project.pers (direct): mismo metodo de importacion: metamodelo y reglas con ETag = SHA-256 del fichero (l.253, l.261) y anotacion de lo creado en external-project-materialization.json (l.305).
+- project_import_export.i3 y recovery_persist_rollback.a1 (direct): importacion real por /import: metamodelo (l.252), reglas (l.260) y capas guardadas con version (l.253/261).
+- x_recover_external_project.integ (indirect): l.201 y l.307: el perfil solo se sugiere (integrationSuggestions) y nunca se crea (no hay .integration.json).
+- x_project_lifecycle_overview.rc y recovery_lifecycle.d2/a7 (indirect): no hay indicador «vista previa aplicable» en esta via (analyze = vista previa, import = confirmacion) y la limpieza (ExternalProjectImportService.java:69-74) solo borra el proyecto, no las capas canonicas guardadas.

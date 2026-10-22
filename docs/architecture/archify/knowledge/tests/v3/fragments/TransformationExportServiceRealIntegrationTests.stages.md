@@ -1,0 +1,3 @@
+- transformation_export_native.ex: validM2mForwardExportsFilesForAtlEtlAndJava (lines 62-86) establishes files with literal path/content and fidelity for ATL, ETL and JAVA; bidirectionalDefinitionExportsTheRequestedDirectionalView (lines 140-151) establishes the directional view.
+- transformation_export_native.cp: incompatibleDirectionOrKindIsBlockedWithoutFiles (lines 102-110) and invalidDefinitionIsReportedWithCanonicalCodesAndNoFiles (lines 118-123) establish the compatibility gate before generation, with no artifacts when blocked.
+- transformation_export_native.lg (indirect): the request carries language and direction and the result echoes the language, but the export panel itself is not exercised.

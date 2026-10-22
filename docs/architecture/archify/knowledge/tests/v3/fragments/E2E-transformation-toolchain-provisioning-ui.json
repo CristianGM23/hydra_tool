@@ -1,0 +1,84 @@
+[
+  {
+    "id": "pw:e2e/real/transformation/toolchain-provisioning-ui.spec.ts",
+    "name": { "es": "Soporte de ejecución por lenguaje en el diseñador de transformaciones, en navegador real", "en": "Per-language execution support in the transformation designer, in a real browser" },
+    "type": "END_TO_END",
+    "layer": "platform",
+    "layers2": ["behavior"],
+    "caps": ["toolchains", "transformation"],
+    "procs": [
+      { "id": "toolchains_author_provision", "stages": ["a", "b"], "match": "direct" },
+      { "id": "toolchains_check_install", "stages": ["d1"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/transformation-designer/TransformationToolchainProvisioningPanel.tsx",
+      "frontend/src/transformation-designer/TransformationPreviewPanel.tsx",
+      "frontend/src/compatibility-center/NativeCompatibilityCenter.tsx",
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningService.java",
+      "src/main/java/com/example/editor/integration/compatibility/NativeToolchainCompatibilityController.java"
+    ],
+    "pre": {
+      "es": "Se preparan en el disco del servidor paquetes de prueba del catálogo de confianza (dos versiones válidas de ATL, una con suma manipulada y una de ETL) y una transformación guardada por la API real.",
+      "en": "Test packages of the trusted catalog are prepared on the server's disk (two valid ATL versions, one with a tampered checksum and one ETL) and a transformation is saved through the real API."
+    },
+    "executes": {
+      "es": "En un navegador real el usuario abre una transformación en modo avanzado, elige el lenguaje de ejecución y despliega la lista de versiones disponibles; después abre el centro de compatibilidad nativa y vuelve al panel de transformación.",
+      "en": "In a real browser the user opens a transformation in advanced mode, picks the execution language and opens the list of available versions; then opens the native compatibility center and goes back to the transformation panel."
+    },
+    "asserts": {
+      "es": "Las versiones ofrecidas por lenguaje coinciden con las que el servidor declara instalables, la de suma manipulada no se ofrece y el servidor la marca no instalable; los catálogos nativo y de transformación son distintos; con la instalación desactivada los botones están bloqueados y el servidor rechaza la orden.",
+      "en": "The versions offered per language match those the server declares installable, the tampered one is not offered and the server marks it not installable; the native and transformation catalogs are different; with installation disabled the buttons are locked and the server rejects the order."
+    },
+    "behavior": {
+      "es": "Cada lenguaje tiene su panel con solo los paquetes verificados del catálogo de confianza, y las herramientas genéricas y las del motor de transformación son dos pantallas con catálogos separados.",
+      "en": "Each language has its own panel with only the verified packages of the trusted catalog, and the generic tools and the transformation engine's are two screens with separate catalogs."
+    },
+    "rule": {
+      "es": "Solo se ofrecen versiones cuyo contenido el servidor ha verificado contra sus sumas de comprobación.",
+      "en": "Only versions whose content the server has verified against its checksums are offered."
+    },
+    "scenario": {
+      "es": "ATL tiene tres versiones y una está manipulada; ETL tiene una; el servidor se lanza con la instalación desactivada.",
+      "en": "ATL has three versions and one is tampered with; ETL has one; the server is started with installation disabled."
+    },
+    "result": {
+      "es": "La pantalla ofrece exactamente las versiones verificadas de cada lenguaje, sin la manipulada, y no deja instalar.",
+      "en": "The screen offers exactly the verified versions of each language, without the tampered one, and does not allow installing."
+    },
+    "expected": {
+      "es": "Lista de la pantalla y catálogo del servidor coinciden; el paquete manipulado nunca aparece; la orden directa sin permiso no cambia el disco gestionado.",
+      "en": "The screen's list and the server catalog match; the tampered package never appears; the direct order without permission leaves the managed disk unchanged."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la selección de lenguaje y versión muestra solo lo verificado y de que el catálogo nativo es otro.",
+      "en": "Real evidence that language and version selection shows only what is verified and that the native catalog is a different one."
+    },
+    "limits": {
+      "es": "No se prueba instalar, actualizar ni eliminar: el servidor de pruebas se lanza con la instalación desactivada y el paquete de prueba no habla el protocolo del puente. Solo se comprueba que esa puerta está cerrada.",
+      "en": "Installing, updating and removing are not tested: the test server starts with installation disabled and the test package does not speak the bridge protocol. Only that this gate is closed is checked."
+    },
+    "strength": "MEDIUM",
+    "strengthWhy": {
+      "es": "Acciones reales de usuario y lectura independiente del catálogo, pero la etapa de instalar, actualizar y eliminar queda sin demostrar.",
+      "en": "Real user actions and independent reading of the catalog, but the install, update and remove stage stays unproven."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.transformation.nativeexec.TransformationToolchainManagedLifecycleIntegrationTests",
+      "pw:e2e/real/transformation/native-toolchain-compatibility-run.spec.ts"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/transformation/toolchain-provisioning-ui.spec.ts", "line": 113 },
+      { "path": "frontend/e2e/real/transformation/toolchain-provisioning-ui.spec.ts", "line": 121 },
+      { "path": "frontend/e2e/real/transformation/toolchain-provisioning-ui.spec.ts", "line": 123 },
+      { "path": "frontend/e2e/real/transformation/toolchain-provisioning-ui.spec.ts", "line": 128 },
+      { "path": "frontend/e2e/real/transformation/toolchain-provisioning-ui.spec.ts", "line": 135 },
+      { "path": "frontend/e2e/real/transformation/toolchain-provisioning-ui.spec.ts", "line": 175 },
+      { "path": "frontend/e2e/real/transformation/toolchain-provisioning-ui.spec.ts", "line": 180 },
+      { "path": "frontend/e2e/real/transformation/toolchain-provisioning-ui.spec.ts", "line": 187 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

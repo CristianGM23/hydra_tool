@@ -1,0 +1,70 @@
+[
+  {
+    "id": "java:com.example.editor.generated.project.GeneratedProjectRegistryPersistenceTests",
+    "name": {"es": "Registro persistente de proyectos generados", "en": "Persistent generated-project registry"},
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "caps": ["generated_projects"],
+    "procs": [
+      {"id": "publication_generate_publish", "stages": ["reg"], "match": "direct"},
+      {"id": "x_generate_certify_distribute", "stages": ["reg"], "match": "direct"},
+      {"id": "x_generate_certify_distribute", "stages": ["pj"], "match": "indirect"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleService.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectRegistryStore.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectRuntimeProfileCatalog.java"
+    ],
+    "pre": {"es": "Directorio temporal escribible.", "en": "Writable temp directory."},
+    "executes": {
+      "es": "GeneratedProjectLifecycleService y GeneratedProjectRegistryStore reales sobre @TempDir; se crea una instancia NUEVA de ambos sobre los mismos directorios para simular un reinicio. El runner de procesos falla el test si se invoca.",
+      "en": "Real GeneratedProjectLifecycleService and GeneratedProjectRegistryStore over @TempDir; a NEW instance of both is created over the same directories to simulate a restart. The process runner fails the test if invoked."
+    },
+    "asserts": {
+      "es": "El JSON generated-projects.json leído del disco contiene el proyecto; una instancia reiniciada lo recupera; re-registrar el mismo id lo reemplaza; perfil desconocido y directorios fuera de la raíz lanzan IllegalArgumentException sin tocar el fichero; OPEN resuelve el directorio registrado.",
+      "en": "The generated-projects.json read from disk contains the project; a restarted instance recovers it; re-registering the same id replaces it; unknown profile and directories outside the root throw IllegalArgumentException without touching the file; OPEN resolves the registered directory."
+    },
+    "behavior": {
+      "es": "Un proyecto generado registrado queda guardado en disco y sigue disponible tras reiniciar; un registro inválido se rechaza sin dejar ninguna entrada.",
+      "en": "A registered generated project is saved to disk and remains available after a restart; an invalid registration is rejected leaving no entry."
+    },
+    "rule": {
+      "es": "Solo se registran proyectos con perfil conocido y carpeta relativa dentro de la raíz configurada.",
+      "en": "Only projects with a known profile and a relative folder inside the configured root are registered."
+    },
+    "scenario": {
+      "es": "Registrar, reiniciar, reemplazar, rechazar perfil desconocido, rechazar ../, ruta absoluta y unidad de disco, y abrir el directorio registrado.",
+      "en": "Register, restart, replace, reject unknown profile, reject ../, absolute path and drive letter, and open the registered directory."
+    },
+    "result": {
+      "es": "El fichero del registro refleja exactamente los registros válidos y no cambia ante los rechazos.",
+      "en": "The registry file reflects exactly the valid registrations and is unchanged by rejections."
+    },
+    "expected": {
+      "es": "Todos los casos pasan: el registro persistido es la única fuente de verdad tras el reinicio.",
+      "en": "All cases pass: the persisted registry is the single source of truth after the restart."
+    },
+    "guarantee": {
+      "es": "El registro de proyectos generados es durable, atómico (sin .tmp residual) y respeta la raíz configurada.",
+      "en": "The generated-project registry is durable, atomic (no leftover .tmp) and respects the configured root."
+    },
+    "limits": {
+      "es": "No ejecuta etapas nativas (GENERATE/VALIDATE/LAUNCH); la relación con la capacidad de proyecto abierto (pj) no se verifica.",
+      "en": "Does not run native stages (GENERATE/VALIDATE/LAUNCH); the relation to the open-project capability (pj) is not verified."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Colaboradores y persistencia reales, oráculo independiente (JSON del disco) y mapeo directo a la etapa de registro.",
+      "en": "Real collaborators and persistence, independent oracle (JSON from disk) and direct mapping to the registration stage."
+    },
+    "external": "none",
+    "src": [
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectRegistryPersistenceTests.java", "line": 69},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectRegistryPersistenceTests.java", "line": 90},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectRegistryPersistenceTests.java", "line": 98},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectRegistryPersistenceTests.java", "line": 116},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectRegistryPersistenceTests.java", "line": 138}
+    ],
+    "confidence": "ANALYZED"
+  }
+]

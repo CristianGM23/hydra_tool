@@ -1,0 +1,122 @@
+[
+  {
+    "id": "java:com.example.editor.portability.merge.CapabilityPlanConfirmationAndRevertGatesIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Puertas del traslado de capas: conflictos, decisiones, confirmación y reversión",
+      "en": "Layer transfer gates: conflicts, decisions, confirmation and rollback"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": ["portability"],
+    "procs": [
+      { "id": "portability_author_merge", "stages": ["b", "c"], "match": "direct" },
+      { "id": "x_package_and_move_capabilities", "stages": ["d3"], "match": "direct" },
+      { "id": "portability_revert", "stages": ["b"], "match": "direct" },
+      { "id": "x_package_and_move_capabilities", "stages": ["m2"], "match": "indirect" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeService.java",
+      "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionService.java",
+      "src/main/java/com/example/editor/portability/CapabilityPackageChecker.java",
+      "src/main/java/com/example/editor/project/storage/ProjectWorkspaceContributionRegistry.java",
+      "src/main/java/com/example/editor/project/storage/CoreProjectWorkspaceContributor.java",
+      "src/main/java/com/example/editor/project/storage/ProjectArtifactClassifier.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal con un metamodelo ya presente en la carpeta de trabajo; sin red ni credenciales.",
+      "en": "Temporary directory with a metamodel already present in the workspace folder; no network or credentials."
+    },
+    "setup": {
+      "es": "Servicios reales de fusión y de transacción con el registro real de carpetas de trabajo sobre @TempDir; paquetes existente y recuperado construidos con JSON literal.",
+      "en": "Real merge and transaction services with the real workspace folder registry over @TempDir; existing and recovered packages built from literal JSON."
+    },
+    "executes": {
+      "es": "CapabilitySemanticMergeService.preview/apply/rollback sobre CapabilityLayerTransactionService real, CapabilityPackageChecker y ProjectWorkspaceContributionRegistry con CoreProjectWorkspaceContributor, con ficheros reales y el diario de reversión en disco.",
+      "en": "CapabilitySemanticMergeService.preview/apply/rollback over a real CapabilityLayerTransactionService, CapabilityPackageChecker and ProjectWorkspaceContributionRegistry with CoreProjectWorkspaceContributor, with real files and the rollback journal on disk."
+    },
+    "asserts": {
+      "es": "Sin conflictos si no hay solape; cuatro exactos si difiere; decisión por elemento y JSON literal en disco; persistir=false no cambia bytes ni diario; otra huella al ajustar; IllegalArgumentException sin versión; reversión que omite lo cambiado después y cierra el diario al completar.",
+      "en": "No conflicts without overlap; exactly four when it differs; decision per element and literal JSON on disk; persist=false changes no bytes or journal; different fingerprint when adjusting; IllegalArgumentException without version; rollback skipping later changes and closing the journal when complete."
+    },
+    "behavior": {
+      "es": "Solo hay conflictos cuando el paquete choca con capas existentes y se enumeran uno a uno; cada conflicto recibe su propia decisión y el documento escrito la refleja; nada se aplica hasta confirmar, y ajustar decisiones no toca el proyecto; al revertir se detecta lo cambiado después y solo se restaura lo que sigue en la versión aplicada.",
+      "en": "Conflicts exist only when the package clashes with existing layers and are listed one by one; each conflict gets its own decision and the written document reflects it; nothing is applied until confirmed, and adjusting decisions does not touch the project; on rollback, later changes are detected and only what is still at the applied version is restored."
+    },
+    "rule": {
+      "es": "Sin confirmación no se escribe; sustituir una capa exige su versión vigente; la reversión no pisa lo cambiado después de aplicar.",
+      "en": "Nothing is written without confirmation; replacing a layer requires its current version; rollback does not overwrite what changed after applying."
+    },
+    "scenario": {
+      "es": "Metamodelo de tienda existente en disco y un paquete recuperado con propiedad y entidad distintas, entidades solo en un lado y una capa de validaciones nueva: previsualizar, decidir, ajustar, confirmar y revertir con cambios posteriores.",
+      "en": "Existing shop metamodel on disk and a recovered package with a different property and entity, entities on one side only and a new validations layer: preview, decide, adjust, confirm and roll back with later changes."
+    },
+    "result": {
+      "es": "Los casos sin solape e idénticos no tienen conflictos y se aplican directamente; los distintos listan sus cuatro conflictos; el documento en disco coincide con las decisiones; sin confirmar no cambia nada; la reversión omite la capa editada después y deja el diario abierto hasta completarla.",
+      "en": "Disjoint and identical cases have no conflicts and apply directly; differing ones list their four conflicts; the document on disk matches the decisions; without confirmation nothing changes; rollback skips the layer edited later and keeps the journal open until complete."
+    },
+    "expected": {
+      "es": "Las aserciones sobre conflictos, decisiones, bytes en disco, huellas y diario se cumplen en los cinco casos.",
+      "en": "The assertions on conflicts, decisions, bytes on disk, fingerprints and journal hold in the five cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real de las puertas del traslado: conflicto o no, decisión por conflicto, confirmación antes de aplicar y detección de cambios posteriores al revertir.",
+      "en": "Real evidence of the transfer gates: conflict or not, decision per conflict, confirmation before applying and detection of later changes when rolling back."
+    },
+    "limits": {
+      "es": "No es obligatorio decidir cada conflicto: sin decisión explícita se fusiona por defecto, así que «ninguna fusión es implícita» no se demuestra (m2 solo indirecta). Elegir, ajustar o cancelar en pantalla es interfaz: aquí se ejerce el servicio. Solo metamodelo y validaciones.",
+      "en": "Deciding each conflict is not mandatory: without an explicit decision the default merge applies, so \"no merge is implicit\" is not demonstrated (m2 only indirect). Choosing, adjusting or cancelling on screen is interface: the service is exercised here. Only metamodel and validations."
+    },
+    "strengthWhy": {
+      "es": "Servicios y ficheros reales, oráculo independiente (JSON literal, SHA-256 y bytes propios), casos negativos y mapeo directo a las puertas de decisión.",
+      "en": "Real services and files, independent oracle (literal JSON, own SHA-256 and bytes), negative cases and direct mapping to the decision gates."
+    },
+    "cases": [
+      {
+        "n": "thereAreNoConflictsWithoutOverlapAndTheyAreEnumeratedWhenTheSameLayerDiffers",
+        "scenario": { "es": "Sin solape, capas idénticas y misma capa distinta.", "en": "No overlap, identical layers and same layer differing." },
+        "result": { "es": "Sin conflictos o cuatro conflictos exactos; lo libre se aplica directo.", "en": "No conflicts or exactly four conflicts; the free case applies directly." }
+      },
+      {
+        "n": "everyConflictGetsItsOwnDecisionAndTheDocumentOnDiskReflectsThem",
+        "scenario": { "es": "Cuatro decisiones distintas y un ajuste posterior.", "en": "Four different decisions and a later adjustment." },
+        "result": { "es": "El documento escrito y el ajustado coinciden con el JSON esperado.", "en": "The written and the adjusted document match the expected JSON." }
+      },
+      {
+        "n": "conflictsWithoutAnExplicitDecisionAreMergedImplicitly",
+        "scenario": { "es": "Ninguna decisión explícita.", "en": "No explicit decision." },
+        "result": { "es": "El plan sigue siendo aplicable y se fusiona por defecto (hallazgo).", "en": "The plan stays applicable and merges by default (finding)." }
+      },
+      {
+        "n": "nothingIsAppliedUntilConfirmedAndAdjustingDecisionsStillTouchesNothing",
+        "scenario": { "es": "Sin confirmar, ajustar, confirmar sin versión y confirmar.", "en": "Not confirmed, adjust, confirm without version, confirm." },
+        "result": { "es": "No se escribe nada hasta confirmar con la versión vigente.", "en": "Nothing is written until confirmed with the current version." }
+      },
+      {
+        "n": "revertingSkipsLayersChangedAfterApplyingAndRestoresTheOnesStillAtTheAppliedVersion",
+        "scenario": { "es": "Capa editada después y versión declarada distinta.", "en": "Layer edited later and mismatching declared version." },
+        "result": { "es": "Se omite lo cambiado y el diario se cierra solo al completar.", "en": "Changed layers are skipped and the journal closes only when complete." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.portability.merge.CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests",
+      "java:com.example.editor.portability.transaction.CapabilityLayerTransactionServiceTests"
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 109 },
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 124 },
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 159 },
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 185 },
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 203 },
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 219 },
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 227 },
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 234 },
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 243 },
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 261 },
+      { "path": "src/test/java/com/example/editor/portability/merge/CapabilityPlanConfirmationAndRevertGatesIntegrationTests.java", "line": 287 }
+    ]
+  }
+]

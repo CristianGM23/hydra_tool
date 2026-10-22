@@ -42,8 +42,8 @@ public class TransformationNativeParityService {
 
     /** Executes one explicit native direction and compares it with the same canonical direction. */
     /** Descripción: Procesa la operación «execute» coordinando las responsabilidades de TransformationNativeParityService. Entradas: request: solicitud con los datos necesarios para ejecutar la operación. Salida: devuelve el resultado definido por el contrato del método. */ public TransformationNativeParityReport execute(TransformationNativeParityRequest request) {
-        if(request == null || request.transformation() == null || request.language() == null || request.sourceModel() == null)
-            throw new IllegalArgumentException("Transformation, native language and source model are required");
+        if(request == null || request.transformation() == null || request.language() == null)
+            throw new IllegalArgumentException("Transformation and native language are required");
         TransformationDefinitionDocument document = request.transformation();
         TransformationExecutionDirection direction = request.direction();
 
@@ -59,6 +59,16 @@ public class TransformationNativeParityService {
             TransformationParityReport invalid = new TransformationParityReport(document.id(), request.language(), document.kind(), direction,
                     TransformationParityStatus.INVALID_EVIDENCE, false, false, "", "", List.of(),
                     List.of(new TransformationParityDifference("$.direction", supportedDirectionSummary(request.language()), direction.name())));
+            return new TransformationNativeParityReport(document.id(), request.language(), document.kind(), runtime, invalid);
+        }
+        if(request.sourceModel() == null) {
+            // Mismo criterio que TransformationParityService.verify: un modelo origen ausente es evidencia inválida, no una excepción.
+            TransformationNativeRuntimeReport runtime = new TransformationNativeRuntimeReport(request.language(), document.kind(), direction,
+                    TransformationNativeRuntimeStatus.NOT_RUN, 0L, null,
+                    List.of("Native execution was not started because the source model is missing"));
+            TransformationParityReport invalid = new TransformationParityReport(document.id(), request.language(), document.kind(), direction,
+                    TransformationParityStatus.INVALID_EVIDENCE, false, false, "", "", List.of(),
+                    List.of(new TransformationParityDifference("$.sourceModel", "present", "missing")));
             return new TransformationNativeParityReport(document.id(), request.language(), document.kind(), runtime, invalid);
         }
 

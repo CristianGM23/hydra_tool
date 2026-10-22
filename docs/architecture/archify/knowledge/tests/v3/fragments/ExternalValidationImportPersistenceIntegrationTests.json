@@ -1,0 +1,127 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalValidationImportPersistenceIntegrationTests",
+    "name": {
+      "es": "Importar validaciones de otra herramienta con persistencia real y compilarlas",
+      "en": "Importing another tool's validations with real persistence and compiling them"
+    },
+    "type": "INTEGRATION",
+    "layer": "external",
+    "caps": [
+      "validation"
+    ],
+    "procs": [
+      {
+        "id": "validation_author_import",
+        "stages": [
+          "ex",
+          "cv",
+          "pt",
+          "lk",
+          "dc"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_recover_external_project",
+        "stages": [
+          "rev",
+          "vl"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/recovery/ExternalValidationRecoveryService.java",
+      "src/main/java/com/example/editor/validation/importing/SafeExternalConstraintTranslator.java",
+      "src/main/java/com/example/editor/validation/validation/ValidationModelApplicationService.java",
+      "src/main/java/com/example/editor/validation/action/ActionModelApplicationService.java",
+      "src/main/java/com/example/editor/validation/runtime/ValidationCompiler.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible y el fixture /fixtures/sirius-complete (metamodelo, .odesign y .evl) en los recursos de prueba.",
+      "en": "Writable temp directory and the /fixtures/sirius-complete fixture (metamodel, .odesign and .evl) in the test resources."
+    },
+    "setup": {
+      "es": "Sin mocks: servicios de expresiones, acciones y validaciones reales sobre repositorios JSON; el metamodelo se importa de verdad desde hydratest.ecore.",
+      "en": "No mocks: real expression, action and validation services over JSON repositories; the metamodel is really imported from hydratest.ecore."
+    },
+    "executes": {
+      "es": "ExternalValidationRecoveryService.recover con el .odesign y el .evl del fixture; relectura con repositorios nuevos; compilacion con ValidationCompiler real; segunda ejecucion con ficheros enormes y binarios.",
+      "en": "ExternalValidationRecoveryService.recover with the fixture .odesign and .evl; reload with new repositories; compilation with the real ValidationCompiler; a second run with oversized and binary files."
+    },
+    "asserts": {
+      "es": "ProgressRange y PositiveDuration quedan activas, incrementales y completas; ProgressRange se enlaza a la accion activa y deshacible 'Clamp progress to 100'; NoSelfLoop y 'Set generated name' quedan desactivadas, externas o de solo revision con el texto original del .evl; el plan compilado solo incluye las activas; ficheros enormes se omiten con aviso sin escribir nada.",
+      "en": "ProgressRange and PositiveDuration are active, incremental and fully converted; ProgressRange links to the active, undoable 'Clamp progress to 100' action; NoSelfLoop and 'Set generated name' stay disabled, external or review-only with the original .evl text; the compiled plan only includes active ones; oversized files are skipped with a notice and nothing is written."
+    },
+    "behavior": {
+      "es": "Al importar un proyecto de otra herramienta, HYDRA convierte solo lo que puede demostrar equivalente, conserva el resto desactivado con su texto original y enlaza cada correccion con su regla.",
+      "en": "When importing another tool's project, HYDRA converts only what it can prove equivalent, keeps the rest disabled with its original text and links each fix to its rule."
+    },
+    "rule": {
+      "es": "Las reglas con guarda y las acciones no demostrables nunca se habilitan; el codigo importado no se ejecuta.",
+      "en": "Guarded rules and unprovable actions are never enabled; imported code is never executed."
+    },
+    "scenario": {
+      "es": "Importacion del proyecto Sirius completo desde cero, relectura desde disco, compilacion del modelo de validaciones y una segunda importacion con un fichero de mas bytes del limite y otro binario.",
+      "en": "Import of the complete Sirius project from scratch, reload from disk, compilation of the validation model and a second import with a file over the size limit and a binary one."
+    },
+    "result": {
+      "es": "Lo guardado en disco y compilado coincide con lo esperado; el texto original de la regla desactivada aparece literalmente en el .evl; los ficheros omitidos no dejan documentos.",
+      "en": "What is saved on disk and compiled matches expectations; the disabled rule's original text appears verbatim in the .evl; skipped files leave no documents."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan con servicios y repositorios reales.",
+      "en": "All assertions pass with real services and repositories."
+    },
+    "guarantee": {
+      "es": "La importacion de validaciones externas se persiste, se enlaza y se compila de forma conservadora sin inventar semantica.",
+      "en": "Importing external validations is persisted, linked and compiled conservatively without inventing semantics."
+    },
+    "limits": {
+      "es": "Solo el fixture Sirius (EVL y .odesign); no prueba OCL, Xtext, Langium ni BESSER, ni el informe de enlaces no resueltos, que no se asevera aqui.",
+      "en": "Only the Sirius fixture (EVL and .odesign); does not test OCL, Xtext, Langium or BESSER, nor the unresolved-links report, which is not asserted here."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Servicios y persistencia reales, relectura con repositorios nuevos, compilador real y oraculo en el .evl del fixture.",
+      "en": "Real services and persistence, reload with new repositories, real compiler and an oracle in the fixture .evl."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalValidationImportPersistenceIntegrationTests.java",
+        "line": 90
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalValidationImportPersistenceIntegrationTests.java",
+        "line": 105
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalValidationImportPersistenceIntegrationTests.java",
+        "line": 113
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalValidationImportPersistenceIntegrationTests.java",
+        "line": 123
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalValidationImportPersistenceIntegrationTests.java",
+        "line": 134
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalValidationImportPersistenceIntegrationTests.java",
+        "line": 153
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalValidationImportPersistenceIntegrationTests.java",
+        "line": 121
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalValidationImportPersistenceIntegrationTests.java",
+        "line": 119
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

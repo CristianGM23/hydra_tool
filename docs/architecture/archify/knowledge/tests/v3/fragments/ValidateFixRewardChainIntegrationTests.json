@@ -1,0 +1,45 @@
+[
+  {
+    "id": "java:com.example.editor.gamification.feedback.ValidateFixRewardChainIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": { "es": "Cadena corregir, revalidar y recompensar con avisos", "en": "Fix, revalidate and reward chain with notices" },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["validation", "gamification", "events"],
+    "procs": [{ "id": "x_validate_fix_revalidate_reward", "stages": ["fb", "per"], "match": "direct" }],
+    "prod": [
+      "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackProjector.java",
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+      "src/main/java/com/example/editor/validation/quickfix/QuickFixRuntimeService.java",
+      "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrator.java",
+      "src/main/java/com/example/editor/validation/orchestration/ValidationRuntimeEventFactory.java"
+    ],
+    "pre": { "es": "Modelo vivo con un elemento que incumple una regla, una corrección guardada y una regla de gamificación de 5 puntos.", "en": "Live model with one element breaking a rule, a saved fix and a 5-point gamification rule." },
+    "setup": { "es": "Corrección rápida, validación, bus de eventos, gamificación y repositorios JSON reales; modelo, libro y estado se leen del disco.", "en": "Real quick fix, validation, event bus, gamification and JSON repositories; model, ledger and state are read from disk." },
+    "executes": { "es": "Aplicar la corrección, deshacerla, y en otro caso publicar un evento de reversión que referencia el evento premiado.", "en": "Apply the fix, undo it, and in another case publish a reversal event referencing the rewarded event." },
+    "asserts": { "es": "Tras corregir hay 5 puntos en el libro y el estado en disco, el modelo corregido y un aviso de puntos; al deshacer la corrección el libro marca la concesión revertida con una entrada de menos 5, el actor desaparece del estado y el aviso es de reversión; con la referencia explícita ocurre lo mismo.", "en": "After fixing there are 5 points in the ledger and state on disk, the corrected model and a points notice; on undoing the fix the ledger marks the award reverted with a minus-5 entry, the actor leaves the state and the notice is a reversal; with the explicit reference the same happens." },
+    "behavior": { "es": "Corregir un problema concede puntos con su aviso, deshacer la corrección los revierte y todo queda guardado.", "en": "Fixing a problem grants points with its notice, undoing the fix reverts them and everything is saved." },
+    "rule": { "es": "El premio nace del evento de problema resuelto, que identifica el problema; deshacer la corrección revierte ese premio y el aviso se reconstruye siempre desde el libro guardado.", "en": "The reward comes from the resolved-problem event, which identifies the problem; undoing the fix reverts that reward and the notice is always rebuilt from the saved ledger." },
+    "scenario": { "es": "Corregir un nombre inválido, deshacer la corrección y, en otro caso, revertir explícitamente el premio.", "en": "Fix an invalid name, undo the fix and, in another case, explicitly revert the reward." },
+    "result": { "es": "5 puntos y aviso al corregir; al deshacer se revierten con aviso de reversión; con referencia explícita también.", "en": "5 points and a notice when fixing; on undo they are reverted with a reversal notice; with an explicit reference too." },
+    "expected": { "es": "Los ficheros del modelo, el libro y el estado coinciden con los valores calculados a mano.", "en": "Model, ledger and state files match the hand-computed values." },
+    "guarantee": { "es": "La cadena corregir, premiar y deshacer funciona de extremo a extremo con el almacén real, y la compensación por referencia explícita también.", "en": "The fix, reward and undo chain works end to end with the real store, and compensation by explicit reference too." },
+    "limits": { "es": "Solo una regla y un actor del sistema; no prueba el rehacer la corrección tras deshacerla.", "en": "One rule and one system actor only; it does not test redoing the fix after undoing it." },
+    "strengthWhy": { "es": "Pila real y oráculos en disco con valores calculados a mano para premiar, deshacer y revertir por referencia.", "en": "Real stack and on-disk oracles with hand-computed values for rewarding, undoing and reverting by reference." },
+    "cases": [
+      { "n": "fixingTheModelAwardsPointsShowsTheNoticeAndPersistsEverything", "scenario": { "es": "Corregir el modelo.", "en": "Fix the model." }, "result": { "es": "5 puntos, aviso y ficheros.", "en": "5 points, notice and files." } },
+      { "n": "undoingTheFixCompensatesThePointsBecauseTheResolvedEventCarriesTheDiagnosticId", "scenario": { "es": "Deshacer la corrección.", "en": "Undo the fix." }, "result": { "es": "Los puntos se revierten con aviso de reversión.", "en": "The points are reverted with a reversal notice." } },
+      { "n": "anExplicitReferenceToTheAwardedEventRevertsThePointsAndShowsTheReversalNotice", "scenario": { "es": "Reversión con referencia explícita.", "en": "Reversal with explicit reference." }, "result": { "es": "Libro compensado y aviso de reversión.", "en": "Ledger compensated and reversal notice." } }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/gamification/feedback/ValidateFixRewardChainIntegrationTests.java", "line": 267 },
+      { "path": "src/test/java/com/example/editor/gamification/feedback/ValidateFixRewardChainIntegrationTests.java", "line": 283 },
+      { "path": "src/test/java/com/example/editor/gamification/feedback/ValidateFixRewardChainIntegrationTests.java", "line": 301 },
+      { "path": "src/test/java/com/example/editor/gamification/feedback/ValidateFixRewardChainIntegrationTests.java", "line": 312 },
+      { "path": "src/test/java/com/example/editor/gamification/feedback/ValidateFixRewardChainIntegrationTests.java", "line": 340 }
+    ]
+  }
+]

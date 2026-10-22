@@ -1,0 +1,141 @@
+[
+  {
+    "id": "java:com.example.editor.event.flow.runtime.EventFlowDispatchRealChainIntegrationTests",
+    "name": {
+      "es": "Despacho real de flujos de eventos desde el bus",
+      "en": "Real dispatch of event flows from the bus"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "events"
+    ],
+    "procs": [
+      {
+        "id": "events_execute_flow",
+        "stages": [
+          "d0",
+          "a1",
+          "a2",
+          "d1"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeService.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowCompiler.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowConditionEvaluator.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeNodeExecutor.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeDeploymentRegistry.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible, un metamodelo real y, para las condiciones, un modelo de expresiones real guardados.",
+      "en": "Writable temp directory, a real metamodel and, for conditions, a real expression model already saved."
+    },
+    "executes": {
+      "es": "EventFlowRuntimeService sin Mockito con EventFlowConditionEvaluator real, ExpressionEvaluator real, bus real, repositorios JSON reales y eventos publicados en el propio bus.",
+      "en": "EventFlowRuntimeService without Mockito with real EventFlowConditionEvaluator, real ExpressionEvaluator, real bus, real JSON repositories and events published on the bus itself."
+    },
+    "asserts": {
+      "es": "Compara con literales el estado del motor, las trazas (flujo, estado y nodos ejecutados), las esperas pendientes, las entradas de estado y los eventos emitidos por el tick.",
+      "en": "Compares with literals the engine state, traces (flow, status and executed nodes), pending waits, state entries and events emitted by the tick."
+    },
+    "behavior": {
+      "es": "El primer evento de un ambito despliega el motor solo; una parada manual impide el rearranque hasta start; cada evento ejecuta solo los flujos habilitados cuyo disparador coincide; una condicion falsa filtra el testigo; las esperas y vigilancias reaccionan a su evento.",
+      "en": "The first event of a scope deploys the engine by itself; a manual stop prevents restart until start; each event runs only enabled flows whose trigger matches; a false condition filters the token; waits and watches react to their event."
+    },
+    "rule": {
+      "es": "Un motor detenido a mano no se reactiva solo; una espera se reanuda solo con el evento esperado y la misma clave de agrupacion; una vigilancia de ausencia se cancela si llega su evento.",
+      "en": "A manually stopped engine does not reactivate by itself; a wait resumes only with the awaited event and the same grouping key; an absence watch is cancelled if its event arrives."
+    },
+    "scenario": {
+      "es": "Autodespliegue, stop y start; tres flujos con un deshabilitado; condicion falsa y verdadera; espera de evento con otra y la misma clave; ABSENCE cancelado frente a ABSENCE vencido.",
+      "en": "Auto-deploy, stop and start; three flows with one disabled; false and true condition; wait for event with another and the same key; cancelled ABSENCE versus elapsed ABSENCE."
+    },
+    "result": {
+      "es": "Las trazas y el estado coinciden con lo esperado en cada paso; el tick tras la cancelacion no emite nada y el tick sin cancelacion emite el evento de ausencia.",
+      "en": "Traces and state match expectations at each step; the tick after cancellation emits nothing and the tick without cancellation emits the absence event."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan con literales exactos.",
+      "en": "All assertions pass with exact literals."
+    },
+    "guarantee": {
+      "es": "El motor de flujos despacha desde el bus solo lo que corresponde y respeta paradas, condiciones, esperas y vigilancias.",
+      "en": "The flow engine dispatches from the bus only what applies and respects stops, conditions, waits and watches."
+    },
+    "limits": {
+      "es": "Sin journal en disco (no prueba restauracion tras reinicio); sin ejecutores externos ni reintentos con retardo; los tiempos se fuerzan con tick(ahora+60 s), sin reloj simulado.",
+      "en": "No on-disk journal (restoration after restart not tested); no external executors or delayed retries; times are forced with tick(now+60 s), without a simulated clock."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Cadena real completa sin mocks, eventos entregados por el bus real, oraculo con literales y casos negativos.",
+      "en": "Full real chain without mocks, events delivered by the real bus, literal oracle and negative cases."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "theFirstEventAutoDeploysAnExplicitStopBlocksRestartAndStartReactivates",
+        "scenario": {
+          "es": "Primer evento, stop y start.",
+          "en": "First event, stop and start."
+        },
+        "result": {
+          "es": "Autodespliega, stop bloquea y start reactiva.",
+          "en": "Auto-deploys, stop blocks and start reactivates."
+        }
+      },
+      {
+        "n": "aFalseStepConditionFiltersTheTokenAndATrueOneCompletesTheFlow",
+        "scenario": {
+          "es": "Condicion de paso con expresion real.",
+          "en": "Step condition with a real expression."
+        },
+        "result": {
+          "es": "FILTERED con testigo descartado; COMPLETED si es verdadera.",
+          "en": "FILTERED with discarded token; COMPLETED if true."
+        }
+      },
+      {
+        "n": "anAbsenceWatchIsCancelledByItsEvent...",
+        "scenario": {
+          "es": "Vigilancia cancelada frente a vencida.",
+          "en": "Cancelled versus elapsed watch."
+        },
+        "result": {
+          "es": "Solo la no cancelada emite el evento.",
+          "en": "Only the uncancelled one emits the event."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowDispatchRealChainIntegrationTests.java",
+        "line": 141
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowDispatchRealChainIntegrationTests.java",
+        "line": 175
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowDispatchRealChainIntegrationTests.java",
+        "line": 198
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowDispatchRealChainIntegrationTests.java",
+        "line": 237
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowDispatchRealChainIntegrationTests.java",
+        "line": 266
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowDispatchRealChainIntegrationTests.java",
+        "line": 272
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

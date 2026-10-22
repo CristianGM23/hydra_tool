@@ -1,0 +1,166 @@
+[
+  {
+    "id": "java:com.example.editor.event.flow.EventFlowAuthoringPersistenceIntegrationTests",
+    "name": {
+      "es": "Composicion y guardado real de flujos de eventos",
+      "en": "Real composition and persistence of event flows"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": [
+      "events"
+    ],
+    "procs": [
+      {
+        "id": "events_compose_flow",
+        "stages": [
+          "a1",
+          "a2",
+          "a3",
+          "a4",
+          "a5",
+          "a6",
+          "a7",
+          "a8",
+          "d1",
+          "r1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "events_author_flow",
+        "stages": [
+          "a4",
+          "a6",
+          "d2"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/event/flow/EventFlowApplicationService.java",
+      "src/main/java/com/example/editor/event/flow/EventFlowChecker.java",
+      "src/main/java/com/example/editor/event/flow/persistence/JsonEventFlowModelRepository.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowCompiler.java",
+      "src/main/java/com/example/editor/event/flow/diagram/EventFlowDiagramService.java",
+      "src/main/java/com/example/editor/event/flow/FlowNodeKind.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible y un metamodelo real ya guardado.",
+      "en": "Writable temp directory and a real, already-saved metamodel."
+    },
+    "executes": {
+      "es": "EventFlowApplicationService, JsonEventFlowModelRepository, EventFlowChecker, EventFlowCompiler, EventFlowDiagramService y EventFlowRuntimeService reales sobre un directorio temporal.",
+      "en": "Real EventFlowApplicationService, JsonEventFlowModelRepository, EventFlowChecker, EventFlowCompiler, EventFlowDiagramService and EventFlowRuntimeService on a temp directory."
+    },
+    "asserts": {
+      "es": "Lee el JSON crudo de flujos y diagramas, compara literales de codigos de diagnostico y de tipos de paso, recalcula el SHA-256 de los ficheros y comprueba que los rechazos dejan el fichero byte a byte igual.",
+      "en": "Reads the raw flow and diagram JSON, compares literal diagnostic codes and node kinds, recomputes file SHA-256 and checks rejections leave the file byte-for-byte unchanged."
+    },
+    "behavior": {
+      "es": "Un flujo valido con disparadores, variables, reintentos, plazos y compensaciones se guarda tal cual; los flujos estructuralmente incorrectos se rechazan; las 29 clases de paso se guardan y compilan; las posiciones de cajas se guardan y se releen.",
+      "en": "A valid flow with triggers, variables, retries, deadlines and compensations is saved as declared; structurally wrong flows are rejected; all 29 node kinds are saved and compiled; box positions are saved and re-read."
+    },
+    "rule": {
+      "es": "Un flujo necesita exactamente un inicio, un final, decisiones con ramas TRUE y FALSE, uniones con al menos dos entradas, sin nodos huerfanos y con disparadores conocidos.",
+      "en": "A flow needs exactly one start, an end, decisions with TRUE and FALSE branches, joins with at least two inputs, no orphan nodes and known triggers."
+    },
+    "scenario": {
+      "es": "Guardar un flujo completo; intentar 0 o 2 inicios, decision sin rama, union con una entrada, nodo huerfano y disparador desconocido; un flujo por cada clase de paso; posiciones de cajas; recarga y arranque; flujo invalido en disco.",
+      "en": "Save a full flow; try 0 or 2 starts, decision without branch, single-input join, orphan node and unknown trigger; one flow per node kind; box positions; reload and start; invalid flow on disk."
+    },
+    "result": {
+      "es": "El JSON contiene lo declarado; cada flujo incorrecto da exactamente sus codigos y create/replace devuelven petición inválida sin cambiar el fichero; el flujo guardado arranca y el invalido es not executable.",
+      "en": "The JSON holds what was declared; each wrong flow gives exactly its codes and create/replace return invalid request without changing the file; the saved flow starts and the invalid one is not executable."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan: contenido en disco, codigos exactos, 28 flujos con 29 clases y compilacion.",
+      "en": "All assertions pass: on-disk content, exact codes, 28 flows with 29 kinds and compilation."
+    },
+    "guarantee": {
+      "es": "El guardado de flujos solo admite modelos ejecutables, los persiste fielmente y el motor real puede compilar y arrancar lo guardado.",
+      "en": "Flow saving only admits executable models, persists them faithfully and the real engine can compile and start what is saved."
+    },
+    "limits": {
+      "es": "No ejercita el lienzo del diseñador ni la interfaz; no prueba el guardado conjunto modelo+diagrama por la API ni los fallos de disco; condiciones con expresiones no se cubren aqui.",
+      "en": "Does not exercise the designer canvas or UI; does not test joint model+diagram saving through the API nor disk failures; expression conditions are not covered here."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Colaboradores y persistencia reales, sin mocks, oraculo independiente (JSON crudo, literales, SHA-256 propio) y casos negativos.",
+      "en": "Real collaborators and persistence, no mocks, independent oracle (raw JSON, literals, own SHA-256) and negative cases."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "aValidFlowWithTriggersVariablesRetriesDeadlinesAndCompensationsIsPersistedAsRawJson",
+        "scenario": {
+          "es": "Guardar un flujo con todas las piezas.",
+          "en": "Save a flow with all pieces."
+        },
+        "result": {
+          "es": "El JSON de disco refleja disparadores, variable, reintento, plazo y compensacion.",
+          "en": "The disk JSON reflects triggers, variable, retry, deadline and compensation."
+        }
+      },
+      {
+        "n": "structurallyInvalidFlowsAreRejectedWithExactCodesAndTheFileDoesNotChange",
+        "scenario": {
+          "es": "Seis flujos incorrectos.",
+          "en": "Six wrong flows."
+        },
+        "result": {
+          "es": "Codigos exactos e INVALID_REQUEST sin tocar el fichero.",
+          "en": "Exact codes and INVALID_REQUEST without touching the file."
+        }
+      },
+      {
+        "n": "oneNodeOfEveryOneOfTheTwentyNineKindsIsSavedAndCompiled",
+        "scenario": {
+          "es": "Un flujo por cada clase de paso.",
+          "en": "One flow per node kind."
+        },
+        "result": {
+          "es": "29 clases en disco y plan compilado de 28 flujos.",
+          "en": "29 kinds on disk and a compiled plan of 28 flows."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/event/flow/EventFlowAuthoringPersistenceIntegrationTests.java",
+        "line": 184
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/EventFlowAuthoringPersistenceIntegrationTests.java",
+        "line": 243
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/EventFlowAuthoringPersistenceIntegrationTests.java",
+        "line": 256
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/EventFlowAuthoringPersistenceIntegrationTests.java",
+        "line": 306
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/EventFlowAuthoringPersistenceIntegrationTests.java",
+        "line": 312
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/EventFlowAuthoringPersistenceIntegrationTests.java",
+        "line": 332
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/EventFlowAuthoringPersistenceIntegrationTests.java",
+        "line": 404
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/EventFlowAuthoringPersistenceIntegrationTests.java",
+        "line": 367
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

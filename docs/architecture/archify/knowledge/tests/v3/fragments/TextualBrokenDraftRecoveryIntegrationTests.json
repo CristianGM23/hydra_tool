@@ -1,0 +1,108 @@
+[
+  {
+    "id": "java:com.example.editor.textual.TextualBrokenDraftRecoveryIntegrationTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Borrador textual roto: corrección al final del texto y conflicto en consultas",
+      "en": "Broken textual draft: end-of-text fix and conflict on queries"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "layers2": [],
+    "caps": [
+      "grammar"
+    ],
+    "procs": [],
+    "prod": [
+      "src/main/java/com/example/editor/textual/runtime/NeutralGrammarSyntaxContract.java",
+      "src/main/java/com/example/editor/textual/interaction/TextualInteractionFacade.java",
+      "src/main/java/com/example/editor/textual/runtime/TextualModelSessionService.java",
+      "src/main/java/com/example/editor/textual/web/TextualModelSessionController.java"
+    ],
+    "pre": {
+      "es": "Gramática Langium real compilada y activada con un editor textual y una sesión válida.",
+      "en": "Real Langium grammar compiled and activated with a textual editor and a valid session."
+    },
+    "setup": {
+      "es": "Contexto completo y HTTP real con directorios temporales; el reemplazo propuesto se aplica con un aplicador propio del test.",
+      "en": "Full context and real HTTP with temporary directories; the proposed replacement is applied by the test own applicator."
+    },
+    "executes": {
+      "es": "Análisis de un texto truncado, aplicación del reemplazo propuesto y nuevo análisis; consulta de símbolos y guardado con un borrador roto y con uno válido.",
+      "en": "Parsing a truncated text, applying the proposed replacement and parsing again; symbols query and save with a broken and a valid draft."
+    },
+    "asserts": {
+      "es": "La corrección de inserción es « valor» y el texto reparado vuelve a ser válido con los elementos alpha y valor; con borrador roto la consulta y el guardado responden 409 CONFLICT y con borrador válido 200.",
+      "en": "The insert fix is \" valor\" and the repaired text is valid again with elements alpha and valor; with a broken draft the query and the save answer 409 CONFLICT and with a valid draft 200."
+    },
+    "behavior": {
+      "es": "Una corrección propuesta al final del texto no se pega a la palabra anterior, y operar sobre un borrador roto se rechaza como un conflicto del cliente.",
+      "en": "A fix proposed at the end of the text does not stick to the previous word, and operating on a broken draft is rejected as a client conflict."
+    },
+    "rule": {
+      "es": "El texto reparado con la corrección propuesta debe ser válido; un borrador roto no admite consultas ni guardado y se informa como conflicto.",
+      "en": "The text repaired with the proposed fix must be valid; a broken draft allows no queries or saving and is reported as a conflict."
+    },
+    "scenario": {
+      "es": "Un texto que termina en la palabra «node», un borrador con un número donde va un identificador y el control con borrador válido.",
+      "en": "A text ending at the word \"node\", a draft with a number where an identifier belongs and the control with a valid draft."
+    },
+    "result": {
+      "es": "Texto reparado válido, respuestas 409 con su código y mensaje, y respuestas 200 en el control.",
+      "en": "Valid repaired text, 409 answers with code and message, and 200 answers in the control."
+    },
+    "expected": {
+      "es": "Los literales de texto, códigos y elementos coinciden.",
+      "en": "The text, code and element literals match."
+    },
+    "guarantee": {
+      "es": "Los editores reciben una corrección aplicable al final del texto y un error de cliente claro con borradores rotos.",
+      "en": "Editors get an applicable fix at the end of the text and a clear client error for broken drafts."
+    },
+    "limits": {
+      "es": "Una sola gramática de ejemplo y solo las consultas de símbolos y el guardado; el resto de consultas de interacción y los demás errores de estado siguen su camino anterior.",
+      "en": "One sample grammar and only the symbols query and save; other interaction queries and other state errors keep their previous path."
+    },
+    "cases": [
+      {
+        "n": "anInsertQuickFixAtTheEndOfTheTextIsSeparatedFromTheLastToken",
+        "scenario": {
+          "es": "Texto truncado.",
+          "en": "Truncated text."
+        },
+        "result": {
+          "es": "Corrección « valor» y texto válido.",
+          "en": "Fix \" valor\" and valid text."
+        }
+      },
+      {
+        "n": "queryingOrSavingABrokenDraftIsAClientConflictNotAServerError",
+        "scenario": {
+          "es": "Borrador roto.",
+          "en": "Broken draft."
+        },
+        "result": {
+          "es": "409 CONFLICT.",
+          "en": "409 CONFLICT."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualBrokenDraftRecoveryIntegrationTests.java",
+        "line": 134
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualBrokenDraftRecoveryIntegrationTests.java",
+        "line": 139
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualBrokenDraftRecoveryIntegrationTests.java",
+        "line": 159
+      }
+    ]
+  }
+]

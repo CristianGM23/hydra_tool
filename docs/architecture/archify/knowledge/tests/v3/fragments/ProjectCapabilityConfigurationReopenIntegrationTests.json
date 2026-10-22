@@ -1,0 +1,162 @@
+[
+  {
+    "id": "java:com.example.editor.project.ProjectCapabilityConfigurationReopenIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Activar áreas de un proyecto, guardarlas y reabrirlo tras reiniciar",
+      "en": "Enabling project areas, saving them and reopening the project after a restart"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "project"
+    ],
+    "procs": [
+      {
+        "id": "project_author_areas",
+        "stages": [
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "project_open_organize",
+        "stages": [
+          "a1",
+          "a4",
+          "r"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java",
+      "src/main/java/com/example/editor/project/ProjectCapabilityDependencies.java",
+      "src/main/java/com/example/editor/project/storage/ProjectIndexService.java",
+      "src/main/java/com/example/editor/project/ProjectApplicationService.java",
+      "src/main/java/com/example/editor/project/storage/ProjectDescriptorStore.java",
+      "src/main/java/com/example/editor/project/storage/ProjectRegistryStore.java",
+      "src/main/java/com/example/editor/project/ProjectLayout.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío; sin red ni credenciales.",
+      "en": "Empty temporary directory; no network or credentials."
+    },
+    "setup": {
+      "es": "Almacenamiento local real cableado como en producción (ProjectStorageTestFixture) sobre @TempDir; el oráculo lee del disco el descriptor del proyecto y las carpetas.",
+      "en": "Real local storage wired as in production (ProjectStorageTestFixture) over @TempDir; the oracle reads the project descriptor and the folders from disk."
+    },
+    "executes": {
+      "es": "ProjectApplicationService sobre LocalDirectoryProjectStorage real: create (preset vacío), configure, close, instancia nueva, recentProjects, open y tree LOGICAL; también configure sin proyecto abierto.",
+      "en": "ProjectApplicationService over a real LocalDirectoryProjectStorage: create (empty preset), configure, close, new instance, recentProjects, open and LOGICAL tree; also configure with no open project."
+    },
+    "asserts": {
+      "es": "enabledCapabilities, experienceMode y primaryArtifact leídos del modeling-project.json crudo; carpetas existentes o ausentes; nombres de grupo del árbol lógico incluido «(inactive)»; ProjectException sin proyecto abierto.",
+      "en": "enabledCapabilities, experienceMode and primaryArtifact read from the raw modeling-project.json; folders present or absent; logical tree group names including \"(inactive)\"; ProjectException with no open project."
+    },
+    "behavior": {
+      "es": "Al activar áreas, el servidor añade las que dependen de ellas, guarda la configuración, crea solo las carpetas de las áreas activas y, al reabrir el reciente con una instancia nueva, recupera áreas, modo y artefacto principal; un área desactivada con contenido queda marcada como inactiva sin borrarse.",
+      "en": "When areas are enabled, the server adds the ones they depend on, saves the configuration, creates only the folders of active areas and, when the recent project is reopened with a new instance, restores areas, mode and main artifact; a deactivated area with content is marked inactive and not deleted."
+    },
+    "rule": {
+      "es": "Activar un área arrastra sus dependencias en el servidor; desactivar no destruye el contenido, solo marca el área como inactiva.",
+      "en": "Enabling an area pulls in its dependencies on the server; deactivating does not destroy content, it only marks the area as inactive."
+    },
+    "scenario": {
+      "es": "Proyecto vacío al que se activan editor visual y correcciones rápidas en modo libre con un metamodelo como artefacto principal; cierre, reinicio y reapertura desde recientes; después se reduce a solo metamodelos con validaciones ya escritas; y configurar sin proyecto abierto.",
+      "en": "Empty project where the visual editor and quick fixes are enabled in free mode with a metamodel as main artifact; close, restart and reopen from recents; then reduced to metamodels only with validations already written; and configuring with no open project."
+    },
+    "result": {
+      "es": "El descriptor en disco lista las cinco áreas esperadas (dos pedidas y tres arrastradas), solo existen las carpetas correspondientes, la reapertura devuelve la misma configuración y el área desactivada aparece como inactiva con su fichero intacto.",
+      "en": "The descriptor on disk lists the five expected areas (two requested and three pulled in), only the matching folders exist, the reopening returns the same configuration and the deactivated area appears as inactive with its file intact."
+    },
+    "expected": {
+      "es": "Descriptor, carpetas, árbol y sesión reabierta coinciden con los valores literales esperados en los cuatro casos.",
+      "en": "Descriptor, folders, tree and reopened session match the expected literal values in the four cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la configuración de áreas se guarda en disco, sobrevive a un reinicio y no destruye contenido al desactivar.",
+      "en": "Real evidence that the area configuration is saved to disk, survives a restart and does not destroy content when deactivating."
+    },
+    "limits": {
+      "es": "Solo a través del servicio de aplicación y el almacenamiento local: no pasa por la API web ni por la interfaz, no cubre varios usuarios a la vez ni la regla visual de apagar las áreas dependientes.",
+      "en": "Only through the application service and local storage: it does not go through the web API or the interface, and does not cover several simultaneous users or the visual rule of switching off dependent areas."
+    },
+    "strengthWhy": {
+      "es": "Almacenamiento real sobre disco, oráculo independiente (JSON y carpetas leídos del disco), casos negativos y mapeo directo a las etapas.",
+      "en": "Real on-disk storage, independent oracle (JSON and folders read from disk), negative cases and direct stage mapping."
+    },
+    "cases": [
+      {
+        "n": "configureActivatesDependenciesPersistsDescriptorAndMaterializesOnlyActiveFolders",
+        "scenario": {
+          "es": "Activar editor visual y correcciones rápidas en un proyecto vacío.",
+          "en": "Enable visual editor and quick fixes in an empty project."
+        },
+        "result": {
+          "es": "Cinco áreas guardadas y solo cuatro carpetas de primer nivel creadas.",
+          "en": "Five areas saved and only four top-level folders created."
+        }
+      },
+      {
+        "n": "freshStorageInstanceReopensTheRecentProjectWithSavedConfiguration",
+        "scenario": {
+          "es": "Cerrar, crear una instancia nueva y reabrir desde recientes.",
+          "en": "Close, create a new instance and reopen from recents."
+        },
+        "result": {
+          "es": "Áreas, modo libre y artefacto principal recuperados.",
+          "en": "Areas, free mode and main artifact restored."
+        }
+      },
+      {
+        "n": "deactivatedAreaWithContentIsMarkedInactiveAndKeepsItsFiles",
+        "scenario": {
+          "es": "Reducir a solo metamodelos con validaciones ya escritas.",
+          "en": "Reduce to metamodels only with validations already written."
+        },
+        "result": {
+          "es": "Grupo de validaciones marcado como inactivo y fichero intacto.",
+          "en": "Validations group marked inactive and file intact."
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.project.ProjectIndexAndChangeTests",
+      "java:com.example.editor.project.LocalDirectoryProjectStorageTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectCapabilityConfigurationReopenIntegrationTests.java",
+        "line": 51
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectCapabilityConfigurationReopenIntegrationTests.java",
+        "line": 62
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectCapabilityConfigurationReopenIntegrationTests.java",
+        "line": 67
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectCapabilityConfigurationReopenIntegrationTests.java",
+        "line": 98
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectCapabilityConfigurationReopenIntegrationTests.java",
+        "line": 132
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectCapabilityConfigurationReopenIntegrationTests.java",
+        "line": 155
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectCapabilityConfigurationReopenIntegrationTests.java",
+        "line": 99
+      }
+    ]
+  }
+]

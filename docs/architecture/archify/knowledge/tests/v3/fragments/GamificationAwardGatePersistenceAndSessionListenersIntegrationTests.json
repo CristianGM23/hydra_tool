@@ -1,0 +1,223 @@
+[
+  {
+    "id": "java:com.example.editor.gamification.GamificationAwardGatePersistenceAndSessionListenersIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Gamificación: puerta de entrada, guardado seguro, repetidos y eventos de la sesión",
+      "en": "Gamification: entry gate, safe saving, repeats and session events"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "gamification",
+      "events"
+    ],
+    "procs": [
+      {
+        "id": "gamification_award",
+        "stages": [
+          "gate"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_event_flow_to_reward",
+        "stages": [
+          "idem"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "gamification_author_form",
+        "stages": [
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "events_publish_session",
+        "stages": [
+          "a6",
+          "a7"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "gamification_award",
+        "stages": [
+          "per"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationRuntimeRepository.java",
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/definition/runtime/session/EditorSessionEventPublisher.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeService.java",
+      "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java"
+    ],
+    "pre": {
+      "es": "Catálogo de puntos y reglas guardado con los servicios reales en un directorio temporal vacío.",
+      "en": "Points catalogue and rules saved with the real services in an empty temporary directory."
+    },
+    "setup": {
+      "es": "Bus en memoria, motor de gamificación, motor de flujos y repositorios JSON reales; para el fallo de escritura el repositorio real se envuelve en uno que falla al guardar el historial.",
+      "en": "Real in-memory bus, gamification engine, flow engine and JSON repositories; for the write failure the real repository is wrapped by one that fails when saving the history."
+    },
+    "executes": {
+      "es": "Publicar eventos con el sistema o la sesión apagados, sin metamodelo o encadenados 16 veces; repetir un evento; forzar el fallo del historial; usar el catálogo guardado con un motor nuevo; publicar desde la sesión del editor con un flujo y reglas de premio y penalización.",
+      "en": "Publish events with the system or session switched off, without a metamodel or chained 16 times; repeat an event; force a history failure; use the saved catalogue with a new engine; publish from the editor session with a flow and award and penalty rules."
+    },
+    "asserts": {
+      "es": "Estado e historial leídos del disco con conteos y puntos literales; ficheros idénticos byte a byte tras un repetido; orden estado-historial y restauración o borrado del estado si el historial falla; flujo ejecutado y saldo de 3 puntos.",
+      "en": "State and history read from disk with literal counts and points; files identical byte for byte after a repeat; state-then-history order and state restore or removal when the history fails; flow executed and a balance of 3 points."
+    },
+    "behavior": {
+      "es": "La gamificación ignora eventos apagados, sin metamodelo o demasiado encadenados; un evento repetido no escribe nada; el estado se deshace si falla el historial; el catálogo guardado lo usa un motor nuevo; el evento de sesión ejecuta el flujo y puntúa.",
+      "en": "Gamification ignores switched-off, metamodel-less or too deeply chained events; a repeated event writes nothing; state is undone if the history fails; the saved catalogue is used by a new engine; the session event runs the flow and scores."
+    },
+    "rule": {
+      "es": "Solo puntúan eventos con metamodelo, con el sistema y la sesión activos y con menos de 16 saltos; cada evento puntúa una sola vez; el estado se guarda antes que el historial.",
+      "en": "Only events with a metamodel, with system and session on and under 16 hops score; each event scores once; state is saved before the history."
+    },
+    "scenario": {
+      "es": "Eventos descartados y válidos, un evento repetido, un fallo de escritura del historial, un catálogo con logro y un evento de sesión que premia y penaliza.",
+      "en": "Discarded and valid events, a repeated event, a history write failure, a catalogue with an achievement and a session event that awards and penalizes."
+    },
+    "result": {
+      "es": "Los descartados no crean historial; el repetido deja los ficheros idénticos; tras el fallo el estado vuelve a 5 puntos o desaparece; el logro llega al actor; la sesión deja 5 menos 2 puntos.",
+      "en": "Discarded events create no history; the repeat leaves files identical; after the failure state returns to 5 points or disappears; the achievement reaches the actor; the session leaves 5 minus 2 points."
+    },
+    "expected": {
+      "es": "Los ficheros de estado e historial coinciden con los valores literales calculados a mano.",
+      "en": "The state and history files match the literal hand-computed values."
+    },
+    "guarantee": {
+      "es": "La puerta de entrada, la idempotencia, el guardado con deshacer y la escucha de eventos de sesión funcionan con bus, motores y disco reales.",
+      "en": "The entry gate, idempotence, saving with undo and session-event listening work with the real bus, engines and disk."
+    },
+    "limits": {
+      "es": "El fallo de escritura del historial es simulado sobre el repositorio real; no recorre una sesión de edición completa ni la pantalla del formulario de elementos; el fallo del estado en sí no se provoca. La etapa de guardado queda indirecta: el fallo que la prueba es simulado.",
+      "en": "The history write failure is simulated on top of the real repository; it does not walk a full editing session or the element form screen; failure of the state write itself is not triggered. The save stage stays indirect: the failure it exercises is simulated."
+    },
+    "strengthWhy": {
+      "es": "Bus, motores y almacén reales con oráculo en disco y valores calculados a mano.",
+      "en": "Real bus, engines and store with an on-disk oracle and hand-computed values."
+    },
+    "cases": [
+      {
+        "n": "theGateIgnoresSwitchedOffNoMetamodelAndTooDeeplyChainedEvents",
+        "scenario": {
+          "es": "Sistema apagado, sesión apagada, sin metamodelo, profundidad 16 y uno válido.",
+          "en": "System off, session off, no metamodel, depth 16 and one valid."
+        },
+        "result": {
+          "es": "Solo el válido deja una entrada.",
+          "en": "Only the valid one leaves an entry."
+        }
+      },
+      {
+        "n": "aRepeatedEventDoesNotGrantTwiceNorRewriteTheDocuments",
+        "scenario": {
+          "es": "El mismo evento dos veces.",
+          "en": "The same event twice."
+        },
+        "result": {
+          "es": "Ficheros idénticos y un solo aviso.",
+          "en": "Identical files and a single notice."
+        }
+      },
+      {
+        "n": "theStateIsSavedBeforeTheHistoryAndRolledBackWhenTheHistoryFails",
+        "scenario": {
+          "es": "Fallo del historial con estado previo.",
+          "en": "History failure with a previous state."
+        },
+        "result": {
+          "es": "El estado vuelve a 5 puntos.",
+          "en": "State returns to 5 points."
+        }
+      },
+      {
+        "n": "aLedgerFailureOnTheFirstEventRemovesTheJustSavedState",
+        "scenario": {
+          "es": "Fallo del historial en el primer evento.",
+          "en": "History failure on the first event."
+        },
+        "result": {
+          "es": "No queda ningún fichero.",
+          "en": "No file remains."
+        }
+      },
+      {
+        "n": "aSavedCatalogIsUsedByAFreshEngineToGrantPointsAndAnAchievement",
+        "scenario": {
+          "es": "Catálogo guardado y motor nuevo.",
+          "en": "Saved catalogue and new engine."
+        },
+        "result": {
+          "es": "Puntos y logro concedidos.",
+          "en": "Points and achievement granted."
+        }
+      },
+      {
+        "n": "aSessionPublishedEventRunsTheFlowAndTheGamificationAwardsAndRetiresPoints",
+        "scenario": {
+          "es": "Evento de la sesión con flujo y reglas.",
+          "en": "Session event with flow and rules."
+        },
+        "result": {
+          "es": "Premio de 5, penalización de 2.",
+          "en": "Award of 5, penalty of 2."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationAwardGatePersistenceAndSessionListenersIntegrationTests.java",
+        "line": 154
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationAwardGatePersistenceAndSessionListenersIntegrationTests.java",
+        "line": 165
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationAwardGatePersistenceAndSessionListenersIntegrationTests.java",
+        "line": 173
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationAwardGatePersistenceAndSessionListenersIntegrationTests.java",
+        "line": 195
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationAwardGatePersistenceAndSessionListenersIntegrationTests.java",
+        "line": 211
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationAwardGatePersistenceAndSessionListenersIntegrationTests.java",
+        "line": 223
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationAwardGatePersistenceAndSessionListenersIntegrationTests.java",
+        "line": 242
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationAwardGatePersistenceAndSessionListenersIntegrationTests.java",
+        "line": 270
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationAwardGatePersistenceAndSessionListenersIntegrationTests.java",
+        "line": 307
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationAwardGatePersistenceAndSessionListenersIntegrationTests.java",
+        "line": 318
+      }
+    ]
+  }
+]

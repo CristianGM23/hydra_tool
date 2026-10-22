@@ -1,0 +1,44 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.application.GrammarDraftAnalysisIndependentOracleIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": { "es": "Análisis de borradores de gramática contra oráculos propios", "en": "Grammar draft analysis against independent oracles" },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": ["grammar"],
+    "procs": [{ "id": "grammar_analyze_generate", "stages": ["rg", "rf", "pj", "cd"], "match": "direct" }],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarRuleGraphAnalyzer.java",
+      "src/main/java/com/example/editor/grammar/visualization/GrammarClassDiagramProjectionService.java",
+      "src/main/java/com/example/editor/grammar/web/GrammarController.java"
+    ],
+    "pre": { "es": "Directorio temporal vacío; no hacen falta herramientas nativas.", "en": "Empty temporary directory; no native tools needed." },
+    "setup": { "es": "Controlador, analizador, proveedores y proyección reales; el test calcula por su cuenta recursión, referencias y atributos esperados.", "en": "Real controller, analyzer, providers and projection; the test computes recursion, references and expected attributes on its own." },
+    "executes": { "es": "Analizar por HTTP un corpus de gramáticas de Langium, Xtext y ANTLR y pedir el diagrama de clases deducido.", "en": "Analyze over HTTP a corpus of Langium, Xtext and ANTLR grammars and request the deduced class diagram." },
+    "asserts": { "es": "Las reglas recursivas por la izquierda, las referencias defectuosas y los atributos de cada clase coinciden con lo que el propio test calcula; aplicar la acción de reemplazo y reanalizar elimina el error.", "en": "Left-recursive rules, faulty references and each class's attributes match what the test itself computes; applying the replacement action and reanalysing removes the error." },
+    "behavior": { "es": "El análisis detecta la recursión por la izquierda directa, indirecta y oculta, las referencias rotas y deduce clases y atributos fieles al texto.", "en": "The analysis detects direct, indirect and hidden left recursion and broken references, and deduces classes and attributes faithful to the text." },
+    "rule": { "es": "La recursión por la derecha no bloquea; la directa por la izquierda solo se acepta en ANTLR; las referencias se juzgan por nombre exacto.", "en": "Right recursion does not block; direct left recursion is accepted only in ANTLR; references are judged by exact name." },
+    "scenario": { "es": "Diez gramáticas de recursión, cinco de referencias, correspondencias dudosas y dos de diagrama.", "en": "Ten recursion grammars, five reference grammars, doubtful mappings and two diagram grammars." },
+    "result": { "es": "Coincidencia total con los oráculos del test y diagrama estable que cambia al editar la gramática.", "en": "Full agreement with the test oracles and a stable diagram that changes when the grammar is edited." },
+    "expected": { "es": "Todos los conjuntos calculados por el test y por la API son iguales.", "en": "All sets computed by the test and by the API are equal." },
+    "guarantee": { "es": "El análisis neutral es coherente con una implementación independiente en el corpus probado.", "en": "The neutral analysis agrees with an independent implementation on the tested corpus." },
+    "limits": { "es": "Corpus de reglas planas sin paréntesis en los oráculos; no cubre gramáticas con metamodelo enlazado ni análisis con herramientas nativas.", "en": "Flat-rule corpus without parentheses in the oracles; does not cover grammars linked to a metamodel nor native-tool analysis." },
+    "strengthWhy": { "es": "Pila real por HTTP y oráculos calculados en el test, no por el código probado.", "en": "Real stack over HTTP and oracles computed in the test, not by the code under test." },
+    "cases": [
+      { "n": "leftRecursiveRulesMatchTheTestsOwnTransitiveClosure", "scenario": { "es": "Diez gramáticas de recursión.", "en": "Ten recursion grammars." }, "result": { "es": "Mismas reglas bloqueantes.", "en": "Same blocking rules." } },
+      { "n": "missingAmbiguousAndMiscasedReferencesMatchTheTestsRegexOracle", "scenario": { "es": "Referencias ausentes, ambiguas, con otra escritura.", "en": "Missing, ambiguous, miscased references." }, "result": { "es": "Mismos hallazgos.", "en": "Same findings." } },
+      { "n": "applyingTheReturnedReplacementActionClearsTheReferenceError", "scenario": { "es": "Aplicar el reemplazo y reanalizar.", "en": "Apply replacement and reanalyse." }, "result": { "es": "Sin error.", "en": "No error." } },
+      { "n": "theDeducedClassDiagramHasTheClassesAndAttributesTheSourceDictates", "scenario": { "es": "Diagrama en Langium y Xtext.", "en": "Diagram in Langium and Xtext." }, "result": { "es": "Clases y atributos del texto.", "en": "Classes and attributes of the text." } }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisIndependentOracleIntegrationTests.java", "line": 134 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisIndependentOracleIntegrationTests.java", "line": 166 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisIndependentOracleIntegrationTests.java", "line": 194 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisIndependentOracleIntegrationTests.java", "line": 244 }
+    ]
+  }
+]

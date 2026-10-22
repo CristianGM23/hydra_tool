@@ -1,0 +1,4 @@
+- x_project_lifecycle_overview.d1: importingAProjectFolderOnlyCopiesFiles (lines 162-179), importingAProjectZipOnlyCopiesFilesAndRejectsAnArchiveWithoutDescriptor (lines 194-204) and importingFromARemoteRepositoryOnlyCopiesFiles (lines 236-237): plain copies, no recovery/ nor external-source/, metamodel store empty.
+- Contrast: onlyAnExternalProjectArchiveTriggersSemanticRecovery (lines 253-261): recovery/*.json, preserved original and one canonical metamodel appear only for the external origin.
+Note: the remote origin uses an own read-only loopback server (strength MEDIUM, external mocked); starting content differs between HYDRA origins and the external one.
+- project_import_export.i2 (decision: archivo de proyecto externo): mismo contraste, lineas 162, 179, 200 y 236 (los origenes HYDRA solo copian ficheros) frente a 253 y 261 (solo el externo crea recuperacion, original preservado y metamodelo); etapa MEDIUM por el servidor remoto propio.

@@ -1,0 +1,146 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.runtime.TransformationRuntimeServiceExecuteDraftIntegrationTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Ejecutar un borrador de transformación sobre un modelo real",
+      "en": "Executing a transformation draft on a real model"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "transformation_execute",
+        "stages": [
+          "in"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/runtime/TransformationRuntimeService.java",
+      "src/main/java/com/example/editor/transformation/runtime/TransformationPlanCompiler.java",
+      "src/main/java/com/example/editor/transformation/runtime/CanonicalTransformationRuntime.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible; metamodelo de ejemplo guardado en disco; sin red ni credenciales.",
+      "en": "Writable temporary directory; sample metamodel stored on disk; no network or credentials."
+    },
+    "setup": {
+      "es": "TransformationRuntimeService real con repositorios JSON reales en @TempDir, comprobador, compilador y runtime canónico reales; sin mocks.",
+      "en": "Real TransformationRuntimeService with real JSON repositories in @TempDir and real checker, compiler and canonical runtime; no mocks."
+    },
+    "executes": {
+      "es": "executeDraft con una definición válida y el modelo Alice/Bob en dirección FORWARD y por defecto; con tipo de origen desconocido; con políticas de ejecución no soportadas; con modelo nulo.",
+      "en": "executeDraft with a valid definition and the Alice/Bob model in FORWARD and default direction; with an unknown source type; with unsupported execution policies; with a null model."
+    },
+    "asserts": {
+      "es": "El modelo destino tiene dos elementos Person con solo el nombre (Alice, Bob), anotados con su origen, el origen queda intacto y no se persiste nada; las definiciones inválidas lanzan TransformationExecutionException con el código bloqueante.",
+      "en": "The target model has two Person elements with only the name (Alice, Bob), annotated with their source, the input stays intact and nothing is persisted; invalid definitions throw TransformationExecutionException with the blocking code."
+    },
+    "behavior": {
+      "es": "Al ejecutar un borrador, HYDRA resuelve el metamodelo de entrada y salida, produce el modelo destino sin guardar nada y se niega a ejecutar si la definición no es compilable.",
+      "en": "When a draft is executed, HYDRA resolves the input and output metamodels, produces the target model without saving anything and refuses to run if the definition cannot be compiled."
+    },
+    "rule": {
+      "es": "Un borrador con errores bloqueantes (tipo de origen desconocido, política no determinista o de mejor esfuerzo) no se ejecuta.",
+      "en": "A draft with blocking errors (unknown source type, non-deterministic or best-effort policy) is not executed."
+    },
+    "scenario": {
+      "es": "Ejecutar un borrador válido Person→Person con Alice (Person) y Bob (Employee); repetirlo con la dirección por defecto; intentar ejecutar borradores inválidos o sin modelo.",
+      "en": "Run a valid Person→Person draft with Alice (Person) and Bob (Employee); repeat with the default direction; try invalid drafts or no model."
+    },
+    "result": {
+      "es": "Se obtienen exactamente dos elementos destino con los nombres esperados; los borradores inválidos fallan antes de ejecutar y el directorio de definiciones sigue vacío.",
+      "en": "Exactly two target elements with the expected names are produced; invalid drafts fail before running and the definitions directory stays empty."
+    },
+    "expected": {
+      "es": "Las aserciones literales sobre nombres, clases, anotaciones, ausencia de ficheros y mensajes de error se cumplen.",
+      "en": "The literal assertions on names, classes, annotations, absence of files and error messages hold."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que el servicio de ejecución resuelve entrada y salida y devuelve el modelo destino, rechazando borradores no compilables.",
+      "en": "Real evidence that the execution service resolves input and output and returns the target model, rejecting drafts that cannot be compiled."
+    },
+    "limits": {
+      "es": "Origen y destino usan el mismo metamodelo, así que no distingue qué lado es entrada ni cubre la dirección REVERSE; solo reglas directas Person→Person.",
+      "en": "Source and target share one metamodel, so it cannot tell which side is the input nor cover the REVERSE direction; only direct Person→Person rules."
+    },
+    "strengthWhy": {
+      "es": "Colaboradores reales y oráculo literal con casos negativos, pero la resolución entrada/salida no es distinguible con un único metamodelo.",
+      "en": "Real collaborators and a literal oracle with negative cases, but input/output resolution is not distinguishable with a single metamodel."
+    },
+    "cases": [
+      {
+        "n": "executeDraftForwardReturnsTheTargetModelOfTheSavedMetamodel",
+        "scenario": {
+          "es": "Ejecución FORWARD válida.",
+          "en": "Valid FORWARD run."
+        },
+        "result": {
+          "es": "Dos Person (Alice, Bob), origen intacto, nada persistido.",
+          "en": "Two Person elements (Alice, Bob), input intact, nothing persisted."
+        }
+      },
+      {
+        "n": "unknownSourceTypeIsRejectedBeforeExecutingAnything",
+        "scenario": {
+          "es": "Tipo de origen class:Ghost.",
+          "en": "Source type class:Ghost."
+        },
+        "result": {
+          "es": "Excepción con UNKNOWN_SOURCE_TYPE.",
+          "en": "Exception with UNKNOWN_SOURCE_TYPE."
+        }
+      },
+      {
+        "n": "unsupportedExecutionPolicyIsRejectedBeforeExecutingAnything",
+        "scenario": {
+          "es": "Política no determinista o de mejor esfuerzo.",
+          "en": "Non-deterministic or best-effort policy."
+        },
+        "result": {
+          "es": "Excepción con el código de política no soportada.",
+          "en": "Exception with the unsupported-policy code."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftIntegrationTests.java",
+        "line": 70
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftIntegrationTests.java",
+        "line": 83
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftIntegrationTests.java",
+        "line": 88
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftIntegrationTests.java",
+        "line": 102
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftIntegrationTests.java",
+        "line": 117
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftIntegrationTests.java",
+        "line": 132
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftIntegrationTests.java",
+        "line": 135
+      }
+    ]
+  }
+]

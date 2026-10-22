@@ -1,0 +1,3 @@
+- transformation_sync.chg: lines 91-93 (revision 1 baseline created from the models typed by the user), lines 95-98 (sync without edits does not advance), lines 100-110 (source edit typed in the panel, revision 2 with the change on both baselines), line 114 (synchronization checkpoint on disk), lines 121-122 (reload reopens the session).
+- x_transformation_run_and_sync.edt: lines 128-137 (both sides edited on the same paired attribute, stop policy blocks and the baseline stays at revision 1) and lines 139-151 (disjoint edits on both sides merge into revision 2, target-only property preserved).
+- Not claimed: session creation, rebase, restore and delete stages (not exercised here).

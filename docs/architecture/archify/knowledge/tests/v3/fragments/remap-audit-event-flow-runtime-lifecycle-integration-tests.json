@@ -1,0 +1,192 @@
+[
+  {
+    "id": "java:com.example.editor.event.flow.runtime.EventFlowRuntimeLifecycleIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Ciclo de vida real del panel de ejecución de flujos de eventos, incluido reintento y compensación reales",
+      "en": "Real lifecycle of the event flow execution panel, including real retry and compensation"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "events"
+    ],
+    "procs": [
+      {
+        "id": "events_author_run",
+        "stages": [
+          "a1",
+          "a2",
+          "a3",
+          "a4",
+          "r1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "events_execute_flow",
+        "stages": [
+          "a3",
+          "a4",
+          "r1",
+          "d2",
+          "a5",
+          "a6"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_event_flow_to_reward",
+        "stages": [
+          "flow"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "events_execute_flow",
+        "stages": [
+          "a7",
+          "a8",
+          "a9"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "events_publish_session",
+        "stages": [
+          "a6"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "events_author_flow",
+        "stages": [
+          "a7",
+          "r1"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "events_author_run",
+        "stages": [
+          "a5"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeService.java",
+      "src/main/java/com/example/editor/event/flow/EventFlowApplicationService.java",
+      "src/main/java/com/example/editor/event/EventModelApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowCompiler.java",
+      "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeNodeExecutor.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible y un metamodelo real ya guardado.",
+      "en": "Writable temp directory and a real, already-saved metamodel."
+    },
+    "executes": {
+      "es": "EventFlowRuntimeService real (start, process, status, traces, stop, tick) con su cadena completa de colaboradores reales, incluido un paso real sin ejecutor externo que falla de verdad y se reintenta y compensa realmente.",
+      "en": "Real EventFlowRuntimeService (start, process, status, traces, stop, tick) with its full chain of real collaborators, including a real step with no external executor that genuinely fails and is genuinely retried and compensated."
+    },
+    "asserts": {
+      "es": "Un paso sin ejecutor externo falla de verdad; con una politica de un reintento, se reintenta una vez y vuelve a fallar; sin reintentos ni salida de error, HYDRA compensa en orden inverso el paso compensable ya completado, dejando una traza COMPENSATED con las cinco ejecuciones en orden.",
+      "en": "A step with no external executor genuinely fails; with a one-attempt retry policy, it is retried once and fails again; with no retries or error exit, HYDRA compensates in reverse order the already-completed compensable step, leaving a COMPENSATED trace with the five executions in order."
+    },
+    "behavior": {
+      "es": "Ejecutar un flujo real recorre sus pasos reales, ejecuta cada paso real segun su tipo, reintenta de verdad un paso real fallido segun su politica real, y cuando no quedan reintentos ni salida de error compensa de verdad, en orden inverso real, los pasos compensables ya completados.",
+      "en": "Executing a real flow genuinely walks its real steps, runs each real step by its kind, genuinely retries a real failed step per its real policy, and when no retries or error exit remain, genuinely compensates, in real reverse order, the already-completed compensable steps."
+    },
+    "rule": {
+      "es": "Un paso real falla de verdad sin ejecutor externo; se reintenta mientras la politica real de reintento lo permita; agotados los reintentos y sin salida de error real, los pasos compensables completados se compensan de verdad en orden inverso real.",
+      "en": "A real step genuinely fails without an external executor; it is retried while its real retry policy allows it; once retries are exhausted and no real error exit exists, completed compensable steps are genuinely compensated in real reverse order."
+    },
+    "scenario": {
+      "es": "Un flujo real minimo disparado por un evento real; un flujo real con ausencia resuelta por el reloj real; un flujo real con un paso compensable real completado, un paso real que falla y se reintenta una vez, y una compensacion real.",
+      "en": "A minimal real flow triggered by a real event; a real flow with an absence resolved by the real clock; a real flow with a real completed compensable step, a real step that fails and retries once, and a real compensation."
+    },
+    "result": {
+      "es": "Traza real completa; evento derivado real tras avanzar el reloj; traza real COMPENSATED con el paso real fallido reintentado una vez y el paso compensable real compensado.",
+      "en": "A complete real trace; a real derived event after advancing the clock; a real COMPENSATED trace with the real failed step retried once and the real compensable step compensated."
+    },
+    "expected": {
+      "es": "Cada escenario produce exactamente el recorrido, la traza real y el estado de compensacion descritos.",
+      "en": "Each scenario produces exactly the described walk, real trace and compensation outcome."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que ejecutar un flujo de eventos recorre sus pasos reales, reintenta de verdad un paso real fallido y compensa de verdad, en orden inverso real, los pasos compensables ya completados cuando no quedan reintentos ni salida de error, sin simular ningun colaborador ni ningun fallo.",
+      "en": "Real evidence that executing an event flow genuinely walks its real steps, genuinely retries a real failed step and genuinely compensates, in real reverse order, already-completed compensable steps when no retries or error exit remain, without simulating any collaborator or any failure."
+    },
+    "limits": {
+      "es": "No ejecuta el panel de interfaz en si; no cubre reintentos con retraso real programado (el plazo configurado es inmediato) ni condiciones reales de paso.",
+      "en": "Does not run the UI panel itself; does not cover retries with a real scheduled delay (the configured delay is immediate) nor real step conditions."
+    },
+    "strengthWhy": {
+      "es": "Prueba real sin mocks (traits.mocks=false) ampliada con un tercer caso real: un paso real sin ejecutor externo falla de verdad por diseño (no hace falta simular el fallo), se reintenta de verdad una vez segun su politica real, y HYDRA compensa de verdad el paso compensable real ya completado, cubriendo directamente events_execute_flow.d2/a5/a6 ademas de los ya cubiertos a3/a4/a7/a8/a9/r1.",
+      "en": "Real, mock-free test (traits.mocks=false) extended with a third real case: a real step with no external executor genuinely fails by design (no need to simulate the failure), is genuinely retried once per its real policy, and HYDRA genuinely compensates the already-completed real compensable step, directly covering events_execute_flow.d2/a5/a6 in addition to the already-covered a3/a4/a7/a8/a9/r1."
+    },
+    "cases": [
+      {
+        "n": "startingProcessingAndStoppingARealFlowProducesRealStatusAndTraces",
+        "scenario": {
+          "es": "Flujo real guardado, arrancado, procesado y detenido",
+          "en": "Real saved flow, started, processed and stopped"
+        },
+        "result": {
+          "es": "Motor activo, traza completa de dos nodos, estado consistente y motor inactivo al final",
+          "en": "Active engine, a complete two-node trace, consistent status and an inactive engine at the end"
+        }
+      },
+      {
+        "n": "advancingTheClockRealEmitsAnAbsenceEventOnceItsDeadlineHasReallyElapsed",
+        "scenario": {
+          "es": "Nodo de ausencia real esperando un evento que nunca llega, reloj real avanzado más allá del plazo",
+          "en": "Real absence node waiting for an event that never arrives, real clock advanced past the deadline"
+        },
+        "result": {
+          "es": "Traza real en espera y, tras avanzar el reloj real, evento derivado real emitido con traza completada",
+          "en": "Real waiting trace and, after advancing the real clock, a real derived event emitted with a completed trace"
+        }
+      },
+      {
+        "n": "aFailingStepRealIsRetriedOnceAndThenRealCompensatesTheAlreadyCompletedCompensableStep",
+        "scenario": {
+          "es": "Paso real sin ejecutor externo, politica real de un reintento, paso compensable real previo",
+          "en": "Real step with no external executor, real one-attempt retry policy, a real prior compensable step"
+        },
+        "result": {
+          "es": "Reintento real agotado y compensacion real del paso compensable completado",
+          "en": "Real retry exhausted and real compensation of the completed compensable step"
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeLifecycleIntegrationTests.java",
+        "line": 96
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeLifecycleIntegrationTests.java",
+        "line": 111
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeLifecycleIntegrationTests.java",
+        "line": 181
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeLifecycleIntegrationTests.java",
+        "line": 190
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeLifecycleIntegrationTests.java",
+        "line": 268
+      }
+    ]
+  }
+]

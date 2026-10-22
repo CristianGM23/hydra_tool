@@ -1,0 +1,105 @@
+[
+  {
+    "id": "pw:e2e/real/metamodel/wizard-define-save.spec.ts",
+    "name": {
+      "es": "Asistente guiado de metamodelos de extremo a extremo: nombre, clasificadores y guardado real",
+      "en": "Guided metamodel wizard end to end: name, classifiers and real save"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["delivery"],
+    "caps": ["metamodel", "persistence"],
+    "procs": [
+      { "id": "metamodel_author_wizard", "stages": ["id", "cl", "st"], "match": "direct" },
+      { "id": "metamodel_define_save", "stages": ["def"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/metamodel-designer/MetamodelDesigner.tsx",
+      "frontend/src/design-system/HydraGuidedWorkflow.tsx",
+      "frontend/src/metamodel-designer/MetamodelPropertyPanel.tsx",
+      "src/main/java/com/example/editor/metamodel/web/CanonicalMetamodelController.java",
+      "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java"
+    ],
+    "pre": {
+      "es": "Backend real con almacenamiento temporal propio y aplicación compilada servida a un navegador real; no hace falta ningún dato previo.",
+      "en": "Real backend with its own temporary storage and the built application served to a real browser; no prior data is needed."
+    },
+    "setup": {
+      "es": "Playwright con Chromium contra la aplicación compilada y el backend Spring Boot real; sin simulaciones. El oráculo lee el fichero JSON del metamodelo en el disco del backend y hace GET a la API real.",
+      "en": "Playwright with Chromium against the built application and the real Spring Boot backend; no simulations. The oracle reads the metamodel JSON file on the backend disk and issues GET calls to the real API."
+    },
+    "executes": {
+      "es": "Abre #/metamodel, rellena 'Guided metamodel name', recorre los cinco pasos con 'Next step', pulsa '+ Class', '+ Interface', '+ Enumeration' y '+ Datatype' y finaliza con 'Save metamodel'; en la segunda prueba abre el editor visual, añade un atributo y una referencia desde el panel de propiedades y guarda desde la barra.",
+      "en": "Opens #/metamodel, fills 'Guided metamodel name', walks the five steps with 'Next step', presses '+ Class', '+ Interface', '+ Enumeration' and '+ Datatype' and finishes with 'Save metamodel'; the second test opens the visual editor, adds an attribute and a reference from the property panel and saves from the toolbar."
+    },
+    "asserts": {
+      "es": "Con nombre vacío 'Next step' queda deshabilitado y el backend no lista ese metamodelo; antes de guardar el borrador no existe; tras guardar, el .metamodel.json y el GET traen nombre, 3 clases (una INTERFACE), 1 enumerado, 1 tipo de datos y 0 relaciones; en la segunda prueba, el atributo 'title' y la relación 'owner' REFERENCE.",
+      "en": "With an empty name 'Next step' is disabled and the backend lists no such metamodel; before saving the draft does not exist; after saving, the .metamodel.json and the GET hold name, 3 classes (one INTERFACE), 1 enumeration, 1 data type and 0 relations; in the second test, the 'title' attribute and the 'owner' REFERENCE relation."
+    },
+    "behavior": {
+      "es": "Una persona crea un metamodelo siguiendo el asistente: sin nombre no puede avanzar y, al terminar, el metamodelo con sus clases, enumerado y tipo de datos queda guardado en el servidor.",
+      "en": "A person creates a metamodel by following the wizard: without a name they cannot move on and, at the end, the metamodel with its classes, enumeration and data type is saved on the server."
+    },
+    "rule": {
+      "es": "El nombre es obligatorio para avanzar y nada se guarda hasta pulsar Guardar en el último paso.",
+      "en": "The name is required to move on and nothing is saved until Save is pressed on the last step."
+    },
+    "scenario": {
+      "es": "Un metamodelo nuevo se define con el asistente (identidad, clasificadores, estructura, revisión y guardado) y otro se completa pasando al editor visual para añadir un atributo y una referencia.",
+      "en": "A new metamodel is defined with the wizard (identity, classifiers, structure, review and save) and another is completed by switching to the visual editor to add an attribute and a reference."
+    },
+    "result": {
+      "es": "El metamodelo guardado contiene exactamente lo que la persona creó en pantalla: nombre, clases con su clase de elemento, enumerado, tipo de datos y, en el segundo caso, atributo y relación.",
+      "en": "The saved metamodel contains exactly what the person created on screen: name, classes with their kind, enumeration, data type and, in the second case, attribute and relation."
+    },
+    "expected": {
+      "es": "Una ejecución correcta deja en el servidor un metamodelo con los elementos creados y ninguno más, y no deja ningún metamodelo sin nombre.",
+      "en": "A passing run leaves on the server a metamodel with the created elements and no others, and leaves no unnamed metamodel."
+    },
+    "guarantee": {
+      "es": "Crear un metamodelo con el asistente y guardarlo funciona de punta a punta en un navegador real contra el servidor real.",
+      "en": "Creating a metamodel with the wizard and saving it works end to end in a real browser against the real server."
+    },
+    "limits": {
+      "es": "El paso de estructura del asistente solo muestra un resumen y un botón que abre el editor visual; atributos y relaciones se escriben en ese editor, no dentro del asistente (la etapa se reclama como entrada a esa edición con el resultado guardado). No cubre la puerta de nombres vacíos de ese paso, la validación de errores del servidor ni el idioma español.",
+      "en": "The wizard's structure step only shows a summary and a button that opens the visual editor; attributes and relations are typed in that editor, not inside the wizard (the stage is claimed as the entry to that editing with the saved result). It does not cover that step's empty-name gate, server-side validation errors or the Spanish interface."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción de usuario real en navegador, backend real, lectura del fichero guardado y puerta de rechazo comprobada.",
+      "en": "Real user action in a browser, real backend, reading of the saved file and a checked rejection gate."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "el asistente guiado exige el nombre, añade clasificadores y guarda el metamodelo completo",
+        "scenario": { "es": "Se vacía el nombre, se escribe uno válido, se añaden clase, interfaz, enumerado y tipo de datos y se finaliza.", "en": "The name is cleared, a valid one is typed, a class, interface, enumeration and data type are added and the wizard is finished." },
+        "result": { "es": "Sin nombre no se avanza; al finalizar el servidor guarda el metamodelo completo.", "en": "Without a name there is no progress; on finishing the server stores the complete metamodel." }
+      },
+      {
+        "n": "desde el asistente se abre el editor visual y el atributo y la relación creados llegan al metamodelo guardado",
+        "scenario": { "es": "Desde el segundo paso se abre el editor visual, se añade un atributo y una referencia y se guarda.", "en": "From the second step the visual editor is opened, an attribute and a reference are added and the metamodel is saved." },
+        "result": { "es": "El servidor guarda el atributo y la referencia con los extremos correctos.", "en": "The server stores the attribute and the reference with the right endpoints." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.metamodel.web.MetamodelAuthoringSaveGateHttpIntegrationTests",
+      "pw:e2e/real/metamodel/canvas-author-relations.spec.ts",
+      "pw:e2e/real/real-backend-smoke.spec.ts"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/metamodel/wizard-define-save.spec.ts", "line": 21 },
+      { "path": "frontend/e2e/real/metamodel/wizard-define-save.spec.ts", "line": 33 },
+      { "path": "frontend/e2e/real/metamodel/wizard-define-save.spec.ts", "line": 53 },
+      { "path": "frontend/e2e/real/metamodel/wizard-define-save.spec.ts", "line": 59 },
+      { "path": "frontend/e2e/real/metamodel/wizard-define-save.spec.ts", "line": 98 },
+      { "path": "frontend/e2e/real/metamodel/wizard-define-save.spec.ts", "line": 100 },
+      { "path": "frontend/e2e/real/metamodel/wizard-define-save.spec.ts", "line": 115 },
+      { "path": "frontend/e2e/real/metamodel/wizard-define-save.spec.ts", "line": 133 },
+      { "path": "frontend/e2e/real/metamodel/wizard-define-save.spec.ts", "line": 135 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

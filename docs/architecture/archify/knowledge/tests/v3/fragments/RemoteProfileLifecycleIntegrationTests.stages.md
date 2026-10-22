@@ -1,0 +1,5 @@
+- repos_connect_sync.a1: oneProfilePerProviderIsStoredWithItsBaseUrlAndMaximumSize (lines 46-75, six profiles saved, raw registry read from disk, no credentials) establishes profile creation per provider.
+- repos_author_connection.d: the same method (lines 59-68, custom base URL and maximum artifact size per profile in the raw registry) and invalidOrExcessiveProfilesAreRejectedAndTheRegistryIsUntouched (line 173) establish the compatibility and security values being saved.
+- repos_author_connection.r: afterARestartANewInstanceListsTheSameProfilesAndDeletionPersists (lines 88-117, new manager instance lists the same profiles; deletion persists) establishes the saved profile being reusable.
+- repos_connect_sync.d1: onlyThreeProvidersSupportGitOperations (lines 129-144, three literal Git addresses, three non-Git providers rejected, host outside the allowed list rejected) establishes the Git-provider decision.
+- The web form (er_ui_connections) is not exercised; only the server profile manager and address resolver are.

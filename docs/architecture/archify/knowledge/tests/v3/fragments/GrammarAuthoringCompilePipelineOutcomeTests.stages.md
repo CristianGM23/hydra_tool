@@ -1,0 +1,6 @@
+- x_grammar_to_text_model.mm: theMetamodelIsRequiredOnlyInLinkedAndMetamodelFirstModesAndIsPersisted (lines 176-179 reread, 192-193 on-disk file with literal mode and metamodel, 200-204 rejection without metamodel and no new file).
+- grammar_compile_pipeline.s1: freezingRecordsTheRecomputedHashAndRejectsChangedText (lines 222-226 recomputed source hash recorded by the freeze stage, 230 and 238 changed text rejected, 240-242 no snapshot and no active version).
+- grammar_compile_pipeline.s5: theSemanticContractIdAndEtagAreFixedAndTheLayerCheckReportsItsMode (lines 259-260 recomputed id and etag for a free grammar, 263-264 and 270-275 mode reported by the layer check, 278-279 persisted etag).
+- grammar_compile_pipeline.s11: everyGeneratedFileIsRegisteredWithItsRecomputedHashAndSize (lines 302-304 recomputed hash and size per file, 317-320 grammar source file, 322 count, 326 persisted list).
+- x_grammar_to_text_model.d1: aBlockingErrorStopsBothCompileAndGenerateBeforeAnyFileIsProduced (lines 350-358 failed status, single failed stage, no later stage, no files; 360 active version unchanged).
+- grammar_author_save_compile.bl (indirect): same test, backend half of the gate only; button state is UI.

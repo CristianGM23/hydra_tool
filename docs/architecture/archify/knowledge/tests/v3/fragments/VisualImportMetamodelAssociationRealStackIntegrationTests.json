@@ -1,0 +1,138 @@
+[
+  {
+    "id": "java:com.example.editor.definition.importing.VisualImportMetamodelAssociationRealStackIntegrationTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Importación visual: asociación con el metamodelo y regla de vista previa frente a confirmación",
+      "en": "Visual import: metamodel association and the preview-versus-confirm rule"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "layers2": [
+      "delivery"
+    ],
+    "caps": [
+      "model_editor",
+      "metamodel"
+    ],
+    "procs": [
+      {
+        "id": "model_editor_visual_import",
+        "stages": [
+          "as",
+          "art",
+          "d1"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/definition/importing/VisualImportMetamodelResolver.java",
+      "src/main/java/com/example/editor/definition/importing/VisualDefinitionImportService.java",
+      "src/main/java/com/example/editor/definition/importing/VisualValidationAssociationService.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportService.java",
+      "src/main/java/com/example/editor/definition/EditorDefinitionApplicationService.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring completo con directorios en un directorio temporal y el fixture sirius-complete.",
+      "en": "Full Spring context with directories in a temporary directory and the sirius-complete fixture."
+    },
+    "setup": {
+      "es": "@SpringBootTest sin mocks; los tests se ordenan porque el último persiste el metamodelo del fixture; el oráculo lista y lee los directorios del disco.",
+      "en": "@SpringBootTest without mocks; tests are ordered because the last one persists the fixture metamodel; the oracle lists and reads the disk directories."
+    },
+    "executes": {
+      "es": "VisualImportMetamodelResolver, VisualDefinitionImportService.importSirius, VisualValidationAssociationService.commit y EditorDefinitionApplicationService.create reales.",
+      "en": "Real VisualImportMetamodelResolver, VisualDefinitionImportService.importSirius, VisualValidationAssociationService.commit and EditorDefinitionApplicationService.create."
+    },
+    "asserts": {
+      "es": "EXISTING usa el metamodelo guardado; EXTERNAL (.ecore) y EMBEDDED (ZIP) lo analizan sin escribir; dos metamodelos distintos o ninguno se rechazan; la vista previa de Sirius no persiste nada; commit() sin validaciones guarda el metamodelo y después se guarda la definición; commit() con 3 validaciones guarda el metamodelo y un documento de validaciones con id estable.",
+      "en": "EXISTING uses the stored metamodel; EXTERNAL (.ecore) and EMBEDDED (ZIP) analyse it without writing; two different metamodels or none are rejected; the Sirius preview persists nothing; commit() without validations stores the metamodel and then the definition is saved; commit() with 3 validations stores the metamodel and a validation document with a stable id."
+    },
+    "behavior": {
+      "es": "Antes de aceptar una importación visual HYDRA decide con qué metamodelo se asocia y no escribe nada hasta que se confirma; al confirmar guarda el metamodelo, las validaciones importadas y la definición del editor.",
+      "en": "Before accepting a visual import HYDRA decides which metamodel it is associated with and writes nothing until confirmed; on confirmation it stores the metamodel, the imported validations and the editor definition."
+    },
+    "rule": {
+      "es": "La vista previa no tiene efectos; una asociación ambigua o inexistente se rechaza; confirmar persiste el metamodelo y las validaciones importadas.",
+      "en": "The preview has no side effects; an ambiguous or missing association is rejected; confirming persists the metamodel and the imported validations."
+    },
+    "scenario": {
+      "es": "Resolver los tres modos de asociación con el fixture, probar ambigüedad y ausencia, importar el .odesign de Sirius con su .ecore externo, comprobar el disco, confirmar con y sin validaciones y guardar la definición.",
+      "en": "Resolve the three association modes with the fixture, test ambiguity and absence, import the Sirius .odesign with its external .ecore, check disk, confirm with and without validations and save the definition."
+    },
+    "result": {
+      "es": "Asociaciones correctas sin escrituras en la vista previa, rechazos con mensajes exactos y, tras confirmar, metamodelo, documento de validaciones (con id estable) y definición en disco.",
+      "en": "Correct associations with no writes in the preview, rejections with exact messages and, after confirming, metamodel, validation document (with a stable id) and definition on disk."
+    },
+    "expected": {
+      "es": "Modos, mensajes y contenido de los directorios coinciden en los seis tests.",
+      "en": "Modes, messages and directory contents match in the six tests."
+    },
+    "guarantee": {
+      "es": "Evidencia real de la asociación al metamodelo y de la regla vista previa/confirmación en la importación visual.",
+      "en": "Real evidence of the metamodel association and of the preview/confirm rule in visual import."
+    },
+    "limits": {
+      "es": "Solo Sirius de escritorio; EMBEDDED se prueba en el resolvedor y no en una importación completa; sin la pantalla de revisión (UI); no se relee el contenido de las reglas guardadas.",
+      "en": "Only desktop Sirius; EMBEDDED is tested at the resolver and not in a full import; no review screen (UI); the content of the stored rules is not re-read."
+    },
+    "strengthWhy": {
+      "es": "Resolvedor, importador, asociación y guardado reales, oráculo en disco y rechazos reales.",
+      "en": "Real resolver, importer, association and saving, on-disk oracle and real rejections."
+    },
+    "cases": [
+      {
+        "n": "ambiguousOrMissingMetamodelsAreRejected",
+        "scenario": {
+          "es": "ZIP con dos metamodelos distintos o sin metamodelo.",
+          "en": "ZIP with two different metamodels or none."
+        },
+        "result": {
+          "es": "IllegalArgumentException con el motivo.",
+          "en": "IllegalArgumentException with the reason."
+        }
+      },
+      {
+        "n": "commitWithValidationsPersistsTheValidationDocumentWithAStableId",
+        "scenario": {
+          "es": "Confirmar con las 3 validaciones importadas.",
+          "en": "Confirm with the 3 imported validations."
+        },
+        "result": {
+          "es": "Metamodelo y documento de validaciones persistidos, con un id de documento estable sin dos puntos.",
+          "en": "Metamodel and validation document persisted, with a stable document id without a colon."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationRealStackIntegrationTests.java",
+        "line": 110
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationRealStackIntegrationTests.java",
+        "line": 136
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationRealStackIntegrationTests.java",
+        "line": 155
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationRealStackIntegrationTests.java",
+        "line": 183
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationRealStackIntegrationTests.java",
+        "line": 203
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationRealStackIntegrationTests.java",
+        "line": 230
+      }
+    ]
+  }
+]

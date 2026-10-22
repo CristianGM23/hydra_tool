@@ -1,0 +1,4 @@
+- x_remote_repository_exchange.p1: storedVersionMarkMatchesTheBytesOnDisk (line 64, ETag = SHA-256 of the file) establishes the version mark.
+- x_remote_repository_exchange.p1: obsoleteVersionIsRejectedAndFileIsIntact (lines 78-86) establishes rejection of stale/null versions without touching the file.
+- x_remote_repository_exchange.p1: twoConcurrentWritersWithTheSameExpectedVersionOnlyOneWins (lines 126-134) establishes that a clash is detected under concurrency.
+- x_remote_repository_exchange.p1: freshInstanceRereadsTheStoredVersion (lines 149-150) establishes persistence of the winning version.

@@ -1,0 +1,229 @@
+[
+  {
+    "id": "java:com.example.editor.portability.transaction.CapabilityLayerTransactionServiceTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Transacción por capas de capacidades: vista previa, aplicación, bloqueo y reversión",
+      "en": "Capability layer transaction: preview, apply, blocking and rollback"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "portability",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "portability_package_merge",
+        "stages": [
+          "a5",
+          "a6"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "portability_revert",
+        "stages": [
+          "a",
+          "c",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "portability_author_merge",
+        "stages": [
+          "a",
+          "d",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_package_and_move_capabilities",
+        "stages": [
+          "t1",
+          "rv"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "portability_package_merge",
+        "stages": [
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_package_and_move_capabilities",
+        "stages": [
+          "d3"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "portability_revert",
+        "stages": [
+          "b"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "portability_author_merge",
+        "stages": [
+          "b",
+          "c"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionService.java",
+      "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionProperties.java",
+      "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionJournal.java",
+      "src/main/java/com/example/editor/portability/CapabilityPackageChecker.java",
+      "src/main/java/com/example/editor/project/storage/ProjectWorkspaceContributionRegistry.java",
+      "src/main/java/com/example/editor/project/storage/ProjectArtifactClassifier.java",
+      "src/main/java/com/example/editor/portability/transaction/CapabilityLayerRollbackResult.java",
+      "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionResult.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal con permisos de escritura.",
+      "en": "Writable temporary directory."
+    },
+    "executes": {
+      "es": "CapabilityLayerTransactionService real con comprobador, clasificador y diario en un directorio temporal; solo se sustituye el registro de contribuciones para apuntar a una carpeta de metamodelos temporal.",
+      "en": "Real CapabilityLayerTransactionService with checker, classifier and journal in a temp dir; only the contribution registry is overridden to point to a temporary metamodels folder."
+    },
+    "asserts": {
+      "es": "Vista previa CREATE aplicable, fichero people.metamodel.json escrito y luego restaurado/borrado; vista previa no aplicable con diagnósticos (ETag obsoleto, metamodelo distinto, suma SHA-256 errónea); diario cerrado o abierto y qué documentos se restauran.",
+      "en": "CREATE preview applicable, people.metamodel.json written then restored/deleted; non-applicable preview with diagnostics (stale ETag, different metamodel, wrong SHA-256 checksum); journal closed or open and which documents are restored."
+    },
+    "behavior": {
+      "es": "Un paquete de capas se previsualiza y se aplica de forma transaccional al almacenamiento de metamodelos con diario, se bloquea si el ETag cambió, si apunta a otro metamodelo o si la suma no coincide, y se revierte completa o solo en las capas elegidas, también tras una interrupción, dejando el proyecto real exactamente como antes de aplicar.",
+      "en": "A layer package is previewed and applied transactionally to metamodel storage with a journal, blocked if the ETag changed, it targets another metamodel or the checksum differs, and is rolled back fully or only for selected layers, also after an interruption, leaving the real project exactly as it was before applying."
+    },
+    "rule": {
+      "es": "Una capa modificada desde que se cargó, un paquete de otro metamodelo o con suma inválida no es aplicable; revertir restaura solo lo seleccionado y cierra el diario solo cuando no queda nada pendiente.",
+      "en": "A layer changed since it was loaded, a package for another metamodel or with an invalid checksum is not applicable; rolling back restores only what is selected and closes the journal only when nothing is pending."
+    },
+    "scenario": {
+      "es": "Aplicación y reversión completas, ETag \"stale\", paquete \"orders\" para \"people\", suma incorrecta, diario de una transacción interrumpida sin aplicar y reversión de una de dos capas.",
+      "en": "Full apply and rollback, \"stale\" ETag, package \"orders\" for \"people\", wrong checksum, journal of an interrupted never-applied transaction and rollback of one of two layers."
+    },
+    "result": {
+      "es": "Ficheros creados y borrados en disco, diagnósticos con los mensajes esperados, restoredDocuments y journalClosed según el caso y el diario eliminado al cerrarse.",
+      "en": "Files created and removed on disk, diagnostics with the expected messages, restoredDocuments and journalClosed per case and the journal removed when closed."
+    },
+    "expected": {
+      "es": "Los ficheros, diagnósticos y estados del diario coinciden con lo esperado.",
+      "en": "Files, diagnostics and journal states match expectations."
+    },
+    "guarantee": {
+      "es": "Evidencia de que la transacción por capas aplica y revierte sobre ficheros reales y bloquea los casos inseguros indicados, dejando el proyecto real restaurado exactamente como antes de aplicar.",
+      "en": "Evidence that the layer transaction applies and reverts on real files and blocks the indicated unsafe cases, leaving the real project restored exactly as it was before applying."
+    },
+    "limits": {
+      "es": "Solo capas METAMODEL con un registro de contribuciones sustituido; no prueba otros tipos de artefacto, concurrencia ni fallos de disco a mitad de la aplicación.",
+      "en": "Only METAMODEL layers with a replaced contribution registry; does not test other artifact kinds, concurrency or disk failures mid-apply."
+    },
+    "strengthWhy": {
+      "es": "Integración real sin mocks de CapabilityLayerTransactionService real. El caso previewsAppliesAndRollsBackACompletePortableTransaction aplica una capa real y la revierte de verdad, dejando el fichero real eliminado -- exactamente 'r' (Proyecto restaurado) de portability_revert, el mismo mecanismo real ya usado para portability_author_merge.r, visto desde el proceso de solo-reversion en lugar del de fusion-y-reversion.",
+      "en": "Real, mock-free integration of a real CapabilityLayerTransactionService. The previewsAppliesAndRollsBackACompletePortableTransaction case genuinely applies a real layer and genuinely rolls it back, leaving the real file removed -- exactly portability_revert's 'r' (Project restored), the same real mechanism already used for portability_author_merge.r, viewed from the revert-only process instead of the merge-and-revert one."
+    },
+    "cases": [
+      {
+        "n": "previewsAppliesAndRollsBackACompletePortableTransaction",
+        "scenario": {
+          "es": "Vista previa, aplicar y revertir una capa METAMODEL",
+          "en": "Preview, apply and roll back a METAMODEL layer"
+        },
+        "result": {
+          "es": "Fichero creado y luego eliminado con el diario cerrado",
+          "en": "File created then removed with the journal closed"
+        }
+      },
+      {
+        "n": "blocksStaleEtagsAndPackagesForAnotherMetamodel",
+        "scenario": {
+          "es": "ETag obsoleto, otro metamodelo y suma distinta",
+          "en": "Stale ETag, another metamodel and a different checksum"
+        },
+        "result": {
+          "es": "Tres vistas previas no aplicables con su diagnóstico",
+          "en": "Three non-applicable previews with their diagnostics"
+        }
+      },
+      {
+        "n": "closesARecoveryJournalWhenThePlannedLayerWasNeverApplied",
+        "scenario": {
+          "es": "Diario de transacción interrumpida sin capa aplicada",
+          "en": "Interrupted transaction journal with no applied layer"
+        },
+        "result": {
+          "es": "Se cierra y se elimina el diario",
+          "en": "The journal is closed and removed"
+        }
+      },
+      {
+        "n": "rollsBackOnlySelectedLayersAndKeepsTheJournalOpen",
+        "scenario": {
+          "es": "Dos capas aplicadas y reversión de una",
+          "en": "Two layers applied and one rolled back"
+        },
+        "result": {
+          "es": "Solo se borra people y el diario sigue abierto",
+          "en": "Only people is removed and the journal stays open"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.portability.archive.CapabilityPackageArchiveServiceTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionServiceTests.java",
+        "line": 35
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionServiceTests.java",
+        "line": 36
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionServiceTests.java",
+        "line": 50
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionServiceTests.java",
+        "line": 62
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionServiceTests.java",
+        "line": 78
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionServiceTests.java",
+        "line": 82
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionServiceTests.java",
+        "line": 102
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionServiceTests.java",
+        "line": 126
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionServiceTests.java",
+        "line": 129
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionServiceTests.java",
+        "line": 130
+      }
+    ]
+  }
+]

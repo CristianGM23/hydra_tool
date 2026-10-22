@@ -1,0 +1,144 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.application.GrammarIdentitySaveGateIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Guardar una gramática: identificador, nombre, perfil de herramientas y regla de entrada",
+      "en": "Saving a grammar: identifier, name, toolchain profile and entry rule"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": [
+      "grammar",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "grammar_author_identity",
+        "stages": [
+          "id",
+          "tc",
+          "er",
+          "v",
+          "r"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarToolchainProfileService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarRepository.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío para el almacén de gramáticas.",
+      "en": "Empty temporary directory for the grammar store."
+    },
+    "setup": {
+      "es": "Servicio de aplicación, repositorio JSON, catálogo de perfiles y proveedores reales; el oráculo cuenta y lee los ficheros del disco.",
+      "en": "Real application service, JSON repository, profile catalogue and providers; the oracle counts and reads the files on disk."
+    },
+    "executes": {
+      "es": "GrammarApplicationService.create con identificadores inválidos, nombre en blanco, nombre repetido, perfil desconocido o de otra tecnología y regla de entrada en blanco; después una entrada válida y su relectura; GrammarSourceAnalyzer con entrada explícita e inferida.",
+      "en": "GrammarApplicationService.create with invalid identifiers, blank name, duplicate name, unknown or other-technology profile and blank entry rule; then a valid entry and its re-read; GrammarSourceAnalyzer with explicit and inferred entry."
+    },
+    "asserts": {
+      "es": "Mensajes exactos de rechazo (Grammar id is invalid, name is required, name already exists, Unknown grammar toolchain profile, is not compatible with LANGIUM, entryRule is required) con cero ficheros guardados; catálogo con cuatro perfiles; entrada válida releída de disco; EXPLICIT_ENTRY frente a otro método.",
+      "en": "Exact rejection messages (Grammar id is invalid, name is required, name already exists, Unknown grammar toolchain profile, is not compatible with LANGIUM, entryRule is required) with zero files stored; catalogue with four profiles; valid entry re-read from disk; EXPLICIT_ENTRY versus another method."
+    },
+    "behavior": {
+      "es": "Una gramática solo se guarda con un identificador válido, un nombre no vacío y único, un perfil de herramientas existente y compatible con su tecnología, y una regla de entrada; si algo falla, no se guarda nada.",
+      "en": "A grammar is only saved with a valid identifier, a non-empty unique name, an existing toolchain profile compatible with its technology, and an entry rule; if anything fails, nothing is saved."
+    },
+    "rule": {
+      "es": "Identificador de dos o más caracteres que empieza por letra; nombre único sin distinguir mayúsculas; perfil de la misma tecnología; regla de entrada obligatoria.",
+      "en": "Identifier of two or more characters starting with a letter; case-insensitive unique name; profile of the same technology; entry rule required."
+    },
+    "scenario": {
+      "es": "Intentar guardar gramáticas con identificador con espacios, que empieza por cifra o de un carácter, nombre en blanco o repetido, perfil inexistente o de otra tecnología y sin regla de entrada; luego guardar una válida y releerla.",
+      "en": "Try to save grammars with an identifier containing spaces, starting with a digit or one character long, blank or duplicate name, non-existent or other-technology profile and no entry rule; then save a valid one and re-read it."
+    },
+    "result": {
+      "es": "Cada intento inválido se rechaza con su mensaje y no deja ficheros; la gramática válida queda guardada y se relee igual; el análisis distingue entrada explícita de inferida.",
+      "en": "Each invalid attempt is rejected with its message and leaves no files; the valid grammar is stored and re-read identically; the analysis tells explicit from inferred entry."
+    },
+    "expected": {
+      "es": "Los rechazos tienen el mensaje esperado, el disco queda vacío tras ellos y la gramática válida se relee con sus valores.",
+      "en": "Rejections carry the expected message, the disk stays empty after them and the valid grammar is re-read with its values."
+    },
+    "guarantee": {
+      "es": "Evidencia real de la puerta de guardado de la identidad de la gramática, con repositorio en disco y casos negativos reales.",
+      "en": "Real evidence of the grammar identity save gate, with an on-disk repository and real negative cases."
+    },
+    "limits": {
+      "es": "La lista de perfiles se comprueba en el servicio, no a través de la capa HTTP; no se ejerce la incompatibilidad entre perfil y proveedor porque el catálogo no la permite.",
+      "en": "The profile list is checked at the service, not through the HTTP layer; profile/provider incompatibility is not exercised because the catalogue does not allow it."
+    },
+    "strengthWhy": {
+      "es": "Servicio y almacén reales, oráculo en disco y casos negativos con mensaje exacto.",
+      "en": "Real service and store, on-disk oracle and negative cases with exact message."
+    },
+    "cases": [
+      {
+        "n": "invalidIdentifiersBlankNamesAndDuplicateNamesAreRejectedWithNothingStored",
+        "scenario": {
+          "es": "Identificadores y nombres inválidos o repetidos.",
+          "en": "Invalid or duplicate identifiers and names."
+        },
+        "result": {
+          "es": "Rechazo con mensaje y cero ficheros.",
+          "en": "Rejection with message and zero files."
+        }
+      },
+      {
+        "n": "unknownOrIncompatibleToolchainProfilesAreRejectedAndTheCatalogListsTheOfferedOnes",
+        "scenario": {
+          "es": "Perfil inexistente o de otra tecnología.",
+          "en": "Non-existent or other-technology profile."
+        },
+        "result": {
+          "es": "Rechazo; catálogo con cuatro perfiles.",
+          "en": "Rejection; catalogue with four profiles."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarIdentitySaveGateIntegrationTests.java",
+        "line": 96
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarIdentitySaveGateIntegrationTests.java",
+        "line": 101
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarIdentitySaveGateIntegrationTests.java",
+        "line": 105
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarIdentitySaveGateIntegrationTests.java",
+        "line": 119
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarIdentitySaveGateIntegrationTests.java",
+        "line": 135
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarIdentitySaveGateIntegrationTests.java",
+        "line": 144
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarIdentitySaveGateIntegrationTests.java",
+        "line": 158
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarIdentitySaveGateIntegrationTests.java",
+        "line": 137
+      }
+    ]
+  }
+]

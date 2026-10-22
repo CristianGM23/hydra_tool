@@ -1,0 +1,53 @@
+[
+  {
+    "id": "pw:e2e/real/project/import-local-zip.spec.ts",
+    "name": { "es": "Importar un proyecto desde un ZIP local con los mismos ficheros y bytes", "en": "Import a project from a local ZIP with the same files and bytes" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["project"],
+    "procs": [
+      { "id": "project_author_import", "stages": ["b"], "match": "direct" },
+      { "id": "project_open_organize", "stages": ["a3"], "match": "direct" },
+      { "id": "project_author_import", "stages": ["a"], "match": "direct" },
+      { "id": "project_import_export", "stages": ["i1"], "match": "direct" }
+    ],
+    "pre": null,
+    "executes": { "es": "Navegador real sobre la aplicación compilada y el backend real: abre el diálogo de importación desde Inicio, elige el origen ZIP, selecciona un archivo ZIP de proyecto, indica destino y nombre y confirma.", "en": "Real browser on the built application and the real backend: opens the import dialog from Home, chooses the ZIP source, selects a project ZIP file, gives destination and name and confirms." },
+    "asserts": { "es": "El proyecto importado queda activo con el identificador del ZIP; cada fichero del ZIP existe en la carpeta creada con los mismos bytes (leídos con un lector ZIP independiente); repetir el destino o importar un archivo inválido se rechaza sin dejar nada.", "en": "The imported project becomes active with the ZIP's identifier; every ZIP file exists in the created folder with the same bytes (read with an independent ZIP reader); repeating the destination or importing an invalid file is rejected leaving nothing behind." },
+    "behavior": { "es": "El usuario trae un proyecto existente desde un ZIP y obtiene una carpeta de proyecto nueva, idéntica al archivo, ya abierta en HYDRA.", "en": "The user brings in an existing project from a ZIP and gets a new project folder, identical to the archive, already open in HYDRA." },
+    "rule": { "es": "No se sobrescribe un destino existente y un archivo que no es un proyecto no deja una carpeta a medias.", "en": "An existing destination is never overwritten and a file that is not a project does not leave a half-created folder." },
+    "scenario": { "es": "ZIP con un metamodelo, un modelo y un fichero binario; se importa, se repite en el mismo destino y se intenta con un archivo que no es un ZIP de proyecto.", "en": "A ZIP with a metamodel, a model and a binary file; it is imported, repeated on the same destination and attempted with a file that is not a project ZIP." },
+    "result": { "es": "La carpeta importada contiene todos los ficheros del ZIP con idéntico contenido, el proyecto queda activo, y los intentos inválidos fallan sin cambiar lo importado.", "en": "The imported folder holds every ZIP file with identical content, the project is active, and the invalid attempts fail without changing what was imported." },
+    "expected": { "es": "Ficheros idénticos al ZIP, sesión activa del proyecto importado, mensajes de error visibles y ninguna carpeta residual.", "en": "Files identical to the ZIP, an active session of the imported project, visible error messages and no leftover folder." },
+    "guarantee": { "es": "Importar desde ZIP reproduce fielmente el proyecto del archivo y rechaza destinos o archivos inadecuados sin dañar nada.", "en": "Importing from ZIP faithfully reproduces the archive's project and rejects unsuitable destinations or files without damaging anything." },
+    "limits": { "es": "El ZIP de partida sale de exportar un proyecto sembrado con el propio backend. Elegir origen: ZIP y carpeta se importan de verdad; repositorio y proyecto externo solo se prueban hasta su formulario y su puerta (piden perfil, ruta o análisis previo y no cambian nada); su importación con éxito NO se prueba (servicio externo y fixtures propios). Interfaz en inglés.", "en": "The starting ZIP comes from exporting a project seeded with the backend itself. Choosing the source: ZIP and folder really import; repository and external project are only tested up to their own form and gate (they ask for a profile, path or prior analysis and change nothing); their successful import is NOT tested (external service and own fixtures). English interface." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Importación hecha por el usuario en navegador, backend real y comparación byte a byte con un lector ZIP independiente, más rechazos comprobados.", "en": "Import done by the user in a browser, real backend and a byte-for-byte comparison with an independent ZIP reader, plus checked rejections." },
+    "external": "none",
+    "cases": [
+      { "n": "importar el ZIP", "scenario": { "es": "Elige ZIP, destino y nombre y confirma.", "en": "Chooses ZIP, destination and name and confirms." }, "result": { "es": "Carpeta nueva con los mismos ficheros y bytes; proyecto activo.", "en": "A new folder with the same files and bytes; project active." } },
+      { "n": "destino repetido y archivo inválido", "scenario": { "es": "Repite el destino y sube un archivo que no es un proyecto.", "en": "Repeats the destination and uploads a file that is not a project." }, "result": { "es": "Ambos fallan con aviso visible y sin residuos.", "en": "Both fail with a visible notice and no leftovers." } },
+      { "n": "elegir el origen", "scenario": { "es": "Alterna entre repositorio, proyecto externo y carpeta de proyecto, y confirma en cada uno.", "en": "Switches between repository, external project and project folder, and confirms in each." }, "result": { "es": "Repositorio y externo piden sus datos y no cambian nada; la carpeta se importa con los mismos bytes.", "en": "Repository and external ask for their data and change nothing; the folder is imported with the same bytes." } }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/project/import-local-zip.spec.ts", "line": 61 },
+      { "path": "frontend/e2e/real/project/import-local-zip.spec.ts", "line": 69 },
+      { "path": "frontend/e2e/real/project/import-local-zip.spec.ts", "line": 74 },
+      { "path": "frontend/e2e/real/project/import-local-zip.spec.ts", "line": 81 },
+      { "path": "frontend/e2e/real/project/import-local-zip.spec.ts", "line": 93 },
+      { "path": "frontend/e2e/real/project/import-local-zip.spec.ts", "line": 125 },
+      { "path": "frontend/e2e/real/project/import-local-zip.spec.ts", "line": 134 },
+      { "path": "frontend/e2e/real/project/import-local-zip.spec.ts", "line": 152 }
+    ],
+    "prod": [
+      "frontend/src/project-explorer/ProjectManagerDialog.tsx",
+      "frontend/src/project-explorer/ProjectExplorerWorkspace.tsx",
+      "frontend/src/application-shell/HydraHome.tsx",
+      "src/main/java/com/example/editor/project/web/ProjectController.java",
+      "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java",
+      "src/main/java/com/example/editor/project/storage/ProjectZipService.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

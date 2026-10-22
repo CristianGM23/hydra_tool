@@ -1,0 +1,99 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.TransformationCheckDiagnosticsQuickFixRuntimeTests",
+    "name": {
+      "es": "Diagnósticos y correcciones rápidas al comprobar una transformación",
+      "en": "Diagnostics and quick fixes when checking a transformation"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "transformation_author_guided",
+        "stages": [
+          "ck"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java",
+      "src/main/java/com/example/editor/transformation/quickfix/TransformationQuickFixService.java",
+      "src/main/java/com/example/editor/transformation/quickfix/TransformationQuickFixController.java"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Servicio de aplicación, comprobador, repositorio JSON y catálogo de metamodelos reales sobre disco temporal, más el servicio de correcciones rápidas real y su punto HTTP; comprueba borradores con error, con aviso y sin problemas.",
+      "en": "Real application service, checker, JSON repository and metamodel catalog on a temp directory, plus the real quick-fix service and its HTTP endpoint; checks drafts with an error, with a warning and with no problems."
+    },
+    "asserts": {
+      "es": "Gravedad, código, regla y asignación de cada diagnóstico; la corrección propuesta (conversión explícita o asignación compatible) vuelve a pasar el comprobador real y se guarda en disco; el borrador no cambia; sin problemas no hay correcciones; HTTP igual que el servicio.",
+      "en": "Severity, code, rule and mapping of each diagnostic; the proposed fix (explicit conversion or compatible mapping) passes the real checker again and is saved to disk; the draft is unchanged; no problems means no fixes; HTTP equals the service."
+    },
+    "behavior": {
+      "es": "Al comprobar una transformación se obtienen diagnósticos con su gravedad y la asignación afectada, y correcciones rápidas revisables que, aplicadas, dejan la definición válida; sugerir no cambia ni guarda nada.",
+      "en": "Checking a transformation yields diagnostics with their severity and the affected mapping, and reviewable quick fixes that, once applied, leave the definition valid; suggesting changes and saves nothing."
+    },
+    "rule": {
+      "es": "Un error de tipos bloquea y propone una conversión explícita; un atributo obligatorio sin asignar solo avisa y propone la asignación compatible única; un borrador limpio no propone nada.",
+      "en": "A type error blocks and proposes an explicit conversion; a required attribute left unmapped only warns and proposes the single compatible mapping; a clean draft proposes nothing."
+    },
+    "scenario": {
+      "es": "Metamodelo con edad entera y nombre obligatorio; borrador que asigna la edad al nombre; borrador que solo asigna la edad; borrador completo; mismo borrador enviado por HTTP.",
+      "en": "Metamodel with integer age and required name; draft mapping age to name; draft mapping only age; complete draft; same draft sent over HTTP."
+    },
+    "result": {
+      "es": "Error con su regla y asignación y corrección de conversión a texto que da definición válida y guardable; aviso con corrección de asignación directa; sin correcciones en el borrador limpio.",
+      "en": "Error with its rule and mapping and a to-text conversion fix that yields a valid, savable definition; warning with a direct-mapping fix; no fixes for the clean draft."
+    },
+    "expected": {
+      "es": "Los diagnósticos y correcciones coinciden con los literales y la corrección aplicada elimina el problema al volver a comprobar.",
+      "en": "Diagnostics and fixes match the literals and the applied fix removes the problem when re-checked."
+    },
+    "guarantee": {
+      "es": "Lo que el paso Comprobar muestra (diagnósticos y correcciones) lo produce el comprobador real, y cada corrección es verificable aplicándola.",
+      "en": "What the Check step shows (diagnostics and fixes) is produced by the real checker, and each fix is verifiable by applying it."
+    },
+    "limits": {
+      "es": "No ejerce la pantalla del asistente que presenta los diagnósticos ni el botón de aplicar; solo cubre las correcciones de conversión y de asignación obligatoria, no las de colección ni de elementos desaparecidos.",
+      "en": "Does not exercise the wizard screen that presents the diagnostics nor the apply button; only covers the conversion and required-mapping fixes, not the collection or vanished-element ones."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Comprobador, servicio, repositorio y metamodelo reales sin simulaciones; la corrección propuesta se vuelve a comprobar y se relee de disco como referencia independiente.",
+      "en": "Real checker, service, repository and metamodel without mocks; the proposed fix is re-checked and re-read from disk as independent reference."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationCheckDiagnosticsQuickFixRuntimeTests.java",
+        "line": 80
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationCheckDiagnosticsQuickFixRuntimeTests.java",
+        "line": 95
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationCheckDiagnosticsQuickFixRuntimeTests.java",
+        "line": 112
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationCheckDiagnosticsQuickFixRuntimeTests.java",
+        "line": 137
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationCheckDiagnosticsQuickFixRuntimeTests.java",
+        "line": 163
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationCheckDiagnosticsQuickFixRuntimeTests.java",
+        "line": 176
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

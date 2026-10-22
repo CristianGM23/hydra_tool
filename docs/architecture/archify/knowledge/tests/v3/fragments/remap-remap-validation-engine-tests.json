@@ -1,0 +1,251 @@
+[
+  {
+    "id": "java:com.example.editor.validation.runtime.ValidationEngineTests",
+    "name": {
+      "es": "Motor de validación: modos, diagnósticos y errores de ejecución",
+      "en": "Validation engine: modes, diagnostics and execution errors"
+    },
+    "type": "BEHAVIOR",
+    "layer": "behavior",
+    "layers2": [],
+    "caps": [
+      "validation"
+    ],
+    "procs": [
+      {
+        "id": "validation_execute",
+        "stages": [
+          "mode",
+          "cand",
+          "eval",
+          "diag",
+          "rep"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_validate_fix_revalidate_reward",
+        "stages": [
+          "va"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "validation_define_rule",
+        "stages": [
+          "msg"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/validation/runtime/ValidationEngine.java",
+      "src/main/java/com/example/editor/validation/runtime/ValidationCompiler.java",
+      "src/main/java/com/example/editor/validation/runtime/ModelValidationReport.java",
+      "src/main/java/com/example/editor/validation/runtime/ExecutableValidationPlan.java",
+      "src/main/java/com/example/editor/semantic/expression/ExpressionEvaluator.java",
+      "src/main/java/com/example/editor/metamodel/behavior/OperationQueryRuntime.java",
+      "src/main/java/com/example/editor/validation/validation/ValidationModelChecker.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "ValidationRuntimeTestFixtures (metamodelo people, regla positive-age, modelo alice/bob); reloj fijo 2026-07-27.",
+      "en": "ValidationRuntimeTestFixtures (people metamodel, positive-age rule, alice/bob model); fixed clock 2026-07-27."
+    },
+    "executes": {
+      "es": "ValidationEngine real (con ExpressionEvaluator, OperationQueryRuntime y reloj fijo) valida el modelo people (alice válida, bob con edad -2) con el plan de ValidationCompiler real en modos FULL, SELECTION, CLASS, ON_SAVE, MANUAL e INCREMENTAL, y con una expresión que divide por cero y un plan con regla rota.",
+      "en": "A real ValidationEngine (with ExpressionEvaluator, OperationQueryRuntime and a fixed clock) validates the people model (alice valid, bob with age -2) with the plan from a real ValidationCompiler in FULL, SELECTION, CLASS, ON_SAVE, MANUAL and INCREMENTAL modes, plus an expression dividing by zero and a plan with a broken rule."
+    },
+    "asserts": {
+      "es": "Diagnósticos solo para person:bob, valid() falso, executedRuleIds/skippedRuleIds por modo, id de diagnóstico estable con prefijo 'diagnostic-', mensaje 'person:bob must have a positive age', estado RULE_EXECUTION_ERROR para el fallo de evaluación, BROKEN_RULE junto a VIOLATION y metadatos de tiempo fijos.",
+      "en": "Diagnostics only for person:bob, valid() false, executedRuleIds/skippedRuleIds per mode, stable diagnostic id with 'diagnostic-' prefix, message 'person:bob must have a positive age', RULE_EXECUTION_ERROR status for the evaluation failure, BROKEN_RULE alongside VIOLATION and fixed timing metadata."
+    },
+    "behavior": {
+      "es": "HYDRA valida un modelo con las reglas compiladas: encuentra solo a la persona inválida, restringe candidatos por selección o clase, aplica solo las reglas del disparador de cada modo, genera ids y mensajes estables y distingue las violaciones de los errores de ejecución y de las reglas rotas sin detener las sanas.",
+      "en": "HYDRA validates a model with the compiled rules: it finds only the invalid person, restricts candidates by selection or class, applies only the rules of each mode's trigger, generates stable ids and messages and tells violations from execution errors and broken rules without stopping healthy ones."
+    },
+    "rule": {
+      "es": "Un error al evaluar una regla se informa como error de ejecución y no como violación; una regla rota se informa sin impedir que las demás se ejecuten; el modo MANUAL omite las reglas ordinarias.",
+      "en": "An error while evaluating a rule is reported as an execution error and not as a violation; a broken rule is reported without stopping the others; MANUAL mode skips ordinary rules."
+    },
+    "scenario": {
+      "es": "Ejecuciones FULL, SELECTION [alice], CLASS Person, ON_SAVE, MANUAL e INCREMENTAL con atributo age o name; expresión 1/0 > 0; plan con diagnóstico de compilación de regla rota.",
+      "en": "FULL, SELECTION [alice], CLASS Person, ON_SAVE, MANUAL and INCREMENTAL runs with age or name attribute; expression 1/0 > 0; plan with a broken-rule compilation diagnostic."
+    },
+    "result": {
+      "es": "Informes con los diagnósticos, reglas ejecutadas u omitidas y metadatos esperados en cada modo; estados RULE_EXECUTION_ERROR, BROKEN_RULE y VIOLATION.",
+      "en": "Reports with the expected diagnostics, executed or skipped rules and metadata in each mode; RULE_EXECUTION_ERROR, BROKEN_RULE and VIOLATION statuses."
+    },
+    "expected": {
+      "es": "Cada modo produce el informe indicado.",
+      "en": "Each mode produces the stated report."
+    },
+    "guarantee": {
+      "es": "Evidencia de que el motor produce estos informes para una regla de edad sobre un modelo de dos personas.",
+      "en": "Evidence that the engine produces these reports for an age rule over a two-person model."
+    },
+    "limits": {
+      "es": "Una regla de ejemplo y un modelo mínimo; no prueba el orquestador, la API, el rendimiento ni relaciones u operaciones en las condiciones.",
+      "en": "One sample rule and a minimal model; does not test the orchestrator, API, performance or relations and operations in conditions."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Reclasificacion honesta tras releer la prueba (needs-verification del plan de cierre): integracion real entre ValidationEngine, ValidationCompiler, ExpressionEvaluator y OperationQueryRuntime reales, sin mocks (traits.mocks=false), que ejercita exactamente los cinco modos de ejecucion descritos por la etapa mode y produce diagnosticos/estados reales (VIOLATION, RULE_EXECUTION_ERROR, BROKEN_RULE) para las etapas cand/eval/diag/rep.",
+      "en": "Honest reclassification after rereading the test (the closure plan own needs-verification flag): real integration between a real ValidationEngine, ValidationCompiler, ExpressionEvaluator and OperationQueryRuntime, no mocks (traits.mocks=false), exercising exactly the five execution modes described by the mode stage and producing real diagnostics/statuses (VIOLATION, RULE_EXECUTION_ERROR, BROKEN_RULE) for stages cand/eval/diag/rep."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "fullValidationFindsOnlyInvalidPerson",
+        "scenario": {
+          "es": "Validación FULL del modelo people.",
+          "en": "FULL validation of the people model."
+        },
+        "result": {
+          "es": "Diagnóstico solo en person:bob e informe no válido.",
+          "en": "Diagnostic only on person:bob and an invalid report."
+        }
+      },
+      {
+        "n": "selectionValidationRestrictsCandidates",
+        "scenario": {
+          "es": "Selección de person:alice.",
+          "en": "Selection of person:alice."
+        },
+        "result": {
+          "es": "Sin diagnósticos.",
+          "en": "No diagnostics."
+        }
+      },
+      {
+        "n": "manualModeSkipsOrdinaryRule",
+        "scenario": {
+          "es": "Modo MANUAL.",
+          "en": "MANUAL mode."
+        },
+        "result": {
+          "es": "Regla omitida y no ejecutada.",
+          "en": "Rule skipped and not executed."
+        }
+      },
+      {
+        "n": "incrementalModeSkipsUnrelatedRules",
+        "scenario": {
+          "es": "Cambio en el atributo name.",
+          "en": "Change on the name attribute."
+        },
+        "result": {
+          "es": "Ninguna regla ejecutada.",
+          "en": "No rule executed."
+        }
+      },
+      {
+        "n": "diagnosticIdentifierIsStableAcrossRuns",
+        "scenario": {
+          "es": "Dos validaciones FULL.",
+          "en": "Two FULL validations."
+        },
+        "result": {
+          "es": "Mismo id de diagnóstico con prefijo diagnostic-.",
+          "en": "Same diagnostic id with diagnostic- prefix."
+        }
+      },
+      {
+        "n": "runtimeErrorsAreSeparatedFromViolations",
+        "scenario": {
+          "es": "Expresión que divide entre cero.",
+          "en": "Expression dividing by zero."
+        },
+        "result": {
+          "es": "Estado RULE_EXECUTION_ERROR.",
+          "en": "RULE_EXECUTION_ERROR status."
+        }
+      },
+      {
+        "n": "brokenCompiledRuleIsReportedWithoutStoppingHealthyRules",
+        "scenario": {
+          "es": "Plan con regla rota y regla sana.",
+          "en": "Plan with a broken rule and a healthy rule."
+        },
+        "result": {
+          "es": "BROKEN_RULE y VIOLATION en el mismo informe.",
+          "en": "BROKEN_RULE and VIOLATION in the same report."
+        }
+      },
+      {
+        "n": "reportContainsDeterministicExecutionMetadata",
+        "scenario": {
+          "es": "Reloj fijo.",
+          "en": "Fixed clock."
+        },
+        "result": {
+          "es": "Inicio y fin iguales, duración 0 e id del plan esperado.",
+          "en": "Equal start and end, duration 0 and the expected plan id."
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/validation/runtime/ValidationEngineTests.java",
+        "line": 42
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/runtime/ValidationEngineTests.java",
+        "line": 49
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/runtime/ValidationEngineTests.java",
+        "line": 67
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/runtime/ValidationEngineTests.java",
+        "line": 85
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/runtime/ValidationEngineTests.java",
+        "line": 93
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/runtime/ValidationEngineTests.java",
+        "line": 120
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/runtime/ValidationEngineTests.java",
+        "line": 130
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/runtime/ValidationEngineTests.java",
+        "line": 137
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/runtime/ValidationEngineTests.java",
+        "line": 99
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED",
+    "user": {
+      "name": {
+        "es": "Motor de validación: modos, avisos y errores",
+        "en": "Validation engine: modes, notices and errors"
+      },
+      "behavior": {
+        "es": "HYDRA valida un modelo con las reglas preparadas: encuentra solo a la persona inválida, limita lo revisado por selección o clase, aplica las reglas de cada modo y distingue violaciones, errores de ejecución y reglas rotas sin detener las sanas.",
+        "en": "HYDRA validates a model with the prepared rules: it finds only the invalid person, limits what is checked by selection or class, applies each mode's rules and tells violations, execution errors and broken rules apart without stopping healthy ones."
+      },
+      "scenario": {
+        "es": "Validaciones completa, por selección, por clase, al guardar, manual y parcial, con el atributo edad o nombre; una expresión que divide entre cero; un plan con una regla rota.",
+        "en": "Full, by-selection, by-class, on-save, manual and partial validations, with the age or name attribute; an expression dividing by zero; a plan with a broken rule."
+      },
+      "result": {
+        "es": "Informes con los avisos, reglas ejecutadas u omitidas y datos esperados en cada modo; se distinguen un error de ejecución, una regla rota y una violación.",
+        "en": "Reports with the expected notices, rules run or skipped and data in each mode; an execution error, a broken rule and a violation are told apart."
+      },
+      "limits": {
+        "es": "Una regla de ejemplo y un modelo mínimo; no prueba el coordinador, el servicio web, el rendimiento ni relaciones y operaciones en las condiciones.",
+        "en": "One sample rule and a minimal model; it does not test the coordinator, the web service, performance or relations and operations in conditions."
+      }
+    }
+  }
+]

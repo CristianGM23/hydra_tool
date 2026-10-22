@@ -1,0 +1,81 @@
+[
+  {
+    "id": "pw:e2e/real/transformation/sync-session-ui.spec.ts",
+    "name": { "es": "Edición de uno o ambos modelos y sincronización de sesión en navegador real", "en": "Editing one or both models and session synchronization in a real browser" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["transformation"],
+    "procs": [
+      { "id": "transformation_sync", "stages": ["chg"], "match": "direct" },
+      { "id": "x_transformation_run_and_sync", "stages": ["edt"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/transformation-designer/TransformationSynchronizationSessionsPanel.tsx",
+      "frontend/src/transformation-designer/TransformationPreviewPanel.tsx",
+      "frontend/src/transformation-designer/TransformationDesigner.tsx",
+      "src/main/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionService.java",
+      "src/main/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionController.java",
+      "src/main/java/com/example/editor/transformation/sync/JsonTransformationSynchronizationSessionRepository.java",
+      "src/main/java/com/example/editor/transformation/runtime/TransformationIncrementalSynchronizationEngine.java"
+    ],
+    "pre": { "es": "Dos metamodelos y una transformación bidireccional sembrados por la API real; sin red.", "en": "Two metamodels and a bidirectional transformation seeded through the real API; no network." },
+    "executes": {
+      "es": "En el modo avanzado de un navegador real el usuario escribe los dos modelos, crea la sesión gestionada, sincroniza sin editar, edita el origen, o ambos lados con y sin choque, y sincroniza; después recarga y reabre la sesión.",
+      "en": "In advanced mode of a real browser the user types both models, creates the managed session, synchronizes without editing, edits the source, or both sides with and without a clash, and synchronizes; then reloads and reopens the session."
+    },
+    "asserts": {
+      "es": "El backend y el disco muestran la revisión 1 con la línea base inicial, que sincronizar sin cambios no avanza, la revisión 2 con el cambio propagado y un punto de control de sincronización, y que un choque con la política de parar bloquea sin avanzar mientras que cambios distintos se fusionan.",
+      "en": "The backend and disk show revision 1 with the initial baseline, that synchronizing without changes does not advance, revision 2 with the change propagated and a synchronization checkpoint, and that a clash under the stop policy blocks without advancing while different changes merge."
+    },
+    "behavior": {
+      "es": "Lo que el usuario cambia en el modelo de un lado o de los dos se propaga al otro al sincronizar la sesión, y la sesión guarda la nueva línea base con su historial.",
+      "en": "What the user changes in the model on one side or both is propagated to the other when the session is synchronized, and the session stores the new baseline with its history."
+    },
+    "rule": {
+      "es": "Sin cambios no hay revisión nueva; si ambos lados cambian lo mismo y la política es parar, se bloquea y la sesión no avanza.",
+      "en": "Without changes there is no new revision; if both sides change the same thing and the policy is to stop, it is blocked and the session does not advance."
+    },
+    "scenario": {
+      "es": "Una persona y su contacto emparejados; se cambia el nombre en el origen, o en ambos lados, o una propiedad solo del destino.",
+      "en": "A person and its paired contact; the name is changed on the source, or on both sides, or a property that exists only on the target."
+    },
+    "result": {
+      "es": "La sesión pasa a la revisión 2 con el nombre nuevo en ambos lados cuando no hay choque; con choque queda en la revisión 1 con la línea base anterior.",
+      "en": "The session moves to revision 2 with the new name on both sides when there is no clash; with a clash it stays at revision 1 with the previous baseline."
+    },
+    "expected": {
+      "es": "Revisiones, valores de la línea base y puntos de control leídos del backend y del disco coinciden con lo editado en pantalla.",
+      "en": "Revisions, baseline values and checkpoints read from the backend and from disk match what was edited on screen."
+    },
+    "guarantee": {
+      "es": "Evidencia real, de navegador a disco, de que editar y sincronizar una sesión desde el panel produce el estado guardado esperado.",
+      "en": "Real evidence, from browser to disk, that editing and synchronizing a session from the panel produces the expected stored state."
+    },
+    "limits": {
+      "es": "Los modelos se editan como texto en el panel, no en el editor gráfico; un solo emparejamiento, sin altas ni bajas de elementos, sin recuperar ni reconstruir la línea base.",
+      "en": "Models are edited as text in the panel, not in the graphical editor; a single pairing, no element additions or removals, no restore or rebase of the baseline."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones reales del usuario en navegador, backend real, lectura independiente de sesión y puntos de control en disco y casos de no avance.",
+      "en": "Real user actions in a browser, real backend, independent reading of session and checkpoints on disk and no-advance cases."
+    },
+    "external": "none",
+    "cases": [
+      { "n": "editar el origen", "scenario": { "es": "Cambiar el nombre en el origen y sincronizar.", "en": "Change the name on the source and synchronize." }, "result": { "es": "Revisión 2 con el nombre en ambos lados.", "en": "Revision 2 with the name on both sides." } },
+      { "n": "choque y fusión", "scenario": { "es": "Cambiar lo mismo en ambos lados y luego cosas distintas.", "en": "Change the same thing on both sides and then different things." }, "result": { "es": "Bloqueo sin avanzar y después fusión en revisión 2.", "en": "Blocked without advancing and then a merge at revision 2." } }
+    ],
+    "related": ["java:com.example.editor.transformation.TransformationSynchronizationSessionLifecycleIntegrationTests"],
+    "src": [
+      { "path": "frontend/e2e/real/transformation/sync-session-ui.spec.ts", "line": 91 },
+      { "path": "frontend/e2e/real/transformation/sync-session-ui.spec.ts", "line": 98 },
+      { "path": "frontend/e2e/real/transformation/sync-session-ui.spec.ts", "line": 108 },
+      { "path": "frontend/e2e/real/transformation/sync-session-ui.spec.ts", "line": 110 },
+      { "path": "frontend/e2e/real/transformation/sync-session-ui.spec.ts", "line": 114 },
+      { "path": "frontend/e2e/real/transformation/sync-session-ui.spec.ts", "line": 135 },
+      { "path": "frontend/e2e/real/transformation/sync-session-ui.spec.ts", "line": 150 },
+      { "path": "frontend/e2e/real/transformation/sync-session-ui.spec.ts", "line": 151 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

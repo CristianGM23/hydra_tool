@@ -1,0 +1,193 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.application.GrammarCompilationServiceEndToEndIntegrationTests",
+    "name": {
+      "es": "Compilación de doce etapas de una gramática real, de punta a punta",
+      "en": "Real end-to-end twelve-stage grammar compilation"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "grammar"
+    ],
+    "procs": [
+      {
+        "id": "grammar_compile_pipeline",
+        "stages": [
+          "s2",
+          "s7",
+          "act",
+          "fail",
+          "ac",
+          "ns"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_author_save_compile",
+        "stages": [
+          "gn",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_grammar_to_text_model",
+        "stages": [
+          "comp",
+          "d2",
+          "inf"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_grammar_to_text_model",
+        "stages": [
+          "d1"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "grammar_compile_pipeline",
+        "stages": [
+          "s1",
+          "s3",
+          "s5",
+          "s10",
+          "s11"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "grammar_author_save_compile",
+        "stages": [
+          "cp"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarAnalysisCoordinator.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarNativeToolchainService.java",
+      "src/main/java/com/example/editor/grammar/visualization/GrammarClassDiagramProjectionService.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarCompilationRepository.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarActivationRepository.java",
+      "src/main/java/com/example/editor/grammar/provider/GrammarProviderRegistry.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible.",
+      "en": "Writable temp directory."
+    },
+    "executes": {
+      "es": "GrammarCompilationService.compile real con sus diez colaboradores reales (servicio de gramáticas, perfiles, proveedores neutrales, coordinador de análisis, repositorios de compilación y activación, servicio de toolchain nativa, proyector de diagrama), sin mocks ni capa web.",
+      "en": "Real GrammarCompilationService.compile with its ten real collaborators (grammar service, profiles, neutral providers, analysis coordinator, compilation and activation repositories, native toolchain service, diagram projector), with no mocks or web layer."
+    },
+    "asserts": {
+      "es": "Una gramática válida compila con éxito las doce etapas en orden, produce un diagrama y un proyecto reales, se guarda y se activa si se pide; sin pedirlo, se guarda sin activar; una gramática con sintaxis inválida falla de verdad, registra la etapa y sus diagnósticos, y la versión activa anterior permanece intacta.",
+      "en": "A valid grammar successfully compiles all twelve stages in order, produces a real diagram and project, is saved and activated when requested; without that request, it is saved without activation; a grammar with invalid syntax genuinely fails, records the stage and its diagnostics, and the previous active version stays untouched."
+    },
+    "behavior": {
+      "es": "Compilar una gramática ejecuta de verdad las doce etapas reales en el propio proceso, activando solo si se pidió, y nunca sustituye la versión activa cuando un intento de compilación falla de verdad.",
+      "en": "Compiling a grammar genuinely runs all twelve real stages in-process, activating only when requested, and never replaces the active version when a compilation attempt genuinely fails."
+    },
+    "rule": {
+      "es": "Una compilación exitosa se activa solo si se pidió; un fallo real de análisis deja la etapa marcada y conserva intacta la versión activa anterior.",
+      "en": "A successful compilation is activated only when requested; a real analysis failure marks the stage and keeps the previous active version untouched."
+    },
+    "scenario": {
+      "es": "Compilar y activar una gramática válida; generar sin activar la misma gramática con otro identificador; compilar y activar una gramática válida y luego intentar compilar una versión con sintaxis realmente rota del mismo identificador.",
+      "en": "Compile and activate a valid grammar; generate without activating the same grammar under a different id; compile and activate a valid grammar and then attempt to compile a genuinely broken-syntax version of the same id."
+    },
+    "result": {
+      "es": "Snapshot exitoso con las doce etapas completas y activación real; snapshot exitoso guardado sin activar; snapshot fallido con diagnósticos reales y la activación anterior sin cambios.",
+      "en": "A successful snapshot with all twelve stages complete and real activation; a successful snapshot saved without activation; a failed snapshot with real diagnostics and the previous activation unchanged."
+    },
+    "expected": {
+      "es": "Cada escenario produce exactamente el snapshot, la persistencia y el estado de activación indicados.",
+      "en": "Each scenario produces exactly the stated snapshot, persistence and activation outcome."
+    },
+    "guarantee": {
+      "es": "Evidencia real, de punta a punta, de que la tubería de compilación de gramáticas de doce etapas funciona en el propio proceso sin necesitar ninguna herramienta nativa externa instalada en este servidor.",
+      "en": "Real, end-to-end evidence that the twelve-stage grammar compilation pipeline works in-process without needing any external native tool installed on this server."
+    },
+    "limits": {
+      "es": "La comprobación nativa real queda diferida honestamente porque este servidor no tiene instalada una toolchain nativa de gramáticas; no demuestra la ejecución de esa herramienta externa en sí ni la interfaz de usuario del asistente de compilación.",
+      "en": "Real native verification is honestly deferred because this server has no grammar native toolchain installed; it does not demonstrate running that external tool itself or the compilation wizard's UI."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Prueba nueva de integración real sin mocks (traits.mocks=false): resuelve de forma concluyente la investigación de deep-wiring pendiente sobre GrammarCompilationService, construyendo por primera vez en este código base sus diez colaboradores reales (ninguno de los cuales había sido ejercitado junto antes) y recorriendo la tubería completa de doce etapas, cubriendo directamente s1/s2/s3/s5/s7/s10/s11/act/fail/ac/ns.",
+      "en": "New real, mock-free integration test (traits.mocks=false): conclusively resolves the pending deep-wiring investigation on GrammarCompilationService, building its ten real collaborators together for the first time in this codebase (none had been exercised together before) and walking the full twelve-stage pipeline, directly covering s1/s2/s3/s5/s7/s10/s11/act/fail/ac/ns."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "compilesARealGrammarEndToEndAndActivatesItWithoutAnyRealNativeToolchain",
+        "scenario": {
+          "es": "Gramática Langium válida, compilar y activar",
+          "en": "Valid Langium grammar, compile and activate"
+        },
+        "result": {
+          "es": "Doce etapas exitosas en orden y activación real",
+          "en": "All twelve stages succeed in order and real activation"
+        }
+      },
+      {
+        "n": "generatingWithoutActivationLeavesTheGrammarWithARegisteredButInactiveCompilation",
+        "scenario": {
+          "es": "Misma gramática, generar sin activar",
+          "en": "Same grammar, generate without activating"
+        },
+        "result": {
+          "es": "Snapshot exitoso guardado y sin ninguna activación",
+          "en": "Successful snapshot saved and no activation at all"
+        }
+      },
+      {
+        "n": "aGrammarWithBlockingAnalysisErrorsFailsAndPreservesThePreviousActiveVersion",
+        "scenario": {
+          "es": "Version valida activada y luego una version con sintaxis rota",
+          "en": "A valid version activated and then a broken-syntax version"
+        },
+        "result": {
+          "es": "Fallo real registrado y la version activa anterior sin cambios",
+          "en": "Real failure recorded and the previous active version unchanged"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.grammar.visualization.GrammarClassDiagramProjectionServiceTests",
+      "java:com.example.editor.grammar.application.GrammarNativeToolchainServiceTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarCompilationServiceEndToEndIntegrationTests.java",
+        "line": 116
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarCompilationServiceEndToEndIntegrationTests.java",
+        "line": 151
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarCompilationServiceEndToEndIntegrationTests.java",
+        "line": 179
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarCompilationServiceEndToEndIntegrationTests.java",
+        "line": 185
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarCompilationServiceEndToEndIntegrationTests.java",
+        "line": 118
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarCompilationServiceEndToEndIntegrationTests.java",
+        "line": 135
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

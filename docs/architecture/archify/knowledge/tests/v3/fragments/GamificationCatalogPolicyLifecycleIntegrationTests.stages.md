@@ -1,0 +1,6 @@
+- gamification_author_form.lv: invalidLevelsDuplicatesAndLimitsAreRejectedWithoutPersistingAnything (L118), nivel con tipo inexistente rechazado sin persistir.
+- gamification_author_form.ck / gamification_author_guided.c: checkDraftReturnsBlockingErrorsAndNonBlockingWarnings (L134), errores y avisos separados.
+- gamification_author_guided.sv: catalogWithPolicyAnnotationsAndDiagramIsSavedToDiskAndReadBack (L92), definiciones, reglas y diagrama en disco.
+- gamification_author_policy.sf/mx/dt/sv: mismo test (L92) lee las anotaciones del JSON; savedPolicyGovernsTheFeedbackOfARealGrant (L150) comprueba superficies, duración, maxVisible, ventanas y showPoints resueltos.
+- gamification_author_policy.art: savedPolicyGovernsTheFeedbackOfARealGrant (L150), la política guardada se aplica al aviso siguiente.
+- Limitación: ninguna etapa de interfaz se ejecuta; se certifica el efecto en servidor.

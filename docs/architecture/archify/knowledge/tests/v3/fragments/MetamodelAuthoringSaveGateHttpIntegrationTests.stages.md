@@ -1,0 +1,5 @@
+- metamodel_author_wizard.va / metamodel_define_save.ok: invalidMetamodelIsRejectedWithValidatorCodesAndNoFile (lines 94-105, 422 + validator codes + no file).
+- metamodel_author_wizard.sv / metamodel_define_save.fix / .art: correctedMetamodelIsSavedWithEtagAndFile (lines 116-136, rejected then corrected, 201, ETag = SHA-256, GET).
+- metamodel_author_wizard.d1 / .art: both branches of the decision are asserted in the two tests above.
+- metamodel_define_save.ok: obsoleteEtagAnswers412AndKeepsTheStoredContent (line 157).
+- metamodel_author_wizard.va: validatingTheStoredMetamodelWritesAValidReceipt (lines 172-183, receipt file).

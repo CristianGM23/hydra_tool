@@ -1,0 +1,89 @@
+[
+  {
+    "id": "pw:e2e/real/gamification/form-elements.spec.ts",
+    "name": {
+      "es": "Formulario de gamificación: elementos, condición, efecto y repetición con backend real",
+      "en": "Gamification form: elements, condition, effect and repetition with a real backend"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["gamification", "events"],
+    "procs": [
+      { "id": "gamification_author_form", "stages": ["k", "m", "cn", "ef", "rp"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/gamification-designer/GamificationDesigner.tsx",
+      "frontend/src/gamification-designer/GamificationDesignerParts.tsx",
+      "frontend/src/gamification-designer/gamificationDesignerModel.ts",
+      "frontend/src/gamification-designer/gamificationFactory.ts",
+      "frontend/src/gamification-designer/api.ts",
+      "src/main/java/com/example/editor/gamification/web/CanonicalGamificationController.java",
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/gamification/GamificationChecker.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationBindingRepository.java"
+    ],
+    "pre": {
+      "es": "Metamodelo mínimo sembrado por la API real; navegador real contra la aplicación compilada y el backend real con almacenamiento temporal propio.",
+      "en": "Minimal metamodel seeded through the real API; real browser against the built application and the real backend with its own temporary storage."
+    },
+    "setup": {
+      "es": "Sin simulaciones de la API. Solo se siembra el metamodelo; los elementos y reglas los crea el usuario con el formulario.",
+      "en": "No API simulation. Only the metamodel is seeded; the user creates the elements and rules with the form."
+    },
+    "executes": {
+      "es": "Con el formulario crea tipo de puntos, recompensa, logro por defecto, reto, nivel y tres reglas (premio con condición y límite diario, penalización, espera); intenta guardar con el límite diario sin máximo, lo corrige y guarda.",
+      "en": "With the form it creates a point type, a reward, a default achievement, a challenge, a level and three rules (award with condition and daily limit, penalty, cooldown); it tries to save with the daily limit lacking a maximum, fixes it and saves."
+    },
+    "asserts": {
+      "es": "Los campos aparecen y desaparecen según la regla de interfaz; el servidor rechaza el primer guardado sin escribir nada; los ficheros finales llevan los valores por defecto y los rellenados; la penalización queda sin recompensa, logro ni reto.",
+      "en": "Fields appear and disappear according to the interface rule; the server refuses the first save without writing anything; the final files carry default and filled values; the penalty ends without reward, achievement or challenge."
+    },
+    "behavior": {
+      "es": "El usuario define cada tipo de elemento con sus datos obligatorios, la condición del evento, el efecto de premio o penalización y la repetición; lo guardado coincide con lo escrito y lo inválido se rechaza.",
+      "en": "The user defines each element type with its required data, the event condition, the award or penalty effect and the repetition; what is saved matches what was entered and invalid input is refused."
+    },
+    "rule": {
+      "es": "Operador y valor solo con una ruta (y sin valor para «existe»); al elegir penalización se vacían logro, reto y recompensa; la espera solo con espera y el máximo diario solo con límite diario, que exige un máximo.",
+      "en": "Operator and value only with a path (and no value for exists); choosing penalty clears achievement, challenge and reward; the cooldown only with cooldown and the daily maximum only with daily limit, which requires a maximum."
+    },
+    "scenario": {
+      "es": "Seis tipos de elemento creados en un metamodelo vacío; primer guardado inválido por límite diario sin máximo; segundo guardado válido; comprobación extra de una penalización con recompensa contra el servidor.",
+      "en": "Six element types created in an empty metamodel; first save invalid because of a daily limit without maximum; second save valid; extra check of a penalty with a reward against the server."
+    },
+    "result": {
+      "es": "Los ficheros del backend tienen puntos con saldo mínimo, recompensa con datos, reto con meta 3, nivel 25, y reglas con condición, límites, penalización negativa y espera de 60 segundos.",
+      "en": "The backend files hold points with minimum balance, a reward with data, a challenge with target 3, level 25, and rules with condition, limits, negative penalty and a 60-second cooldown."
+    },
+    "expected": {
+      "es": "Todo valor escrito en el formulario se encuentra en disco tras guardar y el guardado inválido no deja ficheros.",
+      "en": "Every value entered in the form is found on disk after saving and the invalid save leaves no files."
+    },
+    "guarantee": {
+      "es": "El formulario produce catálogos que el backend acepta con los valores del usuario y el servidor frena el límite diario sin máximo.",
+      "en": "The form produces catalogs the backend accepts with the user's values and the server stops a daily limit without a maximum."
+    },
+    "limits": {
+      "es": "Solo recorre un metamodelo vacío y un evento reservado; no usa eventos propios ni logro enlazado a una regla. El reto no tiene lista de acciones objetivo, solo una meta numérica. El guardado incluye el diagrama pero no se inspecciona su contenido.",
+      "en": "It only walks through an empty metamodel and one reserved event; it uses no custom events and no achievement linked to a rule. The challenge has no target action list, only a numeric goal. The save includes the diagram but its content is not inspected."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones de usuario reales en el navegador, backend real, lectura independiente de los ficheros escritos y rechazo real del servidor.",
+      "en": "Real user actions in the browser, real backend, independent reading of the written files and a real server refusal."
+    },
+    "external": "none",
+    "cases": [],
+    "related": ["java:com.example.editor.gamification.GamificationCatalogPolicyLifecycleIntegrationTests"],
+    "src": [
+      { "path": "frontend/e2e/real/gamification/form-elements.spec.ts", "line": 58 },
+      { "path": "frontend/e2e/real/gamification/form-elements.spec.ts", "line": 81 },
+      { "path": "frontend/e2e/real/gamification/form-elements.spec.ts", "line": 99 },
+      { "path": "frontend/e2e/real/gamification/form-elements.spec.ts", "line": 102 },
+      { "path": "frontend/e2e/real/gamification/form-elements.spec.ts", "line": 116 },
+      { "path": "frontend/e2e/real/gamification/form-elements.spec.ts", "line": 123 },
+      { "path": "frontend/e2e/real/gamification/form-elements.spec.ts", "line": 125 },
+      { "path": "frontend/e2e/real/gamification/form-elements.spec.ts", "line": 131 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

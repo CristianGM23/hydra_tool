@@ -274,9 +274,11 @@ public class CapabilitySemanticMergeService {
     /** Descripción: Ejecuta la operación «collectIdentities» correspondiente a la responsabilidad de Pair. Entradas: node: dato de entrada necesario para la operación; identities: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void collectIdentities(JsonNode node, Set<String> identities) {
         if(node == null) return;
         if(node.isObject()) {
-            for(String field : List.of("id", "ruleId", "validationId", "quickFixId", "actionId",
-                    "operationId", "eventId", "eventTypeId", "flowId", "nodeId", "mappingId",
-                    "bindingId", "toolId", "representationId", "classId")) {
+            JsonNode own = node.get("id");
+            if(own != null && own.isTextual() && !own.asText().isBlank()) identities.add(own.asText().trim());
+            else for(String field : List.of("ruleId", "operationId", "eventId", "nodeId", "mappingId", "bindingId")) {
+                // Sin "id" propio, solo los campos que identity() acepta como identidad definen el nodo;
+                // validationId/quickFixId/actionId/... son siempre referencias y nunca se registran como identidad.
                 JsonNode id = node.get(field);
                 if(id != null && id.isTextual() && !id.asText().isBlank()) identities.add(id.asText().trim());
             }

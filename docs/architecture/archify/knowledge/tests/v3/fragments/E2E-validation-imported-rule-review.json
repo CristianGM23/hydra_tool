@@ -1,0 +1,42 @@
+[
+  {
+    "id": "pw:e2e/real/validation/imported-rule-review.spec.ts",
+    "name": { "es": "Revisar y completar una regla importada en el navegador real", "en": "Reviewing and completing an imported rule in a real browser" },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "caps": ["validation", "persistence"],
+    "procs": [
+      { "id": "validation_author_import", "stages": ["rv"], "match": "direct" }
+    ],
+    "pre": { "es": "Un documento de validaciones con una regla importada de forma parcial, desactivada y con origen externo, sembrado con la API real (la importación no es lo que se prueba).", "en": "A validations document with a partially imported, disabled rule of external origin, seeded through the real API (the import itself is not what is tested)." },
+    "executes": { "es": "Un navegador real abre la regla importada, comprueba que aparece desactivada, completa su condición con el constructor guiado, la activa, la marca como completa y propia de HYDRA, guarda y recarga.", "en": "A real browser opens the imported rule, checks that it appears disabled, completes its condition with the guided builder, enables it, marks it as complete and owned by HYDRA, saves and reloads." },
+    "asserts": { "es": "Antes: regla desactivada y parcial en el servidor. Después: activada, completa y propia de HYDRA, con una condición real de comparación de edad; el fichero en disco coincide; tras recargar ya no aparece como desactivada.", "en": "Before: rule disabled and partial on the server. After: enabled, complete and owned by HYDRA, with a real age comparison condition; the file on disk matches; after reloading it no longer shows as disabled." },
+    "behavior": { "es": "Una regla traída de fuera con una condición provisional puede completarse y activarse desde la interfaz, y el resultado queda guardado.", "en": "A rule brought from outside with a provisional condition can be completed and enabled from the interface, and the result is saved." },
+    "rule": null,
+    "scenario": { "es": "Regla importada de un fichero externo con condición provisional siempre verdadera.", "en": "Rule imported from an external file with an always-true provisional condition." },
+    "result": { "es": "Regla activa, completa y con su condición definitiva guardada.", "en": "Active, complete rule with its final condition saved." },
+    "expected": { "es": "Estado y condición del servidor cambiados a lo que hizo el usuario.", "en": "Server state and condition changed to what the user did." },
+    "guarantee": { "es": "La revisión de una regla importada llega al servidor y sobrevive a recargar.", "en": "The review of an imported rule reaches the server and survives reloading." },
+    "limits": { "es": "No importa un fichero externo real: el punto de partida se siembra por la API; no cubre reglas con contexto sin resolver ni la edición con el asistente guiado.", "en": "It does not import a real external file: the starting point is seeded through the API; it does not cover rules with unresolved context nor editing with the guided wizard." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "La revisión la hace el usuario en el navegador real y se contrasta con el servidor y el disco, antes y después.", "en": "The user does the review in the real browser and it is checked against the server and disk, before and after." },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/validation/imported-rule-review.spec.ts", "line": 33 },
+      { "path": "frontend/e2e/real/validation/imported-rule-review.spec.ts", "line": 57 },
+      { "path": "frontend/e2e/real/validation/imported-rule-review.spec.ts", "line": 59 },
+      { "path": "frontend/e2e/real/validation/imported-rule-review.spec.ts", "line": 61 },
+      { "path": "frontend/e2e/real/validation/imported-rule-review.spec.ts", "line": 66 }
+    ],
+    "prod": [
+      "frontend/src/validation-designer/ValidationRuleManager.tsx",
+      "frontend/src/validation-designer/ValidationRuleEditor.tsx",
+      "frontend/src/validation-designer/GuidedConditionBuilder.tsx",
+      "frontend/src/validation-designer/ValidationDesigner.tsx",
+      "frontend/src/validation/validationApi.ts"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

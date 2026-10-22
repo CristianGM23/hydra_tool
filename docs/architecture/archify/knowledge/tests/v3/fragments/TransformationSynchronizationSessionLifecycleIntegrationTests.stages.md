@@ -1,0 +1,7 @@
+- transformation_sync.cr + x_transformation_run_and_sync.ses: createsASessionDetectsNoChangesAndPropagatesOnlyTheEditedElement (lines 86-100) establishes revision 1 with baselines, trace and first checkpoint, also read from the JSON on disk.
+- transformation_sync.sy + x_transformation_run_and_sync.sy: same method (lines 105-110 no-op, 117-129 edit one side) and staleEtagInconsistentBaselineAndChangedDefinitionAreRejectedWithoutAdvancing (lines 292-335) establish baseline-consistency checks and delta detection.
+- transformation_sync.blk: stopPolicyBlocksAConflictWithoutAdvancingAndMergesDisjointEdits (lines 160-172) establishes blocked=true without exception and without advancing the revision.
+- transformation_sync.ap + transformation_sync.rev + x_transformation_run_and_sync.ap: lines 117-129, 181-187 (disjoint merge), 204-209 (source wins), 227-232 (target wins) establish propagation of affected pairs only, discarding the losing side, and the revision+1 with checkpoint.
+- transformation_sync.rb and transformation_sync.rs: rebaseFromTargetAndRestoreCreateNewRevisions (lines 254-279) establishes rebase from TARGET (revision 3) and restore of checkpoint 1 (revision 4, original baselines).
+- x_transformation_run_and_sync.sv: lines 130-141 (raw JSON revision, history files, reload with a fresh instance) establish persistence of session and checkpoints.
+- Merged group note: transformation-sync-session and transformation-sync-session-lifecycle overlapped and are covered by this single class.

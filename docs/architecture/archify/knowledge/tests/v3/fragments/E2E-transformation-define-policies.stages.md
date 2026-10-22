@@ -1,0 +1,3 @@
+- transformation_define.pol: lines 46-49 (persisted directionality, conflict policy, forced trace and rule pair, read from API and disk) after the user's choices at lines 17-19.
+- transformation_define.pol (gate side): lines 27-28 (save without rules blocked, nothing created) and line 56 (independent checker call rejects the same definition without a reverse pair).
+- transformation_define.pol (round trip): lines 63-64 (page reload restores directionality and policy from the backend).

@@ -1,0 +1,80 @@
+﻿proceso;etapa;etiqueta;categoria;antes;ahora;sentido
+x_event_flow_to_reward;idem;"¿Evento ya procesado?";cross;NONE_MAPPED;STRONG;SUBE
+x_grammar_to_text_model;mm;"Elegir o importar el metamodelo";cross;NONE_MAPPED;STRONG;SUBE
+x_grammar_to_text_model;an;"Analizar la gramática";cross;STRONG;LIMITED;BAJA
+x_metamodel_save_and_cascade;d1;"¿Se completó la limpieza?";cross;STRONG;MEDIUM;BAJA
+x_package_and_move_capabilities;a1;"Elegir las capas y exportar";cross;STRONG;LIMITED;BAJA
+x_package_and_move_capabilities;m2;"Decidir qué hacer con cada conflicto";cross;STRONG;LIMITED;BAJA
+x_remote_repository_exchange;g1;"Elegir la operación Git";cross;STRONG;LIMITED;BAJA
+x_remote_repository_exchange;d3;"¿Conflicto o versión distinta?";cross;STRONG;LIMITED;BAJA
+x_language_to_published_editor;fx;"Aplicar una Quick Fix";cross;STRONG;LIMITED;BAJA
+x_language_to_published_editor;gm;"Conceder puntos y logros";cross;STRONG;LIMITED;BAJA
+x_project_lifecycle_overview;rc;"Recuperar el lenguaje del proyecto externo";cross;STRONG;LIMITED;BAJA
+x_project_lifecycle_overview;ex1;"Intercambiar con un repositorio remoto";cross;STRONG;MEDIUM;BAJA
+metamodel_define_save;rec;"Recuperar desde un proyecto externo";metamodel;STRONG;LIMITED;BAJA
+metamodel_author_canvas;ed;"Completar en el panel de propiedades";metamodel;LIMITED;STRONG;SUBE
+metamodel_author_wizard;st;"Estructura";metamodel;LIMITED;STRONG;SUBE
+model_editor_design_flow;id;"Identidad";model_editor;STRONG;LIMITED;BAJA
+model_editor_design_flow;rp;"Representaciones";model_editor;STRONG;LIMITED;BAJA
+model_editor_design_flow;tf;"Herramientas y formularios";model_editor;STRONG;LIMITED;BAJA
+model_editor_design_flow;cp;"Capacidades y límites";model_editor;STRONG;NONE_MAPPED;BAJA
+model_editor_author_guided;p1;"1. Identidad";model_editor;STRONG;LIMITED;BAJA
+model_editor_author_guided;p2;"2. Representaciones";model_editor;STRONG;LIMITED;BAJA
+model_editor_author_guided;p3;"3. Herramientas y formularios";model_editor;STRONG;NONE_MAPPED;BAJA
+model_editor_author_guided;p4;"4. Capacidades";model_editor;STRONG;LIMITED;BAJA
+model_editor_author_guided;d1;"¿Todo completo?";model_editor;STRONG;LIMITED;BAJA
+model_editor_visual_import;d1;"¿Confirmar?";model_editor;MEDIUM;STRONG;SUBE
+integration_author_views;sw;"¿Qué vista usar?";integration;LIMITED;STRONG;SUBE
+publication_generate_publish;t;"Elegir destino de generación";publication;LIMITED;STRONG;SUBE
+publication_author_codegen;t;"Elegir destino o lenguaje";publication;STRONG;LIMITED;BAJA
+publication_author_release;ch;"Canal de entrega y firma";publication;LIMITED;STRONG;SUBE
+generated_projects_lifecycle;ge;"Generar";generated_projects;MEDIUM;STRONG;SUBE
+generated_projects_lifecycle;va;"Validar el proyecto";generated_projects;MEDIUM;STRONG;SUBE
+events_author_form;a6;"Editar un enlace: condición y copias";events;LIMITED;MEDIUM;SUBE
+events_author_form;a7;"Comprobar";events;STRONG;LIMITED;BAJA
+events_author_connect;a4;"Poner condición y copias de datos";events;LIMITED;MEDIUM;SUBE
+events_author_source;a1;"Editar tipos y enlaces";events;MEDIUM;STRONG;SUBE
+events_author_source;a2;"Volver a formulario o arquitectura";events;MEDIUM;STRONG;SUBE
+events_author_source;a3;"Normalizar y comprobar";events;MEDIUM;STRONG;SUBE
+events_author_source;d1;"¿Es válido?";events;STRONG;MEDIUM;BAJA
+gamification_award;per;"Guardar estado e historial";gamification;STRONG;MEDIUM;BAJA
+gamification_author_form;art;"Elemento guardado";gamification;NONE_MAPPED;STRONG;SUBE
+gamification_author_canvas;n;"Añadir elementos";gamification;MEDIUM;STRONG;SUBE
+gamification_author_canvas;dr;"Arrastrar una conexión";gamification;MEDIUM;STRONG;SUBE
+gamification_author_canvas;ty;"¿Conexión permitida?";gamification;MEDIUM;STRONG;SUBE
+gamification_author_canvas;wr;"Escribir la referencia";gamification;MEDIUM;STRONG;SUBE
+gamification_author_canvas;rm;"Quitar una relación";gamification;MEDIUM;STRONG;SUBE
+grammar_define_language;txt;"Escribir o adaptar el texto";grammar;STRONG;NONE_MAPPED;BAJA
+grammar_compile_pipeline;s3;"3 Importaciones y 4 correspondencias: ¿correctas?";grammar;STRONG;LIMITED;BAJA
+grammar_compile_pipeline;s10;"10 Prueba de humo: ¿correcta?";grammar;STRONG;LIMITED;BAJA
+grammar_author_monaco;an;"Analizar el borrador";grammar;STRONG;MEDIUM;BAJA
+grammar_author_monaco;ok;"¿Hay errores?";grammar;STRONG;MEDIUM;BAJA
+grammar_author_monaco;r;"Borrador actualizado";grammar;STRONG;MEDIUM;BAJA
+grammar_author_save_compile;bl;"¿Errores bloqueantes?";grammar;STRONG;LIMITED;BAJA
+grammar_author_save_compile;cp;"Guardar, compilar y activar";grammar;STRONG;LIMITED;BAJA
+project_import_export;i1;"Elegir el origen";project;LIMITED;STRONG;SUBE
+project_import_export;i2;"¿Archivo de proyecto externo?";project;NONE_MAPPED;MEDIUM;SUBE
+project_import_export;x2;"¿ZIP o repositorio?";project;LIMITED;STRONG;SUBE
+project_author_tree;b;"¿Abrir o seleccionar?";project;MEDIUM;STRONG;SUBE
+project_author_import;a;"Elegir el origen";project;MEDIUM;STRONG;SUBE
+project_author_export;a;"Elegir destino";project;LIMITED;STRONG;SUBE
+project_author_home;b;"Acción principal";project;MEDIUM;STRONG;SUBE
+recovery_lifecycle;d2;"¿Confirmar y es aplicable?";recovery;STRONG;LIMITED;BAJA
+recovery_lifecycle;a7;"Guardar documentos";recovery;STRONG;LIMITED;BAJA
+recovery_author_wizard;g;"¿Importar?";recovery;LIMITED;STRONG;SUBE
+recovery_author_workspace;g;"Importar y materializar capas seleccionadas";recovery;LIMITED;STRONG;SUBE
+recovery_author_workspace;h;"Deshacer materialización";recovery;LIMITED;STRONG;SUBE
+toolchains_check_install;d1;"¿Genérica o motor de transformación?";toolchains;NONE_MAPPED;MEDIUM;SUBE
+toolchains_author_provision;a;"Elegir lenguaje de exportación";toolchains;NONE_MAPPED;MEDIUM;SUBE
+toolchains_author_provision;b;"Elegir versión del catálogo";toolchains;NONE_MAPPED;MEDIUM;SUBE
+repos_author_connection;a;"Elegir asistente o modo avanzado";external_repositories;LIMITED;STRONG;SUBE
+repos_author_git;b;"Elegir operación";external_repositories;STRONG;LIMITED;BAJA
+portability_author_export;b;"Resolver dependencias";portability;STRONG;LIMITED;BAJA
+transformation_author_mapping;rl;"Crear relaciones";transformation;NONE_MAPPED;STRONG;SUBE
+validation_define_rule;meta;"Tener el metamodelo guardado";validation;LIMITED;STRONG;SUBE
+validation_apply_quickfix;ok;"¿Aplicar?";validation;STRONG;MEDIUM;BAJA
+validation_author_guided;dec;"¿Ámbito de atributo o relación?";validation;STRONG;LIMITED;BAJA
+validation_author_quickfix;id;"1 Identidad";validation;STRONG;MEDIUM;BAJA
+validation_author_quickfix;sf;"2 Seguridad";validation;STRONG;LIMITED;BAJA
+validation_author_quickfix;op;"4 Operaciones";validation;STRONG;MEDIUM;BAJA
+validation_author_quickfix;kd;"¿Qué clase de operación?";validation;STRONG;NONE_MAPPED;BAJA

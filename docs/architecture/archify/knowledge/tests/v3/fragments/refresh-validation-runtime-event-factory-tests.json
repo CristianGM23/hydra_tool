@@ -1,0 +1,135 @@
+[
+  {
+    "id": "java:com.example.editor.validation.orchestration.ValidationRuntimeEventFactoryTests",
+    "name": {
+      "es": "Construcción de eventos de validación y Quick Fix",
+      "en": "Building validation and Quick Fix events"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "layers2": [],
+    "caps": [
+      "events",
+      "validation"
+    ],
+    "procs": [
+      {
+        "id": "validation_execute",
+        "stages": [
+          "ev"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/validation/orchestration/ValidationRuntimeEventFactory.java",
+      "src/main/java/com/example/editor/event/EventSubjectKind.java",
+      "src/main/java/com/example/editor/event/EventContextKind.java",
+      "src/main/java/com/example/editor/validation/runtime/ModelValidationReport.java",
+      "src/main/java/com/example/editor/validation/runtime/ModelValidationDiagnostic.java"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Llama a los métodos estáticos ValidationRuntimeEventFactory.validation, diagnostic y quickFix con informes y diagnósticos construidos a mano.",
+      "en": "Calls the static methods ValidationRuntimeEventFactory.validation, diagnostic and quickFix with hand-built reports and diagnostics."
+    },
+    "asserts": {
+      "es": "documentId del sujeto, que empieza por 'runtime-model-' y no contiene ':' cuando el id lleva dos puntos; tipo de sujeto VALIDATION_DIAGNOSTIC, elementId, payload ruleId; contexto QUICK_FIX, payload diagnosticId y correlationId.",
+      "en": "Subject documentId, starting with 'runtime-model-' and containing no ':' when the id has a colon; subject kind VALIDATION_DIAGNOSTIC, elementId, ruleId payload; QUICK_FIX context, diagnosticId payload and correlationId."
+    },
+    "behavior": {
+      "es": "HYDRA construye los eventos de validación y de corrección con el sujeto, el contexto, la carga y la correlación adecuados, y normaliza los ids de modelo con ':' para que sirvan como ids de documento de evento.",
+      "en": "HYDRA builds validation and correction events with the right subject, context, payload and correlation, and normalizes model ids containing ':' so they are usable as event document ids."
+    },
+    "rule": {
+      "es": "El id de documento de un evento debe ser estable y sin ':'; un evento de corrección lleva el contexto QUICK_FIX y se correlaciona con su transacción.",
+      "en": "An event's document id must be stable and without ':'; a correction event carries the QUICK_FIX context and is correlated with its transaction."
+    },
+    "scenario": {
+      "es": "Informe con id 'model-one' y con 'model:one', un diagnóstico de regla rule:one y un Quick Fix aplicado con transacción transaction:one.",
+      "en": "Report with id 'model-one' and with 'model:one', a diagnostic of rule rule:one and an applied Quick Fix with transaction transaction:one."
+    },
+    "result": {
+      "es": "Eventos con documentId, sujeto, contexto, payload y correlationId esperados.",
+      "en": "Events with the expected documentId, subject, context, payload and correlationId."
+    },
+    "expected": {
+      "es": "Cada fábrica devuelve un evento con los campos indicados.",
+      "en": "Each factory returns an event with the stated fields."
+    },
+    "guarantee": {
+      "es": "Evidencia de que los eventos se construyen con estos campos; sin garantizar su publicación ni consumo.",
+      "en": "Evidence that events are built with these fields, without guaranteeing their publication or consumption."
+    },
+    "limits": {
+      "es": "Solo construcción de objetos en memoria: no los publica en el bus ni comprueba que gamificación u otros consumidores reaccionen.",
+      "en": "In-memory object construction only: does not publish them on the bus nor check that gamification or other consumers react."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Prueba unitaria de métodos de fábrica estáticos.",
+      "en": "Unit test of static factory methods."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "normalizesRuntimeModelIdThatContainsColons",
+        "scenario": {
+          "es": "Modelo con id 'model:one'.",
+          "en": "Model with id 'model:one'."
+        },
+        "result": {
+          "es": "documentId empieza por runtime-model- y no contiene ':'.",
+          "en": "documentId starts with runtime-model- and has no ':'."
+        }
+      },
+      {
+        "n": "diagnosticEventUsesDiagnosticSubjectAndPayload",
+        "scenario": {
+          "es": "Evento de violación creada.",
+          "en": "Violation-created event."
+        },
+        "result": {
+          "es": "Sujeto VALIDATION_DIAGNOSTIC y payload con ruleId.",
+          "en": "VALIDATION_DIAGNOSTIC subject and a payload with ruleId."
+        }
+      },
+      {
+        "n": "quickFixEventUsesQuickFixContextAndCorrelation",
+        "scenario": {
+          "es": "Evento de Quick Fix aplicado.",
+          "en": "Quick Fix applied event."
+        },
+        "result": {
+          "es": "Contexto y sujeto QUICK_FIX, payload diagnosticId y correlationId de la transacción.",
+          "en": "QUICK_FIX context and subject, diagnosticId payload and the transaction correlationId."
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/validation/orchestration/ValidationRuntimeEventFactoryTests.java",
+        "line": 21
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/orchestration/ValidationRuntimeEventFactoryTests.java",
+        "line": 25
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/orchestration/ValidationRuntimeEventFactoryTests.java",
+        "line": 29
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/orchestration/ValidationRuntimeEventFactoryTests.java",
+        "line": 35
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/orchestration/ValidationRuntimeEventFactoryTests.java",
+        "line": 38
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

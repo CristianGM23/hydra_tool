@@ -1,0 +1,88 @@
+[
+  {
+    "id": "pw:e2e/real/grammar/technology-switch-conversion.spec.ts",
+    "name": {
+      "es": "Cambiar la tecnología de una gramática: sustitución directa sin texto y vista previa de conversión con texto",
+      "en": "Changing a grammar's technology: direct replacement without text and conversion preview with text"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["delivery"],
+    "caps": ["grammar", "persistence"],
+    "procs": [
+      { "id": "grammar_conversion_preview", "stages": ["em"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/grammar-designer/GrammarDesigner.tsx",
+      "frontend/src/grammar-designer/GrammarPlatformConversionDialog.tsx",
+      "frontend/src/grammar-designer/grammarDesignerModel.ts",
+      "frontend/src/grammar-designer/api.ts",
+      "src/main/java/com/example/editor/grammar/web/GrammarController.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java"
+    ],
+    "pre": {
+      "es": "Backend real con almacenamiento temporal propio; no hace falta sembrar nada.",
+      "en": "Real backend with its own temporary storage; nothing needs to be seeded."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, sin simulaciones. Las peticiones de la pantalla se observan sin interceptarlas y la misma petición se repite contra la API real como oráculo.",
+      "en": "Playwright with Chromium, no simulations. The screen's requests are observed without intercepting them and the same request is repeated against the real API as the oracle."
+    },
+    "executes": {
+      "es": "Con el editor vacío elige Xtext en el selector de tecnología y guarda; con una gramática con texto elige Xtext, cancela con 'Keep current grammar', vuelve a elegir, aplica con 'Apply converted grammar' y guarda; reenvía a la API real la petición de conversión que observó.",
+      "en": "With an empty editor picks Xtext in the technology selector and saves; with a grammar that has text picks Xtext, cancels with 'Keep current grammar', picks again, applies with 'Apply converted grammar' and saves; resends to the real API the conversion request it observed."
+    },
+    "asserts": {
+      "es": "Sin texto la tecnología cambia sin diálogo y sin petición de conversión; con texto aparece el diálogo con estructura equivalente y no se guarda nada; cancelar deja Langium y el texto intacto; al aplicar, el editor muestra el texto que devuelve la API real y recién tras guardar el fichero tiene tecnología Xtext y ese texto.",
+      "en": "Without text the technology changes with no dialog and no conversion request; with text the dialog appears with equivalent structure and nothing is saved; cancelling leaves Langium and the text intact; on applying, the editor shows the text the real API returns and only after saving does the file hold Xtext technology and that text."
+    },
+    "behavior": {
+      "es": "Si la gramática está vacía, cambiar de tecnología la sustituye al momento; si tiene texto, la persona revisa una vista previa de la conversión, puede cancelarla o aplicarla, y solo al guardar queda registrada.",
+      "en": "If the grammar is empty, changing technology replaces it at once; if it has text, the person reviews a conversion preview, can cancel or apply it, and it is only recorded when saved."
+    },
+    "rule": {
+      "es": "Con texto escrito, la tecnología solo cambia tras una vista previa equivalente aceptada por la persona; sin texto no hace falta.",
+      "en": "With text written, technology only changes after an equivalent preview accepted by the person; without text it is not needed."
+    },
+    "scenario": {
+      "es": "Una gramática vacía pasa a Xtext directamente; otra con texto cancela una conversión, la repite, la aplica y la guarda.",
+      "en": "An empty grammar goes to Xtext directly; another with text cancels a conversion, repeats it, applies it and saves it."
+    },
+    "result": {
+      "es": "Cada rama termina como corresponde y el fichero guardado tiene la tecnología y el texto convertidos que dio el servidor.",
+      "en": "Each branch ends as it should and the stored file has the converted technology and text given by the server."
+    },
+    "expected": {
+      "es": "Una ejecución correcta no pide conversión en el caso vacío, no guarda al previsualizar ni al aplicar, y guarda Xtext con el texto convertido al final.",
+      "en": "A passing run requests no conversion in the empty case, does not save on preview or on apply, and stores Xtext with the converted text at the end."
+    },
+    "guarantee": {
+      "es": "La decisión de si hay texto y las dos ramas posteriores funcionan en un navegador real y contra el servidor real.",
+      "en": "The decision on whether there is text and the two resulting branches work in a real browser and against the real server."
+    },
+    "limits": {
+      "es": "Solo prueba Langium hacia Xtext; no recorre ANTLR ni el caso en que la vista previa no es equivalente (botón bloqueado) ni la descarga del informe.",
+      "en": "It only tests Langium to Xtext; it does not walk through ANTLR, the case where the preview is not equivalent (blocked button) or the report download."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Selector y diálogo reales, servidor real, resultado contrastado con una llamada directa y comprobación de que previsualizar y aplicar no guardan.",
+      "en": "Real selector and dialog, real server, result compared with a direct call and a check that previewing and applying do not save."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.grammar.application.GrammarIdentitySaveGateIntegrationTests"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/grammar/technology-switch-conversion.spec.ts", "line": 20 },
+      { "path": "frontend/e2e/real/grammar/technology-switch-conversion.spec.ts", "line": 22 },
+      { "path": "frontend/e2e/real/grammar/technology-switch-conversion.spec.ts", "line": 35 },
+      { "path": "frontend/e2e/real/grammar/technology-switch-conversion.spec.ts", "line": 40 },
+      { "path": "frontend/e2e/real/grammar/technology-switch-conversion.spec.ts", "line": 61 },
+      { "path": "frontend/e2e/real/grammar/technology-switch-conversion.spec.ts", "line": 69 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

@@ -1,0 +1,123 @@
+[
+  {
+    "id": "java:com.example.editor.persistence.CanonicalDocumentStoreVersionConflictIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Almacén de documentos canónicos: rechazo de versiones obsoletas y escritores concurrentes",
+      "en": "Canonical document store: obsolete-version rejection and concurrent writers"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "x_remote_repository_exchange",
+        "stages": [
+          "p1"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/persistence/CanonicalDocumentStore.java",
+      "src/main/java/com/example/editor/persistence/LocalCanonicalDocumentStoreFactory.java",
+      "src/main/java/com/example/editor/validation/persistence/AtomicJsonDocumentStore.java",
+      "src/main/java/com/example/editor/persistence/CanonicalDocumentStoreSpec.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío; sin red ni credenciales.",
+      "en": "Empty temporary directory; no network or credentials."
+    },
+    "setup": {
+      "es": "@TempDir, fábrica local real y JsonMapper real; el oráculo lee el fichero crudo y recalcula el SHA-256.",
+      "en": "@TempDir, real local factory and real JsonMapper; the oracle reads the raw file and recomputes the SHA-256."
+    },
+    "executes": {
+      "es": "create/replace/delete/find sobre el almacén JSON atómico real creado por la fábrica, con dos hilos reales escribiendo con la misma versión esperada.",
+      "en": "create/replace/delete/find on the real atomic JSON store built by the factory, with two real threads writing with the same expected version."
+    },
+    "asserts": {
+      "es": "La ETag es el SHA-256 de los bytes en disco; una ETag obsoleta, nula o ajena da PRECONDITION_FAILED y deja el fichero intacto; de dos escritores concurrentes gana exactamente uno; una instancia nueva relee la versión vigente.",
+      "en": "The ETag is the SHA-256 of the bytes on disk; a stale, null or foreign ETag gives PRECONDITION_FAILED and leaves the file intact; of two concurrent writers exactly one wins; a fresh instance rereads the current version."
+    },
+    "behavior": {
+      "es": "Al guardar un documento se le asigna una marca de versión; quien intente guardar con una marca antigua es rechazado en lugar de pisar el cambio de otra persona.",
+      "en": "A stored document gets a version mark; whoever tries to save with an old mark is rejected instead of overwriting someone else's change."
+    },
+    "rule": {
+      "es": "Sustituir o borrar exige la marca de versión vigente; con la misma marca esperada solo un escritor puede tener éxito.",
+      "en": "Replacing or deleting requires the current version mark; with the same expected mark only one writer can succeed."
+    },
+    "scenario": {
+      "es": "Guardar v1, reemplazar a v2, intentar reemplazar y borrar con la marca de v1 o sin marca, lanzar dos escritores simultáneos con la marca de v1 y releer desde otra instancia.",
+      "en": "Store v1, replace with v2, try to replace and delete with v1's mark or no mark, launch two simultaneous writers with v1's mark and reread from another instance."
+    },
+    "result": {
+      "es": "Los intentos con marca obsoleta fallan sin modificar el fichero, solo un escritor concurrente persiste y la relectura devuelve la versión ganadora con su ETag.",
+      "en": "Attempts with an obsolete mark fail without touching the file, only one concurrent writer persists and the reread returns the winning version with its ETag."
+    },
+    "expected": {
+      "es": "Las aserciones sobre bytes, ETag y motivo del conflicto se cumplen en los cuatro casos.",
+      "en": "Assertions on bytes, ETag and conflict reason hold in all four cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que los documentos se guardan con comprobación de versión y de que un choque se detecta en lugar de perder cambios.",
+      "en": "Real evidence that documents are saved with version checking and that a clash is detected instead of losing changes."
+    },
+    "limits": {
+      "es": "Un solo proceso y almacén local; no cubre un repositorio remoto real ni la recuperación tras un corte a mitad de escritura.",
+      "en": "Single process and local store; does not cover a real remote repository or recovery after a mid-write interruption."
+    },
+    "strengthWhy": {
+      "es": "Almacén real sobre disco, oráculo independiente (bytes y SHA-256 propios), caso negativo y concurrencia real.",
+      "en": "Real on-disk store, independent oracle (own bytes and SHA-256), negative case and real concurrency."
+    },
+    "cases": [
+      {
+        "n": "obsoleteVersionIsRejectedAndFileIsIntact",
+        "scenario": {
+          "es": "Reemplazar y borrar con marca obsoleta o nula.",
+          "en": "Replace and delete with an obsolete or null mark."
+        },
+        "result": {
+          "es": "PRECONDITION_FAILED y bytes idénticos.",
+          "en": "PRECONDITION_FAILED and identical bytes."
+        }
+      },
+      {
+        "n": "twoConcurrentWritersWithTheSameExpectedVersionOnlyOneWins",
+        "scenario": {
+          "es": "Dos hilos con la misma marca esperada.",
+          "en": "Two threads with the same expected mark."
+        },
+        "result": {
+          "es": "Un éxito y un conflicto; el disco contiene al ganador.",
+          "en": "One success and one conflict; disk holds the winner."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/persistence/CanonicalDocumentStoreVersionConflictIntegrationTests.java",
+        "line": 64
+      },
+      {
+        "path": "src/test/java/com/example/editor/persistence/CanonicalDocumentStoreVersionConflictIntegrationTests.java",
+        "line": 86
+      },
+      {
+        "path": "src/test/java/com/example/editor/persistence/CanonicalDocumentStoreVersionConflictIntegrationTests.java",
+        "line": 126
+      },
+      {
+        "path": "src/test/java/com/example/editor/persistence/CanonicalDocumentStoreVersionConflictIntegrationTests.java",
+        "line": 150
+      }
+    ]
+  }
+]

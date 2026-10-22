@@ -73,17 +73,17 @@ final class TransformationIncrementalSynchronizationEngine {
         if(policy == TransformationConflictPolicy.REVERSE_WINS && targetChanged) {
             Propagation reverse = propagate(document, TransformationExecutionDirection.REVERSE, target, source,
                     request.baselineTargetModel(), request.baselineSourceModel(), targetDelta, ignoredTarget, trace, executor);
-            source = reverse.output(); trace = reverse.trace(); directions.add(TransformationExecutionDirection.REVERSE);
+            source = reverse.output(); trace = reverse.trace(); if(reverse.applied()) directions.add(TransformationExecutionDirection.REVERSE);
         }
         if(sourceChanged) {
             Propagation forward = propagate(document, TransformationExecutionDirection.FORWARD, source, target,
                     request.baselineSourceModel(), request.baselineTargetModel(), sourceDelta, ignoredSource, trace, executor);
-            target = forward.output(); trace = forward.trace(); directions.add(TransformationExecutionDirection.FORWARD);
+            target = forward.output(); trace = forward.trace(); if(forward.applied()) directions.add(TransformationExecutionDirection.FORWARD);
         }
         if(policy != TransformationConflictPolicy.REVERSE_WINS && targetChanged) {
             Propagation reverse = propagate(document, TransformationExecutionDirection.REVERSE, target, source,
                     request.baselineTargetModel(), request.baselineSourceModel(), targetDelta, ignoredTarget, trace, executor);
-            source = reverse.output(); trace = reverse.trace(); directions.add(TransformationExecutionDirection.REVERSE);
+            source = reverse.output(); trace = reverse.trace(); if(reverse.applied()) directions.add(TransformationExecutionDirection.REVERSE);
         }
         TransformationExecutionDirection primary = directions.isEmpty() ? TransformationExecutionDirection.FORWARD : directions.getLast();
         return result(source, target, primary, resolution, trace, directions, sourceDelta, targetDelta, conflicts, false, false);
@@ -96,7 +96,7 @@ final class TransformationIncrementalSynchronizationEngine {
             BiFunction<CanonicalModelDocument, TransformationExecutionDirection, TransformationExecutionResult> executor) {
         Set<String> affectedInputIds = affectedElementIds(inputDelta, baselineInput, input);
         affectedInputIds.removeAll(ignoredInputIds);
-        if(affectedInputIds.isEmpty()) return new Propagation(currentOutput, baselineTrace);
+        if(affectedInputIds.isEmpty()) return new Propagation(currentOutput, baselineTrace, false);
 
         TransformationExecutionResult candidateExecution = executor.apply(input, direction);
         CanonicalModelDocument candidate = candidateExecution.targetModel();
@@ -146,7 +146,7 @@ final class TransformationIncrementalSynchronizationEngine {
                 mergedRelations, annotations);
         TransformationTrace mergedTrace = mergeTrace(direction, baselineTrace, candidateTrace, affectedInputIds,
                 removedInputIds, outputIdRemap, document.synchronizationPolicy().propagateDeletions());
-        return new Propagation(output, mergedTrace);
+        return new Propagation(output, mergedTrace, true);
     }
 
     /** Descripción: Actualiza el estado gestionado por TraceIndex mediante la operación «mergeTrace». Entradas: direction: dato de entrada necesario para la operación; baseline: dato de entrada necesario para la operación; candidate: dato de entrada necesario para la operación; affectedInputIds: dato de entrada necesario para la operación; removedInputIds: dato de entrada necesario para la operación; outputIdRemap: dato de entrada necesario para la operación; propagateDeletions: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private TransformationTrace mergeTrace(TransformationExecutionDirection direction, TransformationTrace baseline,
@@ -471,7 +471,7 @@ final class TransformationIncrementalSynchronizationEngine {
         return List.copyOf(result.values());
     }
 
-    private record Propagation(CanonicalModelDocument output, TransformationTrace trace) { }
+    private record Propagation(CanonicalModelDocument output, TransformationTrace trace, boolean applied) { }
     private record TracePair(String sourceId, String targetId, String correspondenceId, String targetAlias) { }
 
     private static final class TraceIndex {

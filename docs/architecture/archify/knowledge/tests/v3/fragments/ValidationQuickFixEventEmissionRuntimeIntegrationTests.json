@@ -1,0 +1,47 @@
+[
+  {
+    "id": "java:com.example.editor.validation.quickfix.ValidationQuickFixEventEmissionRuntimeIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": { "es": "Validar y corregir publican sus eventos y listan diagnósticos con correcciones", "en": "Validating and fixing publish their events and list diagnostics with fixes" },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["validation", "events"],
+    "procs": [
+      { "id": "events_publish_session", "stages": ["a8"], "match": "direct" },
+      { "id": "x_validate_fix_revalidate_reward", "stages": ["d1"], "match": "direct" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrator.java",
+      "src/main/java/com/example/editor/validation/orchestration/ValidationRuntimeEventFactory.java",
+      "src/main/java/com/example/editor/validation/quickfix/QuickFixRuntimeService.java",
+      "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java"
+    ],
+    "pre": { "es": "Metamodelo, expresión, acción y regla reales guardados en disco temporal y un modelo vivo con un nombre inválido.", "en": "Real metamodel, expression, action and rule saved in a temporary directory and a live model with an invalid name." },
+    "setup": { "es": "Modelo EMF vivo, motor de validación, orquestador, corrección rápida y bus en memoria reales; un oyente recoge todos los eventos publicados.", "en": "Real live EMF model, validation engine, orchestrator, quick fix and in-memory bus; a listener records every published event." },
+    "executes": { "es": "Validar el modelo completo, aplicar la corrección, deshacerla y consultar los diagnósticos y las correcciones disponibles antes y después de corregir.", "en": "Validate the whole model, apply the fix, undo it and query the diagnostics and available fixes before and after fixing." },
+    "asserts": { "es": "Secuencia literal de tipos de evento en el bus con sus datos (problema, regla, gravedad, elemento, estado de la corrección, transacción); gravedad y corrección listadas; tras corregir el diagnóstico ya no se encuentra.", "en": "Literal sequence of event types on the bus with their data (problem, rule, severity, element, fix status, transaction); severity and fix listed; after fixing the diagnostic is no longer found." },
+    "behavior": { "es": "Al validar y al aplicar o deshacer una corrección se emiten eventos que el resto del sistema puede escuchar; cada problema abierto muestra su gravedad y su corrección.", "en": "Validating and applying or undoing a fix emit events the rest of the system can listen to; every open problem shows its severity and its fix." },
+    "rule": { "es": "Cada validación emite ejecución completada y problemas creados o resueltos; cada corrección emite iniciada y aplicada, o deshecha.", "en": "Each validation emits execution completed and problems created or resolved; each fix emits started and applied, or undone." },
+    "scenario": { "es": "Un modelo con un elemento de nombre inválido se valida, se corrige con su corrección rápida y se deshace.", "en": "A model with one invalid element name is validated, fixed with its quick fix and undone." },
+    "result": { "es": "El bus recibe los eventos esperados en orden, con datos literales; el diagnóstico es de gravedad error con una corrección y, resuelto, ya no existe.", "en": "The bus receives the expected events in order with literal data; the diagnostic has error severity with one fix and, once resolved, no longer exists." },
+    "expected": { "es": "Las secuencias de eventos y los datos coinciden con los literales.", "en": "The event sequences and data match the literals." },
+    "guarantee": { "es": "La emisión de eventos de validación y corrección rápida llega al bus real y la consulta de correcciones solo acepta diagnósticos abiertos.", "en": "Validation and quick-fix event emission reaches the real bus and the fix query only accepts open diagnostics." },
+    "limits": { "es": "No pasa por una sesión de edición completa ni por la pantalla del panel de problemas; el fallo de una corrección (evento de fallo) no se provoca.", "en": "It does not go through a full editing session or the problems panel screen; a failing fix (failure event) is not triggered." },
+    "strengthWhy": { "es": "Cadena real completa y oráculo de eventos literales recogidos en el bus.", "en": "Full real chain and an oracle of literal events collected on the bus." },
+    "cases": [
+      { "n": "runningTheValidationEmitsTheExecutionAndTheViolationEvents", "scenario": { "es": "Validación completa del modelo inválido.", "en": "Full validation of the invalid model." }, "result": { "es": "Ejecución completada y problema creado.", "en": "Execution completed and problem created." } },
+      { "n": "applyingAndUndoingAQuickFixEmitsTheFixEvents", "scenario": { "es": "Aplicar y deshacer la corrección.", "en": "Apply and undo the fix." }, "result": { "es": "Cuatro eventos al aplicar y uno al deshacer.", "en": "Four events when applying and one when undoing." } },
+      { "n": "diagnosticsCarrySeverityAndFixesAndAResolvedOneIsNoLongerFound", "scenario": { "es": "Consultar antes y después de corregir.", "en": "Query before and after fixing." }, "result": { "es": "Gravedad error y una corrección; después, no encontrado.", "en": "Error severity and one fix; afterwards, not found." } }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/validation/quickfix/ValidationQuickFixEventEmissionRuntimeIntegrationTests.java", "line": 197 },
+      { "path": "src/test/java/com/example/editor/validation/quickfix/ValidationQuickFixEventEmissionRuntimeIntegrationTests.java", "line": 222 },
+      { "path": "src/test/java/com/example/editor/validation/quickfix/ValidationQuickFixEventEmissionRuntimeIntegrationTests.java", "line": 237 },
+      { "path": "src/test/java/com/example/editor/validation/quickfix/ValidationQuickFixEventEmissionRuntimeIntegrationTests.java", "line": 250 },
+      { "path": "src/test/java/com/example/editor/validation/quickfix/ValidationQuickFixEventEmissionRuntimeIntegrationTests.java", "line": 262 }
+    ]
+  }
+]

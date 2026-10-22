@@ -1,0 +1,148 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.nativeexec.TransformationToolchainProvisioningServiceIntegrationTests",
+    "name": {
+      "es": "Instalar y revertir de verdad un paquete real de toolchain de transformación",
+      "en": "Genuinely installing and reverting a real transformation toolchain package"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "toolchains",
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "toolchains_check_install",
+        "stages": [
+          "a4",
+          "d3",
+          "a5",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "toolchains_engine_lifecycle",
+        "stages": [
+          "b",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "toolchains_author_provision",
+        "stages": [
+          "d",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_transformation_run_and_sync",
+        "stages": [
+          "tc"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningService.java",
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeExecutor.java",
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeCommandResolver.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible; el ejecutable real de Java de la propia JVM que ejecuta HYDRA.",
+      "en": "Writable temp directory; the real Java executable of the JVM running HYDRA itself."
+    },
+    "setup": {
+      "es": "Un paquete real completo (package.json + payload real con un manifiesto real de ejecucion y SHA-256 real) publicado en el catalogo real de distribucion, cuyo comando real lanza un proceso Java real y aislado (el mismo fixture real auto-descriptivo de TransformationNativeRuntimeExecutorTests) que responde de verdad a --hydra-describe.",
+      "en": "A complete real package (package.json + a real payload with a real runtime manifest and a real SHA-256) published to the real distribution catalog, whose real command launches a real, isolated Java process (the same real self-describing fixture from TransformationNativeRuntimeExecutorTests) that genuinely answers --hydra-describe."
+    },
+    "executes": {
+      "es": "TransformationToolchainProvisioningService.install real: verifica el paquete real por SHA-256, lo copia de forma atomica real al slot gestionado real, y ejecuta de verdad el diagnostico post-instalacion real contra el bridge real recien instalado.",
+      "en": "Real TransformationToolchainProvisioningService.install: verifies the real package by SHA-256, atomically copies it to the real managed slot, and genuinely runs the real post-install diagnosis against the newly installed real bridge."
+    },
+    "asserts": {
+      "es": "Con el mismo idioma real del slot, la instalacion queda INSTALLED, con diagnostico READY y el paquete visible en el catalogo; bajo un slot de idioma distinto, el diagnostico detecta INCOMPATIBLE y HYDRA revierte, dejando el slot vacio como antes.",
+      "en": "With the same real slot language, the installation ends INSTALLED, with a READY diagnostic and the package visible in the catalog; under a mismatched-language slot, the diagnosis detects INCOMPATIBLE and HYDRA reverts, leaving the slot empty as before."
+    },
+    "behavior": {
+      "es": "Instalar un paquete de toolchain verifica y copia de verdad el paquete real y, tras instalarlo, ejecuta de verdad su propio diagnostico real; si el bridge real resulta incompatible con el idioma real solicitado, HYDRA revierte de verdad la instalacion real sin dejar rastro.",
+      "en": "Installing a toolchain package genuinely verifies and copies the real package and, once installed, genuinely runs its own real diagnosis; if the real bridge turns out incompatible with the real requested language, HYDRA genuinely reverts the real installation without a trace."
+    },
+    "rule": {
+      "es": "Una instalacion real solo se mantiene si el diagnostico real post-instalacion no es INCOMPATIBLE; si lo es, se revierte de verdad al estado real anterior.",
+      "en": "A real installation only stays if the real post-install diagnosis is not INCOMPATIBLE; if it is, it is genuinely reverted to the real previous state."
+    },
+    "scenario": {
+      "es": "Bridge real publicado e instalado bajo su slot real correcto; el mismo bridge real publicado e instalado bajo un slot real de idioma distinto al que de verdad se autodescribe.",
+      "en": "A real bridge published and installed under its correct real slot; the same real bridge published and installed under a real slot whose language does not match what it genuinely self-describes."
+    },
+    "result": {
+      "es": "Instalacion real mantenida con diagnostico READY; instalacion real revertida con diagnostico INCOMPATIBLE y slot real vacio.",
+      "en": "Real installation kept with a READY diagnostic; real installation reverted with an INCOMPATIBLE diagnostic and an empty real slot."
+    },
+    "expected": {
+      "es": "Cada escenario real produce exactamente el estado de instalacion y el diagnostico real descritos.",
+      "en": "Each real scenario produces exactly the described installation state and real diagnostic."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que instalar un paquete de toolchain verifica, copia y diagnostica de verdad un bridge real, y revierte de verdad una instalacion real cuando el diagnostico real resulta incompatible, sin simular ningun resultado.",
+      "en": "Real evidence that installing a toolchain package genuinely verifies, copies and diagnoses a real bridge, and genuinely reverts a real installation when the real diagnosis turns out incompatible, without simulating any outcome."
+    },
+    "limits": {
+      "es": "No ejecuta el panel de interfaz en si; no cubre sondear herramientas genericas (ya evidenciado por otra prueba dedicada) ni diagnosticar un motor elegido por el usuario antes de instalar.",
+      "en": "Does not run the UI panel itself; does not cover generic tool probing (already evidenced by another dedicated test) nor diagnosing an engine chosen by the user before installing."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Prueba nueva de integracion real sin mocks (traits.mocks=false), reutilizando el fixture real auto-descriptivo ya probado: instala y revierte de verdad un paquete real, ejecutando un proceso Java real aislado para el diagnostico real, cubriendo directamente toolchains_check_install a4/d3/a5/r.",
+      "en": "New real, mock-free integration test (traits.mocks=false), reusing the already-proven real self-describing fixture: genuinely installs and reverts a real package, running a real isolated Java process for the real diagnosis, directly covering toolchains_check_install a4/d3/a5/r."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "installsARealPackageAndKeepsItWhenTheRealPostInstallDiagnosisIsCompatible",
+        "scenario": {
+          "es": "Bridge real bajo su slot real correcto",
+          "en": "Real bridge under its correct real slot"
+        },
+        "result": {
+          "es": "Instalado de verdad, diagnostico real READY",
+          "en": "Genuinely installed, real READY diagnostic"
+        }
+      },
+      {
+        "n": "revertsARealInstallationWhenTheRealPostInstallDiagnosisIsIncompatible",
+        "scenario": {
+          "es": "Mismo bridge real bajo un slot real de idioma distinto",
+          "en": "Same real bridge under a real mismatched-language slot"
+        },
+        "result": {
+          "es": "Revertido de verdad, slot real vacio",
+          "en": "Genuinely reverted, empty real slot"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.transformation.nativeexec.TransformationNativeRuntimeExecutorTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningServiceIntegrationTests.java",
+        "line": 42
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningServiceIntegrationTests.java",
+        "line": 64
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningServiceIntegrationTests.java",
+        "line": 53
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

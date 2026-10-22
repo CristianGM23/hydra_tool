@@ -1,0 +1,133 @@
+[
+  {
+    "id": "java:com.example.editor.definition.runtime.session.EditorModelSessionRealStackLifecycleIntegrationTests",
+    "name": {
+      "es": "Ciclo real de una sesión de editor: abrir, editar, validar, corregir, guardar y reabrir",
+      "en": "Real editor session cycle: open, edit, validate, fix, save and reopen"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "model_editor",
+      "validation",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "model_editor_session",
+        "stages": [
+          "op",
+          "ed",
+          "va",
+          "qf",
+          "sv",
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_language_to_published_editor",
+        "stages": [
+          "se"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_project_lifecycle_overview",
+        "stages": [
+          "me"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java",
+      "src/main/java/com/example/editor/definition/runtime/session/EditorSessionQuickFixRuntime.java",
+      "src/main/java/com/example/editor/definition/runtime/session/persistence/JsonEditorModelSessionRepository.java",
+      "src/main/java/com/example/editor/validation/runtime/ValidationRuntimeApplicationService.java",
+      "src/main/java/com/example/editor/validation/action/CanonicalActionExecutor.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "Metamodelo, expresiones, acciones y reglas de validación reales persistidos en @TempDir; validación, Quick Fix, cambios y repositorio de sesiones reales; sin Mockito.",
+      "en": "Real metamodel, expressions, actions and validation rules persisted in @TempDir; real validation, Quick Fix, change analysis and session repository; no Mockito."
+    },
+    "executes": {
+      "es": "EditorModelSessionService.create (validación al abrir), createNode, updateElement, validate FULL, quickFixes, applyQuickFix y save sobre una sesión sin autoguardado, y relectura con una instancia nueva del repositorio JSON.",
+      "en": "EditorModelSessionService.create (validate on open), createNode, updateElement, validate FULL, quickFixes, applyQuickFix and save over a session without autosave, then re-reading with a new JSON repository instance."
+    },
+    "asserts": {
+      "es": "Al abrir hay 1 diagnóstico; cada paso cambia etag y sube la revisión; la validación manual da 2 diagnósticos (uno por elemento INVALID); el Quick Fix real deja los nombres fixed e INVALID y se revalida de forma incremental sin el diagnóstico corregido; el disco no tiene el cambio antes de guardar y sí después, y el repositorio nuevo lo recupera.",
+      "en": "Opening yields 1 diagnostic; each step changes the etag and raises the revision; manual validation yields 2 diagnostics (one per INVALID element); the real Quick Fix leaves names fixed and INVALID and revalidates incrementally without the fixed diagnostic; disk lacks the change before saving and has it after, and the new repository recovers it."
+    },
+    "behavior": {
+      "es": "Una persona abre una sesión, edita, valida, aplica una corrección real que se revalida de forma incremental y guarda; al reabrir con otro repositorio el modelo corregido está intacto.",
+      "en": "A person opens a session, edits, validates, applies a real fix that is revalidated incrementally and saves; reopening with another repository finds the corrected model intact."
+    },
+    "rule": {
+      "es": "La validación al abrir y al cambiar sigue la política del editor; la corrección exige la capacidad de Quick Fix y revalida de forma incremental; guardar persiste la copia de trabajo.",
+      "en": "Validation on open and on change follows the editor policy; the fix requires the Quick Fix capability and revalidates incrementally; saving persists the working copy."
+    },
+    "scenario": {
+      "es": "Sesión con raíz de nombre INVALID, segundo elemento editado a INVALID, validación completa, Quick Fix action:reset, guardado y relectura.",
+      "en": "Session with an INVALID-named root, a second element edited to INVALID, full validation, Quick Fix action:reset, save and re-read."
+    },
+    "result": {
+      "es": "Recuentos de diagnósticos, nombres del modelo y contenido del JSON de disco coinciden con los literales esperados.",
+      "en": "Diagnostic counts, model names and the content of the JSON on disk match the expected literals."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan.",
+      "en": "All assertions pass."
+    },
+    "guarantee": {
+      "es": "El ciclo de edición de una sesión funciona con la validación y el Quick Fix reales y sobrevive a guardar y reabrir.",
+      "en": "The session editing cycle works with real validation and Quick Fix and survives save and reopen."
+    },
+    "limits": {
+      "es": "La regla usa un nombre INVALID, no un nombre vacío; no comprueba el recuento tras la revalidación incremental ni los eventos publicados; el plan del editor lo sirve un runtime que entrega planes compilados.",
+      "en": "The rule uses an INVALID name, not an empty one; the count after incremental revalidation and published events are not checked; the editor plan is served by a runtime that serves compiled plans."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Cadena real sesión-validación-Quick Fix-repositorio con oráculo independiente (JSON de disco y lectura con un repositorio nuevo).",
+      "en": "Real session-validation-Quick Fix-repository chain with an independent oracle (disk JSON and a read with a new repository)."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorModelSessionRealStackLifecycleIntegrationTests.java",
+        "line": 146
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorModelSessionRealStackLifecycleIntegrationTests.java",
+        "line": 154
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorModelSessionRealStackLifecycleIntegrationTests.java",
+        "line": 168
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorModelSessionRealStackLifecycleIntegrationTests.java",
+        "line": 173
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorModelSessionRealStackLifecycleIntegrationTests.java",
+        "line": 183
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorModelSessionRealStackLifecycleIntegrationTests.java",
+        "line": 188
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorModelSessionRealStackLifecycleIntegrationTests.java",
+        "line": 193
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/session/EditorModelSessionRealStackLifecycleIntegrationTests.java",
+        "line": 166
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

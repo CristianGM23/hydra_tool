@@ -1,0 +1,51 @@
+[
+  {
+    "id": "pw:e2e/real/validation/rule-designer-authoring.spec.ts",
+    "name": { "es": "Diseñador de reglas en el navegador real: identidad, oferta del metamodelo y bloqueo de errores", "en": "Rule designer in a real browser: identity, metamodel offer and error blocking" },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "caps": ["validation", "persistence"],
+    "procs": [
+      { "id": "validation_define_rule", "stages": ["id", "blk", "meta"], "match": "direct" }
+    ],
+    "pre": { "es": "Un metamodelo guardado con la clase Person y su atributo de edad, sembrado con la API real.", "en": "A saved metamodel with the Person class and its age attribute, seeded through the real API." },
+    "executes": { "es": "Un navegador real abre el diseñador de validaciones contra el servidor real: crea una regla, escribe nombre, código y gravedad, elige ámbito de atributo y guarda; después provoca un error de diseño, comprueba que no se guarda y lo corrige.", "en": "A real browser opens the validation designer against the real server: it creates a rule, types name, code and severity, picks an attribute scope and saves; then it causes a design error, checks that nothing is saved and fixes it." },
+    "asserts": { "es": "El código escrito con espacios queda en mayúsculas con guion bajo; el servidor devuelve y escribe en disco la regla con nombre, código, gravedad y ámbito; con un error de diseño no hay ni respuesta de validaciones ni fichero, y tras corregir sí.", "en": "A code typed with spaces becomes upper case with underscores; the server returns and writes to disk the rule with name, code, severity and scope; with a design error there is neither a validations answer nor a file, and after the fix there is." },
+    "behavior": { "es": "La persona que diseña da identidad a una regla y ve que el diseñador le ofrece las clases y atributos de su metamodelo guardado; HYDRA le impide guardar una regla con errores de diseño.", "en": "The designer gives a rule its identity and sees that the designer offers the classes and attributes of the saved metamodel; HYDRA refuses to save a rule with design errors." },
+    "rule": { "es": "El código de una regla se normaliza y una regla con errores de diseño no llega al servidor.", "en": "A rule code is normalised and a rule with design errors never reaches the server." },
+    "scenario": { "es": "Regla de edad sobre Person; segunda prueba con una regla sin nombre que se corrige.", "en": "Age rule over Person; second test with a nameless rule that is then fixed." },
+    "result": { "es": "La regla corregida queda guardada en el servidor; la rechazada no dejó rastro.", "en": "The fixed rule is saved on the server; the rejected one left no trace." },
+    "expected": { "es": "Regla con nombre y código normalizados guardada; sin nombre, nada guardado.", "en": "Rule with normalised name and code saved; with no name, nothing saved." },
+    "guarantee": { "es": "El bloqueo de guardado por errores de diseño y la identidad de la regla funcionan con navegador y servidor reales.", "en": "Save blocking on design errors and rule identity work with a real browser and server." },
+    "limits": { "es": "El bloqueo sin metamodelo se prueba vaciando a mano el selector de contexto, no con una aplicación recién abierta sin ningún metamodelo guardado. Solo se comprueban clases y atributos sencillos; no prueba condiciones complejas ni herencia.", "en": "Blocking without a metamodel is tested by emptying the context selector by hand, not with a freshly opened application that has no saved metamodel. Only simple classes and attributes are checked; it does not test complex conditions or inheritance." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Acción real de usuario, servidor real y comprobación independiente en la API y en disco, incluido el rechazo.", "en": "Real user action, real server and independent checks in the API and on disk, including the rejection." },
+    "external": "none",
+    "cases": [
+      { "n": "identidad y guardado", "scenario": { "es": "Nombre, código con espacios, gravedad y ámbito de atributo.", "en": "Name, code with spaces, severity and attribute scope." }, "result": { "es": "Regla guardada con código normalizado.", "en": "Rule saved with normalised code." } },
+      { "n": "bloqueo y corrección", "scenario": { "es": "Regla sin nombre y después con nombre.", "en": "Nameless rule and then named rule." }, "result": { "es": "Primero nada guardado; luego guardada.", "en": "First nothing saved; then saved." } }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/validation/rule-designer-authoring.spec.ts", "line": 17 },
+      { "path": "frontend/e2e/real/validation/rule-designer-authoring.spec.ts", "line": 29 },
+      { "path": "frontend/e2e/real/validation/rule-designer-authoring.spec.ts", "line": 44 },
+      { "path": "frontend/e2e/real/validation/rule-designer-authoring.spec.ts", "line": 61 },
+      { "path": "frontend/e2e/real/validation/rule-designer-authoring.spec.ts", "line": 63 },
+      { "path": "frontend/e2e/real/validation/rule-designer-authoring.spec.ts", "line": 71 },
+      { "path": "frontend/e2e/real/validation/rule-designer-authoring.spec.ts", "line": 85 },
+      { "path": "frontend/e2e/real/validation/rule-designer-authoring.spec.ts", "line": 88 },
+      { "path": "frontend/e2e/real/validation/rule-designer-authoring.spec.ts", "line": 99 },
+      { "path": "frontend/e2e/real/validation/rule-designer-authoring.spec.ts", "line": 103 }
+    ],
+    "prod": [
+      "frontend/src/validation-designer/ValidationDesigner.tsx",
+      "frontend/src/validation-designer/ValidationRuleEditor.tsx",
+      "frontend/src/validation-designer/validationDesignerValidation.ts",
+      "frontend/src/validation-designer/validationDesignerFactory.ts",
+      "frontend/src/validation/validationApi.ts",
+      "frontend/src/application-shell/IndependentCapabilityWorkbench.tsx"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

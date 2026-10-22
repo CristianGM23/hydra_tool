@@ -1,0 +1,138 @@
+[
+  {
+    "id": "java:com.example.editor.codegen.ModelCodeGenerationTargetRequestRuntimeTests",
+    "name": {
+      "es": "Elección del destino de generación y forma de la petición",
+      "en": "Choosing the generation target and shape of the request"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "caps": [
+      "publication"
+    ],
+    "procs": [
+      {
+        "id": "x_generate_certify_distribute",
+        "stages": [
+          "tgt"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "publication_author_codegen",
+        "stages": [
+          "t"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationService.java",
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationCatalogController.java",
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationTarget.java",
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationRendererRegistry.java",
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationOptions.java",
+      "src/main/java/com/example/editor/codegen/SourceModelCodeGenerationRenderer.java",
+      "src/main/java/com/example/editor/codegen/ProjectionModelCodeGenerationRenderer.java",
+      "src/main/java/com/example/editor/codegen/SqlDataModelCodeGenerationRenderer.java"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Servicio de generación real con todos los renderers incorporados y el controlador del catálogo por HTTP; genera uno a uno los 21 destinos con un metamodelo importado de SQL y un modelo de un elemento, y prueba peticiones incompletas, de otro metamodelo o con destino desconocido.",
+      "en": "Real generation service with all built-in renderers and the catalog controller over HTTP; generates the 21 targets one by one from an SQL-imported metamodel and a one-element model, and tries incomplete requests, another metamodel's model and unknown targets."
+    },
+    "asserts": {
+      "es": "Los 21 identificadores y extensiones del catálogo HTTP coinciden con una lista escrita a mano; cada destino da fichero con nombre y tipo esperados y contenido del modelo; mensajes literales de rechazo; valores por defecto y opciones aplicadas; vista previa sin tests; catálogo acotable.",
+      "en": "The 21 identifiers and extensions of the HTTP catalog match a hand-written list; each target yields a file with the expected name, type and model content; literal rejection messages; defaults and options applied; preview without tests; narrowable catalog."
+    },
+    "behavior": {
+      "es": "Una generación pide exactamente un metamodelo, un modelo de ese mismo metamodelo y un destino conocido; sin cualquiera de los tres se rechaza con motivo. Espacio de nombres, nombre, trazabilidad y vista previa son opcionales y se aplican al destino elegido.",
+      "en": "A generation takes exactly one metamodel, a model of that same metamodel and a known target; missing any of the three is rejected with a reason. Namespace, name, traceability and preview are optional and apply to the chosen target."
+    },
+    "rule": {
+      "es": "Metamodelo y modelo son obligatorios y deben corresponderse, y el destino debe existir en el catálogo; ninguna otra entrada (por ejemplo una sesión de texto) forma parte de esta petición de servicio.",
+      "en": "Metamodel and model are required and must match, and the target must exist in the catalog; no other input (such as a text session) is part of this service request."
+    },
+    "scenario": {
+      "es": "Catálogo pedido por HTTP; los 21 destinos generados con un modelo de usuarios; petición sin metamodelo, sin modelo, con modelo de otro metamodelo y con destino inexistente; generación sin opciones y con opciones propias; catálogo filtrado.",
+      "en": "Catalog requested over HTTP; the 21 targets generated with a users model; request without metamodel, without model, with a model of another metamodel and with a non-existent target; generation without and with own options; filtered catalog."
+    },
+    "result": {
+      "es": "Cada destino produce su propio fichero con la extensión y tipo de medio correctos; las peticiones mal formadas se rechazan con el mensaje exacto; sin opciones se usan nombre y espacio de nombres por defecto.",
+      "en": "Each target produces its own file with the right extension and media type; malformed requests are rejected with the exact message; without options the default name and namespace are used."
+    },
+    "expected": {
+      "es": "El catálogo ofrece los 21 destinos, cada uno genera su artefacto y toda petición incompleta o incoherente se rechaza antes de generar.",
+      "en": "The catalog offers the 21 targets, each generates its artifact and every incomplete or inconsistent request is rejected before generating."
+    },
+    "guarantee": {
+      "es": "Elegir un destino produce el artefacto de ese destino y no otro, y la petición de generación exige los tres datos coherentes; no se acepta una petición a medias.",
+      "en": "Choosing a target produces that target's artifact and no other, and the generation request requires the three consistent inputs; a partial request is not accepted."
+    },
+    "limits": {
+      "es": "No ejerce el diálogo donde la persona elige el destino ni las casillas; no compila el código generado; la generación desde una sesión de texto (otro punto de entrada) no se prueba aquí. La elección en el diálogo queda como indirecta.",
+      "en": "Does not exercise the dialog where the person picks the target or the checkboxes; does not compile the generated code; generation from a text session (another entry point) is not tested here. The dialog choice stays indirect."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Servicio y renderers reales, sin simulaciones, con lista de destinos escrita a mano como referencia independiente y rechazos con mensaje literal.",
+      "en": "Real service and renderers, no mocks, with a hand-written target list as independent reference and rejections with literal messages."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "theHttpCatalogOffersEveryTargetAndEachChosenTargetProducesItsOwnArtifact",
+        "scenario": {
+          "es": "Catálogo HTTP y generación de los 21 destinos.",
+          "en": "HTTP catalog and generation of the 21 targets."
+        },
+        "result": {
+          "es": "Extensión, nombre, tipo y contenido correctos por destino.",
+          "en": "Correct extension, name, type and content per target."
+        }
+      },
+      {
+        "n": "aRequestNeedsOneMetamodelOneMatchingModelAndOneKnownTarget",
+        "scenario": {
+          "es": "Sin metamodelo, sin modelo, otro metamodelo, destino desconocido.",
+          "en": "No metamodel, no model, another metamodel, unknown target."
+        },
+        "result": {
+          "es": "Cuatro rechazos con mensaje exacto y una petición correcta que sí genera.",
+          "en": "Four rejections with exact message and one correct request that does generate."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationTargetRequestRuntimeTests.java",
+        "line": 104
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationTargetRequestRuntimeTests.java",
+        "line": 113
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationTargetRequestRuntimeTests.java",
+        "line": 137
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationTargetRequestRuntimeTests.java",
+        "line": 149
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationTargetRequestRuntimeTests.java",
+        "line": 166
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationTargetRequestRuntimeTests.java",
+        "line": 182
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationTargetRequestRuntimeTests.java",
+        "line": 196
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

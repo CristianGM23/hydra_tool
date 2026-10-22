@@ -1,0 +1,82 @@
+[
+  {
+    "id": "pw:e2e/real/transformation/mapping-authoring.spec.ts",
+    "name": { "es": "Autoría de correspondencias entre metamodelos en navegador real", "en": "Authoring correspondences between metamodels in a real browser" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["transformation"],
+    "procs": [
+      { "id": "transformation_author_mapping", "stages": ["sc", "bi", "dr", "ar", "mp", "kd", "vp", "gd", "rl"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/transformation-designer/TransformationMappingWorkspace.tsx",
+      "frontend/src/transformation-designer/TransformationBindingRow.tsx",
+      "frontend/src/transformation-designer/TransformationRelationBindings.tsx",
+      "frontend/src/transformation-designer/transformationDesignerModel.ts",
+      "frontend/src/transformation-designer/TransformationDesigner.tsx",
+      "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java",
+      "src/main/java/com/example/editor/transformation/persistence/JsonTransformationRepository.java"
+    ],
+    "pre": { "es": "Dos metamodelos sembrados por la API real; sin red ni credenciales.", "en": "Two metamodels seeded through the real API; no network or credentials." },
+    "executes": {
+      "es": "En un navegador real el usuario elige una clase de cada lado, crea la regla de ida y la de vuelta, mapea nombres compatibles, fija un valor constante, copia otra propiedad, intenta guardar sin declarar la conversión, la declara con sus políticas, añade una condición, guarda y recarga.",
+      "en": "In a real browser the user picks a class on each side, creates the forward and backward rules, maps compatible names, sets a constant, copies another property, tries to save without declaring the conversion, declares it with its policies, adds a condition, saves and reloads."
+    },
+    "asserts": {
+      "es": "El selector de dirección solo aparece al ser bidireccional y crear regla exige una clase por lado; el backend y el disco contienen las dos reglas emparejadas, las cuatro asignaciones con su tipo, la política de valor y la condición; sin conversión declarada no se guarda.",
+      "en": "The direction selector only appears when bidirectional and creating a rule needs one class per side; the backend and disk hold the two paired rules, the four assignments with their kind, the value policy and the condition; without a declared conversion nothing is saved."
+    },
+    "behavior": {
+      "es": "El usuario construye en el diseñador las correspondencias de ida y vuelta entre dos metamodelos con asignaciones, políticas de valor y condición, y todo llega guardado al backend.",
+      "en": "The user builds the forward and backward correspondences between two metamodels in the designer with assignments, value policies and a condition, and everything reaches the backend saved."
+    },
+    "rule": {
+      "es": "Pasar un entero a texto exige declarar la conversión; la regla de vuelta comparte correspondencia con la de ida.",
+      "en": "Turning an integer into text requires declaring the conversion; the backward rule shares its correspondence with the forward one."
+    },
+    "scenario": {
+      "es": "Metamodelos Person y Contact con cuatro propiedades de destino: nombre, código fijo, edad como texto y una calculada.",
+      "en": "Person and Contact metamodels with four target properties: name, fixed code, age as text and a calculated one."
+    },
+    "result": {
+      "es": "La definición se guarda con las cuatro asignaciones y su política y se recupera igual al recargar; el guardado previo sin conversión es rechazado.",
+      "en": "The definition is saved with the four assignments and their policy and is recovered identically on reload; the earlier save without conversion is rejected."
+    },
+    "expected": {
+      "es": "Los valores leídos del backend y del disco coinciden con lo elegido en pantalla.",
+      "en": "Values read from the backend and from disk match what was chosen on screen."
+    },
+    "guarantee": {
+      "es": "Evidencia real, de navegador a disco, de que las correspondencias creadas en el diseñador son las que HYDRA guarda.",
+      "en": "Real evidence, from browser to disk, that the correspondences created in the designer are the ones HYDRA stores."
+    },
+    "limits": {
+      "es": "No cubre condiciones editadas a mano, no ejecuta la transformación y la expresión calculada se guarda con su valor inicial. Las relaciones se prueban con una referencia simple elegida en el panel; no se comprueba que el enlace dé el resultado esperado al ejecutar.",
+      "en": "It does not cover hand-edited conditions, does not run the transformation and the calculated expression is saved with its initial value. Relations are tested with one simple reference chosen in the panel; it is not checked that the link gives the expected result when run."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones reales del usuario en navegador, backend real, lectura independiente del disco y rechazo comprobado.",
+      "en": "Real user actions in a browser, real backend, independent disk reading and a verified rejection."
+    },
+    "external": "none",
+    "cases": [],
+    "related": ["pw:e2e/real/transformation/guided-m2m-bidirectional.spec.ts"],
+    "src": [
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 40 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 46 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 79 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 104 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 108 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 109 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 111 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 114 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 173 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 181 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 203 },
+      { "path": "frontend/e2e/real/transformation/mapping-authoring.spec.ts", "line": 205 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

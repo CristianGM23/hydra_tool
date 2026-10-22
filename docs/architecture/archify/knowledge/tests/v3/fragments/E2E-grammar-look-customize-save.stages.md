@@ -1,0 +1,6 @@
+- grammar_author_look.f: tipo de letra, tamaño, interlineado y colores llegan a API y fichero, y el fondo se pinta en el editor tras recargar (líneas 58-62 y 77-79).
+- grammar_author_look.k: las palabras clave propias quedan guardadas; el resaltado se ve con una palabra inferida (líneas 63 y 80).
+- grammar_author_look.ro: el estilo general del rol y el de la regla 'Node' se guardan y se pintan con sus clases propias (líneas 65-66, 80-81).
+- grammar_author_look.h: la ayuda de 'Node' se guarda y emerge al pasar el ratón por el editor (líneas 67-68 y 82-83).
+- grammar_author_look.sv y .r: guardar con sobrescritura; API y fichero traen los ajustes y conservan el ajeno; antes de guardar no había ninguno (líneas 51-70).
+- Neutralidad: dos compilaciones (antes/después) dan la misma huella y los mismos ficheros (líneas 85-89).

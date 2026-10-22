@@ -1,0 +1,151 @@
+[
+  {
+    "id": "pw:e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
+    "name": {
+      "es": "Editor de modelos en texto: ejemplo inicial, escribir y corregir a mano y con la sugerencia",
+      "en": "Text model editor: initial example, writing, and fixing by hand and with the suggestion"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "layers2": [
+      "definition"
+    ],
+    "caps": [
+      "grammar",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "grammar_author_textmodel",
+        "stages": [
+          "ex",
+          "wr"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_diagnostics_actions",
+        "stages": [
+          "m",
+          "ap"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_textual_editing",
+        "stages": [
+          "wr",
+          "fx"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_grammar_to_text_model",
+        "stages": [
+          "ses"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "frontend/src/textual-model-editor/TextualModelEditor.tsx",
+      "frontend/src/textual-model-editor/TextualModelProblems.tsx",
+      "frontend/src/grammar-designer/GrammarMonacoEditor.tsx",
+      "frontend/src/grammar-designer/grammarTextualExample.ts",
+      "src/main/java/com/example/editor/textual/web/TextualModelSessionController.java",
+      "src/main/java/com/example/editor/textual/runtime/TextualModelSessionService.java",
+      "src/main/java/com/example/editor/textual/web/TextualEditorDefinitionController.java"
+    ],
+    "pre": {
+      "es": "Por la API real se siembran una gramática compilada y activa y una definición de editor textual que apunta a ella.",
+      "en": "A compiled and active grammar and a textual editor definition pointing to it are seeded through the real API."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, sin simulaciones. El oráculo lee por la API real la sesión que guarda el servidor y su fichero.",
+      "en": "Playwright with Chromium, no simulations. The oracle reads through the real API the session the server stores and its file."
+    },
+    "executes": {
+      "es": "Abre #/textual-models, comprueba el ejemplo inicial, pulsa 'New session', escribe un modelo con el teclado en Monaco, lo rompe con un token inválido, lo corrige a mano, lo rompe otra vez, pulsa el botón de corrección sugerida del panel y promueve el modelo válido.",
+      "en": "Opens #/textual-models, checks the initial example, presses 'New session', types a model with the keyboard in Monaco, breaks it with an invalid token, fixes it by hand, breaks it again, presses the panel's suggested-fix button and promotes the valid model."
+    },
+    "asserts": {
+      "es": "La sesión guardada trae el texto y sus elementos; con el token inválido hay error, se conserva el último modelo válido y promover queda bloqueado; corregido no quedan diagnósticos; el borrador reparado se da por validado, se promueve y el modelo comprometido (servidor y fichero) es el del texto final.",
+      "en": "The editor opens with the example; the stored session contains the typed text and its elements; with the invalid token there is an error, the last valid model is kept and promoting is blocked; once fixed no diagnostics remain; the repaired draft is shown as validated, is promoted and the committed model (server and file) is the final text's."
+    },
+    "behavior": {
+      "es": "La persona escribe un modelo en texto con la sintaxis de su lenguaje; si se equivoca ve el problema, corrige a mano o con la sugerencia y mientras tanto se conserva el último modelo válido.",
+      "en": "The person writes a model as text using their language's syntax; if they slip they see the problem, fix it by hand or with the suggestion, and the last valid model is kept meanwhile."
+    },
+    "rule": {
+      "es": "Un borrador con errores nunca sustituye al último modelo válido ni se puede promover.",
+      "en": "A draft with errors never replaces the last valid model nor can it be promoted."
+    },
+    "scenario": {
+      "es": "Un editor sin texto se rellena con el ejemplo; se escribe un modelo con dos elementos, se introduce un número donde va un nombre, se corrige a mano, se repite el fallo y se aplica la sugerencia.",
+      "en": "An editor without text is filled with the example; a model with two elements is written, a number is put where a name goes, it is fixed by hand, the mistake is repeated and the suggestion is applied."
+    },
+    "result": {
+      "es": "El servidor termina con el modelo válido igual al texto final, sin diagnósticos, y el último válido se mantuvo durante los errores.",
+      "en": "The server ends with the committed model equal to the final text, no diagnostics, and the last valid one was kept during the errors."
+    },
+    "expected": {
+      "es": "Una ejecución correcta termina con el texto reparado aceptado por el servidor como modelo válido y sin diagnósticos.",
+      "en": "A passing run ends with the repaired text accepted by the server as the valid model and no diagnostics."
+    },
+    "guarantee": {
+      "es": "Escribir y corregir un modelo en texto funciona de punta a punta en un navegador real sobre una gramática compilada real.",
+      "en": "Writing and fixing a text model works end to end in a real browser on a really compiled grammar."
+    },
+    "limits": {
+      "es": "No cubre el paso 'abrir en el editor de modelos y validar': la pantalla de texto no ofrece ese botón. No prueba completado, resaltado ni otras ayudas del editor, ni gramáticas Xtext o ANTLR. La definición del editor y su gramática se siembran por la API.",
+      "en": "It does not cover the step 'open in the model editor and validate': the text screen offers no such button. It does not test completion, highlighting or other editor aids, nor Xtext or ANTLR grammars. The editor definition and its grammar are seeded through the API."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Teclado y botones reales, gramática compilada y servidor reales, y lectura independiente de la sesión por API y fichero, con comprobaciones de rechazo.",
+      "en": "Real keyboard and buttons, a really compiled grammar and server, and independent reading of the session through the API and file, with rejection checks."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.textual.TextualModelSessionRealLifecycleIntegrationTests",
+      "vitest:frontend/src/grammar-designer/grammarTextualExample.test.ts"
+    ],
+    "src": [
+      {
+        "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
+        "line": 63
+      },
+      {
+        "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
+        "line": 68
+      },
+      {
+        "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
+        "line": 74
+      },
+      {
+        "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
+        "line": 83
+      },
+      {
+        "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
+        "line": 87
+      },
+      {
+        "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
+        "line": 92
+      },
+      {
+        "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
+        "line": 103
+      },
+      {
+        "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
+        "line": 106
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

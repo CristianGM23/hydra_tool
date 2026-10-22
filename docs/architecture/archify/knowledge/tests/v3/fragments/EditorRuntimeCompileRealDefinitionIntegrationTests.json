@@ -1,0 +1,124 @@
+[
+  {
+    "id": "java:com.example.editor.definition.runtime.EditorRuntimeCompileRealDefinitionIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Compilar la definición de un editor guardado: reutilización, recompilación tras editar y rechazo con error bloqueante",
+      "en": "Compile a saved editor definition: reuse, recompilation after editing and rejection with a blocking error"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "layers2": [
+      "behavior"
+    ],
+    "caps": [
+      "model_editor",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "model_editor_author_runtime",
+        "stages": [
+          "cmp",
+          "art"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/definition/runtime/EditorRuntimeApplicationService.java",
+      "src/main/java/com/example/editor/definition/runtime/EditorDefinitionCompiler.java",
+      "src/main/java/com/example/editor/definition/EditorDefinitionApplicationService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal con almacenamiento propio de metamodelos y de definiciones de editor.",
+      "en": "Temporary directory with its own metamodel and editor definition storage."
+    },
+    "setup": {
+      "es": "Servicio de metamodelos y de definiciones de editor reales con repositorios JSON reales, comprobador real, servicio de ejecución y compilador reales; el oráculo lee los bytes del fichero del editor en disco.",
+      "en": "Real metamodel and editor definition services with real JSON repositories, real checker, real runtime service and compiler; the oracle reads the editor file bytes on disk."
+    },
+    "executes": {
+      "es": "Guardar metamodelo y editor; EditorRuntimeApplicationService.compile dos veces, tras reemplazar el editor con la ETag vigente, y tras reducir el metamodelo para que el editor deje de superar la comprobación.",
+      "en": "Save metamodel and editor; EditorRuntimeApplicationService.compile twice, after replacing the editor with the current ETag, and after shrinking the metamodel so the editor no longer passes the check."
+    },
+    "asserts": {
+      "es": "La primera compilación no es de caché y su plan lleva la ETag guardada; la segunda sí; tras editar hay nueva ETag, recompilación y un solo plan en caché; el editor sin comprobación válida lanza el rechazo y no altera ni la caché ni el fichero; los bytes del fichero no cambian al compilar.",
+      "en": "The first compilation is not a cache hit and its plan carries the saved ETag; the second is; after editing there is a new ETag, recompilation and a single cached plan; the editor failing the check raises the rejection and alters neither the cache nor the file; the file bytes do not change on compiling."
+    },
+    "behavior": {
+      "es": "Compilar la definición de un editor genera su plan de ejecución sin modificar la definición; repetirlo reutiliza el plan, editar y guardar fuerza la recompilación y un editor con error bloqueante no se compila.",
+      "en": "Compiling an editor definition produces its execution plan without modifying the definition; repeating it reuses the plan, editing and saving forces recompilation and an editor with a blocking error is not compiled."
+    },
+    "rule": {
+      "es": "El plan se asocia a la versión guardada del editor; una definición con errores bloqueantes no se compila; compilar no escribe en el editor.",
+      "en": "The plan is tied to the saved version of the editor; a definition with blocking errors is not compiled; compiling does not write to the editor."
+    },
+    "scenario": {
+      "es": "Guardar un metamodelo y un editor válidos, compilarlo dos veces, editarlo y compilarlo, y compilar tras quitar del metamodelo la relación que usa el editor.",
+      "en": "Save a valid metamodel and editor, compile it twice, edit it and compile, and compile after removing from the metamodel the relation the editor uses."
+    },
+    "result": {
+      "es": "Primer plan nuevo, segundo reutilizado, tercero nuevo con la ETag nueva y rechazo del cuarto; el fichero del editor no cambia al compilar.",
+      "en": "First plan new, second reused, third new with the new ETag and rejection of the fourth; the editor file does not change on compiling."
+    },
+    "expected": {
+      "es": "Las ETag, los aciertos de caché, el tamaño de caché y los bytes del fichero coinciden con lo esperado.",
+      "en": "ETags, cache hits, cache size and file bytes match what is expected."
+    },
+    "guarantee": {
+      "es": "Evidencia real de la compilación de definiciones de editor con caché por versión y rechazo de definiciones con errores bloqueantes.",
+      "en": "Real evidence of editor definition compilation with per-version cache and rejection of definitions with blocking errors."
+    },
+    "limits": {
+      "es": "No ejecuta el plan compilado en una sesión de edición ni pasa por la capa HTTP; el error bloqueante se provoca reduciendo el metamodelo, no guardando un editor inválido.",
+      "en": "It does not run the compiled plan in an editing session or go through the HTTP layer; the blocking error is caused by shrinking the metamodel, not by saving an invalid editor."
+    },
+    "strengthWhy": {
+      "es": "Servicios y repositorios reales, oráculo de bytes en disco y de versiones, y un caso negativo.",
+      "en": "Real services and repositories, on-disk byte and version oracle, and a negative case."
+    },
+    "cases": [
+      {
+        "n": "compilesTheSavedEditorReusesThePlanRecompilesAfterAnEditAndRejectsABlockingEditor",
+        "scenario": {
+          "es": "Compilar, repetir, editar y compilar un editor con error.",
+          "en": "Compile, repeat, edit and compile an editor with an error."
+        },
+        "result": {
+          "es": "Reutiliza, recompila y rechaza sin tocar el fichero.",
+          "en": "Reuses, recompiles and rejects without touching the file."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/EditorRuntimeCompileRealDefinitionIntegrationTests.java",
+        "line": 86
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/EditorRuntimeCompileRealDefinitionIntegrationTests.java",
+        "line": 88
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/EditorRuntimeCompileRealDefinitionIntegrationTests.java",
+        "line": 91
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/EditorRuntimeCompileRealDefinitionIntegrationTests.java",
+        "line": 102
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/EditorRuntimeCompileRealDefinitionIntegrationTests.java",
+        "line": 112
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/runtime/EditorRuntimeCompileRealDefinitionIntegrationTests.java",
+        "line": 115
+      }
+    ]
+  }
+]

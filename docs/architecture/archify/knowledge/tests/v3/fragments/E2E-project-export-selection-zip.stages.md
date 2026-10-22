@@ -1,0 +1,4 @@
+E2E-project-export-selection-zip - stage mapping (pw:e2e/real/project/export-selection-zip.spec.ts)
+- project_author_tree.d (seleccionar varios): L30 Ctrl+clic suma y se ve la cuenta; L48-L53 el ZIP descargado contiene exactamente esa seleccion (bytes iguales al disco, el tercero ausente).
+- project_import_export.x1 (seleccionar en el arbol): mismo ZIP de L48-L53 y rechazos de L67 (raiz deshabilitada) y L72-L76 (vacio, raiz o ruta inexistente).
+- project_author_export.a y project_import_export.x2 (elegir destino / ZIP o repositorio): DIRECT como decision, test 3: con la misma seleccion, L107-L117 «Exportar a repositorio» abre su dialogo, exige perfil (segun el backend) y no descarga ni pide el ZIP; L126 «Exportar selección como ZIP» descarga sin conexion. La exportacion remota completa NO se prueba (servicio externo).

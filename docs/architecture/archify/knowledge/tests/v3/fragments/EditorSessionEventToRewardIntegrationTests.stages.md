@@ -1,0 +1,6 @@
+- x_event_flow_to_reward.sv: savingTheSession... (L108) el libro no tiene apuntes antes de guardar (core.model.saved ya crea uno vacío); tras service.save aparece (L123).
+- x_event_flow_to_reward.build: L114-120, contexto MODEL_EDITING, sesión, correlación y elemento del evento element-created.
+- x_event_flow_to_reward.bus / match / act: L122-138, 3 apuntes solo de element-created, ninguno del evento updated, puntos 10 en el estado.
+- x_event_flow_to_reward.pub: L140, 2 award-granted y 1 award-rejected en el bus.
+- x_event_flow_to_reward.fb: L144, avisos de puntos (2) y rechazo con motivo (1).
+- Negativo: withEventPublicationDisabled... (L157) sin eventos ni libro. Descartadas: x_event_flow_to_reward.bind (sin EventBindingRuntimeService) y x_project_lifecycle_overview.me.
