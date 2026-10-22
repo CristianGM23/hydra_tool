@@ -179,23 +179,14 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
         return source.toString();
     }
     /** Descripción: Ejecuta la operación «structural» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: kind: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean structural(MetaRelationKind kind){return kind == MetaRelationKind.REFERENCE || kind == MetaRelationKind.CONTAINMENT || kind == MetaRelationKind.AGGREGATION;}
-    /** Descripción: Ejecuta la operación «attributeFragment» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: attribute: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String attributeFragment(MetaAttribute attribute, MetaModel metamodel){
-        String terminal = langiumType(attribute.type(), metamodel);
-        boolean many = attribute.multiplicity() != null && (attribute.multiplicity().unbounded() || attribute.multiplicity().upperBound() != null && attribute.multiplicity().upperBound() > 1);
-        boolean optional = attribute.multiplicity() == null || attribute.multiplicity().lowerBound() == 0;
-        String assignment = attribute.name() + (many ? "+=" : "=") + terminal;
-        if(many){return " ('" + attribute.name() + "' " + assignment + ")*";}
-        if(optional){return " ('" + attribute.name() + "' " + assignment + ")?";}
-        return " '" + attribute.name() + "' " + assignment;
+    /** Descripción: Construye campos de Langium respetando mínimos y máximos del metamodelo. Entradas: atributo y metamodelo. Salida: fragmento de gramática del atributo. */
+    private String attributeFragment(MetaAttribute attribute, MetaModel metamodel){
+        return LangiumMultiplicityEmitter.fragment(attribute.name(),langiumType(attribute.type(),metamodel),attribute.multiplicity());
     }
-    /** Descripción: Ejecuta la operación «relationFragment» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: relation: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String relationFragment(MetaRelation relation, MetaModel metamodel){
-        String target = metamodel.classes().stream().filter(value -> value.id().equals(relation.targetTypeId())).map(MetaClass::name).findFirst().orElse("Element");
-        boolean many = relation.targetMultiplicity() != null && (relation.targetMultiplicity().unbounded() || relation.targetMultiplicity().upperBound() != null && relation.targetMultiplicity().upperBound() > 1);
-        boolean optional = relation.targetMultiplicity() == null || relation.targetMultiplicity().lowerBound() == 0;
-        String assignment = relation.name() + (many ? "+=" : "=") + "[" + target + ":ID]";
-        if(many){return " ('" + relation.name() + "' " + assignment + ")*";}
-        if(optional){return " ('" + relation.name() + "' " + assignment + ")?";}
-        return " '" + relation.name() + "' " + assignment;
+    /** Descripción: Construye relaciones tipadas conservando las cardinalidades obligatorias. Entradas: relación y metamodelo. Salida: fragmento de gramática de la relación. */
+    private String relationFragment(MetaRelation relation, MetaModel metamodel){
+        String target=metamodel.classes().stream().filter(value->value.id().equals(relation.targetTypeId())).map(MetaClass::name).findFirst().orElse("Element");
+        return LangiumMultiplicityEmitter.fragment(relation.name(),"["+target+":ID]",relation.targetMultiplicity());
     }
     /** Descripción: Ejecuta la operación «langiumType» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: type: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String langiumType(MetaTypeReference type, MetaModel metamodel){
         if(type == null){return "STRING";}

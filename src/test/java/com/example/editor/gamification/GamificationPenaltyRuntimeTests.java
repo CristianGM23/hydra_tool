@@ -95,6 +95,32 @@ class GamificationPenaltyRuntimeTests {
         assertThat(fixture.repository.ledger.entries()).hasSize(1);
     }
 
+    @Test void ruleWithOncePolicyRejectsASecondDistinctEventAfterTheFirstGrant() {
+        Fixture fixture = fixture(0, List.of(withPolicy(award(5), GamificationRepeatPolicy.ONCE, 0, 100)));
+        GamificationProcessingResult first = fixture.process("event:once-a", "custom.award");
+        assertThat(first.granted()).hasSize(1);
+
+        GamificationProcessingResult second = fixture.process("event:once-b", "custom.award");
+        assertThat(second.granted()).isEmpty();
+        assertThat(second.rejected()).singleElement().satisfies(entry -> {
+            assertThat(entry.pointsDelta()).isZero();
+            assertThat(entry.metadata()).containsEntry("reason", "Rule can only be applied once");
+        });
+    }
+
+    @Test void ruleWithAPerActorMaximumRejectsOnceTheLimitIsReached() {
+        Fixture fixture = fixture(0, List.of(withPolicy(award(5), GamificationRepeatPolicy.UNLIMITED, 1, 100)));
+        GamificationProcessingResult first = fixture.process("event:cap-a", "custom.award");
+        assertThat(first.granted()).hasSize(1);
+
+        GamificationProcessingResult second = fixture.process("event:cap-b", "custom.award");
+        assertThat(second.granted()).isEmpty();
+        assertThat(second.rejected()).singleElement().satisfies(entry -> {
+            assertThat(entry.pointsDelta()).isZero();
+            assertThat(entry.metadata()).containsEntry("reason", "Maximum applications per actor reached");
+        });
+    }
+
     @Test void duplicateEventDoesNotRewriteRuntimeDocumentsOrRepublishSideEffects() {
         Fixture fixture = fixture(-20, List.of(penalty(3)));
         fixture.process("event:penalty", "custom.penalty");
@@ -138,6 +164,11 @@ class GamificationPenaltyRuntimeTests {
     private static GamificationRule rule(String id, String eventTypeId, long points, GamificationEffectKind effect) {
         return new GamificationRule(id, id, eventTypeId, "", "EQUALS", null, "points:quality", points, "", "", "",
                 GamificationRepeatPolicy.ONCE_PER_EVENT, 0, 100, 100, effect, true);
+    }
+    private static GamificationRule withPolicy(GamificationRule base, GamificationRepeatPolicy policy, int maxAwardsPerActor, int maxAwardsPerDay) {
+        return new GamificationRule(base.id(), base.name(), base.eventTypeId(), base.conditionPath(), base.operator(), base.expectedValue(),
+                base.pointsTypeId(), base.points(), base.achievementId(), base.challengeId(), base.rewardId(), policy,
+                base.cooldownSeconds(), maxAwardsPerActor, maxAwardsPerDay, base.effectKind(), base.enabled());
     }
 
     private static CanonicalEvent event(String id, String type) {

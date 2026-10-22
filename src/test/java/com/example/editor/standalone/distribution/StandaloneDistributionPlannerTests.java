@@ -36,7 +36,7 @@ class StandaloneDistributionPlannerTests {
                 StandaloneDistributionTarget.TAURI_LINUX,
                 StandaloneDistributionTarget.TAURI_WINDOWS), true));
         assertThat(artifacts).extracting(StandaloneDistributionArtifact::path).isSorted();
-        assertThat(artifacts).hasSize(4);
+        assertThat(artifacts).hasSize(9);
     }
 
     @Test

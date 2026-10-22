@@ -21,6 +21,7 @@ import com.example.editor.integration.compiler.TechnologyAdapter;
 import com.example.editor.integration.compiler.TechnologyAdapterGenerationSupport;
 import com.example.editor.integration.compiler.TechnologyAdapterRuntimeLifecycleSupport;
 import com.example.editor.integration.compiler.TechnologyAdapterSupport;
+import com.example.editor.integration.compiler.TechnologyFidelityManifestSupport;
 import com.example.editor.integration.compiler.TechnologyAdapterTextualCustomizationSupport;
 import com.example.editor.integration.compiler.TechnologyAdapterSelfContainedDependencySupport;
 import com.example.editor.integration.compiler.TechnologyAdapterVisualFullStackSupport;
@@ -57,7 +58,7 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
             }
             List<String> sourceIds = TechnologyAdapterGenerationSupport.sourceIds(request);
             List<TechnologyGeneratedFile> files = new ArrayList<>();
-            files.add(TechnologyAdapterSupport.text(root + "/package.json", "application/json", workspacePackage(packageName), sourceIds));
+            files.add(TechnologyAdapterSupport.text(root + "/package.json", "application/json", workspacePackage(packageName, serverLanguage), sourceIds));
             files.add(TechnologyAdapterSupport.text(root + "/hydra-glsp.json", "application/json", descriptor(metamodel, editor, diagramType, serverLanguage), sourceIds));
             files.add(TechnologyAdapterSupport.text(root + "/client/package.json", "application/json", clientPackage(packageName, glspVersion, typescriptVersion), sourceIds));
             files.add(TechnologyAdapterSupport.text(root + "/client/tsconfig.json", "application/json", tsconfig(), sourceIds));
@@ -88,6 +89,8 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
             files.addAll(TechnologyAdapterSelfContainedDependencySupport.npmVendorFiles(root + "/client", packageName + "-client", List.of("@eclipse-glsp/client@" + glspVersion, "@eclipse-glsp/protocol@" + glspVersion, "inversify@7.0.0"), sourceIds));
             if(serverLanguage.equals("typescript")) files.addAll(TechnologyAdapterSelfContainedDependencySupport.npmVendorFiles(root + "/server", packageName + "-server", List.of("@eclipse-glsp/server@" + glspVersion, "@eclipse-glsp/graph@" + glspVersion, "@eclipse-glsp/protocol@" + glspVersion, "inversify@6.1.3", "reflect-metadata@0.2.2"), sourceIds));
             else files.addAll(TechnologyAdapterSelfContainedDependencySupport.mavenRuntimeVendorFiles(root + "/server", packageName + "-server", List.of("org.eclipse.glsp:org.eclipse.glsp.server:" + glspVersion), sourceIds));
+            files.add(TechnologyAdapterSupport.text(TechnologyAdapterSupport.join(root, "META-INF", "hydra-fidelity-obligations.json"),
+                    "application/json", TechnologyFidelityManifestSupport.json(mapper, request, editor, "ECLIPSE_GLSP"), sourceIds));
             List<IntegrationDiagnostic> diagnostics = new ArrayList<>();
             for(RepresentationDefinition representation : editor.representations()){
                 if(representation.kind() != RepresentationKind.DIAGRAM){
@@ -121,9 +124,12 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
     }
 
     /** Descripción: Ejecuta la operación «dependency» correspondiente a la responsabilidad de EclipseGlspTechnologyAdapter. Entradas: manager: dato de entrada necesario para la operación; coordinate: dato de entrada necesario para la operación; version: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private IntegrationDependencyChange dependency(String manager, String coordinate, String version){return new IntegrationDependencyChange(manager, coordinate, version, "compile", IntegrationDependencyAction.ADD);}
-    /** Descripción: Ejecuta la operación «workspacePackage» correspondiente a la responsabilidad de EclipseGlspTechnologyAdapter. Entradas: packageName: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String workspacePackage(String packageName){return """
-            {"name":"%s-workspace","private":true,"version":"1.0.0","workspaces":["client","server"],"scripts":{"build":"npm run build --workspace client","test":"npm test --workspaces --if-present"}}
-            """.formatted(packageName.replace('/', '-').replace('@', 'x'));}
+    /** Descripción: Ejecuta la operación «workspacePackage» correspondiente a la responsabilidad de EclipseGlspTechnologyAdapter. Entradas: packageName: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String workspacePackage(String packageName, String serverLanguage){
+        String workspaces = serverLanguage.equals("typescript") ? "\"client\",\"server\"" : "\"client\"";
+        return """
+            {"name":"%s-workspace","private":true,"version":"1.0.0","workspaces":[%s],"scripts":{"build":"npm run build --workspace client","test":"npm test --workspaces --if-present"}}
+            """.formatted(packageName.replace('/', '-').replace('@', 'x'), workspaces);
+    }
     /** Descripción: Ejecuta la operación «clientPackage» correspondiente a la responsabilidad de EclipseGlspTechnologyAdapter. Entradas: packageName: dato de entrada necesario para la operación; glspVersion: dato de entrada necesario para la operación; typescriptVersion: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String clientPackage(String packageName, String glspVersion, String typescriptVersion){return """
             {"name":"%s-client","version":"1.0.0","type":"module","scripts":{"build":"tsc -b","test":"vitest run","check":"npm run build && npm test"},"dependencies":{"@eclipse-glsp/client":"^%s","@eclipse-glsp/protocol":"^%s","inversify":"^7.0.0"},"devDependencies":{"typescript":"^%s","vitest":"^4.1.10"}}
             """.formatted(packageName, glspVersion, glspVersion, typescriptVersion);}
@@ -514,26 +520,76 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
               protected override configureOperationHandlers(binding:InstanceMultiBinding<OperationHandlerConstructor>):void{super.configureOperationHandlers(binding);binding.add(HydraOperationHandler);}
             }
             """.formatted(diagramType);}
-    /** Descripción: Genera almacenamiento GLSP Node 2.5 que carga/guarda el JSON canónico en ModelState y sincroniza el lifecycle HYDRA. Entradas: no requiere parámetros. Salida: fuente TypeScript. */ private String nodeStorage(){return """
-            import { readFile, writeFile } from 'node:fs/promises';
+    /** Descripción: Genera almacenamiento GLSP Node seguro: revisión optimista, bloqueo exclusivo y publicación atómica de modelos. Entrada: sin parámetros. Salida: código TypeScript del almacenamiento. */ private String nodeStorage(){return """
+            import { readFile, open, lstat, rename, unlink } from 'node:fs/promises';
+            import { createHash, randomUUID } from 'node:crypto';
+            import { dirname, join, resolve } from 'node:path';
             import { fileURLToPath } from 'node:url';
             import { inject, injectable } from 'inversify';
             import type { RequestModelAction, SaveModelAction } from '@eclipse-glsp/protocol';
             import { ModelState, SOURCE_URI_ARG, type SourceModelStorage } from '@eclipse-glsp/server';
             import { HydraSemanticRuntimeService } from './hydra-semantic-runtime-service.js';
             export const HYDRA_SOURCE_MODEL_PROPERTY='hydra.sourceModel';
-            const pathOf=(uri:string):string=>uri.startsWith('file:')?fileURLToPath(uri):uri;
+            const ORIGINAL_URI='hydra.originalSourceUri';
+            const LOADED_SHA='hydra.loadedSourceSha256';
+            const MAX_BYTES=32*1024*1024;
+            const sha=(state:string):string=>createHash('sha256').update(state,'utf8').digest('hex');
+            const pathOf=(uri:string):string=>{
+              if(typeof uri!=='string'||!uri.trim()||uri.includes('\\0'))throw new Error('Invalid GLSP source URI');
+              const path=uri.startsWith('file:')?fileURLToPath(uri):uri;
+              if(!resolve(path) || !path.trim())throw new Error('Invalid GLSP source path');
+              return resolve(path);
+            };
+            async function regularFile(path:string):Promise<void>{
+              const item=await lstat(path);
+              if(item.isSymbolicLink()||!item.isFile()||item.size>MAX_BYTES)throw new Error('GLSP model is linked, oversized or not a regular file');
+            }
             @injectable()
             export class HydraSourceModelStorage implements SourceModelStorage{
               constructor(@inject(ModelState) private readonly modelState:ModelState,@inject(HydraSemanticRuntimeService) private readonly runtime:HydraSemanticRuntimeService){}
               async loadSourceModel(action:RequestModelAction):Promise<void>{
-                const option=action.options?.sourceUri;const sourceUri=typeof option==='string'?option:this.modelState.sourceUri;
+                const option=action.options?.sourceUri;
+                const sourceUri=typeof option==='string'?option:this.modelState.sourceUri;
                 if(!sourceUri)throw new Error('GLSP sourceUri is required');
-                const state=await readFile(pathOf(sourceUri),'utf8');this.modelState.set(HYDRA_SOURCE_MODEL_PROPERTY,state);this.modelState.set(SOURCE_URI_ARG,sourceUri);this.runtime.synchronize(state,'GLSP_NODE_LOAD');
+                const path=pathOf(sourceUri);await regularFile(path);
+                const state=await readFile(path,'utf8');
+                if(Buffer.byteLength(state,'utf8')>MAX_BYTES)throw new Error('GLSP model exceeds size limit');
+                this.modelState.set(HYDRA_SOURCE_MODEL_PROPERTY,state);
+                this.modelState.set(SOURCE_URI_ARG,sourceUri);
+                this.modelState.set(ORIGINAL_URI,path);
+                this.modelState.set(LOADED_SHA,sha(state));
+                this.runtime.synchronize(state,'GLSP_NODE_LOAD');
               }
               async saveSourceModel(action:SaveModelAction):Promise<void>{
-                const target=action.fileUri??this.modelState.sourceUri;if(!target)throw new Error('GLSP sourceUri is required for save');
-                const state=this.sourceModel();await writeFile(pathOf(target),state,'utf8');this.modelState.set(SOURCE_URI_ARG,target);this.runtime.synchronize(state,'GLSP_NODE_SAVE');
+                const target=action.fileUri??this.modelState.sourceUri;
+                if(!target)throw new Error('GLSP sourceUri is required for save');
+                const path=pathOf(target),original=this.modelState.get<string>(ORIGINAL_URI);
+                if(!original||original!==path)throw new Error('GLSP save-as requires explicit separate authorization');
+                const originalSha=this.modelState.get<string>(LOADED_SHA);
+                if(!originalSha)throw new Error('GLSP model has not been loaded');
+                const state=this.sourceModel();
+                if(Buffer.byteLength(state,'utf8')>MAX_BYTES)throw new Error('GLSP model exceeds size limit');
+                const lock=path+'.hydra-write.lock',temp=join(dirname(path),'.hydra-glsp-'+randomUUID()+'.tmp');
+                // Create an exclusive lock across separate server processes (not just sessions).
+                const handle=await open(lock,'wx',0o600);
+                try{
+                  await regularFile(path);
+                  const present=await readFile(path,'utf8');
+                  if(sha(present)!==originalSha)throw new Error('GLSP concurrent model revision conflict');
+                  const staging=await open(temp,'wx',0o600);
+                  try{await staging.writeFile(state,'utf8');await staging.sync();}finally{await staging.close();}
+                  // Verify again immediately before promotion; writers cooperating with
+                  // the lock cannot race. Non-cooperating writers remain a platform caveat.
+                  await regularFile(path);
+                  if(sha(await readFile(path,'utf8'))!==originalSha)throw new Error('GLSP concurrent external model revision conflict');
+                  await rename(temp,path);
+                  this.modelState.set(LOADED_SHA,sha(state));
+                  this.modelState.set(SOURCE_URI_ARG,target);
+                  this.runtime.synchronize(state,'GLSP_NODE_SAVE');
+                }finally{
+                  try{await unlink(temp).catch((error:NodeJS.ErrnoException)=>{if(error.code!=='ENOENT')throw error;});}
+                  finally{try{await handle.close();}finally{await unlink(lock);}}
+                }
               }
               sourceModel():string{return this.modelState.get<string>(HYDRA_SOURCE_MODEL_PROPERTY)??'';}
               replaceSourceModel(value:string):void{this.modelState.set(HYDRA_SOURCE_MODEL_PROPERTY,value??'');}

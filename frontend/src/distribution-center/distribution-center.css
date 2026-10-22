@@ -97,3 +97,10 @@
         grid-template-columns:1fr
     }
 }
+
+/* Fix182: explicit, non-authoritative preview of CI-signed native evidence. */
+.distribution-native-evidence { margin:16px; padding:16px; background:var(--hydra-bg-surface);
+    border:1px solid var(--hydra-border-default); border-radius:10px; }
+.distribution-native-evidence input { display:block; margin:8px 0 12px; max-width:100%; }
+.distribution-native-evidence code { overflow-wrap:anywhere; }
+.distribution-native-evidence li { margin-block:6px; overflow-wrap:anywhere; }

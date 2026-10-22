@@ -108,11 +108,23 @@ public final class TechnologyAdapterSelfContainedDependencySupport {
                 import {existsSync,mkdirSync,readdirSync,rmSync,writeFileSync} from 'node:fs';
                 import {spawnSync} from 'node:child_process';
                 import {dirname,join} from 'node:path'; import {fileURLToPath} from 'node:url';
+                // Execute npm as a JavaScript CLI when possible. On Windows, npm.cmd
+                // cannot be executed portably through spawnSync without invoking a shell.
+                // Avoid a shell entirely so package specs cannot become shell commands.
+                const npmCliCandidates=[process.env.npm_execpath,
+                  join(dirname(process.execPath),'node_modules','npm','bin','npm-cli.js'),
+                  join(dirname(process.execPath),'..','lib','node_modules','npm','bin','npm-cli.js')];
+                const npmCli=npmCliCandidates.find(p=>p&&p.replaceAll(String.fromCharCode(92),'/').endsWith('/npm-cli.js')&&existsSync(p));
+                const runNpm=(args,options={})=>{
+                  if(npmCli)return spawnSync(process.execPath,[npmCli,...args],options);
+                  if(process.platform==='win32')throw new Error('HYDRA_NPM_CLI_NOT_FOUND: npm-cli.js not found next to Node or in npm_execpath');
+                  return spawnSync('npm',args,options);
+                };
                 const specs=[%s],here=dirname(fileURLToPath(import.meta.url)),tarballs=join(here,'npm'),cache=join(here,'npm-cache'),work=join(here,'.vendor-work');
                 rmSync(work,{recursive:true,force:true});mkdirSync(work,{recursive:true});mkdirSync(tarballs,{recursive:true});mkdirSync(cache,{recursive:true});
                 writeFileSync(join(work,'package.json'),JSON.stringify({private:true,name:'hydra-offline-vendor',version:'1.0.0'},null,2));
-                if(specs.length){const r=spawnSync('npm',['install','--prefix',work,'--cache',cache,'--ignore-scripts','--no-audit','--no-fund','--package-lock=true',...specs],{stdio:'inherit'});if(r.status!==0)process.exit(r.status??1);}
-                for(const spec of specs){const r=spawnSync('npm',['pack',spec,'--pack-destination',tarballs,'--ignore-scripts'],{stdio:'inherit'});if(r.status!==0)process.exit(r.status??1);}
+                if(specs.length){const r=runNpm(['install','--prefix',work,'--cache',cache,'--ignore-scripts','--no-audit','--no-fund','--package-lock=true',...specs],{stdio:'inherit'});if(r.status!==0)process.exit(r.status??1);}
+                for(const spec of specs){const r=runNpm(['pack',spec,'--pack-destination',tarballs,'--ignore-scripts'],{stdio:'inherit'});if(r.status!==0)process.exit(r.status??1);}
                 const packed=readdirSync(tarballs).filter(name=>name.endsWith('.tgz')).sort();
                 if(specs.length&&!existsSync(join(cache,'_cacache')))throw new Error('npm transitive cache was not created');
                 writeFileSync(join(here,'vendor-index.json'),JSON.stringify({schemaVersion:'1.0',specs,auditTarballs:packed,transitiveCache:'npm-cache'},null,2)+'\\n');
@@ -125,10 +137,22 @@ public final class TechnologyAdapterSelfContainedDependencySupport {
         return """
                 import {existsSync} from 'node:fs'; import {spawnSync} from 'node:child_process';
                 import {dirname,join} from 'node:path'; import {fileURLToPath} from 'node:url';
+                // Execute npm as a JavaScript CLI when possible. On Windows, npm.cmd
+                // cannot be executed portably through spawnSync without invoking a shell.
+                // Avoid a shell entirely so package specs cannot become shell commands.
+                const npmCliCandidates=[process.env.npm_execpath,
+                  join(dirname(process.execPath),'node_modules','npm','bin','npm-cli.js'),
+                  join(dirname(process.execPath),'..','lib','node_modules','npm','bin','npm-cli.js')];
+                const npmCli=npmCliCandidates.find(p=>p&&p.replaceAll(String.fromCharCode(92),'/').endsWith('/npm-cli.js')&&existsSync(p));
+                const runNpm=(args,options={})=>{
+                  if(npmCli)return spawnSync(process.execPath,[npmCli,...args],options);
+                  if(process.platform==='win32')throw new Error('HYDRA_NPM_CLI_NOT_FOUND: npm-cli.js not found next to Node or in npm_execpath');
+                  return spawnSync('npm',args,options);
+                };
                 const required=[%s],here=dirname(fileURLToPath(import.meta.url)),cache=join(here,'npm-cache');
-                const compatible=(spec)=>spawnSync('npm',['ls',spec,'--depth=0','--json'],{encoding:'utf8'}).status===0;
+                const compatible=(spec)=>runNpm(['ls',spec,'--depth=0','--json'],{encoding:'utf8'}).status===0;
                 const missing=required.filter(spec=>!compatible(spec));
-                if(missing.length){if(!existsSync(join(cache,'_cacache')))throw new Error('HYDRA npm vendor cache is missing or incomplete: '+cache);const r=spawnSync('npm',['install','--offline','--cache',cache,'--ignore-scripts','--no-audit','--no-fund',...missing],{stdio:'inherit'});if(r.status!==0)process.exit(r.status??1);}
+                if(missing.length){if(!existsSync(join(cache,'_cacache')))throw new Error('HYDRA npm vendor cache is missing or incomplete: '+cache);const r=runNpm(['install','--offline','--cache',cache,'--ignore-scripts','--no-audit','--no-fund',...missing],{stdio:'inherit'});if(r.status!==0)process.exit(r.status??1);}
                 const unresolved=required.filter(spec=>!compatible(spec));if(unresolved.length)throw new Error('HYDRA npm offline verification failed: '+unresolved.join(', '));
                 console.log(`HYDRA_NPM_OFFLINE_INSTALL missing=${missing.length} reused=${required.length-missing.length} verified=${required.length}`);
                 """.formatted(specs);

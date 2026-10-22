@@ -137,7 +137,7 @@ export const INTERFACE_AUDIT_SPANISH: Readonly<Record<string, string>> = {
     'Choose create-new or an existing compatible class for every class change.': 'Para cada cambio de clase, elige crear una nueva o reutilizar una clase existente compatible.',
     'Complete the preview and review every amber or red result first.': 'Completa la vista previa y revisa primero todos los resultados ámbar o rojos.',
     'A reviewed neutral change package with explicit destinations and actionable compatibility guidance.': 'Un paquete neutral de cambios revisado, con destinos explícitos y orientación práctica sobre compatibilidad.',
-    'A portable canonical transformation definition with explicit diagnostics and preview.': 'Una definición canónica y portable de transformación con diagnósticos explícitos y vista previa.',
+    'A portable canonical transformation definition with explicit diagnostics and preview.': 'Una definición de transformación portable y compartida con diagnósticos explícitos y vista previa.',
     'Choose the grammar in the next step.': 'Selecciona la gramática en el siguiente paso.',
     'Select the required metamodels.': 'Selecciona los metamodelos necesarios.',
     'Define at least one rule or parser configuration.': 'Define al menos una regla o una configuración de parser.',
