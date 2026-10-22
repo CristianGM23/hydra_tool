@@ -37,6 +37,8 @@ class Sandbox(unittest.TestCase):
         v3.ROOT = self.tmp
         v3._SHA_CACHE.clear()
         v3._GLOB_CACHE.clear()
+        v3._JAVA_CACHE.clear()
+        v3._OVERRIDES.clear()
         v3.OUT = self.tmp / "target" / "archify-v3"
         v3.EVID = v3.OUT / "evidence"
         v3.STORE = v3.EVID / "surefire"
@@ -204,6 +206,172 @@ class CompileAndGateTests(Sandbox):
 
     def test_norm_generated(self):
         self.assertEqual(v3.norm_generated('{"generatedAt": "2026-01-01T00:00:00Z", "a": 1}'), '{"generatedAt":"NORM", "a": 1}')
+
+
+class ClosureFingerprintTests(Sandbox):
+    """The invalidation mechanism itself: relevant changes invalidate, unrelated ones do not, uncertainty stays conservative."""
+
+    def setUp(self):
+        super().setUp()
+        self.touch("src/test/java/a/b/CTests.java", "package a.b;\nimport a.b.c.Svc;\nclass CTests { Svc s; }\n")
+        self.touch("src/main/java/a/b/c/Svc.java", "package a.b.c;\nimport a.b.d.Dep;\npublic class Svc { Dep d; }\n")
+        self.touch("src/main/java/a/b/d/Dep.java", "package a.b.d;\npublic class Dep { }\n")
+        self.touch("src/main/java/a/b/Unrelated.java", "package a.b;\npublic class Unrelated { }\n")
+        self.task_inputs = ["src/test/java/a/b/CTests.java", "src/main/java/a/b/c/Svc.java", "src/main/java/a/b/Unrelated.java"]
+
+    def t(self, **kw):
+        return self.task(inputs=kw.pop("inputs", self.task_inputs), **kw)
+
+    def fp2(self, task):
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        return v3.fingerprint_v2(task)
+
+    def fp1(self, task):
+        v3._SHA_CACHE.clear()
+        return v3.fingerprint(task)["sha256"]
+
+    def test_unreachable_declared_input_is_reported_and_does_not_invalidate(self):
+        t = self.t()
+        before1, before2 = self.fp1(t), self.fp2(t)
+        self.assertTrue(before2["bounded"])
+        self.assertEqual(before2["unreachableDeclared"], ["src/main/java/a/b/Unrelated.java"])
+        self.touch("src/main/java/a/b/Unrelated.java", "package a.b;\npublic class Unrelated { int changed; }\n")
+        self.assertNotEqual(before1, self.fp1(t), "v1 hashes every declared input")
+        self.assertEqual(before2["sha256"], self.fp2(t)["sha256"], "v2 ignores a production file the test cannot reach")
+
+    def test_a_change_anywhere_in_the_transitive_closure_invalidates(self):
+        t = self.t()
+        before = self.fp2(t)["sha256"]
+        self.touch("src/main/java/a/b/d/Dep.java", "package a.b.d;\npublic class Dep { int x; }\n")  # reached only through Svc
+        self.assertNotEqual(before, self.fp2(t)["sha256"])
+        self.touch("src/test/java/a/b/CTests.java", "package a.b;\nimport a.b.c.Svc;\nclass CTests { Svc s; int y; }\n")
+        self.assertNotEqual(before, self.fp2(t)["sha256"])
+
+    def test_same_package_wildcard_and_qualified_references_are_followed(self):
+        self.touch("src/main/java/a/b/Helper.java", "package a.b;\npublic class Helper { }\n")
+        self.touch("src/main/java/a/b/w/One.java", "package a.b.w;\npublic class One { }\n")
+        self.touch("src/main/java/a/b/q/Named.java", "package a.b.q;\npublic class Named { }\n")
+        self.touch("src/test/java/a/b/CTests.java", "package a.b;\nimport a.b.w.*;\nclass CTests { Helper h; String n = \"a.b.q.Named\"; }\n")
+        closure = self.fp2(self.t(inputs=["src/test/java/a/b/CTests.java"]))
+        self.assertTrue(closure["bounded"])
+        idx = v3.java_index()
+        reached, _, _ = idx.closure(["src/test/java/a/b/CTests.java"])
+        self.assertTrue({"src/main/java/a/b/Helper.java", "src/main/java/a/b/w/One.java", "src/main/java/a/b/q/Named.java"} <= reached)
+        self.assertNotIn("src/main/java/a/b/Unrelated.java", reached)
+
+    def test_spring_context_tests_stay_unbounded_and_equal_to_v1(self):
+        self.touch("src/test/java/a/b/CTests.java", "package a.b;\nimport a.b.c.Svc;\n@SpringBootTest\nclass CTests { Svc s; }\n")
+        t = self.t()
+        result = self.fp2(t)
+        self.assertFalse(result["bounded"])
+        self.assertIn("Spring", result["reasons"][0])
+        self.assertEqual(result["sha256"], self.fp1(t))
+        self.touch("src/main/java/a/b/Unrelated.java", "package a.b;\npublic class Unrelated { int z; }\n")
+        self.assertNotEqual(result["sha256"], self.fp2(t)["sha256"], "the whole application is reachable from a Spring test")
+
+    def test_globs_non_maven_kinds_and_the_declared_policy_stay_conservative(self):
+        self.assertFalse(self.fp2(self.t(inputGlobs=["src/main/java/**/*.java"]))["bounded"])
+        self.assertFalse(self.fp2({"id": "p", "kind": "playwright", "specs": ["e2e/x.spec.ts"], "inputs": []})["bounded"])
+        self.assertFalse(self.fp2(self.t(fingerprintPolicy="declared"))["bounded"])
+        missing = self.fp2(self.task(selectors=["a.b.MissingTests"], inputs=[]))
+        self.assertFalse(missing["bounded"], "an unreadable test source cannot be bounded")
+
+    def test_resource_loading_pulls_in_every_resource(self):
+        self.touch("src/test/resources/fixtures/f.txt", "one")
+        self.touch("src/test/java/a/b/CTests.java", "package a.b;\nclass CTests { Object o = CTests.class.getResourceAsStream(\"/fixtures/f.txt\"); }\n")
+        t = self.t(inputs=["src/test/java/a/b/CTests.java"])
+        before = self.fp2(t)["sha256"]
+        self.touch("src/test/resources/fixtures/f.txt", "two")
+        self.assertNotEqual(before, self.fp2(t)["sha256"])
+
+    def record(self, t):
+        src = self.tmp / "build"
+        write_xml(src, "a.b.CTests", [("t", None)])
+        info = v3.capture_reports(src, "r1", "2026-10-19T08:00:00.000Z")["a.b.CTests"]
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        return {"verdict": "PASS", "kind": "maven", "evidence": {"a.b.CTests": info}, "finishedAt": "2026-10-19T09:00:00.000Z", **v3.fp_fields(t)}
+
+    def test_classify_reuses_only_when_the_reachable_closure_is_unchanged(self):
+        t = self.t()
+        state = {"tasks": {"t.one": self.record(t)}}
+        self.assertEqual(v3.classify(t, state, set(), False)[0], "REUSE")
+        self.touch("src/main/java/a/b/Unrelated.java", "package a.b;\npublic class Unrelated { int z; }\n")
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        action, why = v3.classify(t, state, set(), False)
+        self.assertEqual(action, "REUSE", why)
+        self.assertIn("closure-v2", why)
+        self.assertEqual(v3.classify(t, state, set(), False, strict=True)[0], "RUN", "--strict-fingerprint falls back to every declared input")
+        self.assertEqual(v3.classify(t, state, {"*"}, False)[0], "RUN", "a full revalidation can always be forced")
+        self.assertEqual(v3.classify(t, state, {"t.one"}, False)[0], "RUN")
+        self.touch("src/main/java/a/b/d/Dep.java", "package a.b.d;\npublic class Dep { int x; }\n")
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        action, why = v3.classify(t, state, set(), False)
+        self.assertEqual(action, "RUN")
+        self.assertIn("src/main/java/a/b/d/Dep.java", why, "the reason names the reachable file that changed")
+
+    def test_a_record_without_closure_data_is_never_narrowed(self):
+        t = self.t()
+        rec = self.record(t)
+        for key in ("fingerprintV2", "closureHashes", "closureSummary"):
+            rec.pop(key)
+        state = {"tasks": {"t.one": rec}}
+        self.touch("src/main/java/a/b/Unrelated.java", "package a.b;\npublic class Unrelated { int z; }\n")
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        self.assertEqual(v3.classify(t, state, set(), False)[0], "RUN", "legacy evidence keeps the v1 behaviour until it is attested")
+
+    def test_attestation_binds_evidence_to_the_reconstructed_baseline(self):
+        t = self.t()
+        rec = self.record(t)
+        for key in ("fingerprintV2", "closureHashes", "closureSummary"):
+            rec.pop(key)  # evidence recorded before the closure scheme existed
+        # the change set after the evidence: one production file the test cannot reach, one it can
+        baseline_unrelated = (self.tmp / "src/main/java/a/b/Unrelated.java").read_bytes()
+        baseline_dep = (self.tmp / "src/main/java/a/b/d/Dep.java").read_bytes()
+        self.touch("src/main/java/a/b/Unrelated.java", "package a.b;\npublic class Unrelated { int z; }\n")
+        self.touch("src/main/java/a/b/d/Dep.java", "package a.b.d;\npublic class Dep { int x; }\n")
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        self.assertEqual(v3.classify(t, {"tasks": {"t.one": rec}}, set(), False)[0], "RUN")
+        # reconstruct the baseline: exactly the files the caller declares, with the content they had
+        v3._OVERRIDES.update({"src/main/java/a/b/Unrelated.java": baseline_unrelated, "src/main/java/a/b/d/Dep.java": baseline_dep})
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        self.assertEqual(v3.fingerprint(t)["sha256"], rec["fingerprint"], "the reconstructed baseline reproduces the stored fingerprint")
+        v2 = v3.fingerprint_v2(t)
+        v3._OVERRIDES.clear()
+        rec.update({"fingerprintV2": v2["sha256"], "closureHashes": v2["hashes"]})
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        action, why = v3.classify(t, {"tasks": {"t.one": rec}}, set(), False)
+        self.assertEqual(action, "RUN", "Dep changed and is reachable, so attested evidence is still invalidated")
+        self.assertIn("src/main/java/a/b/d/Dep.java", why)
+        (self.tmp / "src/main/java/a/b/d/Dep.java").write_bytes(baseline_dep)  # bytes, not text: write_text would translate line endings on Windows
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        self.assertEqual(v3.classify(t, {"tasks": {"t.one": rec}}, set(), False)[0], "REUSE", "only the unreachable change remains")
+
+    def test_a_baseline_that_does_not_reproduce_the_fingerprint_is_not_attested(self):
+        t = self.t()
+        rec = self.record(t)
+        self.touch("src/main/java/a/b/c/Svc.java", "package a.b.c;\nimport a.b.d.Dep;\npublic class Svc { Dep d; int drifted; }\n")  # changed and NOT declared as part of the change set
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        self.assertNotEqual(v3.fingerprint(t)["sha256"], rec["fingerprint"], "an undeclared change breaks the attestation precondition")
+
+    def test_currency_lists_only_evidence_verified_by_content(self):
+        t = self.t()
+        m = {"tasks": [t]}
+        state = {"tasks": {"t.one": self.record(t)}}
+        self.assertEqual(list(v3.write_currency(m, state)["ids"]), ["java:a.b.CTests"])
+        self.assertEqual(v3.write_currency(m, state)["ids"]["java:a.b.CTests"]["scheme"], "fingerprint-v1")
+        self.touch("src/main/java/a/b/Unrelated.java", "package a.b;\npublic class Unrelated { int z; }\n")
+        v3._SHA_CACHE.clear()
+        self.assertEqual(v3.write_currency(m, state)["ids"]["java:a.b.CTests"]["scheme"], "closure-v2", "kept current because the test cannot reach the change")
+        self.touch("src/main/java/a/b/d/Dep.java", "package a.b.d;\npublic class Dep { int x; }\n")
+        v3._SHA_CACHE.clear()
+        self.assertEqual(v3.write_currency(m, state)["ids"], {}, "a reachable change removes the claim: the timestamp rule keeps it stale")
+        state["tasks"]["t.one"]["verdict"] = "FAIL"
+        self.assertEqual(v3.write_currency(m, state)["ids"], {}, "a failing record is never current")
+
+    def test_rerun_keeps_the_history_of_the_superseded_evidence(self):
+        old = {"verdict": "PASS", "fingerprint": "f1", "fingerprintV2": "g1", "runId": "r1", "finishedAt": "t1", "evidence": {}}
+        entry = v3._history_entry(old)
+        self.assertEqual(entry, {"verdict": "PASS", "fingerprint": "f1", "fingerprintV2": "g1", "runId": "r1", "finishedAt": "t1"})
 
 
 if __name__ == "__main__":

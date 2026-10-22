@@ -1,0 +1,64 @@
+[
+  {
+    "id": "java:com.example.editor.portability.merge.CapabilitySemanticMergeServiceTests",
+    "name": {
+      "es": "La fusión empareja por firma semántica y exige decidir el conflicto",
+      "en": "The merge pairs by semantic signature and requires deciding the conflict"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "portability"
+    ],
+    "procs": [],
+    "prod": [
+      "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeService.java"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Previsualiza una fusión de dos capas de validaciones cuyas reglas tienen identificadores distintos y la misma firma, con la transacción simulada.",
+      "en": "Previews a merge of two validation layers whose rules have different identifiers and the same signature, with the transaction mocked."
+    },
+    "asserts": {
+      "es": "La vista previa es aplicable solo con las decisiones explícitas indicadas, enumera el conflicto de firma y conserva la regla existente.",
+      "en": "The preview is applicable only with the explicit decisions given, lists the signature conflict and keeps the existing rule."
+    },
+    "behavior": {
+      "es": "Dos reglas que describen lo mismo con otro identificador se detectan y no se resuelven solas.",
+      "en": "Two rules that describe the same thing under another identifier are detected and are not resolved on their own."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Una regla existente y una recuperada con la misma firma.",
+      "en": "An existing rule and a recovered one with the same signature."
+    },
+    "result": {
+      "es": "Una sola regla en el resultado, la existente, con la decisión registrada.",
+      "en": "A single rule in the result, the existing one, with the decision recorded."
+    },
+    "expected": {
+      "es": "Vista previa aplicable con las decisiones dadas.",
+      "en": "Preview applicable with the given decisions."
+    },
+    "guarantee": {
+      "es": "El emparejamiento por firma no omite la decisión explícita.",
+      "en": "Matching by signature does not skip the explicit decision."
+    },
+    "limits": {
+      "es": "Un único caso con la transacción simulada: no escribe en disco; la cadena real la prueban las pruebas de integración de la fusión.",
+      "en": "A single case with the transaction mocked: it writes nothing to disk; the real chain is tested by the merge integration tests."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Un caso con la transacción simulada.",
+      "en": "One case with the transaction mocked."
+    },
+    "external": "mocked",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.portability.merge.CapabilityPlanConfirmationAndRevertGatesIntegrationTests"
+    ],
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]

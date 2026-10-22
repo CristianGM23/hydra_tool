@@ -1,0 +1,63 @@
+[
+  {
+    "id": "java:com.example.editor.portability.orchestration.CapabilityOrchestrationServiceTests",
+    "name": {
+      "es": "La orquestación ordena varias fuentes y rechaza ciclos",
+      "en": "Orchestration orders several sources and rejects cycles"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "portability"
+    ],
+    "procs": [],
+    "prod": [
+      "src/main/java/com/example/editor/portability/orchestration/CapabilityOrchestrationService.java",
+      "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeService.java"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Orquesta dos fuentes con precedencias y dependencias, repite el plan, y prueba un grafo con ciclo; cada fuente declara la decisión de su capa.",
+      "en": "Orchestrates two sources with precedences and dependencies, replays the plan, and tries a graph with a cycle; each source declares its layer's decision."
+    },
+    "asserts": {
+      "es": "El orden respeta la precedencia, el plan repetido da la misma identidad y las reglas de las dos fuentes quedan en el resultado; el ciclo se rechaza.",
+      "en": "The order respects precedence, the replayed plan gets the same identity and both sources' rules end up in the result; the cycle is rejected."
+    },
+    "behavior": {
+      "es": "Varias fuentes se aplican en un orden determinista y reproducible.",
+      "en": "Several sources are applied in a deterministic, reproducible order."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Dos fuentes encadenadas y un par de fuentes que dependen entre sí.",
+      "en": "Two chained sources and a pair of sources that depend on each other."
+    },
+    "result": {
+      "es": "Plan ordenado y reproducible; el ciclo falla.",
+      "en": "Ordered, reproducible plan; the cycle fails."
+    },
+    "expected": {
+      "es": "Orden esperado y rechazo del ciclo.",
+      "en": "Expected order and cycle rejection."
+    },
+    "guarantee": {
+      "es": "El mismo plan produce siempre el mismo resultado.",
+      "en": "The same plan always produces the same result."
+    },
+    "limits": {
+      "es": "La transacción está simulada y no se escribe en disco.",
+      "en": "The transaction is mocked and nothing is written to disk."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Casos con la transacción simulada.",
+      "en": "Cases with the transaction mocked."
+    },
+    "external": "mocked",
+    "cases": [],
+    "related": [],
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]

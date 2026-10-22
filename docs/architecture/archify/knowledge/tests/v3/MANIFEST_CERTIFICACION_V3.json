@@ -1553,7 +1553,8 @@
    "priority": 6,
    "oracle": "Regresión de las correcciones de defectos de producción de la fase 2: el test existente debe seguir pasando tras los cambios en portability.",
    "expected": "Surefire: la clase sin Failures/Errors.",
-   "status": "ACTIVE"
+   "status": "ACTIVE",
+   "fragment": "fragments/CapabilitySemanticMergeServiceTests.json"
   },
   {
    "id": "v3.regression-capability-orchestration-service-tests",
@@ -1589,7 +1590,8 @@
    "priority": 6,
    "oracle": "Regresión de las correcciones de defectos de producción de la fase 2: el test existente debe seguir pasando tras los cambios en portability.",
    "expected": "Surefire: la clase sin Failures/Errors.",
-   "status": "ACTIVE"
+   "status": "ACTIVE",
+   "fragment": "fragments/CapabilityOrchestrationServiceTests.json"
   },
   {
    "id": "v3.regression-capability-layer-transaction-service-tests",
@@ -2277,7 +2279,8 @@
    "priority": 6,
    "oracle": "Regresión de las correcciones de defectos de producción de la fase 2: el test existente debe seguir pasando tras los cambios en metamodel/importing/updatesite.",
    "expected": "Surefire: la clase sin Failures/Errors.",
-   "status": "ACTIVE"
+   "status": "ACTIVE",
+   "fragment": "fragments/UpdateSiteLayerMergeServiceTests.json"
   },
   {
    "id": "v3.regression-update-site-layer-recovery-service-tests",
@@ -4180,6 +4183,40 @@
    "status": "ACTIVE"
   },
   {
+   "id": "v3.vitest-stabilization-merge-panels",
+   "kind": "vitest",
+   "argv": [
+    "npx",
+    "vitest",
+    "run",
+    "src/update-site-import-center/UpdateSiteReleaseGovernancePanel.test.tsx",
+    "src/update-site-import-center/UpdateSiteLayerMergePanel.test.tsx",
+    "--reporter=json",
+    "--outputFile={RUN_DIR}/vitest.json"
+   ],
+   "cwd": "frontend",
+   "inputs": [
+    "frontend/src/update-site-import-center/UpdateSiteReleaseGovernancePanel.test.tsx",
+    "frontend/src/update-site-import-center/UpdateSiteLayerMergePanel.test.tsx",
+    "frontend/src/update-site-import-center/UpdateSiteReleaseGovernancePanel.tsx",
+    "frontend/src/update-site-import-center/UpdateSiteLayerMergePanel.tsx",
+    "frontend/src/update-site-import-center/types.ts",
+    "frontend/src/update-site-import-center/api.ts",
+    "frontend/src/i18n/currentSpanishCatalogPart13.ts"
+   ],
+   "scope": [
+    {
+     "processId": "portability_author_merge",
+     "stageId": "c"
+    }
+   ],
+   "oracle": "Las dos pantallas de fusión no envían una decisión por defecto, piden una decisión explícita por conflicto y bloquean Aplicar hasta que todas estén tomadas y la vista previa sea vigente.",
+   "expected": "Vitest: los dos ficheros sin fallos.",
+   "fragment": "fragments/VitestStabilizationMergePanels.json",
+   "priority": 5,
+   "status": "ACTIVE"
+  },
+  {
    "id": "v3.regression-local-directory-project-storage-tests",
    "kind": "maven",
    "selectors": [
@@ -4471,6 +4508,10 @@
     {
      "processId": "x_package_and_move_capabilities",
      "stageId": "d3"
+    },
+    {
+     "processId": "x_package_and_move_capabilities",
+     "stageId": "m2"
     },
     {
      "processId": "portability_revert",
@@ -6924,10 +6965,6 @@
     {
      "processId": "validation_author_form",
      "stageId": "tg"
-    },
-    {
-     "processId": "validation_author_form",
-     "stageId": "ex"
     }
    ],
    "oracle": "Regla de edad con grupo propio, condición «edad mayor o igual que 0 Y nombre definido».",
@@ -7461,6 +7498,157 @@
    "oracle": "Crear tipos, campos, enlaces y copias; reemplazar con ETag obsoleto y vigente (servicio y API); modelos con origen/destino desconocido, reservado, duplicados y campo obligatorio sin copiar; JSON crudo invalido.",
    "expected": "Surefire: EventModelAuthoringPersistenceIntegrationTests sin Failures/Errors/Skipped; el fragmento solo se fusiona si PASA.",
    "fragment": "fragments/EventModelAuthoringPersistenceIntegrationTests.json",
+   "generatedFromFragment": true,
+   "priority": 5,
+   "regressionOnly": false,
+   "quarantinable": true,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "v3.external-import-crash-recovery-tests",
+   "kind": "maven",
+   "selectors": [
+    "com.example.editor.project.recovery.ExternalImportCrashRecoveryTests"
+   ],
+   "inputs": [
+    "src/test/java/com/example/editor/project/recovery/ExternalImportCrashRecoveryTests.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportCompensationService.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportJournal.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportJournalStore.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+    "src/main/java/com/example/editor/definition/assets/EditorVisualAssetService.java",
+    "src/test/java/com/example/editor/project/recovery/ExternalImportCrashChild.java",
+    "src/test/java/com/example/editor/project/recovery/ImportFixtureArchives.java",
+    "src/test/java/com/example/editor/project/recovery/ExternalImportStorageGuard.java"
+   ],
+   "scope": [
+    {
+     "processId": "x_recover_external_project",
+     "stageId": "pers"
+    },
+    {
+     "processId": "x_recover_external_project",
+     "stageId": "rb"
+    },
+    {
+     "processId": "x_recover_external_project",
+     "stageId": "d2"
+    },
+    {
+     "processId": "recovery_persist_rollback",
+     "stageId": "a2"
+    },
+    {
+     "processId": "recovery_persist_rollback",
+     "stageId": "a3"
+    }
+   ],
+   "oracle": "Cuatro puntos de interrupción más una interrupción de la propia recuperación y un reinicio repetido.",
+   "expected": "Surefire: ExternalImportCrashRecoveryTests sin Failures/Errors/Skipped; el fragmento solo se fusiona si PASA.",
+   "fragment": "fragments/ExternalImportCrashRecoveryTests.json",
+   "generatedFromFragment": true,
+   "priority": 5,
+   "regressionOnly": false,
+   "quarantinable": true,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "v3.external-import-storage-guard-tests",
+   "kind": "maven",
+   "selectors": [
+    "com.example.editor.project.recovery.ExternalImportStorageGuardTests"
+   ],
+   "inputs": [
+    "src/test/java/com/example/editor/project/recovery/ExternalImportStorageGuardTests.java",
+    "src/test/java/com/example/editor/project/recovery/ExternalImportStorageGuard.java",
+    "src/test/java/com/example/editor/project/recovery/ExternalImportCrashChild.java"
+   ],
+   "scope": [],
+   "oracle": "Rutas de almacén dentro del directorio de datos real, fuera de la raíz temporal, con «..» y temporales, también en un proceso hijo.",
+   "expected": "Surefire: ExternalImportStorageGuardTests sin Failures/Errors/Skipped; el fragmento solo se fusiona si PASA.",
+   "fragment": "fragments/ExternalImportStorageGuardTests.json",
+   "generatedFromFragment": true,
+   "priority": 5,
+   "regressionOnly": true,
+   "quarantinable": true,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "v3.external-import-journal-persistence-integration-tests",
+   "kind": "maven",
+   "selectors": [
+    "com.example.editor.project.recovery.ExternalImportJournalPersistenceIntegrationTests"
+   ],
+   "inputs": [
+    "src/test/java/com/example/editor/project/recovery/ExternalImportJournalPersistenceIntegrationTests.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportCompensationService.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportJournal.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportJournalStore.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportJournalException.java"
+   ],
+   "scope": [
+    {
+     "processId": "x_recover_external_project",
+     "stageId": "pers"
+    },
+    {
+     "processId": "x_recover_external_project",
+     "stageId": "rb"
+    }
+   ],
+   "oracle": "Fallos del diario y concurrencia sobre recursos compartidos.",
+   "expected": "Surefire: ExternalImportJournalPersistenceIntegrationTests sin Failures/Errors/Skipped; el fragmento solo se fusiona si PASA.",
+   "fragment": "fragments/ExternalImportJournalPersistenceIntegrationTests.json",
+   "generatedFromFragment": true,
+   "priority": 5,
+   "regressionOnly": false,
+   "quarantinable": true,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "v3.external-import-rollback-compensation-integration-tests",
+   "kind": "maven",
+   "selectors": [
+    "com.example.editor.project.recovery.ExternalImportRollbackCompensationIntegrationTests"
+   ],
+   "inputs": [
+    "src/test/java/com/example/editor/project/recovery/ExternalImportRollbackCompensationIntegrationTests.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryController.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportCompensationService.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportJournal.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportJournalStore.java",
+    "src/main/java/com/example/editor/project/recovery/ExternalImportListener.java",
+    "src/main/java/com/example/editor/definition/assets/EditorVisualAssetService.java"
+   ],
+   "scope": [
+    {
+     "processId": "x_recover_external_project",
+     "stageId": "pers"
+    },
+    {
+     "processId": "x_recover_external_project",
+     "stageId": "rb"
+    },
+    {
+     "processId": "x_recover_external_project",
+     "stageId": "d2"
+    },
+    {
+     "processId": "recovery_persist_rollback",
+     "stageId": "a2"
+    },
+    {
+     "processId": "recovery_persist_rollback",
+     "stageId": "a3"
+    }
+   ],
+   "oracle": "Importación fallida tras materializar metamodelo, editor, reglas y figuras del fixture Sirius.",
+   "expected": "Surefire: ExternalImportRollbackCompensationIntegrationTests sin Failures/Errors/Skipped; el fragmento solo se fusiona si PASA.",
+   "fragment": "fragments/ExternalImportRollbackCompensationIntegrationTests.json",
    "generatedFromFragment": true,
    "priority": 5,
    "regressionOnly": false,
@@ -10648,6 +10836,26 @@
    "generatedFromFragment": true,
    "priority": 5,
    "regressionOnly": false,
+   "quarantinable": true,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "v3.transient-file-access-retry-tests",
+   "kind": "maven",
+   "selectors": [
+    "com.example.editor.portability.transaction.TransientFileAccessRetryTests"
+   ],
+   "inputs": [
+    "src/test/java/com/example/editor/portability/transaction/TransientFileAccessRetryTests.java",
+    "src/main/java/com/example/editor/portability/transaction/TransientFileAccessRetry.java"
+   ],
+   "scope": [],
+   "oracle": "Cuatro tipos de fallo del acceso a ficheros.",
+   "expected": "Surefire: TransientFileAccessRetryTests sin Failures/Errors/Skipped; el fragmento solo se fusiona si PASA.",
+   "fragment": "fragments/TransientFileAccessRetryTests.json",
+   "generatedFromFragment": true,
+   "priority": 5,
+   "regressionOnly": true,
    "quarantinable": true,
    "status": "ACTIVE"
   },

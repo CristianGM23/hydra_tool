@@ -73,6 +73,11 @@ const dsuite = new Map(disc.suites.map((s) => [s.id, s])), dgate = new Map(disc.
 const exec = {}, iso = (ms) => new Date(ms).toISOString();
 const ctxJava = (() => { try { const x = fs.readFileSync(path.join(ROOT, disc.evidence.surefire.dir, fs.readdirSync(path.join(ROOT, disc.evidence.surefire.dir)).find((n) => /^TEST-.*\.xml$/.test(n))), "utf8"); const p = (k) => (x.match(new RegExp('name="' + k + '" value="([^"]*)"')) || [])[1]; return { os: p("os.name"), osVersion: p("os.version"), java: p("java.version"), javaVendor: p("java.vendor"), surefire: (x.match(/ version="([^"]+)"/) || [])[1] }; } catch (e) { return {}; } })();
 const changedAfter = (files, ms) => files.filter((f) => fileChanged(f) > ms);
+// Content-based currency written by the V3 runner (hydra_archify_v3.py sync): ids whose evidence it verified by hash (identical inputs or an unchanged
+// bounded dependency closure). A later timestamp on a file the test cannot reach (e.g. a commit made after the run) must not make that evidence stale.
+const currencyFile = path.join(ROOT, "target", "archify-v3", "evidence", "evidence-currency.json");
+const currency = (() => { try { return readJson(currencyFile).ids || {}; } catch (e) { return {}; } })();
+const keptCurrent = (rec, base, st) => { const c = currency[rec.id]; return c ? { ...base, s: st, validatedBy: c.scheme, validatedAt: c.verifiedAt, note: "Kept current by content fingerprint (" + c.scheme + "): files with a later timestamp are outside what this test can reach." } : null; };
 function execFor(rec) {
   const d = dsuite.get(rec.id), g = dgate.get(rec.id), files = [rec.path, ...(rec.prod || []), ...((d && d.prodRefs) || [])].filter(Boolean);
   if (rec.kind === "family") return { s: "DISCOVERED", note: "Historical verification scripts without associated execution evidence in the local artifacts (they are not part of the latest recorded run).", members: rec.members.length };
@@ -91,10 +96,19 @@ function execFor(rec) {
   if (rec.framework === "junit5") {
     if (d && !d.cases && !d.executed) return { s: "DISCOVERED", note: "Support class (fixtures/helpers) without test cases: it cannot be executed on its own." };
     const e = d && d.executed; if (!e) return disc.evidence.surefire.dir ? { s: "NOT_EXECUTED", note: "Present in src/test but absent from the latest Maven surefire reports (outside the executed suite)." } : { s: "DISCOVERED" };
-    const start = disc.evidence.surefire.start ? Date.parse(disc.evidence.surefire.start) : (gMaven ? gMaven.startMs : Date.parse(e.ts) - 300000), st = e.fail > 0 ? "FAIL" : e.pass === 0 && e.skipped > 0 ? "SKIPPED" : "PASS";
-    const base = { src: "surefire:" + disc.evidence.surefire.dir, granularity: "case", ts: e.ts, durMs: Math.round(e.time * 1000), cases: { n: e.cases, pass: e.pass, fail: e.fail, skipped: e.skipped }, problems: e.problems && e.problems.length ? e.problems.map((p) => ({ n: p.n, s: p.s, ...(p.m ? { m: p.m } : {}) })) : undefined };
+    const start = e.start ? Date.parse(e.start) : disc.evidence.surefire.start ? Date.parse(disc.evidence.surefire.start) : (gMaven ? gMaven.startMs : Date.parse(e.ts) - 300000), st = e.fail > 0 ? "FAIL" : e.pass === 0 && e.skipped > 0 ? "SKIPPED" : "PASS";
+    const base = { src: e.from === "store" ? "surefire-store:" + (e.run || "archify-v3") : "surefire:" + disc.evidence.surefire.dir, granularity: "case", ts: e.ts, durMs: Math.round(e.time * 1000), cases: { n: e.cases, pass: e.pass, fail: e.fail, skipped: e.skipped }, problems: e.problems && e.problems.length ? e.problems.map((p) => ({ n: p.n, s: p.s, ...(p.m ? { m: p.m } : {}) })) : undefined };
     const ch = changedAfter(files, start);
+    if (st === "PASS" && ch.length) { const kept = keptCurrent(rec, base, st); if (kept) return kept; }
     return st === "PASS" && ch.length ? { ...base, s: "STALE_EVIDENCE", was: "PASS", staleBecause: "changed after the Maven run started: " + ch.slice(0, 3).join(", ") } : { ...base, s: st };
+  }
+  if ((rec.framework === "vitest" || rec.framework === "playwright") && d && d.executed && d.executed.from === "store") {
+    // per-spec evidence captured by the V3 runner (real backend e2e): same case-level logic as the Surefire store
+    const e = d.executed, start = e.start ? Date.parse(e.start) : Date.parse(e.ts) - 300000, st = e.fail > 0 ? "FAIL" : e.pass === 0 && e.skipped > 0 ? "SKIPPED" : "PASS";
+    const base = { src: "e2e-store:" + (e.run || "archify-v3"), granularity: "case", ts: e.ts, durMs: Math.round(e.time * 1000), cases: { n: e.cases, pass: e.pass, fail: e.fail, skipped: e.skipped }, problems: e.problems && e.problems.length ? e.problems.map((p) => ({ n: p.n, s: p.s, ...(p.m ? { m: p.m } : {}) })) : undefined };
+    const ch = changedAfter(files, start);
+    if (st === "PASS" && ch.length) { const kept = keptCurrent(rec, base, st); if (kept) return kept; }
+    return st === "PASS" && ch.length ? { ...base, s: "STALE_EVIDENCE", was: "PASS", staleBecause: "changed after the e2e run started: " + ch.slice(0, 3).join(", ") } : { ...base, s: st };
   }
   if (rec.framework === "vitest" || rec.framework === "playwright") {
     const g2 = rec.framework === "vitest" ? gVitest : gPw; if (!g2) return { s: "DISCOVERED" };

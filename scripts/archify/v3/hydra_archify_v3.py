@@ -219,23 +219,222 @@ def task_files(task: dict) -> list[str]:
     return sorted(out)
 
 
+# Baseline overrides (attestation only): repo-relative path -> bytes it had in the baseline, or None when it did not exist there.
+# Empty during normal operation. They let `attest-closure` recompute the fingerprints of the state the evidence was recorded in.
+_OVERRIDES: dict = {}
+
+
+def _tracked_sha(f: str) -> str | None:
+    """SHA-256 of a tracked input in the current tree (or in the baseline when overridden); None when it does not exist."""
+    if f in _OVERRIDES:
+        data = _OVERRIDES[f]
+        return None if data is None else hashlib.sha256(data).hexdigest()
+    p = ROOT / f
+    return sha256_file(p) if p.is_file() else None
+
+
 def fingerprint(task: dict) -> dict:
     h = hashlib.sha256()
     missing, count = [], 0
     for f in task_files(task):
-        p = ROOT / f
-        if not p.is_file():
+        sha = _tracked_sha(f)
+        if sha is None:
+            if f in _OVERRIDES:
+                continue  # did not exist in the baseline (it may come from a glob that matches files added later)
             if f in EXTRA_INPUTS and f != "pom.xml":
                 continue  # optional global inputs
             missing.append(f)
             h.update(f"MISSING:{f}\n".encode())
             continue
-        h.update(f"{f}:{sha256_file(p)}\n".encode())
+        h.update(f"{f}:{sha}\n".encode())
         count += 1
     for name in sorted(task.get("envFingerprint", [])):
         h.update(f"ENV:{name}={hashlib.sha256(os.environ.get(name, '').encode()).hexdigest()}\n".encode())
     h.update(f"JAVA_HOME={os.environ.get('JAVA_HOME', '')}\nkind={task.get('kind')}\n".encode())
     return {"sha256": h.hexdigest(), "files": count, "missing": missing}
+
+
+# ------------------------------------------------------------------ closure fingerprint (scheme "closure-v2")
+# v1 hashes every DECLARED input (plus broad globs). Some manifests declare shared production files for dozens of regression tasks, so one
+# unrelated production change invalidates all of them. v2 narrows a Maven task to what its test can actually reach (static Java dependency
+# closure) and stays CONSERVATIVE whenever reachability cannot be established with confidence: Spring-context or process-based tests,
+# tasks with inputGlobs, resource loading (all resources are then included) and every non-Maven kind keep the full v1 input set.
+SPRING_MARKERS = ("@SpringBootTest", "@WebMvcTest", "@DataJpaTest", "@AutoConfigureMockMvc", "@ContextConfiguration", "SpringExtension",
+                  "@SpringJUnitConfig", "@MockitoBean", "@MockitoSpyBean", "@TestConfiguration", "SpringApplication", "ProcessBuilder",
+                  "java.class.path")
+RESOURCE_MARKERS = ("getResource", "ClassPathResource", "classpath:", "ResourceLoader")
+_JAVA_CACHE: dict = {}
+_PKG_RE = re.compile(r"^\s*package\s+([\w.]+)\s*;", re.M)
+_IMPORT_RE = re.compile(r"^\s*import\s+(static\s+)?([\w.]+?)(\.\*)?\s*;", re.M)
+_TOKEN_RE = re.compile(r"\b[A-Z][A-Za-z0-9_]*\b")
+_FQN_RE = re.compile(r"\b[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+\.[A-Z][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)*")
+
+
+def _java_sources() -> dict:
+    """rel path -> text for every Java file of the tree (or of the baseline when overrides are active)."""
+    out: dict = {}
+    for base in ("src/main/java", "src/test/java"):
+        d = ROOT / base
+        if not d.is_dir():
+            continue
+        for p in d.rglob("*.java"):
+            r = base + "/" + p.relative_to(d).as_posix()
+            if r in _OVERRIDES:
+                if _OVERRIDES[r] is None:
+                    continue
+                out[r] = _OVERRIDES[r].decode("utf-8", "replace")
+            else:
+                out[r] = p.read_text(encoding="utf-8", errors="replace")
+    for r, data in _OVERRIDES.items():
+        if data is not None and r.endswith(".java") and r.startswith(("src/main/java/", "src/test/java/")) and r not in out:
+            out[r] = data.decode("utf-8", "replace")
+    return out
+
+
+class JavaIndex:
+    """Static class-level dependency graph over src/main/java and src/test/java (imports, same-package references, qualified names)."""
+
+    def __init__(self, files: dict):
+        self.files = files
+        self.by_fqn: dict = {}
+        self.by_pkg: dict = {}
+        self.pkg_of: dict = {}
+        for r, text in files.items():
+            m = _PKG_RE.search(text)
+            pkg = m.group(1) if m else ""
+            name = Path(r).stem
+            self.pkg_of[r] = pkg
+            self.by_fqn[(pkg + "." if pkg else "") + name] = r
+            self.by_pkg.setdefault(pkg, {})[name] = r
+        self._deps: dict = {}
+
+    def _resolve(self, qualified: str) -> str | None:
+        parts = qualified.split(".")
+        while parts:
+            hit = self.by_fqn.get(".".join(parts))
+            if hit:
+                return hit
+            parts.pop()
+        return None
+
+    def deps(self, r: str) -> set:
+        if r in self._deps:
+            return self._deps[r]
+        text = self.files[r]
+        out: set = set()
+        for static, name, wildcard in _IMPORT_RE.findall(text):
+            if wildcard and not static:
+                out.update(self.by_pkg.get(name, {}).values())  # import a.b.*  -> the whole package (conservative)
+            else:
+                hit = self._resolve(name)
+                if hit:
+                    out.add(hit)
+        same = self.by_pkg.get(self.pkg_of[r], {})
+        for token in set(_TOKEN_RE.findall(text)):
+            if token in same:
+                out.add(same[token])
+        for qualified in set(_FQN_RE.findall(text)):
+            hit = self._resolve(qualified)
+            if hit:
+                out.add(hit)
+        out.discard(r)
+        self._deps[r] = out
+        return out
+
+    def closure(self, seeds: list) -> tuple:
+        seen, stack = set(seeds), list(seeds)
+        while stack:
+            for d in self.deps(stack.pop()):
+                if d not in seen:
+                    seen.add(d)
+                    stack.append(d)
+        spring = sorted(r for r in seen if any(mk in self.files[r] for mk in SPRING_MARKERS))
+        resources = sorted(r for r in seen if any(mk in self.files[r] for mk in RESOURCE_MARKERS))
+        return seen, spring, resources
+
+
+def java_index() -> JavaIndex:
+    key = (str(ROOT), tuple(sorted(_OVERRIDES)))
+    if _JAVA_CACHE.get("key") != key:
+        _JAVA_CACHE.clear()
+        _JAVA_CACHE.update({"key": key, "index": JavaIndex(_java_sources())})
+    return _JAVA_CACHE["index"]
+
+
+def _tree_files(*bases: str) -> list:
+    out = []
+    for b in bases:
+        d = ROOT / b
+        if d.is_dir():
+            out += [b + "/" + p.relative_to(d).as_posix() for p in sorted(d.rglob("*")) if p.is_file() and (b + "/" + p.relative_to(d).as_posix()) not in _OVERRIDES]
+    out += [r for r, data in _OVERRIDES.items() if data is not None and r.startswith(tuple(b + "/" for b in bases))]
+    return out
+
+
+def fingerprint_v2(task: dict) -> dict:
+    """Closure fingerprint. `bounded` is True only when the dependencies of the task were determined statically with confidence; otherwise the
+    result equals v1 and `reasons` says why. `unreachableDeclared` lists declared production inputs the test provably cannot reach."""
+    v1 = fingerprint(task)
+    base = {**v1, "scheme": "declared", "bounded": False, "reasons": [], "unreachableDeclared": [], "closureSize": v1["files"], "hashes": {}}
+    if task.get("fingerprintPolicy") == "declared":
+        base["reasons"].append("manifest policy: declared")
+        return base
+    if task.get("kind") != "maven":
+        base["reasons"].append(f"{task.get('kind')} task: dependencies are not statically determinable (conservative)")
+        return base
+    if task.get("inputGlobs"):
+        base["reasons"].append("task declares inputGlobs (broad by construction)")
+        return base
+    idx = java_index()
+    seeds = [fqn_to_path(selector_class(s)) for s in task.get("selectors", [])] + [i for i in task.get("inputs", []) if i.startswith("src/test/")]
+    missing_seeds = [s for s in seeds if s.endswith(".java") and s not in idx.files]
+    if missing_seeds:
+        base["reasons"].append("test source not found: " + ", ".join(missing_seeds[:3]))
+        return base
+    seeds = [s for s in seeds if s in idx.files]
+    closure, spring, resources = idx.closure(seeds)
+    if spring:
+        base["reasons"].append("Spring-context or process-based test (whole application reachable): " + ", ".join(spring[:3]))
+        return base
+    declared = list(task.get("inputs", []))
+    unreachable = [d for d in declared if d.startswith("src/main/java/") and d.endswith(".java") and d not in closure]
+    keep = set(closure) | {e for e in EXTRA_INPUTS}
+    keep |= {d for d in declared if d not in unreachable and not (d.startswith(("src/main/java/", "src/test/java/")) and d.endswith(".java") and d not in closure)}
+    keep |= {d for d in declared if d.startswith("src/test/")}
+    if resources:
+        keep |= set(_tree_files("src/test/resources", "src/main/resources"))
+    h = hashlib.sha256()
+    missing, hashes = [], {}
+    for f in sorted(keep):
+        sha = _tracked_sha(f)
+        if sha is None:
+            if f in EXTRA_INPUTS and f != "pom.xml":
+                continue
+            if f in _OVERRIDES:
+                continue
+            missing.append(f)
+            h.update(f"MISSING:{f}\n".encode())
+            continue
+        h.update(f"{f}:{sha}\n".encode())
+        hashes[f] = sha[:12]
+    for name in sorted(task.get("envFingerprint", [])):
+        h.update(f"ENV:{name}={hashlib.sha256(os.environ.get(name, '').encode()).hexdigest()}\n".encode())
+    h.update(f"JAVA_HOME={os.environ.get('JAVA_HOME', '')}\nkind={task.get('kind')}\nscheme=closure-v2\n".encode())
+    return {"sha256": h.hexdigest(), "files": len(hashes), "missing": missing, "scheme": "closure-v2", "bounded": True, "reasons": [],
+            "unreachableDeclared": sorted(unreachable), "closureSize": len(keep), "hashes": hashes}
+
+
+def fp_fields(task: dict) -> dict:
+    """Fingerprint fields stored in every result record: v1 (declared inputs) always, v2 (closure) when it is bounded."""
+    out = {"fingerprint": fingerprint(task)["sha256"]}
+    v2 = fingerprint_v2(task)
+    if v2["bounded"]:
+        out.update({"fingerprintV2": v2["sha256"], "closureHashes": v2["hashes"], "closureSummary": {"size": v2["closureSize"], "unreachableDeclared": len(v2["unreachableDeclared"])}})
+    return out
+
+
+def _history_entry(rec: dict) -> dict:
+    return {k: rec.get(k) for k in ("verdict", "fingerprint", "fingerprintV2", "runId", "finishedAt") if rec.get(k) is not None}
 
 
 # ------------------------------------------------------------------ state
@@ -422,8 +621,10 @@ def run_logged(argv: list[str], cwd: Path, log_path: Path, timeout: int, env: di
 
 
 # ------------------------------------------------------------------ planning
-def classify(task: dict, state: dict, force: set, retry_failed: bool) -> tuple[str, str]:
-    """-> (action, reason): RUN | REUSE | BLOCKED | PLANNED | SKIP."""
+def classify(task: dict, state: dict, force: set, retry_failed: bool, strict: bool = False) -> tuple[str, str]:
+    """-> (action, reason): RUN | REUSE | BLOCKED | PLANNED | SKIP.
+
+    `strict` disables the closure scheme: only an identical v1 fingerprint (all declared inputs) allows reuse. `force` ({"*"} or ids) always wins."""
     st = task.get("status", "ACTIVE")
     if st == "BLOCKED":
         return "BLOCKED", task.get("blockedReason", "")
@@ -440,10 +641,22 @@ def classify(task: dict, state: dict, force: set, retry_failed: bool) -> tuple[s
         return "RUN", "forced"
     if rec.get("verdict") == "PASS" and rec.get("fingerprint") == fp["sha256"] and evidence_intact(rec):
         return "REUSE", "same fingerprint, immutable evidence intact"
+    closure_note = ""
+    if not strict and rec.get("verdict") == "PASS" and rec.get("fingerprintV2"):
+        fp2 = fingerprint_v2(task)
+        if fp2["bounded"]:
+            if rec["fingerprintV2"] == fp2["sha256"] and not fp2["missing"] and evidence_intact(rec):
+                return "REUSE", "closure unchanged (closure-v2): only inputs the test cannot reach changed since " + rec.get("finishedAt", "?")
+            old = rec.get("closureHashes") or {}
+            changed = sorted([f for f, h in fp2["hashes"].items() if old.get(f) != h] + [f for f in old if f not in fp2["hashes"]])
+            if changed:
+                closure_note = f" [closure-v2: {len(changed)} reachable file(s) changed: {', '.join(changed[:3])}{' ...' if len(changed) > 3 else ''}]"
+        else:
+            closure_note = " [closure-v2 not bounded: " + "; ".join(fp2["reasons"])[:120] + "]"
     if rec.get("verdict") in ("FAIL", "COMPILE_ERROR", "NOT_EXECUTED") and rec.get("fingerprint") == fp["sha256"] and not retry_failed:
         return "SKIP", f"previous {rec['verdict']} with unchanged inputs (use --retry-failed)"
     if rec.get("fingerprint") and rec.get("fingerprint") != fp["sha256"] and rec.get("verdict"):
-        return "RUN", "inputs changed since " + rec.get("finishedAt", "?")
+        return "RUN", "inputs changed since " + rec.get("finishedAt", "?") + closure_note
     return "RUN", "no previous evidence"
 
 
@@ -485,12 +698,13 @@ def stale_task_ids(m: dict) -> set:
     return out
 
 
-def build_plan(m: dict, state: dict, only: set | None, force: set, retry_failed: bool) -> list[dict]:
+def build_plan(m: dict, state: dict, only: set | None, force: set, retry_failed: bool, strict: bool = False) -> list[dict]:
     plan = []
+    _JAVA_CACHE.clear()
     for t in sorted(m["tasks"], key=lambda x: (x.get("priority", 5), x["id"])):
         if only and t["id"] not in only:
             continue
-        action, reason = classify(t, state, force, retry_failed)
+        action, reason = classify(t, state, force, retry_failed, strict)
         plan.append({"id": t["id"], "kind": t["kind"], "action": action, "reason": reason, "priority": t.get("priority", 5)})
     return plan
 
@@ -760,7 +974,7 @@ def cmd_run(args) -> int:
     force = set(args.force.split(",")) if args.force else set()
     if getattr(args, "include_stale", False):
         force |= stale_task_ids(m)
-    plan = build_plan(m, state, only, force, args.retry_failed)
+    plan = build_plan(m, state, only, force, args.retry_failed, getattr(args, "strict_fingerprint", False))
     summary = {k: sum(1 for p in plan if p["action"] == k) for k in ("RUN", "REUSE", "BLOCKED", "PLANNED", "SKIP")}
     log("plan: " + json.dumps(summary))
     if args.dry_run:
@@ -803,9 +1017,8 @@ def cmd_run(args) -> int:
                     verdict = "COMPILE_ERROR"
                 tlog = run_dir / "logs" / f"{t['id']}.log"
                 tlog.write_text(render_task_log(t, res, per, verdict, console, clsnames, qmatch), encoding="utf-8")
-                fp = fingerprint(t)
                 ev = {c: captured[c] for c in clsnames if c in captured}
-                results[t["id"]] = {"kind": "maven", "verdict": verdict, "fingerprint": fp["sha256"], "runId": run_id, "finishedAt": now_iso(), "startedAt": started,
+                results[t["id"]] = {"kind": "maven", "verdict": verdict, **fp_fields(t), "runId": run_id, "finishedAt": now_iso(), "startedAt": started,
                                     "selectors": per, "evidence": ev, "log": rel(tlog), "reason": "; ".join(e["msg"] for e in res["compileErrors"][:2]) if verdict == "COMPILE_ERROR" else "",
                                     "attempts": state["tasks"].get(t["id"], {}).get("attempts", 0) + 1}
                 log(f"  {verdict:14} {t['id']}")
@@ -820,6 +1033,9 @@ def cmd_run(args) -> int:
             results[t["id"]] = run_command_task(t, run_id, run_dir, args.timeout, state)
             log(f"  {results[t['id']]['verdict']:14} {t['id']}")
         for tid, r in results.items():
+            old = state["tasks"].get(tid) or {}
+            if old.get("fingerprint") and old.get("verdict"):  # traceability: the superseded evidence stays referenced from the new record
+                r["history"] = (old.get("history", []) + [_history_entry(old)])[-10:]
             state["tasks"][tid] = r
         state["runs"][-1].update({"finishedAt": now_iso(), "verdicts": {k: v["verdict"] for k, v in results.items()}})
         save_state(state)
@@ -970,6 +1186,39 @@ def node(*a: str) -> subprocess.CompletedProcess:
     return subprocess.run(["node", *a], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
 
 
+def task_evidence_ids(t: dict) -> list:
+    """Ids the Archify catalog uses for the tests a task executes."""
+    if t.get("kind") == "maven":
+        return ["java:" + selector_class(s) for s in t.get("selectors", [])]
+    if t.get("kind") == "playwright":
+        return ["pw:e2e/" + s.split("e2e/", 1)[-1] for s in t.get("specs", [])]
+    if t.get("kind") == "vitest":
+        return ["vitest:" + a for a in t.get("argv", []) if a.endswith((".test.ts", ".test.tsx"))]
+    return []
+
+
+def write_currency(m: dict, state: dict) -> dict:
+    """Content-based currency of the recorded evidence, read by build-test-evidence.js.
+
+    The catalog's STALE_EVIDENCE rule compares timestamps (file mtimes and Git commit times) with the start of the run, so committing evidence-bearing
+    files AFTER the run makes everything look stale even when nothing a test can reach changed. Here an evidence id is declared current only when the
+    executor verifies it by content: PASS record, intact immutable evidence and either identical declared inputs (v1) or an unchanged bounded
+    dependency closure (closure-v2). Anything else keeps the timestamp rule, so nothing is promoted without a hash check."""
+    _JAVA_CACHE.clear()
+    ids: dict = {}
+    for t in m["tasks"]:
+        action, why = classify(t, state, set(), False)
+        rec = state["tasks"].get(t["id"], {})
+        if action != "REUSE" or rec.get("verdict") != "PASS":
+            continue
+        scheme = "closure-v2" if "closure-v2" in why else "fingerprint-v1"
+        for i in task_evidence_ids(t):
+            ids[i] = {"task": t["id"], "scheme": scheme, "runId": rec.get("runId"), "evidenceFinishedAt": rec.get("finishedAt"), "verifiedAt": now_iso()}
+    out = {"schemaVersion": 1, "generatedAt": now_iso(), "note": "Evidence ids whose currency was verified by content hash (see write_currency in hydra_archify_v3.py).", "ids": ids}
+    write_json_atomic(EVID / "evidence-currency.json", out)
+    return out
+
+
 def cmd_sync(args) -> int:
     state = load_state()
     if getattr(args, "restage", False):
@@ -1000,6 +1249,8 @@ def cmd_sync(args) -> int:
     for tid, why in withheld:
         log(f"fragment withheld for {tid}: {why}")
     log(f"sync: {len(staged)} fragment(s) staged, {len(withheld)} withheld")
+    cur = write_currency(m, state)
+    log(f"evidence currency verified by content for {len(cur['ids'])} test id(s)")
     disc = KT / "discovery-current.json"
     r = node(str(KT / "discover-tests.js"), "--out", str(disc))
     if r.returncode:
@@ -1083,7 +1334,7 @@ def cmd_adopt(args) -> int:
             continue
         verdict = task_verdict(per)
         ev = {selector_class(s): idx["classes"][selector_class(s)] for s in t["selectors"] if selector_class(s) in idx["classes"] and idx["classes"][selector_class(s)]["runId"] == args.run_id}
-        state["tasks"][t["id"]] = {"kind": "maven", "verdict": verdict, "fingerprint": fingerprint(t)["sha256"], "runId": args.run_id, "finishedAt": now_iso(), "adopted": True,
+        state["tasks"][t["id"]] = {"kind": "maven", "verdict": verdict, **fp_fields(t), "runId": args.run_id, "finishedAt": now_iso(), "adopted": True,
                                    "selectors": per, "evidence": ev, "reason": "adopted from immutable run " + args.run_id + " (no re-execution)", "attempts": 0}
         adopted.append((t["id"], verdict))
     save_state(state)
@@ -1096,7 +1347,7 @@ def cmd_adopt(args) -> int:
 def cmd_status(args) -> int:
     m = load_manifest()
     state = load_state()
-    plan = build_plan(m, state, None, set(), False)
+    plan = build_plan(m, state, None, set(), False, getattr(args, "strict_fingerprint", False))
     by = {}
     for p in plan:
         by.setdefault(p["action"], []).append(p["id"])
@@ -1255,6 +1506,78 @@ def cmd_audit_evidence(args) -> int:
     return 0 if a["ok"] else 1
 
 
+def cmd_attest_closure(args) -> int:
+    """Attest which recorded evidence belongs to a known baseline and give it a closure fingerprint (scheme closure-v2).
+
+    The caller names the files that changed since the evidence was recorded (`--changed-file`, one repo-relative path per line) and the Git ref
+    that holds their previous content (`--baseline-ref`, default HEAD; paths absent from that ref are treated as new). For every PASS record the
+    v1 fingerprint is recomputed on that reconstructed baseline: only when it equals the stored one is the record ATTESTED (the evidence provably
+    belongs to the baseline), and only then is its closure fingerprint (v2) recorded from the baseline state. Records that do not match are left
+    untouched (the evidence was already out of date before this change set). Nothing is promoted: a task is reused later only if its bounded
+    closure is unchanged. Default is a dry run; `--apply` writes the state (with a backup) and an attestation report."""
+    paths = [l.strip() for l in Path(args.changed_file).read_text(encoding="utf-8-sig").splitlines() if l.strip() and not l.startswith("#")]
+    for p in paths:
+        if Path(p).is_absolute() or ".." in Path(p).parts:
+            raise SystemExit(f"unsafe path in --changed-file: {p}")
+    for p in paths:
+        r = subprocess.run(["git", "show", f"{args.baseline_ref}:{p}"], capture_output=True, cwd=ROOT)
+        _OVERRIDES[p] = r.stdout if r.returncode == 0 else None
+    m = load_manifest()
+    state = load_state()
+    _JAVA_CACHE.clear()
+    only = set(args.only.split(",")) if args.only else None
+    report = {"generatedAt": now_iso(), "baselineRef": args.baseline_ref, "changedFiles": paths, "tasks": {}}
+    counts = {"attested-bounded": 0, "attested-unbounded": 0, "not-attestable": 0, "no-pass-record": 0}
+    for t in sorted(m["tasks"], key=lambda x: x["id"]):
+        if only and t["id"] not in only:
+            continue
+        rec = state["tasks"].get(t["id"])
+        if not rec or rec.get("verdict") != "PASS" or not rec.get("fingerprint"):
+            counts["no-pass-record"] += 1
+            report["tasks"][t["id"]] = {"decision": "no-pass-record"}
+            continue
+        if fingerprint(t)["sha256"] != rec["fingerprint"]:
+            counts["not-attestable"] += 1
+            report["tasks"][t["id"]] = {"decision": "not-attestable", "why": "the v1 fingerprint of the reconstructed baseline differs from the stored one: the evidence was already out of date or the baseline assumption does not hold for this task"}
+            continue
+        v2 = fingerprint_v2(t)
+        if v2["bounded"]:
+            # The v1 check only proves the DECLARED inputs belong to the baseline. A file reachable only transitively could have been edited after the
+            # evidence started and before this baseline; modification times expose that, and such a task is not narrowed.
+            started = rec.get("startedAt")
+            try:
+                started_ts = dt.datetime.fromisoformat(started.replace("Z", "+00:00")).timestamp() if started else None
+            except ValueError:
+                started_ts = None
+            late = [] if started_ts is None else sorted(f for f in v2["hashes"] if f not in _OVERRIDES and (ROOT / f).is_file() and (ROOT / f).stat().st_mtime > started_ts)
+            if started_ts is None or late:
+                v2 = {**v2, "bounded": False, "reasons": v2["reasons"] + [("no evidence start time recorded" if started_ts is None else
+                      f"{len(late)} closure file(s) modified after the evidence started and not part of the declared change set: " + ", ".join(late[:3]))]}
+        entry = {"decision": "attested-bounded" if v2["bounded"] else "attested-unbounded", "scheme": v2["scheme"], "reasons": v2["reasons"],
+                 "closureSize": v2["closureSize"], "unreachableDeclared": v2["unreachableDeclared"]}
+        counts[entry["decision"]] += 1
+        report["tasks"][t["id"]] = entry
+        if v2["bounded"] and args.apply:
+            rec["fingerprintV2"] = v2["sha256"]
+            rec["closureHashes"] = v2["hashes"]
+            rec["closureSummary"] = {"size": v2["closureSize"], "unreachableDeclared": len(v2["unreachableDeclared"])}
+            rec["attestation"] = {"scheme": "closure-v2", "attestedAt": now_iso(), "baselineRef": args.baseline_ref, "baselineFingerprint": rec["fingerprint"],
+                                  "changedFilesConsidered": len(paths), "note": "evidence verified against the reconstructed baseline; reuse requires the bounded closure to be unchanged"}
+    _OVERRIDES.clear()
+    report["counts"] = counts
+    print(json.dumps(counts))
+    if args.apply:
+        with Lock():
+            save_state(state)
+        write_json_atomic(OUT / "attestations" / f"attest-closure-{dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.json", report)
+        log("attestation applied; report written under target/archify-v3/attestations/")
+    else:
+        log("dry run: nothing written (use --apply)")
+        if args.report:
+            write_json_atomic(Path(args.report), report)
+    return 0
+
+
 def cmd_selftest(args) -> int:
     return subprocess.call([sys.executable, "-m", "unittest", "discover", "-s", str(Path(__file__).parent / "tests"), "-v"], cwd=ROOT)
 
@@ -1267,6 +1590,9 @@ def main(argv=None) -> int:
         p.add_argument("--only"); p.add_argument("--force"); p.add_argument("--retry-failed", action="store_true"); p.add_argument("--dry-run", action="store_true")
         p.add_argument("--no-sync", action="store_true", default=False); p.add_argument("--no-quarantine", action="store_true"); p.add_argument("--timeout", type=int, default=3600)
         p.add_argument("--include-stale", action="store_true", help="also re-run tasks whose test Archify reports as STALE_EVIDENCE")
+        p.add_argument("--strict-fingerprint", action="store_true", help="ignore the closure scheme: reuse only when every declared input (v1) is unchanged")
+    at = sub.add_parser("attest-closure"); at.add_argument("--changed-file", required=True); at.add_argument("--baseline-ref", default="HEAD")
+    at.add_argument("--only"); at.add_argument("--apply", action="store_true"); at.add_argument("--report")
     ad = sub.add_parser("adopt"); ad.add_argument("--run-id", required=True)
     sy = sub.add_parser("sync"); sy.add_argument("--restage", action="store_true"); sub.add_parser("status"); sub.add_parser("audit-strong"); sub.add_parser("audit-evidence"); sub.add_parser("selftest"); sub.add_parser("restore-quarantine")
     cb = sub.add_parser("capture-baseline"); cb.add_argument("--src"); cb.add_argument("--run-id"); cb.add_argument("--started")
@@ -1283,7 +1609,8 @@ def main(argv=None) -> int:
         if a.cmd == "sync":
             raise SystemExit("sync is not allowed in sandbox mode")
     fn = {"run": cmd_run, "plan": cmd_plan, "sync": cmd_sync, "status": cmd_status, "audit-strong": cmd_audit, "audit-evidence": cmd_audit_evidence, "selftest": cmd_selftest,
-          "capture-baseline": cmd_capture_baseline, "restore-quarantine": cmd_restore_quarantine, "adopt": cmd_adopt}[a.cmd]
+          "capture-baseline": cmd_capture_baseline, "restore-quarantine": cmd_restore_quarantine, "adopt": cmd_adopt,
+          "attest-closure": cmd_attest_closure}[a.cmd]
     return fn(a)
 
 
