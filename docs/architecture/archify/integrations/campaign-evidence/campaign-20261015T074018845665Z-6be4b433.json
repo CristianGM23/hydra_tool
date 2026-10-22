@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-15T07:40:18+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261015-091339",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "b91bd6745bb9ccfb6984c769b4d3c4e14ea606ba4e9fd6c685da67726ec520fd",
+  "reportCheckpointName": "0024-01792050017612841500-85696192549c490eb1a2410029275ac7.json",
+  "testResults": [
+    {
+      "id": "S044",
+      "title": "Navigation and repository security",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.24,
+      "logSha256": "2a5901572079ebf9946454d9b724072469dc6820eea6b71605a08e41bcfdfd57",
+      "logRelativePath": "logs/S044.log"
+    },
+    {
+      "id": "S045",
+      "title": "Frontend architecture",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.08,
+      "logSha256": "5b97a704cc0beee430c786e45a3e41b59ee9fdd58ed909f4ed60a08ee4576da5",
+      "logRelativePath": "logs/S045.log"
+    },
+    {
+      "id": "S046",
+      "title": "Frontend control convergence",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.37,
+      "logSha256": "730492a9860bc27783abac57dbe22898912abd36d3eb89ca9397c9c7cbf7824c",
+      "logRelativePath": "logs/S046.log"
+    },
+    {
+      "id": "S048",
+      "title": "Spanish visible/runtime closure",
+      "group": "i18n",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.08,
+      "logSha256": "15a45d25d88a826477a0ccf6542d4c793b10a2b05131da097b23dba4609ad16f",
+      "logRelativePath": "logs/S048.log"
+    },
+    {
+      "id": "S049",
+      "title": "Concurrency/state budgets",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.53,
+      "logSha256": "36790814c5b50606b0349eefb0b1e7ce7ab317fe141f08bef3bec25413d685ae",
+      "logRelativePath": "logs/S049.log"
+    },
+    {
+      "id": "S051",
+      "title": "Java core smoke",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 3.39,
+      "logSha256": "a55b6b3f012ecdf8491a42467548396e0c10890f0ad1791cd37dfb229eb1c21f",
+      "logRelativePath": "logs/S051.log"
+    },
+    {
+      "id": "S053",
+      "title": "Backend warning/debt audit",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.81,
+      "logSha256": "92e7ced80e1773082f8c6dd513a2c09a70b7f7f64ee4c9e9ccb0949122fe9945",
+      "logRelativePath": "logs/S053.log"
+    },
+    {
+      "id": "S054",
+      "title": "Backend contract convergence",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 16.58,
+      "logSha256": "567397cccc62da2fa452cbde93e56405353abc64994681e53c66a39dc7b3539e",
+      "logRelativePath": "logs/S054.log"
+    },
+    {
+      "id": "S055",
+      "title": "Reported JDK24 contract closure",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.31,
+      "logSha256": "e01f2bf444ed7f96c1e519fc332d6686e32c89ebd5184476323039bd1a10677b",
+      "logRelativePath": "logs/S055.log"
+    },
+    {
+      "id": "S056",
+      "title": "Backend compiler hotfix",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.2,
+      "logSha256": "1ce5340eb3e322a966a0be3d1b2875624a77408cd7c67ba45614a7382d6fa1ba",
+      "logRelativePath": "logs/S056.log"
+    },
+    {
+      "id": "S057",
+      "title": "Maven/IDE output isolation",
+      "group": "toolchain",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.25,
+      "logSha256": "80f49d21de3306d48eb8d5244c9b6d447e639f16fe0c0001a714f2e0739ab54c",
+      "logRelativePath": "logs/S057.log"
+    },
+    {
+      "id": "S058",
+      "title": "Frontend index benchmark",
+      "group": "performance",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.48,
+      "logSha256": "215d915dbe7c2743b8bf18684a4847d188204df90ff6df36fe39b1f0a4948045",
+      "logRelativePath": "logs/S058.log"
+    },
+    {
+      "id": "S061",
+      "title": "OpenAPI/client convergence",
+      "group": "api",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.43,
+      "logSha256": "1ee7e6fdf9c4d068a73136721fb9d45b5a642ea600704ce36283a4fa5ef1f4b1",
+      "logRelativePath": "logs/S061.log"
+    },
+    {
+      "id": "S062",
+      "title": "Exception boundaries",
+      "group": "observability",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.83,
+      "logSha256": "6410cf394a38856be6c9ffc33dcb7c4775b28779bfc6c5b4e15cf580097413da",
+      "logRelativePath": "logs/S062.log"
+    },
+    {
+      "id": "S064",
+      "title": "Current invariants",
+      "group": "readiness",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.21,
+      "logSha256": "8f1242f4fba1b3f55c0bbfb62b2f13b4ea0763e3ca031ad1cfb87466aa8c8820",
+      "logRelativePath": "logs/S064.log"
+    },
+    {
+      "id": "S078",
+      "title": "E2E V4 Node actual reference seven scenarios",
+      "group": "reference",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.64,
+      "logSha256": "df4b47e787900864a0abf8ae5b86fe3cfb46614eb6defb03e1ebf28f740a99c3",
+      "logRelativePath": "logs/S078.log"
+    },
+    {
+      "id": "S079",
+      "title": "E2E V4 actual export candidate inventory",
+      "group": "reference",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.29,
+      "logSha256": "08c91788f12b8daa352ad1e1f6de7bc75ddcc385c5b1ee3622817cbb2a2a6ac7",
+      "logRelativePath": "logs/S079.log"
+    },
+    {
+      "id": "S085",
+      "title": "Frontend Vitest all unit/integration tests",
+      "group": "tests",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1515.25,
+      "logSha256": "df8505621fde6294c4488181fe6189b509c11c72a967bb5047bb081cc88ea4a3",
+      "logRelativePath": "logs/S085.log"
+    },
+    {
+      "id": "S087",
+      "title": "Frontend Playwright keyboard/focus/zoom",
+      "group": "a11y",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 35.22,
+      "logSha256": "8a196291fc107d25021eb4e61793095e1231923030d83bc0a3c3526f0ea43093",
+      "logRelativePath": "logs/S087.log"
+    },
+    {
+      "id": "S098",
+      "title": "Verificar frontend capability response and runner",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.41,
+      "logSha256": "cbf076bf6221a61e2dc1270a4a7c26b4e560d398bd8c238dd5fb0de74c2304bc",
+      "logRelativePath": "logs/S098.log"
+    },
+    {
+      "id": "S099",
+      "title": "Verificar frontend generated code editor r6",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.18,
+      "logSha256": "a141e7360e47151b6adb33020219de8c989ebde05e6efee1378565de02142b8a",
+      "logRelativePath": "logs/S099.log"
+    },
+    {
+      "id": "S102",
+      "title": "Verificar monaco vite bootstrap",
+      "group": "grammar",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.27,
+      "logSha256": "519f58aa5bf7fa05a5425f762d8c8a1d95307b92ebbdc2fe81d8ebd54404a4fc",
+      "logRelativePath": "logs/S102.log"
+    },
+    {
+      "id": "S106",
+      "title": "Verificar r12 textual completion",
+      "group": "grammar",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.18,
+      "logSha256": "4858d81507162d45710918966fd89e613eeeb5bb602bfe12346b6349846dd8ac",
+      "logRelativePath": "logs/S106.log"
+    },
+    {
+      "id": "S107",
+      "title": "Verificar r13 architecture vitest recovery",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.18,
+      "logSha256": "3933e0f69a10316f553a22dc1fcacd4ce3f33bd7eff657d306bb6f4b3aec6958",
+      "logRelativePath": "logs/S107.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-14T10:48:10+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261014-120724",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "b426241a7b6b4cb04c7a67aa1c40cecd0ba5fa3e0e194e98a2ae2058bcbed3d0",
+  "reportCheckpointName": "0024-01791974888730381300-74386239efa84a30a377471afcd3e696.json",
+  "testResults": [
+    {
+      "id": "S499",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/adapter/ecore/DefaultEcoreMetamodelAdapterTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 131.02,
+      "logSha256": "57983f29e33baff1e07642023e55df1868a5eded7d7731913799064653aeb260",
+      "logRelativePath": "logs/S499.log"
+    },
+    {
+      "id": "S500",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 113.78,
+      "logSha256": "a612ba9f0aaa3658b635ddf53dc58190c7e89fe657e12525ebaf91c1c435f331",
+      "logRelativePath": "logs/S500.log"
+    },
+    {
+      "id": "S501",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepositoryTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 114.03,
+      "logSha256": "cf6029d94c80cf4dd55b4262237ed9861deecddb9bd34e20a17fbdd7622feee0",
+      "logRelativePath": "logs/S501.log"
+    },
+    {
+      "id": "S502",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/core/MetaOperationContractTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 98.81,
+      "logSha256": "00c5b01f1521501bc09ccc89fede8e631891c90832555f9253a1cf3589eed00d",
+      "logRelativePath": "logs/S502.log"
+    },
+    {
+      "id": "S503",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/deletion/MetamodelDependentArtifactCleanupServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 105.96,
+      "logSha256": "5b87f2b807a2a01f6a916de95c834f9e82c7699f6710202693c23aa38e444c8b",
+      "logRelativePath": "logs/S503.log"
+    },
+    {
+      "id": "S504",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/design/MetamodelDiagramDocumentTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 95.23,
+      "logSha256": "c2fb936e2bcf1698e4227ab41d3c884c89897c566a7f5215d97b4c5eb8ff87c4",
+      "logRelativePath": "logs/S504.log"
+    },
+    {
+      "id": "S505",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/export/AggressiveArtifactGenerationTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 94.57,
+      "logSha256": "5258b0972f7b25cd5fc62695e664e6fc3de738132486514a2c1c440aaa6f66e7",
+      "logRelativePath": "logs/S505.log"
+    },
+    {
+      "id": "S506",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/export/project/MetamodelCompleteProjectExportContractTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 92.82,
+      "logSha256": "c99262c3120925c39e48444391126d2209ba9524fc8dea7ff1ca2c149a43296b",
+      "logRelativePath": "logs/S506.log"
+    },
+    {
+      "id": "S507",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/importing/AutomaticMetamodelDiagramLayoutServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 90.04,
+      "logSha256": "8007958ca0fe74076877638d0ed82985b2552a03580fa08cfb1c0d2bb21af059",
+      "logRelativePath": "logs/S507.log"
+    },
+    {
+      "id": "S508",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/importing/importers/DrawioRoutedDiagramImportTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 88.81,
+      "logSha256": "4e001e08a9cebb16fb3cf9f5a00331e9f108aa06e0b112fec1e17c8599750ff6",
+      "logRelativePath": "logs/S508.log"
+    },
+    {
+      "id": "S509",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/importing/sql/SqlDdlImportPipelineTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 91.21,
+      "logSha256": "8c7da8e48fcfc3bd87c1edd624dd0cde39db5f85450b686b4489a55490823505",
+      "logRelativePath": "logs/S509.log"
+    },
+    {
+      "id": "S510",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/importing/updatesite/P2BundleAnalyzerTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 119.42,
+      "logSha256": "ca33ecec5d8427c62c6d4697703a13297128d978289aa57d45fe480e9590da4e",
+      "logRelativePath": "logs/S510.log"
+    },
+    {
+      "id": "S511",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/layout/LayeredMetamodelDiagramLayoutEngineTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 116.75,
+      "logSha256": "47edc731e666bd2f88cdd51b06497bf21c7323fcaf3cbd57e1bcf62c86fc9dca",
+      "logRelativePath": "logs/S511.log"
+    },
+    {
+      "id": "S512",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/layout/routing/DynamicMetamodelPortAssignmentEngineTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 89.54,
+      "logSha256": "086e6d4673074c24d2a97ef8fc735da31fb6a06a2afcf3181068fdd38d13ccdd",
+      "logRelativePath": "logs/S512.log"
+    },
+    {
+      "id": "S513",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/lifecycle/MetamodelLifecycleExtendedArtifactsTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 94.81,
+      "logSha256": "be8f725fe0ee1550591046d94e8fedf6f9cc0369fd20d97a0e4c5d8c27c9e56b",
+      "logRelativePath": "logs/S513.log"
+    },
+    {
+      "id": "S514",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/projection/EcoreMirrorServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 94.08,
+      "logSha256": "eb254732f2531f2bb95aa00ccf35dc4fc3e17523b379daa12816b839e6339163",
+      "logRelativePath": "logs/S514.log"
+    },
+    {
+      "id": "S515",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/registry/MetamodelRegistryServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 91.26,
+      "logSha256": "5c3823295f412ff18f89384fc042502f8878e8555dc21aa9f2602c50617abb3c",
+      "logRelativePath": "logs/S515.log"
+    },
+    {
+      "id": "S516",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/roundtrip/TextualMetamodelSemanticRoundTripTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 115.67,
+      "logSha256": "b9aa3dc22ebc09eb64611ca765f33b40392ef2879051be9ec400fda1e278c6c2",
+      "logRelativePath": "logs/S516.log"
+    },
+    {
+      "id": "S518",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/validation/MetamodelValidationAdvisorCoverageTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 97.25,
+      "logSha256": "4b10212a1053f87b8f7e1c93c6f0c1e45b0ee9c73fd89ca386b760dee5478370",
+      "logRelativePath": "logs/S518.log"
+    },
+    {
+      "id": "S520",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/model/ModelDocumentTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 99.73,
+      "logSha256": "b1edbb5f6d66085a8605a894f0dab0018517cd33c4eda7bc2283c2c9f3bedd14",
+      "logRelativePath": "logs/S520.log"
+    },
+    {
+      "id": "S521",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/observability/HydraOperationTraceRegistryTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 90.99,
+      "logSha256": "29480cb0231f28d3c76cac948a9916a7fdbb879cdf9c8094f043363977645043",
+      "logRelativePath": "logs/S521.log"
+    },
+    {
+      "id": "S522",
+      "title": "Fix186 generated-code viewer real interaction Vitest",
+      "group": "frontend-regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 63.55,
+      "logSha256": "cb912bfeac7d52b9fa23990ee6e41cf9d5ebdc1a846c24f3bf1e52fadd544d10",
+      "logRelativePath": "logs/S522.log"
+    },
+    {
+      "id": "S523",
+      "title": "Archify pendiente: java:com.example.editor.EditorApplicationTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 140.2,
+      "logSha256": "9b576ea02975f8f41edfb9b56cb4a95f24c22f0a69e7f0de863d1eabacde99d0",
+      "logRelativePath": "logs/S523.log"
+    },
+    {
+      "id": "S524",
+      "title": "Archify pendiente: java:com.example.editor.architecture.ApplicationPropertiesUniquenessTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 113.22,
+      "logSha256": "9d4867450020622b1870ce1afd2b61dad637169e55c1b0f26d5d26055910abe7",
+      "logRelativePath": "logs/S524.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

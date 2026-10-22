@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-15T07:41:30+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261015-094030",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "bf1a7997221526e783a847a81099b1168664e2febac32f8cf86dad3b0407358a",
+  "reportCheckpointName": "0024-01792050089011670100-e5b7e6cceb754324a0f6a68c34bc8640.json",
+  "testResults": [
+    {
+      "id": "S156",
+      "title": "Verificar v43283 reported regressions",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.19,
+      "logSha256": "84da4b58d533dfe07ac8ab5298c9b87ddd5fbe3f982b6eb963078fb9d860975d",
+      "logRelativePath": "logs/S156.log"
+    },
+    {
+      "id": "S157",
+      "title": "Verificar v43284 ux regressions",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.24,
+      "logSha256": "e1159d6d42ae05a4153c4b3eccb607d1e7ae13f2fd3db7bea06ccbba4546a822",
+      "logRelativePath": "logs/S157.log"
+    },
+    {
+      "id": "S159",
+      "title": "Verificar v43287 model editor workspace",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.19,
+      "logSha256": "1a77aa4b24f87415df2e7d34e4030abec857e25c47c8c8775268059c5d93f492",
+      "logRelativePath": "logs/S159.log"
+    },
+    {
+      "id": "S160",
+      "title": "Verificar v43288 selection codegen sql",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.2,
+      "logSha256": "6a6ef7aefe8fe0d42add538960edda8b74e4ad40b8eb4b1cad1bbf4001622009",
+      "logRelativePath": "logs/S160.log"
+    },
+    {
+      "id": "S161",
+      "title": "Verificar v43289 model editor canvas",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.18,
+      "logSha256": "3ce1ae30784007b7f87098359ba20a7e8a6aba51deeae6d82ea1cb76a0be3636",
+      "logRelativePath": "logs/S161.log"
+    },
+    {
+      "id": "S162",
+      "title": "Verificar v43290 model document api surface",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.15,
+      "logSha256": "837277b287ef378db2fb5c6f1b7451c95cdba8dc6cc9db50093f225d67a67de3",
+      "logRelativePath": "logs/S162.log"
+    },
+    {
+      "id": "S163",
+      "title": "Verificar v43292 model editor selection feedback",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "8c94826da7d32118453a0da4f4dbf9c14f624c1df61af4f8829c4c326f18e786",
+      "logRelativePath": "logs/S163.log"
+    },
+    {
+      "id": "S164",
+      "title": "Verificar v43293 validation guided save",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.18,
+      "logSha256": "3c2b83db50d71fb615cdf70aac9795657f891990d39435c8fd2d43eb4429ab6a",
+      "logRelativePath": "logs/S164.log"
+    },
+    {
+      "id": "S166",
+      "title": "Verificar v43295 entity overwrite conflicts",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "5454f586926dedd0d7fe2b9b840d3c38a599949db0383fd25b4a9ccaeca35edf",
+      "logRelativePath": "logs/S166.log"
+    },
+    {
+      "id": "S167",
+      "title": "Verificar v43296 model editor canvas actions",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.15,
+      "logSha256": "6083879bbd234557e1415eaf53087abf17d56462cd43352bd68b771aae59fe0b",
+      "logRelativePath": "logs/S167.log"
+    },
+    {
+      "id": "S169",
+      "title": "Verificar v43298 textual parse revision contract",
+      "group": "grammar",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.15,
+      "logSha256": "3e7a313359c0b6308f70c15a22858ef76e56512a02e11edc2f4285e08aa774b6",
+      "logRelativePath": "logs/S169.log"
+    },
+    {
+      "id": "S170",
+      "title": "Verificar v43299 backend hotfix",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.21,
+      "logSha256": "f1d1a3fa2e16fed0b6183ae673a197015e3e9668ca62988a0ed80aef22b75c34",
+      "logRelativePath": "logs/S170.log"
+    },
+    {
+      "id": "S172",
+      "title": "Verificar v43301 multipart covariance",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.15,
+      "logSha256": "7792b5e22bc15460c384cd12eded943a8ec507a51439120616e0834343b2d160",
+      "logRelativePath": "logs/S172.log"
+    },
+    {
+      "id": "S173",
+      "title": "Verificar v43302 textual editor completion",
+      "group": "grammar",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.19,
+      "logSha256": "a7f1a03f4122451a9215352ac7b3bb8c45b68b8d3f22c51775639f9dd661eedf",
+      "logRelativePath": "logs/S173.log"
+    },
+    {
+      "id": "S176",
+      "title": "Verificar v43305 unused rules syntax graphs",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "de77db892c34c2b6933b001bf86595fb882d94ef0a9d7b0cbed5a7c650792870",
+      "logRelativePath": "logs/S176.log"
+    },
+    {
+      "id": "S177",
+      "title": "Verificar v43306 extreme resilience",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.13,
+      "logSha256": "240a6d0338a4edad788fcae822ecb8bfb084d6aff0e7787e5f59e456bb362ef1",
+      "logRelativePath": "logs/S177.log"
+    },
+    {
+      "id": "S179",
+      "title": "Verificar v43311 textual customization export",
+      "group": "grammar",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.18,
+      "logSha256": "80e7bc68c9af0e5589f7fd77349e579b01d494487e96464b4251963ccc6e6fc9",
+      "logRelativePath": "logs/S179.log"
+    },
+    {
+      "id": "S180",
+      "title": "Verificar v43312 textual full stack export",
+      "group": "grammar",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.17,
+      "logSha256": "587f9ab89130a8ffb80f83f98bbd4f39710f005d0f4751146f52a0a29ffc7866",
+      "logRelativePath": "logs/S180.log"
+    },
+    {
+      "id": "S188",
+      "title": "Vitest file: src/aggressive-testing/HydraAggressiveRecoverySecurity.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.76,
+      "logSha256": "c9863649ec7c34608442b99585d20cdb3a28bd8c06732c7646b4c71d4022ac6b",
+      "logRelativePath": "logs/S188.log"
+    },
+    {
+      "id": "S189",
+      "title": "Vitest file: src/aggressive-testing/HydraAggressiveRemoteIntegrationBrowserFlow.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.45,
+      "logSha256": "153bc3d98d030dcd6977d3617dd8b0d66709f052a46e66d5a7bc3f55b786cd65",
+      "logRelativePath": "logs/S189.log"
+    },
+    {
+      "id": "S191",
+      "title": "Vitest file: src/api/actionableError.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 9.43,
+      "logSha256": "4530b57414f03b07e08198466d17d94adbb9dc5e7f4805d238cc989621bc3990",
+      "logRelativePath": "logs/S191.log"
+    },
+    {
+      "id": "S192",
+      "title": "Vitest file: src/api/backendConfig.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 9.2,
+      "logSha256": "88f983c368db5614cbbb862030f6241cc9ca58fc7e1bc43d644d37eff937174a",
+      "logRelativePath": "logs/S192.log"
+    },
+    {
+      "id": "S193",
+      "title": "Vitest file: src/api/backendFetch.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 13.22,
+      "logSha256": "b0114582fed467dfd313ccafd6b985347c8f4276412179309562c1eb6e51e1c6",
+      "logRelativePath": "logs/S193.log"
+    },
+    {
+      "id": "S194",
+      "title": "Vitest file: src/api/editorApi.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 10.99,
+      "logSha256": "0e4e408d277d385e577bcd7c4d20447417bd44682bb288a0915d15ccf380a37a",
+      "logRelativePath": "logs/S194.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}
