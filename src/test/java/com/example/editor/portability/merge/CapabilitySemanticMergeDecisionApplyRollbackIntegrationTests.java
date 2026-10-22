@@ -101,11 +101,23 @@ class CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests {
     @Test
     @DisplayName("a2, a3, m1: la previsualizacion detecta los choques y propone la fusion sin tocar el proyecto")
     void previewDetectsConflictsAndProposesTheMergeWithoutTouchingTheProject() throws Exception {
-        CapabilitySemanticMergeRequest request = request(RECOVERED_VALS, Map.of(), Map.of(META, etag(existingBytes)), false);
+        // Todos los conflictos reciben una decision explicita (conservar lo existente en los escalares, unir las entidades).
+        Map<String, CapabilitySemanticMergeDecision> explicit = new LinkedHashMap<>();
+        explicit.put(META + "#document", CapabilitySemanticMergeDecision.MERGE);
+        explicit.put(META + "/description", CapabilitySemanticMergeDecision.KEEP_EXISTING);
+        explicit.put(META + "/classes/class:Book", CapabilitySemanticMergeDecision.MERGE);
+        explicit.put(META + "/classes/class:Book/abstract", CapabilitySemanticMergeDecision.KEEP_EXISTING);
+        CapabilitySemanticMergeRequest request = request(RECOVERED_VALS, explicit, Map.of(META, etag(existingBytes)), false);
+
+        // Sin ninguna decision la capa en conflicto queda pendiente y la fusion no es aplicable.
+        CapabilitySemanticMergePreview undecided = service.preview(request(RECOVERED_VALS, Map.of(), Map.of(META, etag(existingBytes)), false));
+        assertThat(undecided.applicable()).isFalse();
+        assertThat(undecided.unresolvedConflictKeys()).containsExactly(META + "#document");
 
         CapabilitySemanticMergePreview preview = service.preview(request);
 
         assertThat(preview.applicable()).isTrue();
+        assertThat(preview.unresolvedConflictKeys()).isEmpty();
         assertThat(preview.previewId()).startsWith("semantic-merge-");
         Map<String, String> conflictTypes = new LinkedHashMap<>();
         preview.conflicts().forEach(conflict -> conflictTypes.put(conflict.key(), conflict.type()));
@@ -142,6 +154,7 @@ class CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests {
     void eachDecisionGovernsTheResultingDocument() throws Exception {
         // Conservar / usar lo recuperado / omitir sobre entidades y escalares.
         Map<String, CapabilitySemanticMergeDecision> decisions = new LinkedHashMap<>();
+        decisions.put(META + "#document", CapabilitySemanticMergeDecision.MERGE);
         decisions.put(META + "/description", CapabilitySemanticMergeDecision.USE_RECOVERED);
         decisions.put(META + "/classes/class:Book", CapabilitySemanticMergeDecision.KEEP_EXISTING);
         decisions.put(META + "/classes/class:Magazine", CapabilitySemanticMergeDecision.SKIP);
@@ -160,6 +173,8 @@ class CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests {
 
         // Fusionar una entidad y quedarse con lo recuperado solo en una propiedad.
         Map<String, CapabilitySemanticMergeDecision> deep = new LinkedHashMap<>();
+        deep.put(META + "#document", CapabilitySemanticMergeDecision.MERGE);
+        deep.put(META + "/description", CapabilitySemanticMergeDecision.KEEP_EXISTING);
         deep.put(META + "/classes/class:Book", CapabilitySemanticMergeDecision.MERGE);
         deep.put(META + "/classes/class:Book/abstract", CapabilitySemanticMergeDecision.USE_RECOVERED);
         JsonNode deepMerged = service.preview(request(RECOVERED_VALS, deep, Map.of(), false))
@@ -243,14 +258,14 @@ class CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests {
         byte[] changedByAnotherPerson = "{\"id\":\"library\",\"description\":\"changed meanwhile\"}".getBytes(StandardCharsets.UTF_8);
         Files.write(metaFile, changedByAnotherPerson);
 
-        CapabilitySemanticMergeRequest stale = request(RECOVERED_VALS, Map.of(), Map.of(META, loadedEtag), true);
+        CapabilitySemanticMergeRequest stale = request(RECOVERED_VALS, resolved(), Map.of(META, loadedEtag), true);
         assertThatThrownBy(() -> service.apply(stale))
                 .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("preconditions failed");
-        assertThat(service.apply(request(RECOVERED_VALS, Map.of(), Map.of(META, loadedEtag), false))
+        assertThat(service.apply(request(RECOVERED_VALS, resolved(), Map.of(META, loadedEtag), false))
                 .transaction().preview().items()).filteredOn(item -> item.documentPath().equals(META))
                 .singleElement().satisfies(item -> assertThat(item.diagnostics()).contains("Layer changed since it was loaded"));
 
-        CapabilitySemanticMergeRequest missing = request(RECOVERED_VALS, Map.of(), Map.of(), true);
+        CapabilitySemanticMergeRequest missing = request(RECOVERED_VALS, resolved(), Map.of(), true);
         assertThatThrownBy(() -> service.apply(missing))
                 .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("preconditions failed");
 
@@ -265,6 +280,8 @@ class CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests {
     void rollbackRestoresTheOriginalBytesAndRemovesTheCreatedLayer() throws Exception {
         CapabilityLayerTransactionResult transaction = applyWithDecisions();
         assertThat(valsFile).isRegularFile();
+        assertThat(journalDecisions(transaction)).containsEntry(META + "#document", "MERGE")
+                .containsEntry(META + "/description", "USE_RECOVERED").containsEntry(META + "/classes/class:Book", "KEEP_EXISTING");
 
         CapabilityLayerRollbackResult rollback = service.rollback(new CapabilityLayerRollbackRequest(
                 transaction.transactionId(), List.of(), transaction.appliedEtags()));
@@ -300,11 +317,24 @@ class CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests {
         assertThat(transactionsDirectory.resolve("journals").resolve(transaction.transactionId() + ".json")).isRegularFile();
     }
 
-    private CapabilityLayerTransactionResult applyWithDecisions() throws Exception {
+    /** Decisiones explicitas para todos los conflictos alcanzables: capa fusionada, descripcion recuperada, entidad Book conservada. */
+    private static Map<String, CapabilitySemanticMergeDecision> resolved() {
         Map<String, CapabilitySemanticMergeDecision> decisions = new LinkedHashMap<>();
+        decisions.put(META + "#document", CapabilitySemanticMergeDecision.MERGE);
         decisions.put(META + "/description", CapabilitySemanticMergeDecision.USE_RECOVERED);
         decisions.put(META + "/classes/class:Book", CapabilitySemanticMergeDecision.KEEP_EXISTING);
-        return service.apply(request(RECOVERED_VALS, decisions, Map.of(META, etag(existingBytes)), true)).transaction();
+        return decisions;
+    }
+
+    private CapabilityLayerTransactionResult applyWithDecisions() throws Exception {
+        return service.apply(request(RECOVERED_VALS, resolved(), Map.of(META, etag(existingBytes)), true)).transaction();
+    }
+
+    private Map<String, String> journalDecisions(CapabilityLayerTransactionResult transaction) throws Exception {
+        Map<String, String> recorded = new LinkedHashMap<>();
+        mapper.readTree(Files.readString(transactionsDirectory.resolve("journals").resolve(transaction.transactionId() + ".json")))
+                .get("decisions").properties().forEach(entry -> recorded.put(entry.getKey(), entry.getValue().asString()));
+        return recorded;
     }
 
     private CapabilitySemanticMergeRequest request(String recoveredValidations,

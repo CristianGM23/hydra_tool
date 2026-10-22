@@ -16,7 +16,7 @@ const EMPTY_PACKAGE = { manifest: { schemaVersion: '1.0', id: 'example.capabilit
     capabilities: [], dependencies: [], compatibility: [], checksums: {}, annotations: {} },
     canonicalDocuments: {}, resources: {} };
 const ORCHESTRATION = JSON.stringify({ basePackage: EMPTY_PACKAGE, sources: [{ sourceId: 'recovered-a', precedence: 10,
-    afterSourceIds: [], capabilityPackage: EMPTY_PACKAGE, defaultDecision: 'MERGE', decisions: {} }],
+    afterSourceIds: [], capabilityPackage: EMPTY_PACKAGE, decisions: {} }],
     targetMetamodelId: 'example', expectedEtags: {}, layerOrder: [], persist: false }, null, 2);
 const SAMPLE_ADAPTER = JSON.stringify({ schemaVersion: '1.0', adapter: {
     id: 'org.example:verified-extension', label: 'Verified extension', extensionPointTokens: ['org.example.verified'],

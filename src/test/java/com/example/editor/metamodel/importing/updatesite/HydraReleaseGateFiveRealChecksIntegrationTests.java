@@ -156,7 +156,8 @@ class HydraReleaseGateFiveRealChecksIntegrationTests {
 
     private CapabilitySemanticMergePreview preview(String existing, String recovered) throws Exception {
         return merge.preview(new CapabilitySemanticMergeRequest(capabilityPackage(existing), capabilityPackage(recovered),
-                "example", Map.of(), List.of(), CapabilitySemanticMergeDecision.MERGE, Map.of(), false));
+                "example", Map.of(), List.of(), null,
+                Map.of("validations.json#document", CapabilitySemanticMergeDecision.MERGE), false));
     }
 
     private String benchReportId(boolean healthy) {

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import org.springframework.stereotype.Service;
 import com.example.editor.portability.CapabilityDependency;
@@ -70,24 +71,49 @@ public class CapabilitySemanticMergeService {
         List<CapabilitySemanticMergeDependency> unresolved = state.dependencies.stream()
                 .filter(item -> !item.resolved()).toList();
         if(!unresolved.isEmpty()) state.diagnostics.add(unresolved.size() + " unresolved cross-layer reference(s) block the merge");
+        if(!state.unresolved.isEmpty()) state.diagnostics.add(state.unresolved.size()
+                + " conflict(s) need an explicit decision before the merge can be applied: " + String.join(", ", state.unresolved));
+        if(!state.invalid.isEmpty()) state.diagnostics.add(state.invalid.size()
+                + " decision(s) are not valid for the element they name (e.g. USE_RECOVERED without a recovered element): " + String.join(", ", state.invalid));
+        Set<String> itemKeys = new LinkedHashSet<>();
+        state.items.forEach(item -> itemKeys.add(item.key()));
+        List<String> unknownDecisions = request.decisions().keySet().stream().filter(key -> !itemKeys.contains(key)).sorted().toList();
+        if(!unknownDecisions.isEmpty()) state.diagnostics.add(unknownDecisions.size()
+                + " decision(s) do not match any element of this merge and are ignored in the preview (applying rejects them): " + String.join(", ", unknownDecisions));
         HydraCapabilityPackage mergedPackage = packageWithChecksums(request, mergedDocuments, state);
         String previewId = "semantic-merge-" + sha256(write(mergedPackage)).substring(0, 24);
         int kept = count(state.items, CapabilitySemanticMergeDecision.KEEP_EXISTING);
         int recovered = count(state.items, CapabilitySemanticMergeDecision.USE_RECOVERED);
         int merged = count(state.items, CapabilitySemanticMergeDecision.MERGE);
         int skipped = count(state.items, CapabilitySemanticMergeDecision.SKIP);
-        boolean applicable = unresolved.isEmpty() && mergedDocuments.size() > 0
+        boolean applicable = unresolved.isEmpty() && mergedDocuments.size() > 0 && state.unresolved.isEmpty() && state.invalid.isEmpty()
                 && state.conflicts.stream().noneMatch(item -> "ERROR".equals(item.severity()));
         if(mergedDocuments.isEmpty()) state.diagnostics.add("The merge does not contain any canonical document");
         return new CapabilitySemanticMergePreview(previewId, mergedPackage, state.items, state.conflicts,
-                state.dependencies, kept, recovered, merged, skipped, applicable, state.diagnostics);
+                state.dependencies, kept, recovered, merged, skipped, applicable, state.diagnostics, List.copyOf(state.unresolved));
+    }
+
+    /** Decisiones explícitas que realmente resolvieron un elemento de esta fusión (se registran en el diario de la transacción). */
+    /** Descripción: Ejecuta la operación «appliedDecisions» correspondiente a la responsabilidad de CapabilitySemanticMergeService. Entradas: request: solicitud con los datos necesarios para ejecutar la operación; preview: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private Map<String, String> appliedDecisions(CapabilitySemanticMergeRequest request, CapabilitySemanticMergePreview preview) {
+        Set<String> keys = new LinkedHashSet<>();
+        preview.items().forEach(item -> keys.add(item.key()));
+        Map<String, String> applied = new TreeMap<>();
+        request.decisions().forEach((key, decision) -> { if(keys.contains(key) && decision != null) applied.put(key, decision.name()); });
+        return applied;
     }
 
     /** Descripción: Actualiza el estado gestionado por Pair mediante la operación «apply». Entradas: request: solicitud con los datos necesarios para ejecutar la operación. Salida: devuelve el resultado definido por el contrato del método. */ public CapabilitySemanticMergeResult apply(CapabilitySemanticMergeRequest request) {
         CapabilitySemanticMergePreview preview = preview(request);
         if(request.persist() && !preview.applicable()) throw new IllegalArgumentException("Deep semantic merge contains blocking dependencies or conflicts");
+        if(request.persist()) {
+            Set<String> known = new LinkedHashSet<>();
+            preview.items().forEach(item -> known.add(item.key()));
+            List<String> unknown = request.decisions().keySet().stream().filter(key -> !known.contains(key)).sorted().toList();
+            if(!unknown.isEmpty()) throw new IllegalArgumentException("Merge decision(s) do not match any element of this merge: " + String.join(", ", unknown));
+        }
         CapabilityLayerTransactionRequest transactionRequest = new CapabilityLayerTransactionRequest(
-                preview.mergedPackage(), request.targetMetamodelId(), request.expectedEtags(), request.layerOrder(), request.persist());
+                preview.mergedPackage(), request.targetMetamodelId(), request.expectedEtags(), request.layerOrder(), request.persist(),
+                appliedDecisions(request, preview));
         CapabilityLayerTransactionResult transaction = transactions.apply(transactionRequest);
         return new CapabilitySemanticMergeResult(preview, transaction);
     }
@@ -98,7 +124,8 @@ public class CapabilitySemanticMergeService {
 
     /** Descripción: Actualiza el estado gestionado por Pair mediante la operación «mergeDocument». Entradas: path: ruta o ubicación utilizada por la operación; existing: dato de entrada necesario para la operación; recovered: dato de entrada necesario para la operación; state: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private JsonNode mergeDocument(String path, JsonNode existing, JsonNode recovered, MergeState state) {
         String key = path + "#document";
-        CapabilitySemanticMergeDecision decision = state.decision(key, recommended(existing, recovered));
+        boolean differs = existing != null && !existing.isNull() && recovered != null && !recovered.isNull() && !existing.equals(recovered);
+        CapabilitySemanticMergeDecision decision = differs ? state.conflictDecision(key) : state.decision(key, recommended(existing, recovered));
         if(existing == null || existing.isNull()) return chooseSingle(path, "", recovered, false, decision, state);
         if(recovered == null || recovered.isNull()) return chooseSingle(path, "", existing, true, decision, state);
         if(existing.equals(recovered)) {
@@ -124,6 +151,9 @@ public class CapabilitySemanticMergeService {
             CapabilitySemanticMergeDecision decision, MergeState state) {
         String key = path + (pointer.isBlank() ? "#document" : pointer);
         CapabilitySemanticMergeDecision effective = decision;
+        boolean senseless = (existing && decision == CapabilitySemanticMergeDecision.USE_RECOVERED) || (!existing && decision == CapabilitySemanticMergeDecision.KEEP_EXISTING);
+        // Una decisión EXPLÍCITA que no tiene sentido para el elemento no se reinterpreta en silencio: se marca como no válida y bloquea la fusión.
+        if(senseless && state.request.decisions().containsKey(key)) state.invalid.add(key);
         if(existing && decision == CapabilitySemanticMergeDecision.USE_RECOVERED) effective = CapabilitySemanticMergeDecision.SKIP;
         if(!existing && decision == CapabilitySemanticMergeDecision.KEEP_EXISTING) effective = CapabilitySemanticMergeDecision.SKIP;
         CapabilitySemanticMergeDecision recommended = existing ? CapabilitySemanticMergeDecision.KEEP_EXISTING
@@ -142,7 +172,7 @@ public class CapabilitySemanticMergeService {
         if(existing.isArray() && recovered.isArray()) return mergeArray(path, pointer, existing, recovered, state);
         if(existing.equals(recovered)) return existing.deepCopy();
         String key = path + pointer;
-        CapabilitySemanticMergeDecision selected = state.decision(key, CapabilitySemanticMergeDecision.KEEP_EXISTING);
+        CapabilitySemanticMergeDecision selected = state.conflictDecision(key);
         state.addItem(key, path, pointer, semanticKind(path, last(pointer)), last(pointer), true, true, true,
                 CapabilitySemanticMergeDecision.KEEP_EXISTING, selected, references(recovered),
                 "The scalar value differs; MERGE keeps the existing value unless USE_RECOVERED is selected.");
@@ -210,8 +240,13 @@ public class CapabilitySemanticMergeService {
             String entityPointer = pointer + "/" + escape(id);
             String key = path + entityPointer;
             CapabilitySemanticMergeDecision recommendation = recommended(pair.existing, pair.recovered);
-            CapabilitySemanticMergeDecision selected = state.decision(key, recommendation);
             boolean conflict = pair.existing != null && pair.recovered != null && !pair.existing.equals(pair.recovered);
+            CapabilitySemanticMergeDecision selected = conflict || pair.signatureMatch
+                    ? state.conflictDecision(key) : state.decision(key, recommendation);
+            // Una decisión explícita que no tiene sentido para la entidad (p. ej. USE_RECOVERED cuando no existe lo recuperado) no se reinterpreta en silencio.
+            if(state.request.decisions().containsKey(key)
+                    && ((pair.recovered == null && selected == CapabilitySemanticMergeDecision.USE_RECOVERED)
+                    || (pair.existing == null && selected == CapabilitySemanticMergeDecision.KEEP_EXISTING))) state.invalid.add(key);
             String explanation = pair.signatureMatch
                     ? "The entity has a different identifier but the same semantic signature."
                     : conflict ? "The same semantic entity differs between packages."
@@ -446,6 +481,15 @@ public class CapabilitySemanticMergeService {
         private final List<CapabilitySemanticMergeConflict> conflicts = new ArrayList<>();
         private final List<CapabilitySemanticMergeDependency> dependencies = new ArrayList<>();
         private final List<String> diagnostics = new ArrayList<>();
+        private final Set<String> unresolved = new LinkedHashSet<>();
+        private final Set<String> invalid = new LinkedHashSet<>();
+        /** Decisión de un conflicto: solo vale una decisión explícita; sin ella el conflicto queda pendiente y se previsualiza conservando lo existente. */
+        /** Descripción: Ejecuta la operación «conflictDecision» correspondiente a la responsabilidad de CapabilitySemanticMergeService. Entradas: key: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ private CapabilitySemanticMergeDecision conflictDecision(String key) {
+            CapabilitySemanticMergeDecision explicit = request.decisions().get(key);
+            if(explicit != null) return explicit;
+            unresolved.add(key);
+            return CapabilitySemanticMergeDecision.KEEP_EXISTING;
+        }
         /** Descripción: Inicializa una instancia de MergeState con sus dependencias y datos de entrada. Entradas: request: solicitud con los datos necesarios para ejecutar la operación. Salida: deja la instancia inicializada y lista para su uso. */ private MergeState(CapabilitySemanticMergeRequest request){this.request = request;}
         /** Descripción: Ejecuta la operación «decision» correspondiente a la responsabilidad de Pair. Entradas: key: identificador que delimita el recurso objetivo; recommended: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private CapabilitySemanticMergeDecision decision(String key, CapabilitySemanticMergeDecision recommended){return request.decisions().getOrDefault(key, request.defaultDecision() == null ? recommended : request.defaultDecision());}
         /** Descripción: Ejecuta la operación «addItem» correspondiente a la responsabilidad de Pair. Entradas: key: identificador que delimita el recurso objetivo; path: ruta o ubicación utilizada por la operación; pointer: dato de entrada necesario para la operación; kind: dato de entrada necesario para la operación; display: dato de entrada necesario para la operación; existing: dato de entrada necesario para la operación; recovered: dato de entrada necesario para la operación; conflict: dato de entrada necesario para la operación; recommended: dato de entrada necesario para la operación; selected: dato de entrada necesario para la operación; references: dato de entrada necesario para la operación; explanation: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void addItem(String key, String path, String pointer, String kind, String display,

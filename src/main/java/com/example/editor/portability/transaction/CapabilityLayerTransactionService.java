@@ -177,7 +177,7 @@ public class CapabilityLayerTransactionService {
                         existed, Base64.getEncoder().encodeToString(original), appliedEtag, false));
             }
             CapabilityLayerTransactionJournal journal = new CapabilityLayerTransactionJournal(transactionId,
-                    request.targetMetamodelId(), Instant.now(), journalItems);
+                    request.targetMetamodelId(), Instant.now(), journalItems, request.decisions());
             writeJournal(journal);
             for(CapabilityLayerTransactionItem item : preview.items()) {
                 Path target = Path.of(item.targetPath()).toAbsolutePath().normalize();
@@ -241,8 +241,8 @@ public class CapabilityLayerTransactionService {
         }
         boolean closed = updated.stream().allMatch(CapabilityLayerTransactionJournalItem::rolledBack);
         if(closed) deleteJournal(journal.transactionId());
-        else writeJournal(new CapabilityLayerTransactionJournal(journal.transactionId(), journal.targetMetamodelId(), journal.createdAt(), updated));
-        return new CapabilityLayerRollbackResult(journal.transactionId(), restored, skipped, closed, diagnostics);
+        else writeJournal(new CapabilityLayerTransactionJournal(journal.transactionId(), journal.targetMetamodelId(), journal.createdAt(), updated, journal.decisions()));
+        return new CapabilityLayerRollbackResult(journal.transactionId(), restored, skipped, closed, diagnostics, journal.decisions());
     }
 
     /** Descripción: Valida las condiciones necesarias para «require» y rechaza entradas no válidas. Entradas: request: solicitud con los datos necesarios para ejecutar la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void require(CapabilityLayerTransactionRequest request) {
@@ -290,6 +290,11 @@ public class CapabilityLayerTransactionService {
         try { Files.write(temporary, content); move(temporary, target); } finally { Files.deleteIfExists(temporary); }
     }
     /** Descripción: Ejecuta la operación «move» correspondiente a la responsabilidad de Prepared. Entradas: source: dato de entrada necesario para la operación; target: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void move(Path source, Path target) throws IOException {
+        // Windows puede rechazar la publicación de forma transitoria (AccessDeniedException) si el antivirus o un indexador tiene abierto el fichero;
+        // se reintenta de forma acotada (≈3,5 s). Si el bloqueo persiste la transacción falla de forma segura.
+        TransientFileAccessRetry.run(() -> moveOnce(source, target), 12, 20, 500, Thread::sleep);
+    }
+    /** Descripción: Ejecuta la operación «moveOnce» correspondiente a la responsabilidad de CapabilityLayerTransactionService. Entradas: source: dato de entrada necesario para la operación; target: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void moveOnce(Path source, Path target) throws IOException {
         try { Files.move(source, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING); }
         catch(AtomicMoveNotSupportedException exception) { Files.move(source, target, StandardCopyOption.REPLACE_EXISTING); }
     }

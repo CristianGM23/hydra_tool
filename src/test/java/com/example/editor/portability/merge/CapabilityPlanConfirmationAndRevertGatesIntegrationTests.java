@@ -41,8 +41,9 @@ import tools.jackson.databind.json.JsonMapper;
  *
  * <p>Etapas certificadas (directas): {@code portability_author_merge.b}, {@code portability_author_merge.c},
  * {@code x_package_and_move_capabilities.d3}, {@code portability_revert.b}. Relacionada sin demostrar:
- * {@code x_package_and_move_capabilities.m2}, porque la decision por conflicto NO es obligatoria (hay una por defecto),
- * ver {@link #conflictsWithoutAnExplicitDecisionAreMergedImplicitly()}.</p>
+ * {@code x_package_and_move_capabilities.m2}: desde #35 la decision por conflicto es obligatoria y los casos estan en
+ * {@link #conflictsWithoutAnExplicitDecisionBlockTheMerge()}, {@link #explicitDecisionsResolveEveryConflictAndAreRecordedInTheJournal()}
+ * y {@link #severalConflictsKeepTheirOwnDecisionAndAnIncompletePreviewCannotBeApplied()}.</p>
  *
  * <p>Colaboradores reales: servicio de fusion semantica, servicio de transacciones, comprobador de paquetes y registro
  * de carpetas de trabajo sobre un {@code @TempDir}. Oraculo: ficheros leidos del disco, JSON literal esperado y SHA-256
@@ -116,9 +117,15 @@ class CapabilityPlanConfirmationAndRevertGatesIntegrationTests {
         assertThat(identical.items()).noneMatch(CapabilitySemanticMergeItem::conflict);
         assertThat(identical.mergedPackage().canonicalDocuments().get(META)).isEqualTo(mapper.readTree(EXISTING_META));
 
-        // Misma capa con contenido distinto: se enumeran exactamente los choques (capa, propiedad y entidad).
+        // Misma capa con contenido distinto: se enumeran exactamente los choques (capa, propiedad y entidad). Para que se
+        // alcancen los choques anidados, la capa y la entidad se fusionan de forma explicita; propiedad y atributo quedan sin decidir.
         CapabilitySemanticMergePreview clashing = service.preview(request(
-                Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META), Map.of(), Map.of(META, etag(existingBytes)), false));
+                Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                Map.of(META + "#document", CapabilitySemanticMergeDecision.MERGE,
+                        META + "/classes/class:Order", CapabilitySemanticMergeDecision.MERGE),
+                Map.of(META, etag(existingBytes)), false));
+        assertThat(clashing.applicable()).as("los conflictos sin decision bloquean la fusion").isFalse();
+        assertThat(clashing.unresolvedConflictKeys()).containsExactlyInAnyOrder(META + "/description", META + "/classes/class:Order/abstract");
         Map<String, String> conflictTypes = new LinkedHashMap<>();
         clashing.conflicts().forEach(conflict -> conflictTypes.put(conflict.key(), conflict.type()));
         assertThat(conflictTypes).containsOnly(
@@ -144,6 +151,7 @@ class CapabilityPlanConfirmationAndRevertGatesIntegrationTests {
     @DisplayName("portability_author_merge.c: cada conflicto recibe su decision y el documento escrito en disco la refleja")
     void everyConflictGetsItsOwnDecisionAndTheDocumentOnDiskReflectsThem() throws Exception {
         Map<String, CapabilitySemanticMergeDecision> decisions = new LinkedHashMap<>();
+        decisions.put(META + "#document", CapabilitySemanticMergeDecision.MERGE);
         decisions.put(META + "/description", CapabilitySemanticMergeDecision.USE_RECOVERED);
         decisions.put(META + "/classes/class:Order", CapabilitySemanticMergeDecision.KEEP_EXISTING);
         decisions.put(META + "/classes/class:Invoice", CapabilitySemanticMergeDecision.SKIP);
@@ -189,27 +197,114 @@ class CapabilityPlanConfirmationAndRevertGatesIntegrationTests {
     }
 
     @Test
-    @DisplayName("x_package_and_move_capabilities.m2 (hallazgo): un conflicto sin decision explicita se fusiona de forma implicita")
-    void conflictsWithoutAnExplicitDecisionAreMergedImplicitly() throws Exception {
+    @DisplayName("x_package_and_move_capabilities.m2 (#35): un conflicto sin decision explicita bloquea la fusion y no se aplica nada")
+    void conflictsWithoutAnExplicitDecisionBlockTheMerge() throws Exception {
         CapabilitySemanticMergePreview preview = service.preview(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
                 Map.of(), Map.of(META, etag(existingBytes)), false));
 
-        // No se exige ninguna decision: el plan sigue siendo aplicable y todos los conflictos tienen una decision por defecto.
-        assertThat(preview.applicable()).isTrue();
-        assertThat(preview.conflicts()).hasSize(4);
-        assertThat(preview.items()).filteredOn(CapabilitySemanticMergeItem::conflict)
-                .allSatisfy(item -> assertThat(item.selectedDecision()).isEqualTo(CapabilitySemanticMergeDecision.MERGE));
-        JsonNode merged = preview.mergedPackage().canonicalDocuments().get(META);
-        assertThat(merged.get("description").asString()).isEqualTo("Existing text");
-        assertThat(merged.get("classes").size()).isEqualTo(3);
+        // defaultDecision=MERGE ya no resuelve conflictos: la capa en conflicto queda pendiente y el plan no es aplicable.
+        assertThat(preview.applicable()).isFalse();
+        assertThat(preview.unresolvedConflictKeys()).containsExactly(META + "#document");
+        assertThat(preview.diagnostics()).anyMatch(text -> text.contains("need an explicit decision"));
+        assertThatThrownBy(() -> service.apply(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                Map.of(), Map.of(META, etag(existingBytes)), true))).isInstanceOf(IllegalArgumentException.class);
+        assertNothingWritten();
+    }
+
+    @Test
+    @DisplayName("x_package_and_move_capabilities.m2 (#35): MERGE y KEEP_EXISTING explicitos resuelven y se registran en el diario")
+    void explicitDecisionsResolveEveryConflictAndAreRecordedInTheJournal() throws Exception {
+        Map<String, CapabilitySemanticMergeDecision> merge = layerDecisions(Map.of(META + "/description", CapabilitySemanticMergeDecision.KEEP_EXISTING));
+        Map<String, CapabilitySemanticMergeDecision> keep = Map.of(META + "#document", CapabilitySemanticMergeDecision.KEEP_EXISTING);
+
+        // KEEP_EXISTING explicito sobre la capa resuelve todo el documento sin tocarlo.
+        CapabilitySemanticMergePreview kept = service.preview(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                keep, Map.of(META, etag(existingBytes)), false));
+        assertThat(kept.applicable()).isTrue();
+        assertThat(kept.unresolvedConflictKeys()).isEmpty();
+        assertThat(kept.mergedPackage().canonicalDocuments().get(META)).isEqualTo(mapper.readTree(EXISTING_META));
+
+        // MERGE explicito exige ademas decidir cada conflicto anidado; con todos resueltos el plan se puede aplicar.
+        CapabilitySemanticMergeResult applied = service.apply(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                merge, Map.of(META, etag(existingBytes)), true));
+        assertThat(applied.preview().unresolvedConflictKeys()).isEmpty();
+        assertThat(applied.transaction().persisted()).isTrue();
+
+        // Las decisiones quedan en el diario y la reversion las devuelve.
+        Path journal = transactionsDirectory.resolve("journals").resolve(applied.transaction().transactionId() + ".json");
+        JsonNode recorded = mapper.readTree(Files.readString(journal)).get("decisions");
+        assertThat(recorded.get(META + "#document").asString()).isEqualTo("MERGE");
+        assertThat(recorded.get(META + "/description").asString()).isEqualTo("KEEP_EXISTING");
+        assertThat(recorded.get(META + "/classes/class:Order").asString()).isEqualTo("KEEP_EXISTING");
+        CapabilityLayerRollbackResult reverted = service.rollback(new CapabilityLayerRollbackRequest(
+                applied.transaction().transactionId(), List.of(), applied.transaction().appliedEtags()));
+        assertThat(reverted.journalClosed()).isTrue();
+        assertThat(reverted.decisions()).containsEntry(META + "#document", "MERGE").containsEntry(META + "/description", "KEEP_EXISTING");
+        assertThat(Files.readAllBytes(metaFile)).isEqualTo(existingBytes);
+    }
+
+    @Test
+    @DisplayName("x_package_and_move_capabilities.m2 (#35): una decision sin sentido o ajena a la fusion se rechaza en lugar de reinterpretarse")
+    void aSenselessOrForeignDecisionIsRejectedInsteadOfBeingReinterpreted() throws Exception {
+        // USE_RECOVERED sobre una entidad que solo existe en lo actual no tiene sentido: bloquea la fusion y no se convierte en SKIP en silencio.
+        Map<String, CapabilitySemanticMergeDecision> senseless = layerDecisions(Map.of(META + "/description", CapabilitySemanticMergeDecision.KEEP_EXISTING,
+                META + "/classes/class:Client", CapabilitySemanticMergeDecision.USE_RECOVERED));
+        CapabilitySemanticMergePreview preview = service.preview(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                senseless, Map.of(META, etag(existingBytes)), false));
+        assertThat(preview.applicable()).isFalse();
+        assertThat(preview.diagnostics()).anyMatch(text -> text.contains("not valid for the element") && text.contains("class:Client"));
+        assertThatThrownBy(() -> service.apply(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                senseless, Map.of(META, etag(existingBytes)), true))).isInstanceOf(IllegalArgumentException.class);
+
+        // Una decision que no corresponde a ningun elemento de esta fusion se avisa en la vista previa y se rechaza al aplicar.
+        Map<String, CapabilitySemanticMergeDecision> foreign = layerDecisions(Map.of(META + "/description", CapabilitySemanticMergeDecision.KEEP_EXISTING,
+                META + "/classes/class:Ghost", CapabilitySemanticMergeDecision.SKIP));
+        CapabilitySemanticMergePreview warned = service.preview(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                foreign, Map.of(META, etag(existingBytes)), false));
+        assertThat(warned.applicable()).isTrue();
+        assertThat(warned.diagnostics()).anyMatch(text -> text.contains("do not match any element") && text.contains("class:Ghost"));
+        assertThatThrownBy(() -> service.apply(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                foreign, Map.of(META, etag(existingBytes)), true))).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("class:Ghost");
+        assertNothingWritten();
+    }
+
+    @Test
+    @DisplayName("x_package_and_move_capabilities.m2 (#35): varios conflictos con decisiones distintas y una vista previa incompleta no se aplica")
+    void severalConflictsKeepTheirOwnDecisionAndAnIncompletePreviewCannotBeApplied() throws Exception {
+        Map<String, CapabilitySemanticMergeDecision> partial = new LinkedHashMap<>();
+        partial.put(META + "#document", CapabilitySemanticMergeDecision.MERGE);
+        partial.put(META + "/description", CapabilitySemanticMergeDecision.USE_RECOVERED);
+
+        // Falta decidir la entidad Order: la vista previa lo dice y apply con persistencia se rechaza sin escribir.
+        CapabilitySemanticMergePreview incomplete = service.preview(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                partial, Map.of(META, etag(existingBytes)), false));
+        assertThat(incomplete.applicable()).isFalse();
+        assertThat(incomplete.unresolvedConflictKeys()).containsExactly(META + "/classes/class:Order");
+        assertThatThrownBy(() -> service.apply(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                partial, Map.of(META, etag(existingBytes)), true))).isInstanceOf(IllegalArgumentException.class);
+        assertNothingWritten();
+
+        // Decisiones distintas por conflicto producen un resultado distinto para cada uno.
+        Map<String, CapabilitySemanticMergeDecision> complete = new LinkedHashMap<>(partial);
+        complete.put(META + "/classes/class:Order", CapabilitySemanticMergeDecision.USE_RECOVERED);
+        complete.put(META + "/classes/class:Order/abstract", CapabilitySemanticMergeDecision.USE_RECOVERED);
+        CapabilitySemanticMergePreview resolved = service.preview(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META),
+                complete, Map.of(META, etag(existingBytes)), false));
+        assertThat(resolved.applicable()).isTrue();
+        JsonNode merged = resolved.mergedPackage().canonicalDocuments().get(META);
+        assertThat(merged.get("description").asString()).isEqualTo("Recovered text");
+        assertThat(merged.get("classes")).anySatisfy(item -> {
+            assertThat(item.get("id").asString()).isEqualTo("class:Order");
+            assertThat(item.get("abstract").asBoolean()).isTrue();
+        });
     }
 
     @Test
     @DisplayName("x_package_and_move_capabilities.d3: nada se aplica sin confirmar; ajustar decisiones sigue sin tocar el proyecto; confirmar escribe")
     void nothingIsAppliedUntilConfirmedAndAdjustingDecisionsStillTouchesNothing() throws Exception {
         String loaded = etag(existingBytes);
-        Map<String, CapabilitySemanticMergeDecision> first = Map.of(META + "/description", CapabilitySemanticMergeDecision.KEEP_EXISTING);
-        Map<String, CapabilitySemanticMergeDecision> second = Map.of(META + "/description", CapabilitySemanticMergeDecision.USE_RECOVERED);
+        Map<String, CapabilitySemanticMergeDecision> first = layerDecisions(Map.of(META + "/description", CapabilitySemanticMergeDecision.KEEP_EXISTING));
+        Map<String, CapabilitySemanticMergeDecision> second = layerDecisions(Map.of(META + "/description", CapabilitySemanticMergeDecision.USE_RECOVERED));
 
         // Sin confirmar (persistir = falso): el resultado lo dice y el proyecto queda byte a byte igual, sin diario.
         CapabilitySemanticMergeResult notConfirmed = service.apply(request(Map.of(META, EXISTING_META),
@@ -257,7 +352,8 @@ class CapabilityPlanConfirmationAndRevertGatesIntegrationTests {
         CapabilityLayerRollbackResult first = service.rollback(new CapabilityLayerRollbackRequest(
                 applied.transactionId(), List.of(), applied.appliedEtags()));
 
-        assertThat(first.restoredDocuments()).containsExactly(META);
+        assertThat(first.restoredDocuments()).as("skipped=" + first.skippedDocuments() + " diagnostics=" + first.diagnostics()
+                + " applied=" + applied.appliedEtags().keySet()).containsExactly(META);
         assertThat(first.skippedDocuments()).containsExactly(VALS);
         assertThat(first.diagnostics()).contains("Rollback skipped because the layer changed after the transaction: " + VALS);
         assertThat(first.journalClosed()).isFalse();
@@ -289,6 +385,78 @@ class CapabilityPlanConfirmationAndRevertGatesIntegrationTests {
         assertThat(transactionsDirectory.resolve("journals").resolve(second.transactionId() + ".json")).doesNotExist();
     }
 
+    @Test
+    @DisplayName("#35 intermitencia: aplicar y revertir es estable en 150 repeticiones sin interferencia externa")
+    void applyAndRevertStayStableUnderRepetition() throws Exception {
+        for (int iteration = 0; iteration < 150; iteration++) {
+            CapabilityLayerTransactionResult applied = applyBothAfterReset();
+            CapabilityLayerRollbackResult reverted = service.rollback(new CapabilityLayerRollbackRequest(
+                    applied.transactionId(), List.of(), applied.appliedEtags()));
+            assertThat(reverted.restoredDocuments()).as("iteration " + iteration + " skipped=" + reverted.skippedDocuments()
+                    + " diagnostics=" + reverted.diagnostics()).containsExactlyInAnyOrder(META, VALS);
+            assertThat(reverted.skippedDocuments()).as("iteration " + iteration).isEmpty();
+            assertThat(reverted.journalClosed()).as("iteration " + iteration).isTrue();
+            assertThat(Files.readAllBytes(metaFile)).as("iteration " + iteration).isEqualTo(existingBytes);
+            assertThat(valsFile).as("iteration " + iteration).doesNotExist();
+        }
+    }
+
+    /**
+     * Causa de la intermitencia observada en #35: en Windows, publicar una capa mientras otro hilo o proceso la tiene abierta falla con
+     * {@code AccessDeniedException} (reproducido aqui con lectores concurrentes; no ocurre sin interferencia). Esta prueba fija lo que SI debe
+     * cumplirse aunque ocurra: el fallo es seguro (se deshace lo aplicado o se avisa de que hace falta recuperacion manual, nunca queda un estado a
+     * medias sin aviso) y, al cesar la interferencia, el servicio vuelve a funcionar. No afirma que el fallo no pueda producirse: es un riesgo
+     * ambiental documentado.
+     */
+    @Test
+    @DisplayName("#35 intermitencia: con lectores concurrentes hostiles un fallo es seguro y el servicio se recupera al cesar la interferencia")
+    void contentionFromConcurrentReadersFailsSafelyAndTheServiceRecovers() throws Exception {
+        java.util.concurrent.atomic.AtomicBoolean stop = new java.util.concurrent.atomic.AtomicBoolean();
+        java.util.List<Thread> readers = new java.util.ArrayList<>();
+        for (int index = 0; index < 4; index++) {
+            Thread thread = new Thread(() -> {
+                while (!stop.get()) {
+                    try { Files.readAllBytes(metaFile); } catch (Exception ignored) { /* the layer is momentarily replaced */ }
+                    try { Files.readAllBytes(valsFile); } catch (Exception ignored) { /* the layer may not exist */ }
+                }
+            }, "contention-reader-" + index);
+            thread.setDaemon(true);
+            thread.start();
+            readers.add(thread);
+        }
+        int refused = 0;
+        try {
+            for (int iteration = 0; iteration < 5; iteration++) {
+                CapabilityLayerTransactionResult applied;
+                try { applied = applyBothAfterReset(); }
+                catch (IllegalStateException failure) {
+                    refused++;
+                    assertThat(failure).hasMessageContaining("recovery was attempted");
+                    if (!failure.getMessage().contains("manual recovery is required")) {
+                        assertThat(Files.readAllBytes(metaFile)).as("iteration " + iteration + ": a refused apply leaves the layer as it was").isEqualTo(existingBytes);
+                        assertThat(valsFile).as("iteration " + iteration).doesNotExist();
+                    }
+                    continue;
+                }
+                CapabilityLayerRollbackResult reverted = service.rollback(new CapabilityLayerRollbackRequest(applied.transactionId(), List.of(), applied.appliedEtags()));
+                if (!reverted.journalClosed()) {
+                    // Un rollback que no puede completarse deja el diario abierto y lo dice; nunca declara cerrado algo a medias.
+                    assertThat(reverted.skippedDocuments()).isNotEmpty();
+                    assertThat(reverted.diagnostics()).isNotEmpty();
+                }
+            }
+        } finally {
+            stop.set(true);
+            for (Thread thread : readers) thread.join(5_000);
+        }
+        System.out.println("CONTENTION refused applies: " + refused + " of 5");
+        // Sin interferencia el servicio funciona de nuevo desde un estado limpio.
+        CapabilityLayerTransactionResult applied = applyBothAfterReset();
+        CapabilityLayerRollbackResult reverted = service.rollback(new CapabilityLayerRollbackRequest(applied.transactionId(), List.of(), applied.appliedEtags()));
+        assertThat(reverted.journalClosed()).isTrue();
+        assertThat(Files.readAllBytes(metaFile)).isEqualTo(existingBytes);
+    }
+
     private void assertNothingWritten() throws Exception {
         assertThat(Files.readAllBytes(metaFile)).isEqualTo(existingBytes);
         assertThat(valsFile).doesNotExist();
@@ -297,8 +465,17 @@ class CapabilityPlanConfirmationAndRevertGatesIntegrationTests {
 
     private CapabilityLayerTransactionResult applyBoth() throws Exception {
         return service.apply(request(Map.of(META, EXISTING_META), Map.of(META, RECOVERED_META, VALS, RECOVERED_VALS),
-                Map.of(META + "/description", CapabilitySemanticMergeDecision.USE_RECOVERED), Map.of(META, etag(Files.readAllBytes(metaFile))), true))
+                layerDecisions(Map.of(META + "/description", CapabilitySemanticMergeDecision.USE_RECOVERED)), Map.of(META, etag(Files.readAllBytes(metaFile))), true))
                 .transaction();
+    }
+
+    /** Decisiones explicitas minimas para la capa del metamodelo: fusionar la capa y conservar la entidad Order, mas las indicadas. */
+    private static Map<String, CapabilitySemanticMergeDecision> layerDecisions(Map<String, CapabilitySemanticMergeDecision> extra) {
+        Map<String, CapabilitySemanticMergeDecision> decisions = new LinkedHashMap<>();
+        decisions.put(META + "#document", CapabilitySemanticMergeDecision.MERGE);
+        decisions.put(META + "/classes/class:Order", CapabilitySemanticMergeDecision.KEEP_EXISTING);
+        decisions.putAll(extra);
+        return decisions;
     }
 
     /** Deja el proyecto como al principio (metamodelo original, sin validaciones ni diarios) y vuelve a aplicar. */
