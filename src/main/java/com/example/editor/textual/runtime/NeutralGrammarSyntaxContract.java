@@ -205,6 +205,9 @@ final class NeutralGrammarSyntaxContract {
         metadata.put("entryRule",entryRule);metadata.put("ruleContext",ruleContext);metadata.put("expected",expected);metadata.put("expectedHuman",expectedHuman);
         metadata.put("actual",actual);metadata.put("strategy",strategy);metadata.put("furthestToken",Integer.toString(position));
         SuggestedFix fix=suggestedFix(expectedOptions,position>=tokens.size());
+        if(fix!=null&&"INSERT".equals(fix.kind())&&!tokens.isEmpty()){
+            fix=new SuggestedFix(fix.kind(),insertionSeparator(tokens.get(tokens.size()-1).text(),fix.replacement())+fix.replacement(),fix.label());
+        }
         if(fix!=null){metadata.put("quickFixKind",fix.kind());metadata.put("quickFixReplacement",fix.replacement());metadata.put("quickFixLabel",fix.label());}
         return new ValidationIssue(start,end,message,metadata);
     }
@@ -234,6 +237,16 @@ final class NeutralGrammarSyntaxContract {
         String rule=ruleContext==null||ruleContext.isBlank()?"activa":"\""+ruleContext+"\"";
         if(eof)return "La regla "+rule+" está incompleta: al final del texto falta "+expectedHuman+".";
         return "En la regla "+rule+", HYDRA encontró \""+actual+"\" donde la gramática espera "+expectedHuman+".";
+    }
+
+    /** Descripción: Decide si una inserción al final del texto necesita un espacio previo para no pegarse al último token (p. ej. «nodevalor»). Entradas: previousText: texto del último token existente; replacement: texto que se insertaría. Salida: devuelve un espacio cuando ambos extremos serían palabras o literales adyacentes, o la cadena vacía en otro caso. */ private static String insertionSeparator(String previousText,String replacement){
+        if(previousText==null||previousText.isEmpty()||replacement==null||replacement.isEmpty())return "";
+        char last=previousText.charAt(previousText.length()-1);char first=replacement.charAt(0);
+        return isWordOrQuote(last)&&isWordOrQuote(first)?" ":"";
+    }
+
+    /** Descripción: Indica si un carácter forma parte de una palabra o abre/cierra un literal entre comillas. Entradas: value: carácter a evaluar. Salida: devuelve true si es letra, dígito, guion bajo o comilla. */ private static boolean isWordOrQuote(char value){
+        return Character.isLetterOrDigit(value)||value=='_'||value=='"'||value=='\'';
     }
 
     /** Descripción: Propone una corrección sintáctica local cuando existe una sustitución inequívoca y segura. Entradas: expected: alternativas sintácticas esperadas; eof: indica si falta contenido al final. Salida: devuelve una corrección segura o null cuando hay ambigüedad. */ private static SuggestedFix suggestedFix(List<String> expected,boolean eof){
