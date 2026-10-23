@@ -1846,7 +1846,8 @@
    "priority": 6,
    "oracle": "Regresión de las correcciones de defectos de producción de la fase 2: el test existente debe seguir pasando tras los cambios en metamodel/importing/updatesite.",
    "expected": "Surefire: la clase sin Failures/Errors.",
-   "status": "ACTIVE"
+   "status": "ACTIVE",
+   "fragment": "fragments/P2BundleAnalyzerTests.json"
   },
   {
    "id": "v3.regression-update-site-adapter-bench-service-tests",
@@ -2026,7 +2027,8 @@
    "priority": 6,
    "oracle": "Regresión de las correcciones de defectos de producción de la fase 2: el test existente debe seguir pasando tras los cambios en metamodel/importing/updatesite.",
    "expected": "Surefire: la clase sin Failures/Errors.",
-   "status": "ACTIVE"
+   "status": "ACTIVE",
+   "fragment": "fragments/UpdateSiteArchiveReaderTests.json"
   },
   {
    "id": "v3.regression-update-site-declarative-adapter-service-tests",
@@ -4214,6 +4216,108 @@
    "expected": "Vitest: los dos ficheros sin fallos.",
    "fragment": "fragments/VitestStabilizationMergePanels.json",
    "priority": 5,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "v3.vitest-campaign-defect-regressions",
+   "kind": "vitest",
+   "argv": [
+    "npx",
+    "vitest",
+    "run",
+    "src/grammar-designer/GrammarDesignerInitialLoad.test.tsx",
+    "src/validation-designer/validationDesignerSelectors.test.ts",
+    "--reporter=json",
+    "--outputFile={RUN_DIR}/vitest.json"
+   ],
+   "cwd": "frontend",
+   "inputs": [
+    "frontend/src/grammar-designer/GrammarDesignerInitialLoad.test.tsx",
+    "frontend/src/grammar-designer/GrammarDesigner.tsx",
+    "frontend/src/validation-designer/validationDesignerSelectors.test.ts",
+    "frontend/src/validation-designer/validationDesignerSelectors.ts"
+   ],
+   "scope": [],
+   "oracle": "La carga inicial del diseñador de gramáticas no pisa el borrador del usuario y la dependencia del modelo usa un identificador estable.",
+   "expected": "Vitest: los dos ficheros sin fallos.",
+   "fragment": "fragments/VitestCampaignDefectRegressions.json",
+   "regressionOnly": true,
+   "priority": 5,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "v3.vitest-stale-evidence-refresh",
+   "kind": "vitest",
+   "argv": [
+    "npx",
+    "vitest",
+    "run",
+    "src/aggressive-testing/HydraAggressiveDeliveryArtifactContracts.test.ts",
+    "src/aggressive-testing/HydraAggressiveRecoverySecurity.test.ts",
+    "src/application-shell/HydraHome.test.tsx",
+    "src/application-shell/HydraHomeProjectDashboardContract.test.ts",
+    "src/application-shell/HydraResponsiveWorkbenchLayoutContract.test.ts",
+    "src/audit-log/ActivityLogContract.test.ts",
+    "src/design-system/HydraWindowControlsCoverage.test.ts",
+    "src/editor-definition/ProjectAssetPicker.test.tsx",
+    "src/editor-definition/ProjectImageFileField.test.tsx",
+    "src/editor-definition/VisualDefinitionImportLauncher.test.tsx",
+    "src/grammar-designer/GrammarDesignerUxContract.test.ts",
+    "src/project-explorer/ProjectCompleteDeletionContract.test.ts",
+    "src/project-explorer/ProjectCreationArchitectureContract.test.ts",
+    "src/project-explorer/ProjectManagerDialog.test.tsx",
+    "src/project-explorer/ProjectPresetFocusedCreationContract.test.ts",
+    "src/project-explorer/projectBrowserArtifactUrlSecurity.test.ts",
+    "src/remote-storage/RemoteStorageContract.test.ts",
+    "src/update-site-import-center/UpdateSiteDiagnosticKnowledge.test.ts",
+    "src/update-site-import-center/UpdateSiteEvidencePanel.test.tsx",
+    "src/update-site-import-center/UpdateSiteExtensionAdapterPanel.test.tsx",
+    "src/update-site-import-center/UpdateSiteImportCenter.test.tsx",
+    "src/update-site-import-center/UpdateSiteImportDashboard.test.tsx",
+    "src/update-site-import-center/UpdateSiteImportLogPanel.test.tsx",
+    "src/update-site-import-center/UpdateSiteLayerSelectionPanel.test.tsx",
+    "src/update-site-import-center/UpdateSiteReleaseComparisonPanel.test.tsx",
+    "src/update-site-import-center/api.test.ts",
+    "--reporter=json",
+    "--outputFile={RUN_DIR}/vitest.json"
+   ],
+   "cwd": "frontend",
+   "inputs": [
+    "frontend/src/aggressive-testing/HydraAggressiveDeliveryArtifactContracts.test.ts",
+    "frontend/src/aggressive-testing/HydraAggressiveRecoverySecurity.test.ts",
+    "frontend/src/application-shell/HydraHome.test.tsx",
+    "frontend/src/application-shell/HydraHomeProjectDashboardContract.test.ts",
+    "frontend/src/application-shell/HydraResponsiveWorkbenchLayoutContract.test.ts",
+    "frontend/src/audit-log/ActivityLogContract.test.ts",
+    "frontend/src/design-system/HydraWindowControlsCoverage.test.ts",
+    "frontend/src/editor-definition/ProjectAssetPicker.test.tsx",
+    "frontend/src/editor-definition/ProjectImageFileField.test.tsx",
+    "frontend/src/editor-definition/VisualDefinitionImportLauncher.test.tsx",
+    "frontend/src/grammar-designer/GrammarDesignerUxContract.test.ts",
+    "frontend/src/project-explorer/ProjectCompleteDeletionContract.test.ts",
+    "frontend/src/project-explorer/ProjectCreationArchitectureContract.test.ts",
+    "frontend/src/project-explorer/ProjectManagerDialog.test.tsx",
+    "frontend/src/project-explorer/ProjectPresetFocusedCreationContract.test.ts",
+    "frontend/src/project-explorer/projectBrowserArtifactUrlSecurity.test.ts",
+    "frontend/src/remote-storage/RemoteStorageContract.test.ts",
+    "frontend/src/update-site-import-center/UpdateSiteDiagnosticKnowledge.test.ts",
+    "frontend/src/update-site-import-center/UpdateSiteEvidencePanel.test.tsx",
+    "frontend/src/update-site-import-center/UpdateSiteExtensionAdapterPanel.test.tsx",
+    "frontend/src/update-site-import-center/UpdateSiteImportCenter.test.tsx",
+    "frontend/src/update-site-import-center/UpdateSiteImportDashboard.test.tsx",
+    "frontend/src/update-site-import-center/UpdateSiteImportLogPanel.test.tsx",
+    "frontend/src/update-site-import-center/UpdateSiteLayerSelectionPanel.test.tsx",
+    "frontend/src/update-site-import-center/UpdateSiteReleaseComparisonPanel.test.tsx",
+    "frontend/src/update-site-import-center/api.test.ts"
+   ],
+   "inputGlobs": [
+    "frontend/src/**/*"
+   ],
+   "scope": [],
+   "oracle": "Reejecución real de las pruebas Vitest cuya evidencia anterior quedó obsoleta por cambios del frontend.",
+   "expected": "Vitest: los 26 ficheros sin fallos.",
+   "regressionOnly": true,
+   "priority": 6,
    "status": "ACTIVE"
   },
   {

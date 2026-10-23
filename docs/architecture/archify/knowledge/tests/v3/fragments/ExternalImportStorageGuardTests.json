@@ -57,5 +57,125 @@
     "related": [],
     "confidence": "ANALYZED",
     "src": []
+  },
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalImportStorageGuard",
+    "name": {
+      "es": "Protección que impide que las pruebas de reinicio usen el almacenamiento real",
+      "en": "Guard that stops the restart tests from using the real storage"
+    },
+    "type": "OTHER",
+    "layer": "platform",
+    "caps": [
+      "recovery",
+      "persistence"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "No contiene casos: comprueba, antes de arrancar la aplicación en un proceso hijo, que todo almacén y el directorio de trabajo están dentro de la raíz temporal.",
+      "en": "Contains no cases: before the application starts in a child process it checks that every store and the working directory are inside the temporary root."
+    },
+    "asserts": {
+      "es": "No hay aserciones sobre el producto.",
+      "en": "There are no assertions on the product."
+    },
+    "behavior": {
+      "es": "No verifica comportamiento del producto por sí mismo.",
+      "en": "Verifies no product behaviour by itself."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Ninguno: soporte o herramienta de la certificación.",
+      "en": "None: certification support or tooling."
+    },
+    "result": {
+      "es": "No produce resultado de prueba del producto.",
+      "en": "Produces no product test result."
+    },
+    "expected": {
+      "es": "No aplica.",
+      "en": "Not applicable."
+    },
+    "guarantee": {
+      "es": "Ninguna sobre el producto.",
+      "en": "None about the product."
+    },
+    "limits": {
+      "es": "No es una prueba y no debe contarse como evidencia; la ejercen las pruebas de reinicio y la del propio guardián.",
+      "en": "It is not a test and must not be counted as evidence; the restart tests and the guard test exercise it."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Soporte o herramienta auxiliar, no una prueba del producto.",
+      "en": "Support or auxiliary tooling, not a product test."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.project.recovery.ExternalImportStorageGuardTests"
+    ],
+    "confidence": "ANALYZED",
+    "src": []
+  },
+  {
+    "id": "script:scripts/archify/v3/tests/Test-HydraCertificationSupport.ps1",
+    "name": {
+      "es": "Pruebas del módulo de apoyo del lanzador de certificación",
+      "en": "Tests of the certification launcher support module"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "recovery",
+      "persistence"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "Ejecuta en Windows PowerShell las reglas del lanzador: huellas por contenido, puntos de control, comparación del almacenamiento real y aislamiento del entorno de ejecución.",
+      "en": "Runs in Windows PowerShell the launcher rules: content fingerprints, checkpoints, real storage comparison and isolation of the execution environment."
+    },
+    "asserts": {
+      "es": "No hay aserciones sobre el producto.",
+      "en": "There are no assertions on the product."
+    },
+    "behavior": {
+      "es": "No verifica comportamiento del producto por sí mismo.",
+      "en": "Verifies no product behaviour by itself."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Ninguno: soporte o herramienta de la certificación.",
+      "en": "None: certification support or tooling."
+    },
+    "result": {
+      "es": "No produce resultado de prueba del producto.",
+      "en": "Produces no product test result."
+    },
+    "expected": {
+      "es": "No aplica.",
+      "en": "Not applicable."
+    },
+    "guarantee": {
+      "es": "Ninguna sobre el producto.",
+      "en": "None about the product."
+    },
+    "limits": {
+      "es": "Prueba la herramienta de certificación, no el producto; no demuestra ninguna etapa.",
+      "en": "Tests the certification tool, not the product; it proves no stage."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Soporte o herramienta auxiliar, no una prueba del producto.",
+      "en": "Support or auxiliary tooling, not a product test."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.project.recovery.ExternalImportStorageGuardTests"
+    ],
+    "confidence": "ANALYZED",
+    "src": []
   }
 ]

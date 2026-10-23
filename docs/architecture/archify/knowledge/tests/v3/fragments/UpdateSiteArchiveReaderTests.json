@@ -1,0 +1,78 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteArchiveReaderTests",
+    "name": {
+      "es": "Lectura segura de archivos de sitios de actualización",
+      "en": "Safe reading of update-site archives"
+    },
+    "type": "SECURITY",
+    "layer": "definition",
+    "caps": [
+      "metamodel",
+      "recovery",
+      "security"
+    ],
+    "procs": [
+      {
+        "id": "recovery_lifecycle",
+        "stages": [
+          "a2"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteArchiveReader.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportProperties.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRepositoryContent.java",
+      "src/main/java/com/example/editor/metamodel/design/MetamodelDesignException.java"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "UpdateSiteArchiveReader.read con UpdateSiteImportProperties reales sobre ZIPs generados por UpdateSiteTestFixtures (sitio con JARs anidados, ruta con '..', muchas entradas, alto ratio de compresión).",
+      "en": "UpdateSiteArchiveReader.read with real UpdateSiteImportProperties over ZIPs built by UpdateSiteTestFixtures (site with nested JARs, '..' path, many entries, high compression ratio)."
+    },
+    "asserts": {
+      "es": "Rutas virtuales 'jar!/entrada', huella de 64 caracteres y bytes totales positivos; MetamodelDesignException con 'Unsafe update-site path', 'entry limit' y 'compression-ratio limit'.",
+      "en": "Virtual 'jar!/entry' paths, 64-char fingerprint and positive total bytes; MetamodelDesignException with 'Unsafe update-site path', 'entry limit' and 'compression-ratio limit'."
+    },
+    "behavior": {
+      "es": "HYDRA expande un sitio P2 (JARs y features anidados) con rutas virtuales y rechaza archivos con rutas fuera del destino, demasiadas entradas o ratio de compresión sospechoso.",
+      "en": "HYDRA expands a P2 site (nested JARs and features) into virtual paths and rejects archives with escaping paths, too many entries or a suspicious compression ratio."
+    },
+    "rule": {
+      "es": "Las rutas con '..', el exceso de entradas y las bombas de compresión se rechazan antes de procesar el contenido.",
+      "en": "Paths with '..', excess entries and compression bombs are rejected before content is processed."
+    },
+    "scenario": {
+      "es": "Sitio válido, entrada '../outside.ecore', límite de 1 entrada con 2 y un fichero muy compresible con ratio máximo 2.",
+      "en": "Valid site, '../outside.ecore' entry, 1-entry limit with 2 entries, and a highly compressible file with max ratio 2."
+    },
+    "result": {
+      "es": "Mapa de ficheros con rutas virtuales y huella; excepciones con los mensajes de límite.",
+      "en": "File map with virtual paths and fingerprint; exceptions with the limit messages."
+    },
+    "expected": {
+      "es": "El archivo válido se expande y los tres casos hostiles se rechazan.",
+      "en": "The valid archive is expanded and the three hostile cases are rejected."
+    },
+    "guarantee": {
+      "es": "Evidencia de que el lector aplica estas tres defensas y expande JARs anidados en estos ejemplos.",
+      "en": "Evidence that the reader enforces these three defences and expands nested JARs in these examples."
+    },
+    "limits": {
+      "es": "Archivos pequeños generados en memoria; no cubre symlinks, tamaños descomprimidos enormes reales, ni el servicio de importación completo. La caché de artefactos usa un directorio temporal propio (antes escribía en el almacenamiento del proyecto).",
+      "en": "Small in-memory files; no symlinks, really huge uncompressed sizes or the full import service. The artifact cache uses its own temporary directory (it used to write into the project storage)."
+    },
+    "strength": "MEDIUM",
+    "strengthWhy": {
+      "es": "Lector real sobre ZIP/JAR generados en memoria, con varios límites de seguridad.",
+      "en": "Real reader over in-memory generated ZIP/JAR files, with several safety limits."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]
