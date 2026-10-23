@@ -154,4 +154,16 @@ class ExternalImportJournalPersistenceIntegrationTests {
         assertThat(compensation.pendingDescriptions()).isEmpty();
         assertThat(ImportFixtureArchives.canonicalState(root).keySet().stream().filter(path -> path.endsWith(".metamodel.json")).count()).isEqualTo(1);
     }
+
+    @Test @Order(100)
+    @DisplayName("#36: sin diarios pendientes, la recuperación no crea el directorio del diario ni su cerrojo (arrancar no escribe en el almacenamiento)")
+    void recoveryWithoutJournalsWritesNothing() throws Exception {
+        Path directory = root.resolve("external-import-journal");
+        assertThat(ImportFixtureArchives.journals(root)).isEmpty();
+        if (Files.isDirectory(directory)) {
+            try (var walk = Files.walk(directory)) { walk.sorted(java.util.Comparator.reverseOrder()).forEach(path -> path.toFile().delete()); }
+        }
+        assertThat(compensation.recoverIncomplete()).isEmpty();
+        assertThat(directory).doesNotExist();
+    }
 }

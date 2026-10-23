@@ -123,6 +123,9 @@ public class ExternalImportCompensationService {
 
     /** Recupera las operaciones incompletas si nadie más tiene la exclusividad; devuelve un informe por operación recuperada. */
     /** Descripción: Ejecuta la operación «recoverIncomplete» correspondiente a la responsabilidad de CompensationReport. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public List<CompensationReport> recoverIncomplete() {
+        // Sin diarios no hay nada que recuperar: no se crea el directorio ni el cerrojo (arrancar no debe escribir en el almacenamiento).
+        // Una importación en curso siempre tiene su diario escrito antes de su primer efecto, así que no se pierde ninguna recuperación.
+        if(store.operationIds().isEmpty()) return List.of();
         ExternalImportJournalStore.Hold hold = store.tryAcquire();
         if(hold == null) return List.of();
         try { return recoverLocked(); }
