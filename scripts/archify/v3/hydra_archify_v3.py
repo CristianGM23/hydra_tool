@@ -1402,8 +1402,8 @@ def cmd_sync(args) -> int:
 # ------------------------------------------------------------------ other commands
 def cmd_capture_baseline(args) -> int:
     src = Path(args.src) if args.src else ROOT / "build" / "hydra-maven" / "surefire-reports"
-    if not inside_repo(src):
-        raise SystemExit("source must be inside the repository")
+    if not (inside_repo(src) or (EXEC_ROOT != ROOT and _resolved_under(src, EXEC_ROOT))):  # informes de una ejecucion aislada: dentro del sandbox verificado
+        raise SystemExit("source must be inside the repository or the isolated execution root")
     xmls = sorted(src.glob("TEST-*.xml"))
     if not xmls:
         raise SystemExit(f"no TEST-*.xml in {rel(src)}")

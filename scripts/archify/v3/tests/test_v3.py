@@ -498,5 +498,23 @@ class IsolationTests(Sandbox):
         plan = v3.build_plan({"tasks": [task]}, {"tasks": {}}, None, {"*"}, False)
         self.assertEqual([p["action"] for p in plan], ["BLOCKED"])
 
+    def test_capture_baseline_accepts_reports_from_the_isolated_root_only(self):
+        reports = self.box / "build" / "hydra-maven" / "surefire-reports"
+        write_xml(reports, "a.b.CTests", [("ok", None)])
+        v3.OUT = self.real / "target" / "archify-v3"
+        v3.EVID, v3.STORE, v3.INDEX = v3.OUT / "evidence", v3.OUT / "evidence" / "surefire", v3.OUT / "evidence" / "evidence-index.json"
+        args = type("A", (), {"src": str(reports), "run_id": "run-iso", "started": "2026-10-23T00:00:00.000Z"})()
+        v3.EXEC_ROOT = self.real
+        with self.assertRaises(SystemExit):
+            v3.cmd_capture_baseline(args)
+        v3.EXEC_ROOT = self.box
+        self.assertEqual(v3.cmd_capture_baseline(args), 0)
+        self.assertTrue((v3.STORE / "run-iso").is_dir())
+        outside = self.tmp / "elsewhere" / "surefire-reports"
+        write_xml(outside, "a.b.DTests", [("ok", None)])
+        with self.assertRaises(SystemExit):
+            v3.cmd_capture_baseline(type("A", (), {"src": str(outside), "run_id": "run-x", "started": None})())
+
+
 if __name__ == "__main__":
     unittest.main()

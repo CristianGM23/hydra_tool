@@ -275,6 +275,7 @@ function Invoke-IsolatedRun([string]$log, [string]$kind) {
         else { Write-Host "  (dry run) aislamiento verificado: data efectivo $(Join-Path $SandboxRoot 'data'); data real $(Join-Path $root 'data') intacto" -ForegroundColor DarkGreen }
         return 'OK'
     }
+    Initialize-DataBaseline   # la huella base de data\ debe existir aunque esta invocacion no ejecute el preflight
     $problems = @(Assert-Isolation $log)
     if ($problems.Count) {
         Add-Content $log ("BLOCKED_ISOLATION: " + ($problems -join '; '))
