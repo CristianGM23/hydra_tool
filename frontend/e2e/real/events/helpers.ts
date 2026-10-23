@@ -108,8 +108,10 @@ export async function openEvents(page: Page, metamodelId: string): Promise<void>
     await page.goto('/');
     await page.evaluate(() => { try { window.localStorage.setItem('hydra.language.v1', 'en'); } catch { /* sin almacenamiento */ } });
     await openApp(page, '/#/events');
-    await page.reload();
+    // Las esperas se registran ANTES de recargar: si el metamodelo ya es el activo (p. ej. el único del backend) el diseñador lo carga al montarse
+    // y elegirlo en el selector no genera peticiones nuevas; registradas después, esas respuestas se perdían y la prueba agotaba su tiempo.
     const loaded = [getOf(page, '/events', metamodelId), getOf(page, '/events/diagram', metamodelId)];
+    await page.reload();
     await page.getByRole('combobox', { name: /Active (metamodel|semantic context)|Metamodelo activo|Contexto sem[aá]ntico activo/i }).first().selectOption(metamodelId);
     await Promise.all(loaded);
     await expect(page.locator('.event-designer')).toBeVisible();
@@ -120,8 +122,8 @@ export async function openFlows(page: Page, metamodelId: string): Promise<void> 
     await page.goto('/');
     await page.evaluate(() => { try { window.localStorage.setItem('hydra.language.v1', 'en'); } catch { /* sin almacenamiento */ } });
     await openApp(page, '/#/event-flows');
-    await page.reload();
     const loaded = [getOf(page, '/event-flows/optional', metamodelId), getOf(page, '/event-flows/diagram', metamodelId), getOf(page, '/event-flows/runtime/state', metamodelId)];
+    await page.reload();
     await page.getByRole('combobox', { name: /Active (metamodel|semantic context)|Metamodelo activo|Contexto sem[aá]ntico activo/i }).first().selectOption(metamodelId);
     await Promise.all(loaded);
     await expect(page.locator('.event-flow-designer')).toBeVisible();

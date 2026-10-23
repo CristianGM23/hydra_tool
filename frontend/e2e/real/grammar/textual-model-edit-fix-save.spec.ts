@@ -49,12 +49,15 @@ test.setTimeout(180_000); // compila una gramática y encadena varias sesiones y
 
 test('se rellena el ejemplo, se escribe, se corrige a mano y con la sugerencia del panel, y solo un borrador válido se promueve', async ({ page, request }) => {
     const { definitionId } = await seedTextualEditor(request);
-    const sessionIds: string[] = [];
+    // Los ids se guardan en el ORDEN DE LLEGADA de las respuestas (de forma síncrona en el evento): antes se añadían cuando se resolvía
+    // response.json(), cuyo orden no está garantizado; con dos sesiones (la inicial y «New session») la prueba podía consultar la antigua
+    // mientras la interfaz escribía en la nueva (fallo intermitente observado en la campaña consolidada, traza con 2 POST).
+    const sessionIds: Promise<string | undefined>[] = [];
     page.on('response', response => {
         if (response.request().method() !== 'POST' || !/\/api\/textual-model-sessions$/.test(response.url()) || !response.ok()) return;
-        void response.json().then((body: { id?: string }) => { if (body.id !== undefined) sessionIds.push(body.id); }).catch(() => undefined);
+        sessionIds.push(response.json().then((body: { id?: string }) => body.id).catch(() => undefined));
     });
-    const session = async (): Promise<SessionJson> => apiGet<SessionJson>(request, `/api/textual-model-sessions/${sessionIds[sessionIds.length - 1]}`);
+    const session = async (): Promise<SessionJson> => apiGet<SessionJson>(request, `/api/textual-model-sessions/${await sessionIds[sessionIds.length - 1]}`);
     const settled = (predicate: (value: SessionJson) => boolean) => eventually(session, predicate, 30_000);
     const status = page.locator('.textual-runtime-status');
     const problems = page.locator('.textual-problems');
