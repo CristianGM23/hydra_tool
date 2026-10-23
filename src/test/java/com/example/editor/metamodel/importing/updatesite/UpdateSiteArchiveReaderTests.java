@@ -1,8 +1,11 @@
 package com.example.editor.metamodel.importing.updatesite;
 
+import java.nio.file.Path;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.example.editor.metamodel.design.MetamodelDesignException;
 
@@ -10,8 +13,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UpdateSiteArchiveReaderTests {
-    private final UpdateSiteImportProperties properties = new UpdateSiteImportProperties();
-    private final UpdateSiteArchiveReader reader = new UpdateSiteArchiveReader(properties);
+    @TempDir Path temporary;
+    private UpdateSiteImportProperties properties;
+    private UpdateSiteArchiveReader reader;
+
+    /** Las propiedades por defecto escriben en ./data/update-site-imports (la caché de artefactos): estas pruebas usan un directorio temporal. */
+    @BeforeEach
+    void isolatedStorage() {
+        properties = new UpdateSiteImportProperties();
+        properties.setStorageRoot(temporary.resolve("update-site").toString());
+        reader = new UpdateSiteArchiveReader(properties);
+    }
 
     @Test
     void expandsP2MetadataFeaturesAndPluginJarsWithVirtualPaths() {

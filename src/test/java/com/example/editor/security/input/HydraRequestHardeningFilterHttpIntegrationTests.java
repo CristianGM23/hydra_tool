@@ -49,6 +49,10 @@ class HydraRequestHardeningFilterHttpIntegrationTests {
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
+        // Todos los almacenes del contexto completo (auditoria incluida) en el directorio temporal: con los valores por defecto
+        // esta prueba escribia el registro de auditoria en ./data (el almacenamiento real cuando se ejecuta en el espacio de trabajo).
+        com.example.editor.metamodel.web.MetamodelHttpTestEnvironment.register(registry, ROOT.resolve("storage"));
+        registry.add("dsl.storage.create-directories", () -> "false");
         registry.add("hydra.standalone-distribution.allowed-root", ROOT::toString);
     }
 
