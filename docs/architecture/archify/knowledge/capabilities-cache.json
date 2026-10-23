@@ -1,0 +1,5200 @@
+{
+ "schemaVersion": 2,
+ "purpose": "Per-capability validation ledger. Ids match HM.caps keys (hydra-model-*.js) and window.CAPABILITIES keys (hydra-architecture-data.js). Does not duplicate capability content; portalContent only records how much structured content the portal holds for the capability. verifiedAgainst describes what source state the evidence was read from.",
+ "verifiedAgainstCommit": "4e4455a63c02fa89fdd60bbf00035b28c34a68a3",
+ "verifiedAgainstWorkingTree": "local working tree on 2026-10-09 (uncommitted changes in integration/parity, integration/compiler|web, standalone/distribution were READ as they are on disk)",
+ "lastSyncCheck": {
+  "date": "2026-10-09",
+  "resolvedHead": "4e4455a63c02fa89fdd60bbf00035b28c34a68a3",
+  "result": "HEAD unchanged. Product working-tree changes (integration/parity, standalone/distribution) found and investigated; 6 enumeration/lifecycle scoped lookups + 2 delta lookups; see baseline.json and gaps.json."
+ },
+ "capabilities": {
+  "metamodel": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/metamodel/core",
+    "src/main/java/com/example/editor/metamodel/importing",
+    "frontend/src/metamodel-designer"
+   ],
+   "knownIssues": [],
+   "note": "Enumerations (kinds, 14 primitives, 21 import formats) verified this pass; cascade/journal facts from the validated cache.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 12,
+     "variantsWithFunctionalDescription": 66
+    },
+    "elements": 12,
+    "variants": 66,
+    "domainMapNodes": 14,
+    "authoringMechanisms": 4,
+    "capabilityProcesses": 3,
+    "authoringMicroProcesses": 4,
+    "crossProcessesTouching": 7
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 15,
+    "methodsExplained": 19,
+    "excerptsExplained": 5,
+    "testsExplained": 7,
+    "traceRows": 7,
+    "responsibilities": [
+     {
+      "id": "mm_model",
+      "name": "MetaModel",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Describir el lenguaje y garantizar su forma inmutable; no valida consistencia (eso es del validador neutral), no persiste y no proyecta.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/core/MetaModel.java:14"
+     },
+     {
+      "id": "mm_class",
+      "name": "MetaClass",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Agrupar la estructura de un tipo; no resuelve herencia (eso lo hacen las relaciones) ni valida sus atributos.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/metamodel/core/MetaClass.java:12"
+     },
+     {
+      "id": "mm_relation",
+      "name": "MetaRelation",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Describir un vínculo tipado; no comprueba compatibilidad de extremos ni ciclos de herencia (eso es del validador).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/core/MetaRelation.java:11"
+     },
+     {
+      "id": "mm_multiplicity",
+      "name": "Multiplicity",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Representar el rango; no comprueba que el máximo sea mayor que el mínimo.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/metamodel/core/Multiplicity.java:9"
+     },
+     {
+      "id": "mm_app",
+      "name": "CanonicalMetamodelApplicationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar el guardado canónico y sus garantías; no implementa la validación (NeutralMetamodelValidator), ni la persistencia (repositorio), ni las proyecciones (ProjectionCoordinator).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java:31"
+     },
+     {
+      "id": "mm_validation",
+      "name": "MetamodelValidationApplicationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Puerta de generación y recibo; no guarda el metamodelo ni genera código (eso es de la publicación).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/validation/MetamodelValidationApplicationService.java:13"
+     },
+     {
+      "id": "mm_lifecycle",
+      "name": "MetamodelLifecycleService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar el borrado, el diario y la reanudación; el barrido de artefactos de capas nuevas lo delega en MetamodelDependentArtifactCleanupService.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/lifecycle/MetamodelLifecycleService.java:84"
+     },
+     {
+      "id": "mm_cleanup",
+      "name": "MetamodelDependentArtifactCleanupService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Barrido acotado y borrado seguro; no decide cuándo se borra un metamodelo ni gestiona el diario, y nunca recorre árboles de modelos o proyectos del usuario.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/deletion/MetamodelDependentArtifactCleanupService.java:45"
+     },
+     {
+      "id": "mm_journal",
+      "name": "MetamodelDeletionJournal",
+      "kind": "record",
+      "group": "per",
+      "responsibility": "Describir el estado del borrado; no lo persiste (eso es del servicio del diario) ni decide transiciones.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/lifecycle/MetamodelDeletionJournal.java:7"
+     },
+     {
+      "id": "mm_journal_service",
+      "name": "MetamodelDeletionJournalService",
+      "kind": "repository",
+      "group": "per",
+      "responsibility": "Persistir y leer el diario con transiciones; no decide cuándo transitar.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/lifecycle/MetamodelDeletionJournalService.java:28"
+     },
+     {
+      "id": "mm_import_format",
+      "name": "MetamodelImportFormat",
+      "kind": "registry",
+      "group": "adp",
+      "responsibility": "Describir formatos; no los importa (eso es del importador de cada formato) ni los filtra (lo hace el servicio según la configuración).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/importing/MetamodelImportFormat.java:12"
+     },
+     {
+      "id": "mm_importer",
+      "name": "MetamodelImporter",
+      "kind": "interface",
+      "group": "adp",
+      "responsibility": "Definir el contrato; no normaliza, valida ni persiste.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/importing/MetamodelImporter.java:6"
+     },
+     {
+      "id": "mm_import_service",
+      "name": "MetamodelImportService",
+      "kind": "service",
+      "group": "adp",
+      "responsibility": "Orquestar la importación; no sabe leer ningún formato en concreto (cada MetamodelImporter lo hace) ni valida por sí mismo (usa el validador neutral).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/metamodel/importing/MetamodelImportService.java:30"
+     },
+     {
+      "id": "mm_controller",
+      "name": "CanonicalMetamodelController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP a llamadas del servicio y devolver ETag; no valida ni persiste.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/web/CanonicalMetamodelController.java:33"
+     },
+     {
+      "id": "mm_designer",
+      "name": "MetamodelDesigner",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Edición y orquestación de pantalla; no valida consistencia semántica completa (lo hace el backend al guardar) ni persiste directamente.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/metamodel-designer/MetamodelDesigner.tsx:200"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 194,
+     "byStatus": {
+      "PASS": 181,
+      "DISCOVERED": 8,
+      "STALE_EVIDENCE": 5
+     },
+     "byStrength": {
+      "LIMITED": 94,
+      "STRONG": 17,
+      "MEDIUM": 83
+     },
+     "byType": {
+      "ARCHITECTURE": 2,
+      "INTEGRATION": 25,
+      "UNIT": 37,
+      "BEHAVIOR": 73,
+      "OTHER": 7,
+      "CONTRACT": 8,
+      "SECURITY": 5,
+      "STATIC_VERIFICATION": 8,
+      "END_TO_END": 7,
+      "UI": 18,
+      "RUNTIME": 2,
+      "QUALIFICATION": 2
+     },
+     "endToEnd": true,
+     "stagesTotal": 52,
+     "stagesWithEvidence": 49,
+     "stagesDirectlyVerified": 47
+    },
+    "evidenceIds": [
+     "java:com.example.editor.definition.importing.VisualImportMetamodelAssociationHttpIntegrationTests",
+     "java:com.example.editor.metamodel.application.CanonicalMetamodelSaveValidationAuditIntegrationTests",
+     "java:com.example.editor.metamodel.canonical.JsonCanonicalMetamodelRepositoryTests",
+     "java:com.example.editor.metamodel.deletion.MetamodelDependentArtifactCleanupServiceTests",
+     "java:com.example.editor.metamodel.export.project.MetamodelCompleteProjectExportGateIntegrationTests",
+     "java:com.example.editor.metamodel.importing.MetamodelImportHttpPipelineIntegrationTests",
+     "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteMetamodelRecoveryServiceTests",
+     "java:com.example.editor.metamodel.lifecycle.MetamodelDeleteCascadeHttpIntegrationTests",
+     "java:com.example.editor.metamodel.web.MetamodelAuthoringSaveGateHttpIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalProjectRecoveryReopenIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalProjectSemanticMaterializationServiceTests",
+     "pw:e2e/real/metamodel/canvas-author-relations.spec.ts"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "metamodel_define_save": {
+     "def": "ok",
+     "imp": "ok",
+     "rec": "partial",
+     "rev": "ok",
+     "sv": "ok",
+     "ok": "ok",
+     "fix": "ok",
+     "art": "ok"
+    },
+    "metamodel_delete_cascade": {
+     "prep": "ok",
+     "scan": "ok",
+     "prim": "ok",
+     "clean": "ok",
+     "d1": "ok",
+     "rec": "ok",
+     "ab": "ok",
+     "art": "ok"
+    },
+    "metamodel_export_generate": {
+     "chk": "ok",
+     "d1": "ok",
+     "fix": "ok",
+     "in": "ok",
+     "gen": "ok",
+     "art": "ok"
+    },
+    "metamodel_author_canvas": {
+     "pal": "ok",
+     "d1": "ok",
+     "kind": "ok",
+     "cc": "ok",
+     "dr": "partial",
+     "val": "ok",
+     "ed": "ok",
+     "art": "ok"
+    },
+    "metamodel_author_wizard": {
+     "id": "ok",
+     "cl": "ok",
+     "st": "ok",
+     "va": "ok",
+     "d1": "ok",
+     "sv": "ok",
+     "art": "ok"
+    },
+    "metamodel_author_import": {
+     "src": "ok",
+     "str": "ok",
+     "an": "ok",
+     "rv": "ok",
+     "d1": "ok",
+     "art": "ok"
+    },
+    "metamodel_author_properties": {
+     "d1": "ok",
+     "at": "ok",
+     "op": "ok",
+     "rl": "ok",
+     "opt": "ok",
+     "art": "ok"
+    }
+   }
+  },
+  "model_editor": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/definition",
+    "frontend/src/editor-definition",
+    "frontend/src/model-editor"
+   ],
+   "knownIssues": [
+    "obs-ui-elements-view",
+    "obs-gating-flags"
+   ],
+   "note": "Definition model enumerated (6 representation kinds, 17 shapes, 5 tools, 14 widgets, 12 capabilities). frontend/src/model-editor (runtime workspace) was NOT inspected this pass; which representation kinds the runtime really renders is unverified.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 13,
+     "variantsWithFunctionalDescription": 89
+    },
+    "elements": 13,
+    "variants": 89,
+    "domainMapNodes": 15,
+    "authoringMechanisms": 6,
+    "capabilityProcesses": 3,
+    "authoringMicroProcesses": 6,
+    "crossProcessesTouching": 8
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 14,
+    "methodsExplained": 21,
+    "excerptsExplained": 5,
+    "testsExplained": 6,
+    "traceRows": 7,
+    "responsibilities": [
+     {
+      "id": "me_definition",
+      "name": "EditorDefinitionModel",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Describir el editor y garantizar su forma; no valida referencias al metamodelo (informe de definición) ni se ejecuta.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/definition/EditorDefinitionModel.java:11"
+     },
+     {
+      "id": "me_representation",
+      "name": "RepresentationDefinition",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Agrupar la configuración de una vista y decidir qué está activo por defecto; no la renderiza.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/definition/RepresentationDefinition.java:10"
+     },
+     {
+      "id": "me_node_mapping",
+      "name": "NodeMapping",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Describir cómo se dibuja una clase; no crea elementos (lo hace una herramienta) ni valida el metamodelo.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/definition/NodeMapping.java:10"
+     },
+     {
+      "id": "me_edge_mapping",
+      "name": "EdgeMapping",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Describir cómo se dibuja una relación; no crea relaciones en el modelo.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/definition/EdgeMapping.java:10"
+     },
+     {
+      "id": "me_tool",
+      "name": "EditorTool",
+      "kind": "interface",
+      "group": "def",
+      "responsibility": "Definir el contrato y las variantes; la ejecución de cada herramienta vive en la sesión.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/definition/EditorTool.java:6"
+     },
+     {
+      "id": "me_policy",
+      "name": "EditorRuntimePolicy",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Contener y normalizar la política; las decisiones las toma la sesión al consultarla.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/definition/EditorRuntimePolicy.java:6"
+     },
+     {
+      "id": "me_compiler",
+      "name": "EditorDefinitionCompiler",
+      "kind": "engine",
+      "group": "rt",
+      "responsibility": "Transformar definición + informe válido en plan; no valida (recibe el informe), no cachea (lo hace el servicio de runtime) y nunca modifica la definición de diseño.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/definition/runtime/EditorDefinitionCompiler.java:25"
+     },
+     {
+      "id": "me_session",
+      "name": "EditorModelSessionService",
+      "kind": "service",
+      "group": "rt",
+      "responsibility": "Orquestar el ciclo de vida de la sesión y de cada mutación; delega validación, Quick Fix, historial, copias de trabajo y publicación en colaboradores, y no compila ni diseña editores.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java:57"
+     },
+     {
+      "id": "me_event_buffer",
+      "name": "EditorSessionPendingEventBuffer",
+      "kind": "runtime",
+      "group": "rt",
+      "responsibility": "Retener y liberar eventos en orden con memoria acotada; no decide cuándo publicar (lo hace la sesión) ni recupera eventos tras un reinicio.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/definition/runtime/session/EditorSessionPendingEventBuffer.java:31"
+     },
+     {
+      "id": "me_runtime_controller",
+      "name": "EditorRuntimeController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP a EditorRuntimeApplicationService; no compila por sí mismo.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/definition/runtime/web/EditorRuntimeController.java:15"
+     },
+     {
+      "id": "me_session_controller",
+      "name": "EditorModelSessionController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP a EditorModelSessionService; no contiene lógica de edición.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/definition/runtime/session/web/EditorModelSessionController.java:36"
+     },
+     {
+      "id": "me_designer",
+      "name": "EditorDefinitionDesigner",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Edición y orquestación de pantalla; la validación autoritativa y la compilación están en el backend.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/editor-definition/EditorDefinitionDesigner.tsx:159"
+     },
+     {
+      "id": "me_guided",
+      "name": "EditorDefinitionGuidedSteps",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Presentación del asistente; no guarda ni compila (recibe esas funciones).",
+      "rationale": "observable",
+      "primarySource": "frontend/src/editor-definition/EditorDefinitionGuidedSteps.tsx:43"
+     },
+     {
+      "id": "me_mutations",
+      "name": "editorDefinitionMappingMutations",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Calcular un nuevo modelo inmutable; no guarda ni llama al backend.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/editor-definition/editorDefinitionMappingMutations.ts:13"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 97,
+     "byStatus": {
+      "PASS": 93,
+      "DISCOVERED": 4
+     },
+     "byStrength": {
+      "MEDIUM": 37,
+      "STRONG": 16,
+      "LIMITED": 44
+     },
+     "byType": {
+      "BEHAVIOR": 15,
+      "INTEGRATION": 19,
+      "UNIT": 18,
+      "STATIC_VERIFICATION": 15,
+      "CONTRACT": 4,
+      "OTHER": 2,
+      "END_TO_END": 5,
+      "UI": 19
+     },
+     "endToEnd": true,
+     "stagesTotal": 57,
+     "stagesWithEvidence": 51,
+     "stagesDirectlyVerified": 44
+    },
+    "evidenceIds": [
+     "java:com.example.editor.definition.EditorDefinitionApplicationServiceGuidedSaveIntegrationTests",
+     "java:com.example.editor.definition.EditorDefinitionCheckerTests",
+     "java:com.example.editor.definition.importing.VisualDefinitionImportAnalysisTests",
+     "java:com.example.editor.definition.importing.VisualImportMetamodelAssociationHttpIntegrationTests",
+     "java:com.example.editor.definition.persistence.JsonEditorDefinitionRepositoryCodeGenerationTests",
+     "java:com.example.editor.definition.persistence.JsonEditorDefinitionRepositoryStructuralValidationTests",
+     "java:com.example.editor.definition.runtime.EditorDefinitionCompilerTests",
+     "java:com.example.editor.definition.runtime.EditorRuntimeCompileRealDefinitionIntegrationTests",
+     "java:com.example.editor.definition.runtime.session.EditorModelSessionRealStackLifecycleIntegrationTests",
+     "java:com.example.editor.definition.runtime.session.EditorSessionEventPublicationIntegrationTests",
+     "java:com.example.editor.definition.runtime.session.EditorSessionMemoryHardeningTests",
+     "java:com.example.editor.gamification.EditorSessionEventToRewardIntegrationTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "model_editor_design_flow": {
+     "id": "partial",
+     "rp": "partial",
+     "tf": "partial",
+     "rv": "ok",
+     "d1": "ok",
+     "sv": "ok",
+     "art": "ok"
+    },
+    "model_editor_compile": {
+     "chk": "ok",
+     "d1": "ok",
+     "cmp": "ok",
+     "vw": "ok",
+     "art": "ok"
+    },
+    "model_editor_session": {
+     "op": "ok",
+     "ed": "ok",
+     "ev": "ok",
+     "va": "ok",
+     "qf": "ok",
+     "ud": "ok",
+     "sv": "ok",
+     "art": "ok"
+    },
+    "model_editor_author_design": {
+     "rp": "ok",
+     "nm": "ok",
+     "em": "ok",
+     "pt": "ok",
+     "fm": "ok",
+     "cs": "ok",
+     "art": "ok"
+    },
+    "model_editor_author_guided": {
+     "p1": "partial",
+     "p2": "partial",
+     "p4": "partial",
+     "p5": "ok",
+     "d1": "partial",
+     "sv": "ok",
+     "p6": "ok",
+     "art": "ok"
+    },
+    "model_editor_author_structure": {
+     "sel": "ok",
+     "ed": "ok",
+     "val": "ok",
+     "art": "ok"
+    },
+    "model_editor_author_code": {
+     "tg": "ok",
+     "dt": "ok",
+     "art": "ok"
+    },
+    "model_editor_author_runtime": {
+     "cmp": "ok",
+     "vw": "ok",
+     "art": "ok"
+    },
+    "model_editor_visual_import": {
+     "tc": "ok",
+     "as": "ok",
+     "an": "ok",
+     "rv": "ok",
+     "d1": "ok",
+     "art": "ok"
+    }
+   }
+  },
+  "integration": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/integration/workflow",
+    "src/main/java/com/example/editor/integration/roundtrip",
+    "src/main/java/com/example/editor/integration/parity",
+    "src/main/java/com/example/editor/integration/compiler",
+    "src/main/java/com/example/editor/integration/web",
+    "frontend/src/integration-designer"
+   ],
+   "knownIssues": [
+    "obs-integration-inherited"
+   ],
+   "note": "gap-003/004/005 resolved. Native parity certification and delivery readiness documented from the CURRENT (uncommitted) working tree. Inherited and not re-verified: wizard fields of steps 2-6, delivery-mode values, target/injection restrictions.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 13,
+     "variantsWithFunctionalDescription": 70
+    },
+    "elements": 13,
+    "variants": 70,
+    "domainMapNodes": 16,
+    "authoringMechanisms": 3,
+    "capabilityProcesses": 3,
+    "authoringMicroProcesses": 2,
+    "crossProcessesTouching": 2
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 18,
+    "methodsExplained": 22,
+    "excerptsExplained": 4,
+    "testsExplained": 8,
+    "traceRows": 6,
+    "responsibilities": [
+     {
+      "id": "integration_profile",
+      "name": "IntegrationProfileModel",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Ser el contrato portable y válido por construcción del perfil.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/IntegrationProfileModel.java:9"
+     },
+     {
+      "id": "tech_integration_service",
+      "name": "TechnologyIntegrationApplicationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java:22"
+     },
+     {
+      "id": "tech_compiler_service",
+      "name": "TechnologyCompilerService",
+      "kind": "service",
+      "group": "rt",
+      "responsibility": "Orquestar y verificar la compilación; no contiene lógica específica de ninguna tecnología (vive en cada adaptador).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/compiler/TechnologyCompilerService.java:10"
+     },
+     {
+      "id": "tech_integration_controller",
+      "name": "TechnologyIntegrationController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP a llamadas del servicio; no contiene reglas de entrega.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java:24"
+     },
+     {
+      "id": "tech_workflow_service",
+      "name": "TechnologyWorkflowService",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Describir la madurez global de una tecnología (no de un perfil concreto).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/integration/workflow/TechnologyWorkflowService.java:17"
+     },
+     {
+      "id": "readiness_service",
+      "name": "TechnologyDeliveryReadinessService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Derivar preparación (solo lectura).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/integration/workflow/TechnologyDeliveryReadinessService.java:31"
+     },
+     {
+      "id": "action_descriptor",
+      "name": "TechnologyDeliveryActionDescriptor",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Transportar el veredicto por etapa.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/workflow/TechnologyDeliveryActionDescriptor.java:6"
+     },
+     {
+      "id": "readiness_record",
+      "name": "TechnologyDeliveryReadiness",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Ser el contrato de lectura de la preparación; no decide nada.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/workflow/TechnologyDeliveryReadiness.java:6"
+     },
+     {
+      "id": "readiness_controller",
+      "name": "TechnologyDeliveryReadinessController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Exponer el cálculo; no lo implementa.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/integration/workflow/TechnologyDeliveryReadinessController.java:8"
+     },
+     {
+      "id": "parity_assessor",
+      "name": "NativeParityEvidenceAssessor",
+      "kind": "engine",
+      "group": "rt",
+      "responsibility": "Juzgar evidencia.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/integration/parity/NativeParityEvidenceAssessor.java:14"
+     },
+     {
+      "id": "parity_catalog",
+      "name": "NativeParityProofCatalog",
+      "kind": "registry",
+      "group": "dom",
+      "responsibility": "Decidir qué prueba demuestra qué.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/integration/parity/NativeParityProofCatalog.java:7"
+     },
+     {
+      "id": "parity_request_report",
+      "name": "NativeParityCertificationRequest",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Fijar el contrato de entrada y de salida; sin lógica de evaluación.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/parity/NativeParityCertificationRequest.java:6"
+     },
+     {
+      "id": "roundtrip_manifest",
+      "name": "RoundTripManifest",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Ser la línea base.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/roundtrip/RoundTripManifest.java:8"
+     },
+     {
+      "id": "roundtrip_manifest_service",
+      "name": "RoundTripManifestService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Construir la línea base.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/roundtrip/RoundTripManifestService.java:17"
+     },
+     {
+      "id": "integration_api_client",
+      "name": "api.ts",
+      "kind": "adapter",
+      "group": "ui",
+      "responsibility": "Transporte y normalización.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/integration-designer/api.ts:18"
+     },
+     {
+      "id": "readiness_normalization",
+      "name": "normalizeTechnologyDeliveryReadiness",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Sanear.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/integration-designer/technologyDeliveryReadinessNormalization.ts:14"
+     },
+     {
+      "id": "journey_ui",
+      "name": "IntegrationTechnologyJourney",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Presentar; no calcula ni decide.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/integration-designer/IntegrationTechnologyJourney.tsx:12"
+     },
+     {
+      "id": "integration_designer",
+      "name": "IntegrationDesigner",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Orquestar la interacción; las reglas de entrega siguen en el backend.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/integration-designer/IntegrationDesigner.tsx:125"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 110,
+     "byStatus": {
+      "PASS": 88,
+      "DISCOVERED": 21,
+      "SKIPPED": 1
+     },
+     "byStrength": {
+      "STRONG": 21,
+      "LIMITED": 43,
+      "MEDIUM": 46
+     },
+     "byType": {
+      "BEHAVIOR": 36,
+      "INTEGRATION": 18,
+      "UNIT": 24,
+      "OTHER": 4,
+      "SECURITY": 2,
+      "CONTRACT": 2,
+      "RUNTIME": 3,
+      "STATIC_VERIFICATION": 7,
+      "END_TO_END": 2,
+      "UI": 2,
+      "QUALIFICATION": 3,
+      "RELEASE_GATE": 7
+     },
+     "endToEnd": true,
+     "stagesTotal": 40,
+     "stagesWithEvidence": 40,
+     "stagesDirectlyVerified": 39
+    },
+    "evidenceIds": [
+     "java:com.example.editor.integration.adapter.besser.BesserSdkTechnologyAdapterTests",
+     "java:com.example.editor.integration.adapter.besser.BesserWebModelingEditorTechnologyAdapterTests",
+     "java:com.example.editor.integration.adapter.eclipse.EclipseModelingDistributionTechnologyAdapterTests",
+     "java:com.example.editor.integration.adapter.emf.EmfTechnologyAdapterTests",
+     "java:com.example.editor.integration.adapter.glsp.EclipseGlspTechnologyAdapterTests",
+     "java:com.example.editor.integration.adapter.langium.LangiumTechnologyAdapterTests",
+     "java:com.example.editor.integration.adapter.mxgraph.MxGraphDrawioTechnologyAdapterTests",
+     "java:com.example.editor.integration.adapter.sirius.SiriusDesktopTechnologyAdapterTests",
+     "java:com.example.editor.integration.adapter.vscode.VsCodeExtensionTechnologyAdapterTests",
+     "java:com.example.editor.integration.adapter.xtext.XtextTechnologyAdapterTests",
+     "java:com.example.editor.integration.compatibility.NativeToolchainProbeExecutorRealProcessIntegrationTests",
+     "java:com.example.editor.integration.IntegrationProfileApplicationServiceSaveIntegrationTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "integration_deliver": {
+     "conf": "ok",
+     "ana": "ok",
+     "gen": "ok",
+     "ok": "ok",
+     "ver": "ok",
+     "pre": "ok",
+     "app": "ok",
+     "rb": "ok",
+     "exe": "ok",
+     "rt": "ok",
+     "exp": "ok"
+    },
+    "integration_readiness": {
+     "load": "ok",
+     "diag": "ok",
+     "val": "ok",
+     "comp": "ok",
+     "stg": "ok",
+     "rep": "ok"
+    },
+    "integration_native_parity": {
+     "req": "ok",
+     "to": "ok",
+     "cmp": "ok",
+     "nat": "partial",
+     "ass": "ok",
+     "cert": "ok",
+     "ok": "ok",
+     "ko": "ok"
+    },
+    "integration_author_wizard": {
+     "id": "ok",
+     "tg": "ok",
+     "cp": "ok",
+     "mp": "ok",
+     "vf": "ok",
+     "ok": "ok",
+     "dl": "ok",
+     "res": "ok"
+    },
+    "integration_author_views": {
+     "sw": "ok",
+     "fm": "ok",
+     "tr": "ok",
+     "pn": "ok",
+     "pv": "ok",
+     "sv": "ok",
+     "r": "ok"
+    }
+   }
+  },
+  "publication": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/generated",
+    "src/main/java/com/example/editor/release",
+    "src/main/java/com/example/editor/standalone/distribution",
+    "frontend/src/publication-center",
+    "frontend/src/model-codegen",
+    "frontend/src/distribution-center"
+   ],
+   "knownIssues": [
+    "obs-publication-inherited"
+   ],
+   "note": "Standalone distribution (plan/materialize/validate/readiness/ZIP) documented from the CURRENT uncommitted working tree. Release-gate 5 checks, code generation dialog and publication wizard are inherited from the validated legacy cache, not re-read.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 9,
+     "variantsWithFunctionalDescription": 20
+    },
+    "elements": 9,
+    "variants": 20,
+    "domainMapNodes": 13,
+    "authoringMechanisms": 3,
+    "capabilityProcesses": 2,
+    "authoringMicroProcesses": 3,
+    "crossProcessesTouching": 3
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 17,
+    "methodsExplained": 28,
+    "excerptsExplained": 6,
+    "testsExplained": 14,
+    "traceRows": 14,
+    "responsibilities": [
+     {
+      "id": "pub_codegen_service",
+      "name": "ModelCodeGenerationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Validar la petición y delegar.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/codegen/ModelCodeGenerationService.java:35"
+     },
+     {
+      "id": "pub_codegen_target",
+      "name": "ModelCodeGenerationTarget",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Ser la fuente única del catálogo público de destinos.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/codegen/ModelCodeGenerationTarget.java:11"
+     },
+     {
+      "id": "pub_renderer_registry",
+      "name": "ModelCodeGenerationRendererRegistry",
+      "kind": "registry",
+      "group": "rt",
+      "responsibility": "Seleccionar y validar renderers.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/codegen/ModelCodeGenerationRendererRegistry.java:18"
+     },
+     {
+      "id": "pub_renderer",
+      "name": "ModelCodeGenerationRenderer",
+      "kind": "interface",
+      "group": "adp",
+      "responsibility": "Definir el contrato de un productor.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/codegen/ModelCodeGenerationRenderer.java:8"
+     },
+     {
+      "id": "pub_sql_renderer",
+      "name": "SqlDataModelCodeGenerationRenderer",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Producir el SQL del destino sql-ddl.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/codegen/SqlDataModelCodeGenerationRenderer.java:27"
+     },
+     {
+      "id": "pub_codegen_controller",
+      "name": "ModelCodeGenerationController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptar HTTP al servicio.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/codegen/ModelCodeGenerationController.java:20"
+     },
+     {
+      "id": "pub_release_gate",
+      "name": "HydraReleaseGateService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Decidir y atestiguar.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/release/HydraReleaseGateService.java:58"
+     },
+     {
+      "id": "pub_release_gate_controller",
+      "name": "HydraReleaseGateController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptar HTTP al servicio.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/release/HydraReleaseGateController.java:17"
+     },
+     {
+      "id": "pub_codegen_dialog",
+      "name": "ModelCodeGenerationDialog",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Capturar la intención y llamar a loadTargets/generate/preview que le inyecta quien lo monta.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/model-codegen/ModelCodeGenerationDialog.tsx:16"
+     },
+     {
+      "id": "pub_planner",
+      "name": "StandaloneDistributionPlanner",
+      "kind": "engine",
+      "group": "dom",
+      "responsibility": "Generar contenido de artefactos en memoria.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPlanner.java:11"
+     },
+     {
+      "id": "pub_app_service",
+      "name": "StandaloneDistributionApplicationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar y proteger la entrada.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionApplicationService.java:14"
+     },
+     {
+      "id": "pub_validation",
+      "name": "StandaloneDistributionValidationService",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Validación estática de las fuentes.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionValidationService.java:26"
+     },
+     {
+      "id": "pub_readiness",
+      "name": "StandaloneProductionReadinessService",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Preparación estática del contenido construido.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/standalone/distribution/StandaloneProductionReadinessService.java:19"
+     },
+     {
+      "id": "pub_packager",
+      "name": "StandaloneDistributionPackager",
+      "kind": "service",
+      "group": "rt",
+      "responsibility": "Comprimir y fingerprint.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPackager.java:29"
+     },
+     {
+      "id": "pub_web_packager",
+      "name": "StandaloneWebDeploymentPackager",
+      "kind": "service",
+      "group": "rt",
+      "responsibility": "Empaquetar el build web.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/standalone/distribution/StandaloneWebDeploymentPackager.java:23"
+     },
+     {
+      "id": "pub_controller",
+      "name": "StandaloneDistributionController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Mapeo HTTP y cabeceras.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionController.java:16"
+     },
+     {
+      "id": "pub_center",
+      "name": "StandaloneDistributionCenter",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Recoger el perfil y mostrar el resultado.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/distribution-center/StandaloneDistributionCenter.tsx:41"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 95,
+     "byStatus": {
+      "PASS": 57,
+      "DISCOVERED": 24,
+      "STALE_EVIDENCE": 14
+     },
+     "byStrength": {
+      "LIMITED": 38,
+      "STRONG": 13,
+      "MEDIUM": 44
+     },
+     "byType": {
+      "BEHAVIOR": 32,
+      "ARCHITECTURE": 1,
+      "INTEGRATION": 14,
+      "UNIT": 8,
+      "CONTRACT": 2,
+      "END_TO_END": 10,
+      "RELEASE_GATE": 1,
+      "UI": 3,
+      "STATIC_VERIFICATION": 3,
+      "SECURITY": 3,
+      "RUNTIME": 1,
+      "SOURCE_INTEGRITY": 14,
+      "QUALIFICATION": 3
+     },
+     "endToEnd": true,
+     "stagesTotal": 43,
+     "stagesWithEvidence": 43,
+     "stagesDirectlyVerified": 43
+    },
+    "evidenceIds": [
+     "java:com.example.editor.codegen.ModelCodeGenerationServiceTests",
+     "java:com.example.editor.codegen.ModelCodeGenerationTargetRequestRuntimeTests",
+     "java:com.example.editor.release.HydraFinalVerifiedPublicationRealGateIntegrationTests",
+     "java:com.example.editor.standalone.distribution.StandaloneDistributionHttpFlowIntegrationTests",
+     "java:com.example.editor.standalone.GeneratedStandaloneServerRuntimeIntegrationTests",
+     "java:com.example.editor.standalone.publication.DistributionPublicationServiceTests",
+     "pw:e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+     "pw:e2e/real/publication/publication-release-guided.spec.ts",
+     "pw:e2e/real/publication/standalone-distribution-guided-package.spec.ts",
+     "script:scripts/validation/bd3_real_e2e.py",
+     "script:scripts/validation/bd4_real_e2e.py",
+     "script:scripts/validation/bd5_real_e2e.py"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "publication_generate_publish": {
+     "t": "ok",
+     "pv": "ok",
+     "g": "ok",
+     "v": "ok",
+     "gt": "ok",
+     "ok": "ok",
+     "cert": "ok",
+     "blk": "ok",
+     "reg": "ok"
+    },
+    "publication_standalone_distribution": {
+     "pr": "ok",
+     "pl": "ok",
+     "mt": "ok",
+     "va": "ok",
+     "vk": "ok",
+     "rd": "ok",
+     "rk": "ok",
+     "pk": "ok",
+     "pr2": "ok",
+     "zip": "ok"
+    },
+    "publication_author_codegen": {
+     "t": "ok",
+     "ns": "ok",
+     "tr": "ok",
+     "pv": "ok",
+     "ok": "ok",
+     "g": "ok"
+    },
+    "publication_author_release": {
+     "id": "ok",
+     "ar": "ok",
+     "ch": "ok",
+     "va": "ok",
+     "ok": "ok",
+     "rv": "ok",
+     "up": "ok",
+     "r": "ok"
+    },
+    "publication_author_distribution": {
+     "m": "ok",
+     "so": "ok",
+     "idn": "ok",
+     "tg": "ok",
+     "ad": "ok",
+     "pv": "ok",
+     "mv": "ok",
+     "ok": "ok",
+     "pk": "ok",
+     "r": "ok"
+    }
+   }
+  },
+  "generated_projects": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/generated/project",
+    "frontend/src/generated-project-center"
+   ],
+   "knownIssues": [
+    "obs-publication-inherited"
+   ],
+   "note": "Lifecycle stages from the validated legacy cache; not re-read this pass.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 5,
+     "variantsWithFunctionalDescription": 13
+    },
+    "elements": 5,
+    "variants": 13,
+    "domainMapNodes": 7,
+    "authoringMechanisms": 1,
+    "capabilityProcesses": 1,
+    "authoringMicroProcesses": 1,
+    "crossProcessesTouching": 2
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 6,
+    "methodsExplained": 7,
+    "excerptsExplained": 2,
+    "testsExplained": 3,
+    "traceRows": 6,
+    "responsibilities": [
+     {
+      "id": "gp_lifecycle_service",
+      "name": "GeneratedProjectLifecycleService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Registrar y recorrer etapas.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleService.java:38"
+     },
+     {
+      "id": "gp_profile_catalog",
+      "name": "GeneratedProjectRuntimeProfileCatalog",
+      "kind": "registry",
+      "group": "def",
+      "responsibility": "Ser la lista de comandos permitidos.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/generated/project/GeneratedProjectRuntimeProfileCatalog.java:11"
+     },
+     {
+      "id": "gp_stage_definition",
+      "name": "GeneratedProjectStageDefinition",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Describir una etapa.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/generated/project/GeneratedProjectStageDefinition.java:7"
+     },
+     {
+      "id": "gp_registry_store",
+      "name": "GeneratedProjectRegistryStore",
+      "kind": "repository",
+      "group": "per",
+      "responsibility": "Leer y escribir el registro.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/generated/project/GeneratedProjectRegistryStore.java:15"
+     },
+     {
+      "id": "gp_controller",
+      "name": "GeneratedProjectLifecycleController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptar HTTP al servicio.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleController.java:11"
+     },
+     {
+      "id": "gp_center",
+      "name": "GeneratedProjectCenter",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Capturar la intención y mostrar el resultado.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/generated-project-center/GeneratedProjectCenter.tsx:10"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 29,
+     "byStatus": {
+      "PASS": 15,
+      "DISCOVERED": 14
+     },
+     "byStrength": {
+      "MEDIUM": 14,
+      "STRONG": 10,
+      "LIMITED": 5
+     },
+     "byType": {
+      "INTEGRATION": 10,
+      "BEHAVIOR": 3,
+      "END_TO_END": 7,
+      "CONTRACT": 1,
+      "UNIT": 1,
+      "STATIC_VERIFICATION": 2,
+      "QUALIFICATION": 1,
+      "RUNTIME": 2,
+      "RELEASE_GATE": 2
+     },
+     "endToEnd": true,
+     "stagesTotal": 15,
+     "stagesWithEvidence": 15,
+     "stagesDirectlyVerified": 15
+    },
+    "evidenceIds": [
+     "java:com.example.editor.generated.project.GeneratedProjectProductionCatalogHttpIntegrationTests",
+     "java:com.example.editor.generated.project.GeneratedProjectRegistryPersistenceTests",
+     "java:com.example.editor.generated.project.GeneratedStandaloneWebProfileRealLifecycleIntegrationTests",
+     "java:com.example.editor.grammar.web.GrammarCompileThenDownloadZipIntegrationTests",
+     "script:scripts/validation/bd3_real_e2e.py",
+     "script:scripts/validation/bd4_real_e2e.py",
+     "script:scripts/validation/bd5_real_e2e.py",
+     "script:scripts/validation/bd67_real_e2e.py",
+     "script:scripts/validation/fix180_real_editor_migration_e2e.py",
+     "script:scripts/validation/verify_fix180_generated_model_lifecycle.py"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "generated_projects_lifecycle": {
+     "rg": "ok",
+     "sim": "ok",
+     "ge": "ok",
+     "va": "ok",
+     "op": "ok",
+     "la": "ok",
+     "ok": "ok",
+     "rp": "ok"
+    },
+    "generated_projects_author_wizard": {
+     "rg": "ok",
+     "pj": "ok",
+     "st": "ok",
+     "pv": "ok",
+     "ru": "ok",
+     "ok": "ok",
+     "rp": "ok"
+    }
+   }
+  },
+  "events": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/event",
+    "src/main/java/com/example/editor/definition/runtime/session",
+    "frontend/src/event-designer"
+   ],
+   "knownIssues": [
+    "obs-gating-flags",
+    "obs-reserved-reparented"
+   ],
+   "note": "Event contract, 29 flow node kinds, 7 transition kinds, runtime lifecycle and publishing verified; gating-flag discrepancy and reserved-catalog omission recorded.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 25,
+     "variantsWithFunctionalDescription": 106
+    },
+    "elements": 25,
+    "variants": 106,
+    "domainMapNodes": 18,
+    "authoringMechanisms": 5,
+    "capabilityProcesses": 5,
+    "authoringMicroProcesses": 5,
+    "crossProcessesTouching": 4
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 26,
+    "methodsExplained": 34,
+    "excerptsExplained": 14,
+    "testsExplained": 8,
+    "traceRows": 8,
+    "responsibilities": [
+     {
+      "id": "canonical_event",
+      "name": "CanonicalEvent",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Garantiza la forma y la inmutabilidad de un hecho.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/CanonicalEvent.java:12"
+     },
+     {
+      "id": "event_type_def",
+      "name": "EventTypeDefinition",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Describe el tipo.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/EventTypeDefinition.java:11"
+     },
+     {
+      "id": "event_binding",
+      "name": "EventBinding",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Solo describe la regla.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/event/EventBinding.java:10"
+     },
+     {
+      "id": "event_payload_mapping",
+      "name": "EventPayloadMapping",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Garantiza la regla «una sola fuente».",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/EventPayloadMapping.java:4"
+     },
+     {
+      "id": "reserved_catalog",
+      "name": "ReservedEventCatalog",
+      "kind": "registry",
+      "group": "def",
+      "responsibility": "Solo lista nombres.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/ReservedEventCatalog.java:6"
+     },
+     {
+      "id": "flow_model",
+      "name": "FlowDefinition",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Describe el grafo.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/flow/FlowDefinition.java:13"
+     },
+     {
+      "id": "event_model_checker",
+      "name": "EventModelChecker",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Valida estructura y referencias.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/EventModelChecker.java:13"
+     },
+     {
+      "id": "event_flow_checker",
+      "name": "EventFlowChecker",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Solo diagnostica.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/flow/EventFlowChecker.java:35"
+     },
+     {
+      "id": "event_flow_compiler",
+      "name": "EventFlowCompiler",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Compila.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/event/flow/runtime/EventFlowCompiler.java:24"
+     },
+     {
+      "id": "event_bus",
+      "name": "InMemoryCanonicalEventBus",
+      "kind": "engine",
+      "group": "rt",
+      "responsibility": "Entrega.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java:18"
+     },
+     {
+      "id": "binding_runtime",
+      "name": "EventBindingRuntimeService",
+      "kind": "runtime",
+      "group": "rt",
+      "responsibility": "Aplica enlaces.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/runtime/EventBindingRuntimeService.java:37"
+     },
+     {
+      "id": "flow_runtime",
+      "name": "EventFlowRuntimeService",
+      "kind": "runtime",
+      "group": "rt",
+      "responsibility": "Orquesta el ciclo de vida y el recorrido.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeService.java:83"
+     },
+     {
+      "id": "node_executor",
+      "name": "EventFlowRuntimeNodeExecutor",
+      "kind": "engine",
+      "group": "rt",
+      "responsibility": "Ejecuta un paso y devuelve un NodeOutcome (éxito, en espera, filtrado, fallo, plazo).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeNodeExecutor.java:33"
+     },
+     {
+      "id": "runtime_support",
+      "name": "EventFlowRuntimeSupport",
+      "kind": "util",
+      "group": "rt",
+      "responsibility": "Solo cálculo puro.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeSupport.java:72"
+     },
+     {
+      "id": "event_factory",
+      "name": "EventFlowRuntimeEventFactory",
+      "kind": "util",
+      "group": "rt",
+      "responsibility": "Solo construye el evento.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeEventFactory.java:17"
+     },
+     {
+      "id": "external_executors",
+      "name": "ActionFlowExternalStepExecutor",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Contrato SPI: FlowExternalStepExecutor lo define; el nodo ejecutor selecciona al primero que lo soporta; cada adaptador habla con las herramientas del editor.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/flow/runtime/FlowExternalStepExecutor.java:6"
+     },
+     {
+      "id": "session_publisher",
+      "name": "EditorSessionEventPublisher",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Construir y publicar el evento.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/definition/runtime/session/EditorSessionEventPublisher.java:26"
+     },
+     {
+      "id": "pending_buffer",
+      "name": "EditorSessionPendingEventBuffer",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Retiene y devuelve en orden.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/definition/runtime/session/EditorSessionPendingEventBuffer.java:49"
+     },
+     {
+      "id": "session_service",
+      "name": "EditorModelSessionService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Decidir si publicar, retener o publicar ya.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java:736"
+     },
+     {
+      "id": "event_model_controller",
+      "name": "CanonicalEventModelController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traduce HTTP en llamadas al servicio de aplicación; no contiene reglas.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/event/web/CanonicalEventModelController.java:15"
+     },
+     {
+      "id": "flow_runtime_controller",
+      "name": "EventFlowRuntimeController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Solo adaptación HTTP.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeController.java:20"
+     },
+     {
+      "id": "event_designer",
+      "name": "EventDesigner",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Edición y guardado.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/event-designer/EventDesigner.tsx:295"
+     },
+     {
+      "id": "event_connections",
+      "name": "eventConnections",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Solo decide y devuelve el nuevo modelo de enlaces; no toca estado ni red.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/event-designer/eventConnections.ts:11"
+     },
+     {
+      "id": "flow_designer",
+      "name": "EventFlowDesigner",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Edición, guardado y control del motor.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/event-designer/flow/EventFlowDesigner.tsx:313"
+     },
+     {
+      "id": "flow_properties",
+      "name": "EventFlowHighLevelProperties",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Presentación y edición de las propiedades de un nodo.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/event-designer/flow/EventFlowHighLevelProperties.tsx:10"
+     },
+     {
+      "id": "flow_runtime_panel",
+      "name": "EventFlowRuntimePanel",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Solo presentación y delegación en callbacks.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/event-designer/flow/EventFlowRuntimePanel.tsx:5"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 77,
+     "byStatus": {
+      "PASS": 68,
+      "DISCOVERED": 9
+     },
+     "byStrength": {
+      "LIMITED": 29,
+      "STRONG": 22,
+      "MEDIUM": 26
+     },
+     "byType": {
+      "ARCHITECTURE": 1,
+      "STATIC_VERIFICATION": 6,
+      "INTEGRATION": 19,
+      "OTHER": 1,
+      "BEHAVIOR": 23,
+      "UNIT": 14,
+      "UI": 5,
+      "END_TO_END": 6,
+      "CONTRACT": 1,
+      "RELEASE_GATE": 1
+     },
+     "endToEnd": true,
+     "stagesTotal": 89,
+     "stagesWithEvidence": 88,
+     "stagesDirectlyVerified": 88
+    },
+    "evidenceIds": [
+     "java:com.example.editor.definition.runtime.session.EditorSessionEventPublicationIntegrationTests",
+     "java:com.example.editor.event.diagram.EventArchitectureDiagramRepositoryTests",
+     "java:com.example.editor.event.EventModelAuthoringPersistenceIntegrationTests",
+     "java:com.example.editor.event.flow.EventFlowAuthoringPersistenceIntegrationTests",
+     "java:com.example.editor.event.flow.EventFlowSaveVersionControlIntegrationTests",
+     "java:com.example.editor.event.flow.runtime.EventFlowDispatchRealChainIntegrationTests",
+     "java:com.example.editor.event.flow.runtime.EventFlowRuntimeBranchingJournalAndBusIntegrationTests",
+     "java:com.example.editor.event.flow.runtime.EventFlowRuntimeLifecycleIntegrationTests",
+     "java:com.example.editor.event.runtime.EventBindingRuntimeRealChainIntegrationTests",
+     "java:com.example.editor.gamification.EditorSessionEventToRewardIntegrationTests",
+     "java:com.example.editor.gamification.feedback.ValidateFixRewardChainIntegrationTests",
+     "java:com.example.editor.gamification.GamificationAwardGatePersistenceAndSessionListenersIntegrationTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "events_define": {
+     "a1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "a5": "ok",
+     "d1": "ok",
+     "a6": "ok",
+     "r1": "ok"
+    },
+    "events_compose_flow": {
+     "a1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "a5": "ok",
+     "a6": "ok",
+     "a7": "ok",
+     "d1": "ok",
+     "a8": "ok",
+     "r1": "ok"
+    },
+    "events_execute_flow": {
+     "d0": "ok",
+     "a1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "d1": "ok",
+     "a4": "ok",
+     "d2": "ok",
+     "a5": "ok",
+     "a6": "ok",
+     "a7": "ok",
+     "a8": "ok",
+     "a9": "ok",
+     "r1": "ok"
+    },
+    "events_publish_session": {
+     "d1": "ok",
+     "a1": "ok",
+     "d2": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "a5": "ok",
+     "a6": "ok",
+     "a7": "ok",
+     "a8": "ok"
+    },
+    "events_binding_runtime": {
+     "d0": "ok",
+     "a1": "ok",
+     "d1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "d2": "ok",
+     "a4": "ok",
+     "r1": "ok"
+    },
+    "events_author_form": {
+     "a1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "d1": "ok",
+     "a5": "ok",
+     "a6": "ok",
+     "a7": "ok",
+     "a8": "ok",
+     "r1": "ok"
+    },
+    "events_author_connect": {
+     "a1": "ok",
+     "a2": "ok",
+     "d1": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "a5": "ok",
+     "a6": "ok",
+     "r1": "ok"
+    },
+    "events_author_flow": {
+     "a1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "a5": "ok",
+     "a6": "ok",
+     "d2": "ok",
+     "a7": "ok",
+     "r1": "ok"
+    },
+    "events_author_source": {
+     "a1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "d1": "ok",
+     "a4": "ok",
+     "r1": "ok"
+    },
+    "events_author_run": {
+     "a1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "a5": "ok",
+     "r1": "ok"
+    }
+   }
+  },
+  "gamification": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/gamification",
+    "frontend/src/gamification-designer",
+    "frontend/src/editor-definition/GamificationFeedbackCenter.tsx"
+   ],
+   "knownIssues": [
+    "obs-gating-flags",
+    "obs-gamification-designer-not-exists"
+   ],
+   "note": "Definition catalog, rules, ledger-derived state, feedback projection, designer mechanisms verified. Feedback UI lives outside the original evidenceRoots (editor-definition).",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 19,
+     "variantsWithFunctionalDescription": 53
+    },
+    "elements": 19,
+    "variants": 53,
+    "domainMapNodes": 20,
+    "authoringMechanisms": 6,
+    "capabilityProcesses": 3,
+    "authoringMicroProcesses": 6,
+    "crossProcessesTouching": 4
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 21,
+    "methodsExplained": 13,
+    "excerptsExplained": 6,
+    "testsExplained": 7,
+    "traceRows": 7,
+    "responsibilities": [
+     {
+      "id": "definition_model",
+      "name": "GamificationDefinitionModel",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Describe el catálogo y garantiza su forma; no evalúa reglas ni guarda nada por sí mismo.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/gamification/GamificationDefinitionModel.java:10"
+     },
+     {
+      "id": "binding_model",
+      "name": "GamificationBindingModel",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Contiene las reglas y la referencia al catálogo; no ejecuta ni comprueba nada.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/gamification/GamificationBindingModel.java:10"
+     },
+     {
+      "id": "rule",
+      "name": "GamificationRule",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Es una unidad de configuración autonormalizada; no decide si se aplica (eso es del runtime) ni si es válida contra el catálogo (eso es del checker).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/gamification/GamificationRule.java:8"
+     },
+     {
+      "id": "ledger_entry",
+      "name": "GamificationLedgerEntry",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Representa un hecho; no se modifica (el cambio de estado se hace copiando la entrada con otro estado).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/gamification/GamificationLedgerEntry.java:9"
+     },
+     {
+      "id": "ledger",
+      "name": "GamificationLedger",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Contenedor inmutable; el recorte al máximo configurado lo hace el runtime, no el documento.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/gamification/GamificationLedger.java:7"
+     },
+     {
+      "id": "runtime_state",
+      "name": "GamificationRuntimeState",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Guarda el resultado de rebuildState; no tiene lógica de negocio.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/gamification/GamificationRuntimeState.java:10"
+     },
+     {
+      "id": "event_matcher",
+      "name": "GamificationEventMatcher",
+      "kind": "bridge",
+      "group": "dom",
+      "responsibility": "Solo contesta sí/no sobre una regla y un evento; no mira límites ni historial.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/gamification/runtime/GamificationEventMatcher.java:30"
+     },
+     {
+      "id": "event_factory",
+      "name": "GamificationRuntimeEventFactory",
+      "kind": "util",
+      "group": "rt",
+      "responsibility": "Solo construye el evento; publicarlo (y tolerar el fallo) es del runtime.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeEventFactory.java:17"
+     },
+     {
+      "id": "runtime_service",
+      "name": "GamificationRuntimeService",
+      "kind": "runtime",
+      "group": "rt",
+      "responsibility": "Orquesta el ciclo de vida de un evento y aplica la semántica de puntos; no define reglas (catálogo), no evalúa condiciones (matcher), no presenta avisos (proyector).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java:82"
+     },
+     {
+      "id": "checker",
+      "name": "GamificationChecker",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Solo diagnostica; no corrige ni guarda.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/gamification/GamificationChecker.java:15"
+     },
+     {
+      "id": "application_service",
+      "name": "GamificationApplicationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquesta el catálogo; no procesa eventos (runtime) ni evalúa reglas (checker).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/gamification/GamificationApplicationService.java:37"
+     },
+     {
+      "id": "feedback_projector",
+      "name": "GamificationFeedbackProjector",
+      "kind": "service",
+      "group": "adp",
+      "responsibility": "Solo calcula avisos; no decide cuánto se muestran (política) ni dónde (frontend).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackProjector.java:28"
+     },
+     {
+      "id": "feedback_policy_resolver",
+      "name": "GamificationFeedbackPolicyResolver",
+      "kind": "util",
+      "group": "adp",
+      "responsibility": "Solo resuelve configuración; no genera avisos.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackPolicyResolver.java:14"
+     },
+     {
+      "id": "runtime_controller",
+      "name": "GamificationRuntimeController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptador HTTP delgado: delega todo en el servicio de runtime.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeController.java:15"
+     },
+     {
+      "id": "canonical_controller",
+      "name": "CanonicalGamificationController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptador HTTP; no valida ni guarda por sí mismo.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/gamification/web/CanonicalGamificationController.java:22"
+     },
+     {
+      "id": "designer",
+      "name": "GamificationDesigner",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Orquesta la edición en el cliente; las reglas definitivas las aplica el servidor.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/gamification-designer/GamificationDesigner.tsx:85"
+     },
+     {
+      "id": "visual_editor",
+      "name": "GamificationVisualEditor",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Pinta e interactúa; no decide si una conexión es válida (gamificationConnections).",
+      "rationale": "observable",
+      "primarySource": "frontend/src/gamification-designer/GamificationVisualEditor.tsx:84"
+     },
+     {
+      "id": "connections",
+      "name": "gamificationConnections",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Valida y aplica la conexión; no pinta ni guarda.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/gamification-designer/gamificationConnections.ts:11"
+     },
+     {
+      "id": "designer_model",
+      "name": "gamificationDesignerModel",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Solo transforma documentos; no habla con el servidor.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/gamification-designer/gamificationDesignerModel.ts:14"
+     },
+     {
+      "id": "designer_parts",
+      "name": "GamificationDesignerParts",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Presenta y edita; el estado vive en el diseñador.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/gamification-designer/GamificationDesignerParts.tsx:30"
+     },
+     {
+      "id": "feedback_center",
+      "name": "GamificationFeedbackCenter",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Solo presenta; las superficies STATUS, PROGRESS y DIALOG se pueden configurar pero aquí no se muestran.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/editor-definition/GamificationFeedbackCenter.tsx:10"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 50,
+     "byStatus": {
+      "PASS": 42,
+      "DISCOVERED": 8
+     },
+     "byStrength": {
+      "LIMITED": 15,
+      "MEDIUM": 17,
+      "STRONG": 18
+     },
+     "byType": {
+      "STATIC_VERIFICATION": 4,
+      "BEHAVIOR": 17,
+      "INTEGRATION": 13,
+      "UNIT": 6,
+      "END_TO_END": 6,
+      "CONTRACT": 1,
+      "UI": 1,
+      "RUNTIME": 1,
+      "RELEASE_GATE": 1
+     },
+     "endToEnd": true,
+     "stagesTotal": 66,
+     "stagesWithEvidence": 66,
+     "stagesDirectlyVerified": 66
+    },
+    "evidenceIds": [
+     "java:com.example.editor.gamification.diagram.GamificationDiagramRepositoryTests",
+     "java:com.example.editor.gamification.EditorSessionEventToRewardIntegrationTests",
+     "java:com.example.editor.gamification.feedback.ValidateFixRewardChainIntegrationTests",
+     "java:com.example.editor.gamification.GamificationApplicationServiceSaveIntegrationTests",
+     "java:com.example.editor.gamification.GamificationAwardGatePersistenceAndSessionListenersIntegrationTests",
+     "java:com.example.editor.gamification.GamificationCheckSaveGateAndLevelsIntegrationTests",
+     "java:com.example.editor.gamification.GamificationCompensationRuntimeTests",
+     "java:com.example.editor.gamification.GamificationEventGateIntegrationTests",
+     "java:com.example.editor.gamification.GamificationPenaltyRuntimeTests",
+     "java:com.example.editor.gamification.GamificationRuntimeMatchAndFeedbackPolicyIntegrationTests",
+     "java:com.example.editor.gamification.GamificationSaveGateWarningsVersusErrorsIntegrationTests",
+     "java:com.example.editor.gamification.persistence.GamificationRuntimeResetIntegrationTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "gamification_define": {
+     "def": "ok",
+     "lvl": "ok",
+     "rule": "ok",
+     "pol": "ok",
+     "chk": "ok",
+     "ok": "ok",
+     "save": "ok",
+     "dia": "ok",
+     "art": "ok"
+    },
+    "gamification_award": {
+     "gate": "ok",
+     "idem": "ok",
+     "rev": "ok",
+     "comp": "ok",
+     "match": "ok",
+     "lim": "ok",
+     "min": "ok",
+     "rej": "ok",
+     "act": "ok",
+     "reb": "ok",
+     "per": "ok",
+     "fb": "ok",
+     "pub": "ok"
+    },
+    "gamification_compensate": {
+     "find": "ok",
+     "any": "ok",
+     "mark": "ok",
+     "neg": "ok",
+     "skip": "ok",
+     "reb": "ok",
+     "pub": "ok",
+     "art": "ok"
+    },
+    "gamification_author_guided": {
+     "p": "ok",
+     "r": "ok",
+     "ru": "ok",
+     "c": "ok",
+     "d": "ok",
+     "sv": "ok"
+    },
+    "gamification_author_form": {
+     "k": "ok",
+     "lv": "ok",
+     "m": "ok",
+     "cn": "ok",
+     "ef": "ok",
+     "rp": "ok",
+     "ck": "ok",
+     "ok": "ok",
+     "sv": "ok",
+     "art": "ok"
+    },
+    "gamification_author_canvas": {
+     "n": "ok",
+     "dr": "ok",
+     "ty": "ok",
+     "wr": "ok",
+     "rm": "ok",
+     "sv": "ok"
+    },
+    "gamification_author_source": {
+     "ed": "ok",
+     "ap": "ok",
+     "lc": "ok",
+     "ck": "ok",
+     "sv": "ok"
+    },
+    "gamification_author_policy": {
+     "sf": "ok",
+     "mx": "ok",
+     "dt": "ok",
+     "sv": "ok",
+     "art": "ok"
+    },
+    "gamification_author_ledger": {
+     "rd": "ok",
+     "rf": "ok",
+     "rs": "ok",
+     "do": "ok"
+    }
+   }
+  },
+  "grammar": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/grammar",
+    "src/main/java/com/example/editor/textual/runtime",
+    "src/main/java/com/example/editor/textual/interaction",
+    "src/main/java/com/example/editor/textual/roundtrip",
+    "src/main/java/com/example/editor/metamodel/roundtrip",
+    "frontend/src/grammar-designer",
+    "frontend/src/textual-model-editor"
+   ],
+   "knownIssues": [
+    "obs-textual-interaction-no-ui",
+    "obs-roundtrip-test-only"
+   ],
+   "note": "gap-001 and gap-002 investigated: textual/interaction is HYDRA_NEUTRAL-only with no UI consumer; metamodel/roundtrip and textual/roundtrip are test-only.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 24,
+     "variantsWithFunctionalDescription": 99
+    },
+    "elements": 24,
+    "variants": 99,
+    "domainMapNodes": 18,
+    "authoringMechanisms": 9,
+    "capabilityProcesses": 7,
+    "authoringMicroProcesses": 8,
+    "crossProcessesTouching": 2
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 30,
+    "methodsExplained": 60,
+    "excerptsExplained": 15,
+    "testsExplained": 12,
+    "traceRows": 16,
+    "responsibilities": [
+     {
+      "id": "tx_session_service",
+      "name": "TextualModelSessionService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Decidir cuándo una revisión se analiza, cuándo se acepta y cuándo se promueve; aplicar límites de tamaño y concurrencia.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/textual/runtime/TextualModelSessionService.java:22"
+     },
+     {
+      "id": "tx_session",
+      "name": "TextualModelSession",
+      "kind": "record",
+      "group": "rt",
+      "responsibility": "Ser el contenedor de estado y exponer los predicados de validez.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/textual/runtime/TextualModelSession.java:8"
+     },
+     {
+      "id": "tx_neutral_parser",
+      "name": "NeutralTextualModelParser",
+      "kind": "engine",
+      "group": "dom",
+      "responsibility": "Analizar y producir modelo + mapa de fuente + diagnósticos.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/textual/runtime/NeutralTextualModelParser.java:27"
+     },
+     {
+      "id": "tx_syntax_contract",
+      "name": "NeutralGrammarSyntaxContract",
+      "kind": "engine",
+      "group": "dom",
+      "responsibility": "Decidir si el texto cumple la gramática y explicar el primer fallo.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/textual/runtime/NeutralGrammarSyntaxContract.java:15"
+     },
+     {
+      "id": "tx_session_controller",
+      "name": "TextualModelSessionController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP a llamadas de servicio y devolver ETag.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/textual/web/TextualModelSessionController.java:12"
+     },
+     {
+      "id": "tx_interaction_facade",
+      "name": "TextualInteractionFacade",
+      "kind": "facade",
+      "group": "app",
+      "responsibility": "Garantizar coherencia revisión-texto-modelo antes de cada consulta.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/textual/interaction/TextualInteractionFacade.java:10"
+     },
+     {
+      "id": "tx_language_features",
+      "name": "TextualLanguageFeatureService",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Calcular respuestas de lenguaje puras sobre un TextualWorkspaceIndex.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/textual/interaction/TextualLanguageFeatureService.java:16"
+     },
+     {
+      "id": "tx_workspace_index",
+      "name": "TextualWorkspaceIndex",
+      "kind": "record",
+      "group": "rt",
+      "responsibility": "Ser la vista de solo lectura de una revisión.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/textual/interaction/TextualWorkspaceIndex.java:10"
+     },
+     {
+      "id": "tx_metamodel_roundtrip",
+      "name": "TextualMetamodelRoundTripService",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Verificar la equivalencia exportación↔reimportación.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/roundtrip/TextualMetamodelRoundTripService.java:25"
+     },
+     {
+      "id": "tx_instance_roundtrip",
+      "name": "TextualInstanceRoundTripService",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Evidenciar fidelidad.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/textual/roundtrip/TextualInstanceRoundTripService.java:25"
+     },
+     {
+      "id": "tx_editor_api",
+      "name": "textual-model-editor/api.ts",
+      "kind": "adapter",
+      "group": "ui",
+      "responsibility": "Transporte tipado.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/textual-model-editor/api.ts:9"
+     },
+     {
+      "id": "tx_textual_editor",
+      "name": "TextualModelEditor",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Orquestar la interacción del usuario con la sesión.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/textual-model-editor/TextualModelEditor.tsx:280"
+     },
+     {
+      "id": "grammar_definition_model",
+      "name": "GrammarDefinitionModel",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Describir y normalizar la definición; NO analiza, no compila y no sabe nada de proveedores concretos.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/grammar/core/GrammarDefinitionModel.java:4"
+     },
+     {
+      "id": "grammar_source_analyzer",
+      "name": "GrammarSourceAnalyzer",
+      "kind": "engine",
+      "group": "dom",
+      "responsibility": "Leer texto y producir diagnósticos, símbolos, acciones y candidata semántica.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java:18"
+     },
+     {
+      "id": "grammar_rule_graph_analyzer",
+      "name": "GrammarRuleGraphAnalyzer",
+      "kind": "engine",
+      "group": "dom",
+      "responsibility": "Calcular estructura (grafo, entrada, recursión, reescritura).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/application/GrammarRuleGraphAnalyzer.java:25"
+     },
+     {
+      "id": "grammar_class_diagram_projection",
+      "name": "GrammarClassDiagramProjectionService",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Proyectar y describir (nodos, aristas, estado, hash).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/visualization/GrammarClassDiagramProjectionService.java:30"
+     },
+     {
+      "id": "grammar_provider",
+      "name": "GrammarProvider",
+      "kind": "interface",
+      "group": "adp",
+      "responsibility": "Definir el contrato.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/provider/GrammarProvider.java:12"
+     },
+     {
+      "id": "grammar_neutral_provider",
+      "name": "AbstractNeutralGrammarProvider",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Línea base determinista; NO genera el andamiaje de una tecnología concreta (cada subclase lo hace) ni ejecuta herramientas nativas.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/provider/AbstractNeutralGrammarProvider.java:11"
+     },
+     {
+      "id": "grammar_xtext_provider",
+      "name": "XtextGrammarProvider",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Aportar lo específico de Xtext.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/provider/xtext/XtextGrammarProvider.java:13"
+     },
+     {
+      "id": "grammar_langium_provider",
+      "name": "LangiumGrammarProvider",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Andamiaje y descriptor propios de Langium.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/provider/langium/LangiumGrammarProvider.java:11"
+     },
+     {
+      "id": "grammar_antlr_provider",
+      "name": "AntlrGrammarProvider",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Andamiaje y descriptor propios de ANTLR; marca la inferencia Ecore como «solo correspondencia explícita».",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/provider/antlr/AntlrGrammarProvider.java:11"
+     },
+     {
+      "id": "grammar_compilation_service",
+      "name": "GrammarCompilationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar, cronometrar, decidir fallo/éxito y activar.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java:42"
+     },
+     {
+      "id": "grammar_compilation_snapshot",
+      "name": "GrammarCompilationSnapshot",
+      "kind": "record",
+      "group": "rt",
+      "responsibility": "Describir y proteger invariantes.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/runtime/GrammarCompilationSnapshot.java:11"
+     },
+     {
+      "id": "grammar_controller",
+      "name": "GrammarController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP a llamadas de servicio.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/grammar/web/GrammarController.java:18"
+     },
+     {
+      "id": "grammar_compilation_controller",
+      "name": "GrammarCompilationController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP; NO compila (delega en GrammarCompilationService) ni empaqueta (GrammarGeneratedProjectArchiveService).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/grammar/web/GrammarCompilationController.java:26"
+     },
+     {
+      "id": "grammar_designer",
+      "name": "GrammarDesigner",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Orquestación de la pantalla y del estado.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/grammar-designer/GrammarDesigner.tsx:38"
+     },
+     {
+      "id": "grammar_identity_form",
+      "name": "GrammarIdentityForm",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Editar la ficha.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/grammar-designer/GrammarIdentityForm.tsx:21"
+     },
+     {
+      "id": "grammar_monaco_editor",
+      "name": "GrammarMonacoEditor",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Mostrar y editar texto con diagnósticos y ayudas.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/grammar-designer/GrammarMonacoEditor.tsx:51"
+     },
+     {
+      "id": "grammar_designer_model",
+      "name": "grammarDesignerModel",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Valores por defecto y regla de seguridad del cambio de tecnología.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/grammar-designer/grammarDesignerModel.ts:1"
+     },
+     {
+      "id": "grammar_textual_customization",
+      "name": "textualCustomization",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Codificar/decodificar y resolver estilos.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/grammar-designer/textualCustomization.ts:54"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 82,
+     "byStatus": {
+      "PASS": 71,
+      "DISCOVERED": 8,
+      "STALE_EVIDENCE": 3
+     },
+     "byStrength": {
+      "LIMITED": 28,
+      "STRONG": 21,
+      "MEDIUM": 33
+     },
+     "byType": {
+      "UNIT": 9,
+      "INTEGRATION": 16,
+      "BEHAVIOR": 28,
+      "SECURITY": 1,
+      "END_TO_END": 9,
+      "UI": 7,
+      "STATIC_VERIFICATION": 9,
+      "RUNTIME": 1,
+      "QUALIFICATION": 2
+     },
+     "endToEnd": true,
+     "stagesTotal": 100,
+     "stagesWithEvidence": 98,
+     "stagesDirectlyVerified": 94
+    },
+    "evidenceIds": [
+     "java:com.example.editor.grammar.application.GrammarApplicationServiceSaveIntegrationTests",
+     "java:com.example.editor.grammar.application.GrammarAuthoringCompilePipelineOutcomeTests",
+     "java:com.example.editor.grammar.application.GrammarAuthoringSaveCompileProgressIntegrationTests",
+     "java:com.example.editor.grammar.application.GrammarCompilationServiceEndToEndIntegrationTests",
+     "java:com.example.editor.grammar.application.GrammarConversionApplyRejectIntegrationTests",
+     "java:com.example.editor.grammar.application.GrammarDraftAnalysisIndependentOracleIntegrationTests",
+     "java:com.example.editor.grammar.application.GrammarIdentitySaveGateIntegrationTests",
+     "java:com.example.editor.grammar.GrammarAnalysisBlockingSeverityTests",
+     "java:com.example.editor.grammar.GrammarAnalyzerDiagnosticsFixLoopIntegrationTests",
+     "java:com.example.editor.grammar.web.GrammarCompileThenDownloadZipIntegrationTests",
+     "java:com.example.editor.textual.TextualModelSessionRealLifecycleIntegrationTests",
+     "java:com.example.editor.transformation.textmodel.TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "grammar_define_language": {
+     "tech": "ok",
+     "mode": "ok",
+     "gf": "ok",
+     "mm": "ok",
+     "an": "ok",
+     "ok": "ok",
+     "fix": "ok",
+     "sv": "ok",
+     "art": "ok"
+    },
+    "grammar_analyze_generate": {
+     "fast": "ok",
+     "rg": "ok",
+     "rf": "ok",
+     "pn": "ok",
+     "pj": "ok",
+     "dg": "ok",
+     "cd": "ok"
+    },
+    "grammar_compile_pipeline": {
+     "s1": "ok",
+     "s2": "ok",
+     "s3": "partial",
+     "s5": "ok",
+     "s7": "ok",
+     "s10": "partial",
+     "s11": "ok",
+     "act": "ok",
+     "fail": "ok",
+     "ac": "ok",
+     "ns": "ok"
+    },
+    "grammar_textual_editing": {
+     "wr": "ok",
+     "pa": "ok",
+     "ok": "ok",
+     "fx": "ok",
+     "sv": "ok",
+     "ar": "ok"
+    },
+    "grammar_language_service": {
+     "g": "ok",
+     "q": "ok",
+     "a": "ok",
+     "rn": "ok",
+     "fm": "ok",
+     "er": "ok",
+     "r": "ok"
+    },
+    "grammar_diagnostics_actions": {
+     "d": "ok",
+     "c": "ok",
+     "m": "ok",
+     "sa": "ok",
+     "ap": "ok",
+     "ra": "ok"
+    },
+    "grammar_conversion_preview": {
+     "em": "ok",
+     "pv": "ok",
+     "eq": "ok",
+     "ap": "ok",
+     "rj": "ok"
+    },
+    "grammar_author_identity": {
+     "n": "ok",
+     "id": "ok",
+     "t": "ok",
+     "tc": "ok",
+     "er": "ok",
+     "v": "ok",
+     "r": "ok"
+    },
+    "grammar_author_monaco": {
+     "ad": "ok",
+     "wr": "ok",
+     "an": "ok",
+     "rm": "ok",
+     "ok": "ok",
+     "r": "ok"
+    },
+    "grammar_author_metamodel": {
+     "c": "ok",
+     "ex": "ok",
+     "im": "ok",
+     "rq": "ok",
+     "cl": "ok",
+     "r": "ok"
+    },
+    "grammar_author_fix": {
+     "sel": "ok",
+     "ty": "ok",
+     "ap": "ok",
+     "rc": "ok",
+     "r": "ok"
+    },
+    "grammar_author_look": {
+     "f": "ok",
+     "k": "ok",
+     "ro": "ok",
+     "h": "ok",
+     "sv": "ok",
+     "r": "ok"
+    },
+    "grammar_author_save_compile": {
+     "ch": "ok",
+     "sv": "ok",
+     "bl": "partial",
+     "cp": "partial",
+     "gn": "ok",
+     "pg": "ok",
+     "r": "ok"
+    },
+    "grammar_author_download": {
+     "ok": "ok",
+     "dl": "ok",
+     "bd": "ok",
+     "r": "ok"
+    },
+    "grammar_author_textmodel": {
+     "ex": "ok",
+     "wr": "ok",
+     "pa": "ok",
+     "ok": "ok",
+     "sv": "ok",
+     "r": "ok"
+    }
+   }
+  },
+  "project": {
+   "validationState": "PARTIAL",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/project",
+    "frontend/src/project-explorer"
+   ],
+   "knownIssues": [
+    "obs-project-capability-count"
+   ],
+   "note": "ProjectCapability has 25 values in current source (legacy cache said 24). Explorer screen steps come from legacy data.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 8,
+     "variantsWithFunctionalDescription": 15
+    },
+    "elements": 8,
+    "variants": 15,
+    "domainMapNodes": 10,
+    "authoringMechanisms": 5,
+    "capabilityProcesses": 2,
+    "authoringMicroProcesses": 5,
+    "crossProcessesTouching": 6
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 10,
+    "methodsExplained": 12,
+    "excerptsExplained": 2,
+    "testsExplained": 2,
+    "traceRows": 6,
+    "responsibilities": [
+     {
+      "id": "prj_capability",
+      "name": "ProjectCapability",
+      "kind": "enum",
+      "group": "def",
+      "responsibility": "Nombrar las áreas.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/project/ProjectCapability.java:4"
+     },
+     {
+      "id": "prj_dependencies",
+      "name": "ProjectCapabilityDependencies",
+      "kind": "util",
+      "group": "dom",
+      "responsibility": "Calcular el cierre de dependencias.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/project/ProjectCapabilityDependencies.java:10"
+     },
+     {
+      "id": "prj_descriptor",
+      "name": "ProjectDescriptor",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Representar el estado configurado del proyecto.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/project/ProjectDescriptor.java:8"
+     },
+     {
+      "id": "prj_primary",
+      "name": "ProjectPrimaryArtifact",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Referenciar el artefacto.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/project/ProjectPrimaryArtifact.java:4"
+     },
+     {
+      "id": "prj_index",
+      "name": "ProjectIndexService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Construir vistas e índice.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/project/storage/ProjectIndexService.java:42"
+     },
+     {
+      "id": "prj_storage",
+      "name": "LocalDirectoryProjectStorage",
+      "kind": "service",
+      "group": "per",
+      "responsibility": "Aplicar la configuración con seguridad de concurrencia.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java:310"
+     },
+     {
+      "id": "prj_catalog",
+      "name": "ProjectCreationCatalog",
+      "kind": "record",
+      "group": "api",
+      "responsibility": "Publicar el catálogo.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/project/ProjectCreationCatalog.java:7"
+     },
+     {
+      "id": "prj_controller",
+      "name": "ProjectController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptar HTTP, ETag y descargas.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/project/web/ProjectController.java:72"
+     },
+     {
+      "id": "prj_caps_dialog",
+      "name": "ProjectCapabilitiesDialog",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Editar el conjunto de áreas en pantalla.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/project-explorer/ProjectCapabilitiesDialog.tsx:36"
+     },
+     {
+      "id": "prj_tree",
+      "name": "ProjectTree",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Presentación y selección.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/project-explorer/ProjectTree.tsx:17"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 66,
+     "byStatus": {
+      "PASS": 57,
+      "DISCOVERED": 7,
+      "STALE_EVIDENCE": 2
+     },
+     "byStrength": {
+      "MEDIUM": 16,
+      "LIMITED": 33,
+      "STRONG": 17
+     },
+     "byType": {
+      "INTEGRATION": 14,
+      "UNIT": 7,
+      "SECURITY": 5,
+      "BEHAVIOR": 5,
+      "STATIC_VERIFICATION": 15,
+      "OTHER": 3,
+      "END_TO_END": 10,
+      "UI": 7
+     },
+     "endToEnd": true,
+     "stagesTotal": 42,
+     "stagesWithEvidence": 39,
+     "stagesDirectlyVerified": 39
+    },
+    "evidenceIds": [
+     "java:com.example.editor.project.LocalDirectoryProjectStorageTests",
+     "java:com.example.editor.project.ProjectCapabilityConfigurationReopenIntegrationTests",
+     "java:com.example.editor.project.ProjectIndexAndChangeTests",
+     "java:com.example.editor.project.ProjectLifecycleRealFilesystemIntegrationTests",
+     "java:com.example.editor.project.ProjectZipServiceTests",
+     "java:com.example.editor.project.recovery.ExternalImportCrashRecoveryTests",
+     "java:com.example.editor.project.recovery.ExternalImportJournalPersistenceIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalImportRollbackCompensationIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalProjectImportRollbackTests",
+     "java:com.example.editor.project.recovery.ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalProjectRecoveryReopenIntegrationTests",
+     "java:com.example.editor.remote.git.RemoteGitWorkspaceServiceLocalOperationsIntegrationTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "project_open_organize": {
+     "a1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "a5": "ok",
+     "a6": "ok",
+     "r": "ok"
+    },
+    "project_import_export": {
+     "i1": "ok",
+     "i2": "ok",
+     "i3": "ok",
+     "i4": "ok",
+     "x1": "ok",
+     "x2": "ok",
+     "x3": "ok",
+     "x4": "ok",
+     "r": "ok"
+    },
+    "project_author_tree": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "f": "ok"
+    },
+    "project_author_areas": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "r": "ok"
+    },
+    "project_author_import": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "r": "ok"
+    },
+    "project_author_export": {
+     "a": "ok",
+     "b": "ok",
+     "d": "ok",
+     "r": "ok"
+    },
+    "project_author_home": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok"
+    }
+   }
+  },
+  "recovery": {
+   "validationState": "PARTIAL",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/project/recovery",
+    "src/main/java/com/example/editor/metamodel/importing/updatesite",
+    "frontend/src/update-site-import-center"
+   ],
+   "knownIssues": [
+    "obs-recovery-methods"
+   ],
+   "note": "Content comes from the validated legacy cache plus a few confirming reads; discovery-method count (6 in legacy, 5 UI levels) and several screen steps are not re-verified.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 11,
+     "variantsWithFunctionalDescription": 31
+    },
+    "elements": 11,
+    "variants": 31,
+    "domainMapNodes": 13,
+    "authoringMechanisms": 3,
+    "capabilityProcesses": 2,
+    "authoringMicroProcesses": 3,
+    "crossProcessesTouching": 2
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 12,
+    "methodsExplained": 15,
+    "excerptsExplained": 3,
+    "testsExplained": 3,
+    "traceRows": 8,
+    "responsibilities": [
+     {
+      "id": "rec_ext_controller",
+      "name": "ExternalProjectRecoveryController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptar HTTP multipart.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryController.java:17"
+     },
+     {
+      "id": "rec_ext_import_service",
+      "name": "ExternalProjectImportService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar la importación.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java:43"
+     },
+     {
+      "id": "rec_ext_recovery_service",
+      "name": "ExternalProjectRecoveryService",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Inventariar y explicar.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryService.java:47"
+     },
+     {
+      "id": "rec_materialization",
+      "name": "ExternalProjectSemanticMaterializationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Crear documentos canónicos desde la evidencia.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java:67"
+     },
+     {
+      "id": "rec_us_controller",
+      "name": "UpdateSiteRecoveryController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptar HTTP y confinar ficheros temporales.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryController.java:38"
+     },
+     {
+      "id": "rec_us_import_app",
+      "name": "UpdateSiteImportApplicationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar análisis y guardado.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportApplicationService.java:162"
+     },
+     {
+      "id": "rec_us_recovery",
+      "name": "UpdateSiteMetamodelRecoveryService",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Descubrir y reconstruir un metamodelo.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteMetamodelRecoveryService.java:47"
+     },
+     {
+      "id": "rec_us_method",
+      "name": "UpdateSiteRecoveryMethod",
+      "kind": "enum",
+      "group": "def",
+      "responsibility": "Nombrar las estrategias.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryMethod.java:4"
+     },
+     {
+      "id": "rec_repr_controller",
+      "name": "RepresentableImportController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptar HTTP.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/representable/RepresentableImportController.java:12"
+     },
+     {
+      "id": "rec_repr_service",
+      "name": "RepresentableImportService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar el mapeo y la decisión de aplicabilidad.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/integration/representable/RepresentableImportService.java:28"
+     },
+     {
+      "id": "rec_repr_registry",
+      "name": "RepresentableImportMapperRegistry",
+      "kind": "registry",
+      "group": "adp",
+      "responsibility": "Seleccionar mapeadores.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/representable/RepresentableImportMapperRegistry.java:10"
+     },
+     {
+      "id": "rec_update_ui",
+      "name": "UpdateSiteRecoveryIntelligence",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Presentar un resumen.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/update-site-import-center/UpdateSiteRecoveryIntelligence.tsx:5"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 72,
+     "byStatus": {
+      "PASS": 66,
+      "DISCOVERED": 5,
+      "STALE_EVIDENCE": 1
+     },
+     "byStrength": {
+      "STRONG": 16,
+      "MEDIUM": 21,
+      "LIMITED": 35
+     },
+     "byType": {
+      "INTEGRATION": 16,
+      "BEHAVIOR": 22,
+      "UNIT": 10,
+      "SECURITY": 3,
+      "OTHER": 4,
+      "END_TO_END": 6,
+      "UI": 7,
+      "RUNTIME": 1,
+      "STATIC_VERIFICATION": 3
+     },
+     "endToEnd": true,
+     "stagesTotal": 36,
+     "stagesWithEvidence": 36,
+     "stagesDirectlyVerified": 34
+    },
+    "evidenceIds": [
+     "java:com.example.editor.integration.representable.RepresentableImportApplicabilityGateTests",
+     "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests",
+     "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteMetamodelRecoveryServiceTests",
+     "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRecoveryRealHttpAnalyzePreviewIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalImportCrashRecoveryTests",
+     "java:com.example.editor.project.recovery.ExternalImportJournalPersistenceIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalImportRollbackCompensationIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalProjectImportRollbackTests",
+     "java:com.example.editor.project.recovery.ExternalProjectRecoveryConflictReconciliationTests",
+     "java:com.example.editor.project.recovery.ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalProjectRecoveryReopenIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalProjectRecoveryServiceTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "recovery_lifecycle": {
+     "a1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "d1": "ok",
+     "a5": "ok",
+     "a6": "ok",
+     "d2": "partial",
+     "a7": "partial",
+     "m": "ok",
+     "v": "ok"
+    },
+    "recovery_persist_rollback": {
+     "d1": "ok",
+     "d2": "ok",
+     "a1": "ok",
+     "a2": "ok",
+     "d3": "ok",
+     "a3": "ok"
+    },
+    "recovery_author_wizard": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "f": "ok",
+     "g": "ok",
+     "h": "ok"
+    },
+    "recovery_author_workspace": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "f": "ok",
+     "g": "ok",
+     "h": "ok"
+    },
+    "recovery_author_governance": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "r": "ok"
+    }
+   }
+  },
+  "toolchains": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/transformation/nativeexec",
+    "src/main/java/com/example/editor/integration/compatibility"
+   ],
+   "knownIssues": [],
+   "note": "Engines/probes/provisioning statuses verified (transformation/nativeexec); the 'Available tools' center steps come from the validated legacy cache.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 5,
+     "variantsWithFunctionalDescription": 18
+    },
+    "elements": 5,
+    "variants": 18,
+    "domainMapNodes": 9,
+    "authoringMechanisms": 3,
+    "capabilityProcesses": 2,
+    "authoringMicroProcesses": 2,
+    "crossProcessesTouching": 4
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 7,
+    "methodsExplained": 6,
+    "excerptsExplained": 2,
+    "testsExplained": 2,
+    "traceRows": 6,
+    "responsibilities": [
+     {
+      "id": "tc_probe_executor",
+      "name": "NativeToolchainProbeExecutor",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Convertir resultados de pasos individuales en el veredicto de una tecnología.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/compatibility/NativeToolchainProbeExecutor.java:12"
+     },
+     {
+      "id": "tc_command_runner",
+      "name": "ExternalToolchainCommandRunner",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Solo traducir un contrato a otro.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/compatibility/ExternalToolchainCommandRunner.java:12"
+     },
+     {
+      "id": "tc_provisioning",
+      "name": "TransformationToolchainProvisioningService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Gestionar el ciclo de vida de bundles propiedad de HYDRA.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningService.java:38"
+     },
+     {
+      "id": "tc_package_descriptor",
+      "name": "TransformationToolchainPackageDescriptor",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Ser el contrato de lectura del catálogo.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/nativeexec/TransformationToolchainPackageDescriptor.java:8"
+     },
+     {
+      "id": "tc_official_profile",
+      "name": "atl.properties (perfil oficial de bridge)",
+      "kind": "config",
+      "group": "def",
+      "responsibility": "Describir un bridge; no contiene código ni binarios.",
+      "rationale": "proven",
+      "primarySource": "toolchains/official/profiles/atl.properties:1"
+     },
+     {
+      "id": "tc_controller",
+      "name": "NativeToolchainCompatibilityController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP al servicio de aplicación.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/integration/compatibility/NativeToolchainCompatibilityController.java:14"
+     },
+     {
+      "id": "tc_ui_center",
+      "name": "NativeCompatibilityCenter",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Presentación y selección.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/compatibility-center/NativeCompatibilityCenter.tsx:7"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 43,
+     "byStatus": {
+      "PASS": 25,
+      "SKIPPED": 1,
+      "DISCOVERED": 11,
+      "STALE_EVIDENCE": 6
+     },
+     "byStrength": {
+      "MEDIUM": 24,
+      "STRONG": 9,
+      "LIMITED": 10
+     },
+     "byType": {
+      "INTEGRATION": 12,
+      "BEHAVIOR": 4,
+      "UNIT": 5,
+      "RUNTIME": 4,
+      "END_TO_END": 3,
+      "OTHER": 1,
+      "QUALIFICATION": 13,
+      "RELEASE_GATE": 1
+     },
+     "endToEnd": true,
+     "stagesTotal": 23,
+     "stagesWithEvidence": 22,
+     "stagesDirectlyVerified": 22
+    },
+    "evidenceIds": [
+     "java:com.example.editor.generated.project.GeneratedStandaloneWebProfileRealLifecycleIntegrationTests",
+     "java:com.example.editor.integration.compatibility.NativeToolchainProbeExecutorRealProcessIntegrationTests",
+     "java:com.example.editor.integration.parity.NativeParityRequestAndReportHttpIntegrationTests",
+     "java:com.example.editor.integration.verification.NativeGeneratedProjectAcceptanceTests",
+     "java:com.example.editor.transformation.nativeexec.TransformationNativeRunAndParityEndToEndIntegrationTests",
+     "java:com.example.editor.transformation.nativeexec.TransformationToolchainManagedLifecycleIntegrationTests",
+     "java:com.example.editor.transformation.nativeexec.TransformationToolchainProvisioningServiceIntegrationTests",
+     "pw:e2e/real/transformation/native-toolchain-compatibility-run.spec.ts",
+     "script:scripts/validation/ExternalToolProcessRunnerStressHarness.java"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "toolchains_check_install": {
+     "d1": "ok",
+     "a1": "ok",
+     "a2": "ok",
+     "d2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "d3": "ok",
+     "a5": "ok",
+     "r": "ok"
+    },
+    "toolchains_engine_lifecycle": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "r": "ok"
+    },
+    "toolchains_author_available": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "r": "ok"
+    },
+    "toolchains_author_provision": {
+     "a": "ok",
+     "b": "ok",
+     "d": "ok",
+     "r": "ok"
+    }
+   }
+  },
+  "external_repositories": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/remote",
+    "frontend/src/repository-connections",
+    "frontend/src/remote-git",
+    "frontend/src/remote-auth"
+   ],
+   "knownIssues": [],
+   "note": "Providers, OAuth flows and Git operations from the validated legacy cache; form steps not re-read.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 7,
+     "variantsWithFunctionalDescription": 26
+    },
+    "elements": 7,
+    "variants": 26,
+    "domainMapNodes": 10,
+    "authoringMechanisms": 3,
+    "capabilityProcesses": 3,
+    "authoringMicroProcesses": 3,
+    "crossProcessesTouching": 2
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 13,
+    "methodsExplained": 12,
+    "excerptsExplained": 2,
+    "testsExplained": 2,
+    "traceRows": 6,
+    "responsibilities": [
+     {
+      "id": "er_provider_type",
+      "name": "RemoteStorageProviderType",
+      "kind": "enum",
+      "group": "def",
+      "responsibility": "Identificar proveedores.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/remote/storage/RemoteStorageProviderType.java:4"
+     },
+     {
+      "id": "er_provider_spi",
+      "name": "RemoteArtifactStorageProvider",
+      "kind": "interface",
+      "group": "adp",
+      "responsibility": "Definir el contrato; NO elige proveedor (registro), NO controla cuota ni permisos (servicio) y NO resuelve credenciales.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/remote/storage/RemoteArtifactStorageProvider.java:4"
+     },
+     {
+      "id": "er_provider_registry",
+      "name": "RemoteStorageProviderRegistry",
+      "kind": "registry",
+      "group": "adp",
+      "responsibility": "Seleccionar la implementación.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/remote/storage/RemoteStorageProviderRegistry.java:10"
+     },
+     {
+      "id": "er_storage_service",
+      "name": "RemoteStorageService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Políticas comunes.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/remote/storage/RemoteStorageService.java:40"
+     },
+     {
+      "id": "er_transfer_service",
+      "name": "RemoteProjectTransferService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar proyecto + remoto.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/remote/storage/RemoteProjectTransferService.java:9"
+     },
+     {
+      "id": "er_storage_controller",
+      "name": "RemoteStorageController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "HTTP → servicios.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/remote/storage/web/RemoteStorageController.java:29"
+     },
+     {
+      "id": "er_git_controller",
+      "name": "RemoteGitController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "HTTP → servicio Git; no construye comandos.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/remote/git/RemoteGitController.java:16"
+     },
+     {
+      "id": "er_git_workspace",
+      "name": "RemoteGitWorkspaceService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Traducir verbos de producto a argumentos Git y a un estado legible.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/remote/git/RemoteGitWorkspaceService.java:31"
+     },
+     {
+      "id": "er_git_runner",
+      "name": "NativeGitRunner",
+      "kind": "runtime",
+      "group": "adp",
+      "responsibility": "Lanzar git de forma segura.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/remote/git/NativeGitRunner.java:49"
+     },
+     {
+      "id": "er_auth_service",
+      "name": "RemoteAuthService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Flujo OAuth y ciclo de vida de la credencial.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/remote/auth/RemoteAuthService.java:19"
+     },
+     {
+      "id": "er_pkce",
+      "name": "RemotePkce",
+      "kind": "util",
+      "group": "app",
+      "responsibility": "Solo generar valores; no almacena nada.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/remote/auth/RemotePkce.java:10"
+     },
+     {
+      "id": "er_ui_connections",
+      "name": "RepositoryConnectionsCenter",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Edición y orquestación de pantalla.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/repository-connections/RepositoryConnectionsCenter.tsx:19"
+     },
+     {
+      "id": "er_ui_git",
+      "name": "RemoteGitOperationsPanel",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Presentación y petición.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/remote-git/RemoteGitOperationsPanel.tsx:27"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 28,
+     "byStatus": {
+      "PASS": 25,
+      "SKIPPED": 1,
+      "DISCOVERED": 2
+     },
+     "byStrength": {
+      "LIMITED": 11,
+      "MEDIUM": 11,
+      "STRONG": 6
+     },
+     "byType": {
+      "UNIT": 2,
+      "SECURITY": 4,
+      "BEHAVIOR": 8,
+      "INTEGRATION": 6,
+      "END_TO_END": 2,
+      "UI": 1,
+      "STATIC_VERIFICATION": 3,
+      "RUNTIME": 2
+     },
+     "endToEnd": true,
+     "stagesTotal": 36,
+     "stagesWithEvidence": 35,
+     "stagesDirectlyVerified": 34
+    },
+    "evidenceIds": [
+     "java:com.example.editor.remote.auth.RemoteOAuthProviderSetupServiceTests",
+     "java:com.example.editor.remote.git.RemoteGitFetchPullPushLocalRemoteIntegrationTests",
+     "java:com.example.editor.remote.git.RemoteGitWorkspaceServiceLocalOperationsIntegrationTests",
+     "java:com.example.editor.remote.storage.LiveRemoteRepositoryRoundTripTests",
+     "java:com.example.editor.remote.storage.RemoteProfileLifecycleIntegrationTests",
+     "pw:e2e/real/publication/repos-connection-profile.spec.ts"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "repos_connect_sync": {
+     "a1": "ok",
+     "a2": "ok",
+     "d1": "ok",
+     "a3": "ok",
+     "d2": "ok",
+     "a4": "ok",
+     "a5": "ok",
+     "r": "ok"
+    },
+    "repos_oauth_connect": {
+     "d1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "r": "ok"
+    },
+    "repos_file_transfer": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "r": "ok"
+    },
+    "repos_author_connection": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "f": "ok",
+     "r": "ok"
+    },
+    "repos_author_git": {
+     "a": "ok",
+     "b": "partial",
+     "c": "ok",
+     "d": "ok",
+     "f": "ok",
+     "r": "ok"
+    },
+    "repos_author_transfer": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "r": "ok"
+    }
+   }
+  },
+  "portability": {
+   "validationState": "PARTIAL",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/portability"
+   ],
+   "knownIssues": [
+    "obs-portability-enums"
+   ],
+   "note": "Layer-kind list is partial; no transaction-state or merge-conflict enum found; merge decisions, severities, fidelities and 6 failure reasons confirmed.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 8,
+     "variantsWithFunctionalDescription": 26
+    },
+    "elements": 8,
+    "variants": 26,
+    "domainMapNodes": 11,
+    "authoringMechanisms": 2,
+    "capabilityProcesses": 2,
+    "authoringMicroProcesses": 2,
+    "crossProcessesTouching": 2
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 11,
+    "methodsExplained": 11,
+    "excerptsExplained": 3,
+    "testsExplained": 9,
+    "traceRows": 7,
+    "responsibilities": [
+     {
+      "id": "port_capability_kind",
+      "name": "HydraCapabilityKind",
+      "kind": "enum",
+      "group": "def",
+      "responsibility": "Fijar el vocabulario de capas.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/portability/HydraCapabilityKind.java:4"
+     },
+     {
+      "id": "port_package",
+      "name": "HydraCapabilityPackage",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Transportar el contenido.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/portability/HydraCapabilityPackage.java:10"
+     },
+     {
+      "id": "port_archive_service",
+      "name": "CapabilityPackageArchiveService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "El formato físico y su confianza (integridad, firma, límites, caché).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/portability/archive/CapabilityPackageArchiveService.java:41"
+     },
+     {
+      "id": "port_merge_service",
+      "name": "CapabilitySemanticMergeService",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Decidir QUÉ contenido queda en el paquete fusionado y avisar de conflictos y referencias rotas.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeService.java:36"
+     },
+     {
+      "id": "port_merge_decision",
+      "name": "CapabilitySemanticMergeDecision",
+      "kind": "enum",
+      "group": "dom",
+      "responsibility": "Fijar el vocabulario de decisión.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecision.java:4"
+     },
+     {
+      "id": "port_tx_service",
+      "name": "CapabilityLayerTransactionService",
+      "kind": "service",
+      "group": "rt",
+      "responsibility": "Aplicar y revertir con garantías de concurrencia.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionService.java:40"
+     },
+     {
+      "id": "port_tx_journal",
+      "name": "CapabilityLayerTransactionJournal",
+      "kind": "record",
+      "group": "per",
+      "responsibility": "Describir el estado de una transacción.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionJournal.java:6"
+     },
+     {
+      "id": "port_archive_controller",
+      "name": "CapabilityPackageArchiveController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptar HTTP a las llamadas del servicio.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/portability/archive/CapabilityPackageArchiveController.java:21"
+     },
+     {
+      "id": "port_tx_controller",
+      "name": "CapabilityLayerTransactionController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Solo mapeo HTTP; sin reglas.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionController.java:12"
+     },
+     {
+      "id": "port_merge_controller",
+      "name": "CapabilitySemanticMergeController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Solo mapeo HTTP.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeController.java:14"
+     },
+     {
+      "id": "port_tx_panel",
+      "name": "CapabilityTransactionPanel",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Orquestar la interacción y mostrar diagnósticos por capa.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/capability-center/CapabilityTransactionPanel.tsx:15"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 25,
+     "byStatus": {
+      "PASS": 21,
+      "DISCOVERED": 2,
+      "STALE_EVIDENCE": 2
+     },
+     "byStrength": {
+      "LIMITED": 12,
+      "MEDIUM": 5,
+      "STRONG": 8
+     },
+     "byType": {
+      "ARCHITECTURE": 1,
+      "INTEGRATION": 8,
+      "BEHAVIOR": 4,
+      "UNIT": 8,
+      "END_TO_END": 1,
+      "STATIC_VERIFICATION": 2,
+      "RELEASE_GATE": 1
+     },
+     "endToEnd": true,
+     "stagesTotal": 23,
+     "stagesWithEvidence": 22,
+     "stagesDirectlyVerified": 21
+    },
+    "evidenceIds": [
+     "java:com.example.editor.portability.archive.CapabilityPackageAcceptanceGateTests",
+     "java:com.example.editor.portability.archive.CapabilityPackageArchiveHttpLayerSelectionIntegrationTests",
+     "java:com.example.editor.portability.archive.CapabilityPackageArchiveServiceTests",
+     "java:com.example.editor.portability.merge.CapabilityPlanConfirmationAndRevertGatesIntegrationTests",
+     "java:com.example.editor.portability.merge.CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests",
+     "java:com.example.editor.portability.transaction.CapabilityLayerTransactionAuditIntegrationTests",
+     "java:com.example.editor.portability.transaction.CapabilityLayerTransactionServiceTests",
+     "script:scripts/validation/bd67_real_e2e.py"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "portability_package_merge": {
+     "a1": "ok",
+     "a2": "ok",
+     "a3": "ok",
+     "a4": "ok",
+     "d1": "ok",
+     "a5": "ok",
+     "d2": "ok",
+     "a6": "ok",
+     "r": "ok"
+    },
+    "portability_revert": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "r": "ok"
+    },
+    "portability_author_export": {
+     "a": "ok",
+     "b": "partial",
+     "c": "ok",
+     "r": "ok"
+    },
+    "portability_author_merge": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "d": "ok",
+     "r": "ok"
+    }
+   }
+  },
+  "persistence": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/persistence"
+   ],
+   "knownIssues": [],
+   "note": "Canonical JSON store + optimistic ETag (legacy validated facts).",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 3,
+     "variantsWithFunctionalDescription": 0
+    },
+    "elements": 3,
+    "variants": 0,
+    "domainMapNodes": 3,
+    "authoringMechanisms": 1,
+    "capabilityProcesses": 1,
+    "authoringMicroProcesses": 0,
+    "crossProcessesTouching": 9
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 3,
+    "methodsExplained": 4,
+    "excerptsExplained": 3,
+    "testsExplained": 2,
+    "traceRows": 4,
+    "responsibilities": [
+     {
+      "id": "pe_store_contract",
+      "name": "CanonicalDocumentStore",
+      "kind": "interface",
+      "group": "def",
+      "responsibility": "Ser el contrato.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/persistence/CanonicalDocumentStore.java:15"
+     },
+     {
+      "id": "pe_factory",
+      "name": "LocalCanonicalDocumentStoreFactory",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Cablear: crear el almacén y colgarle observadores.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/persistence/LocalCanonicalDocumentStoreFactory.java:14"
+     },
+     {
+      "id": "pe_atomic_store",
+      "name": "AtomicJsonDocumentStore",
+      "kind": "repository",
+      "group": "per",
+      "responsibility": "Guardar y leer documentos con integridad.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/persistence/AtomicJsonDocumentStore.java:35"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 91,
+     "byStatus": {
+      "PASS": 78,
+      "DISCOVERED": 12,
+      "STALE_EVIDENCE": 1
+     },
+     "byStrength": {
+      "LIMITED": 21,
+      "MEDIUM": 31,
+      "STRONG": 39
+     },
+     "byType": {
+      "ARCHITECTURE": 4,
+      "BEHAVIOR": 15,
+      "UNIT": 12,
+      "INTEGRATION": 29,
+      "OTHER": 2,
+      "END_TO_END": 24,
+      "UI": 1,
+      "STATIC_VERIFICATION": 2,
+      "RUNTIME": 1,
+      "RELEASE_GATE": 1
+     },
+     "endToEnd": true,
+     "stagesTotal": 6,
+     "stagesWithEvidence": 6,
+     "stagesDirectlyVerified": 6
+    },
+    "evidenceIds": [
+     "java:com.example.editor.audit.CanonicalDocumentMutationAuditIntegrationTests",
+     "java:com.example.editor.definition.runtime.EditorRuntimeCompileRealDefinitionIntegrationTests",
+     "java:com.example.editor.definition.runtime.session.EditorModelSessionRealStackLifecycleIntegrationTests",
+     "java:com.example.editor.definition.runtime.session.EditorSessionEventPublicationIntegrationTests",
+     "java:com.example.editor.grammar.application.GrammarAuthoringCompilePipelineOutcomeTests",
+     "java:com.example.editor.grammar.application.GrammarAuthoringSaveCompileProgressIntegrationTests",
+     "java:com.example.editor.grammar.application.GrammarIdentitySaveGateIntegrationTests",
+     "java:com.example.editor.integration.web.IntegrationProfileDeliveryHttpIntegrationTests",
+     "java:com.example.editor.metamodel.application.CanonicalMetamodelSaveValidationAuditIntegrationTests",
+     "java:com.example.editor.metamodel.canonical.JsonCanonicalMetamodelRepositoryTests",
+     "java:com.example.editor.metamodel.lifecycle.MetamodelDeleteCascadeHttpIntegrationTests",
+     "java:com.example.editor.metamodel.web.MetamodelAuthoringSaveGateHttpIntegrationTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "persistence_save_etag": {
+     "a": "ok",
+     "d": "ok",
+     "b": "ok",
+     "c": "ok",
+     "x": "ok",
+     "r": "ok"
+    }
+   }
+  },
+  "audit": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/audit",
+    "src/main/java/com/example/editor/provenance"
+   ],
+   "knownIssues": [],
+   "note": "Append-only JSONL log fed by persistence mutations (legacy validated facts).",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 3,
+     "variantsWithFunctionalDescription": 0
+    },
+    "elements": 3,
+    "variants": 0,
+    "domainMapNodes": 4,
+    "authoringMechanisms": 1,
+    "capabilityProcesses": 1,
+    "authoringMicroProcesses": 0,
+    "crossProcessesTouching": 4
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 3,
+    "methodsExplained": 5,
+    "excerptsExplained": 2,
+    "testsExplained": 3,
+    "traceRows": 5,
+    "responsibilities": [
+     {
+      "id": "au_observer",
+      "name": "AuditCanonicalDocumentMutationObserver",
+      "kind": "adapter",
+      "group": "app",
+      "responsibility": "Traducir mutaciones a eventos.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/audit/AuditCanonicalDocumentMutationObserver.java:14"
+     },
+     {
+      "id": "au_jsonl_store",
+      "name": "JsonlAuditLogStore",
+      "kind": "repository",
+      "group": "per",
+      "responsibility": "Persistir y consultar entradas.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/audit/JsonlAuditLogStore.java:44"
+     },
+     {
+      "id": "au_provenance",
+      "name": "HydraDistributionProvenanceService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Procedencia de distribución.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/provenance/HydraDistributionProvenanceService.java:37"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 15,
+     "byStatus": {
+      "PASS": 13,
+      "DISCOVERED": 1,
+      "STALE_EVIDENCE": 1
+     },
+     "byStrength": {
+      "MEDIUM": 3,
+      "LIMITED": 8,
+      "STRONG": 4
+     },
+     "byType": {
+      "BEHAVIOR": 2,
+      "UNIT": 3,
+      "INTEGRATION": 4,
+      "STATIC_VERIFICATION": 5,
+      "RUNTIME": 1
+     },
+     "endToEnd": true,
+     "stagesTotal": 4,
+     "stagesWithEvidence": 4,
+     "stagesDirectlyVerified": 4
+    },
+    "evidenceIds": [
+     "java:com.example.editor.audit.CanonicalDocumentMutationAuditIntegrationTests",
+     "java:com.example.editor.audit.JsonlAuditLogStoreTests",
+     "java:com.example.editor.metamodel.application.CanonicalMetamodelSaveValidationAuditIntegrationTests",
+     "java:com.example.editor.portability.transaction.CapabilityLayerTransactionAuditIntegrationTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "audit_record_mutation": {
+     "a": "ok",
+     "b": "ok",
+     "c": "ok",
+     "r": "ok"
+    }
+   }
+  },
+  "security": {
+   "validationState": "PARTIAL",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/security"
+   ],
+   "knownIssues": [
+    "obs-security-limits"
+   ],
+   "note": "Request hardening filter and external process runner; numeric size/time limits not verified.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 3,
+     "variantsWithFunctionalDescription": 0
+    },
+    "elements": 3,
+    "variants": 0,
+    "domainMapNodes": 4,
+    "authoringMechanisms": 1,
+    "capabilityProcesses": 1,
+    "authoringMicroProcesses": 0,
+    "crossProcessesTouching": 5
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 3,
+    "methodsExplained": 6,
+    "excerptsExplained": 2,
+    "testsExplained": 3,
+    "traceRows": 5,
+    "responsibilities": [
+     {
+      "id": "sec_request_filter",
+      "name": "HydraRequestHardeningFilter",
+      "kind": "runtime",
+      "group": "rt",
+      "responsibility": "Forma y tamaño de la petición.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/security/input/HydraRequestHardeningFilter.java:27"
+     },
+     {
+      "id": "sec_process_policy",
+      "name": "HydraExternalProcessPolicy",
+      "kind": "config",
+      "group": "def",
+      "responsibility": "Decidir si algo está permitido; NO lanza procesos.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/security/process/HydraExternalProcessPolicy.java:19"
+     },
+     {
+      "id": "sec_process_runner",
+      "name": "HydraExternalProcessRunner",
+      "kind": "runtime",
+      "group": "rt",
+      "responsibility": "Ejecutar con límites y devolver evidencia acotada.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/security/process/HydraExternalProcessRunner.java:22"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 46,
+     "byStatus": {
+      "PASS": 37,
+      "DISCOVERED": 8,
+      "STALE_EVIDENCE": 1
+     },
+     "byStrength": {
+      "LIMITED": 21,
+      "MEDIUM": 17,
+      "STRONG": 8
+     },
+     "byType": {
+      "SECURITY": 18,
+      "INTEGRATION": 8,
+      "UNIT": 4,
+      "BEHAVIOR": 5,
+      "RUNTIME": 2,
+      "UI": 1,
+      "STATIC_VERIFICATION": 5,
+      "END_TO_END": 3
+     },
+     "endToEnd": true,
+     "stagesTotal": 7,
+     "stagesWithEvidence": 7,
+     "stagesDirectlyVerified": 7
+    },
+    "evidenceIds": [
+     "java:com.example.editor.integration.verification.TechnologyProjectValidationServiceNativeRoutingTests",
+     "java:com.example.editor.integration.web.TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests",
+     "java:com.example.editor.integration.web.TechnologyInjectionSyncRollbackHttpIntegrationTests",
+     "java:com.example.editor.security.input.HydraRequestHardeningFilterHttpIntegrationTests",
+     "java:com.example.editor.security.process.HydraExternalProcessRunnerRealExecutionIntegrationTests",
+     "script:scripts/validation/bd4_real_e2e.py",
+     "script:scripts/validation/bd5_real_e2e.py",
+     "script:scripts/validation/bd67_real_e2e.py"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "security_filter_sandbox": {
+     "a": "ok",
+     "d1": "ok",
+     "d2": "ok",
+     "b": "ok",
+     "d3": "ok",
+     "c": "ok",
+     "x": "ok"
+    }
+   }
+  },
+  "transformation": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/transformation",
+    "frontend/src/transformation-designer"
+   ],
+   "knownIssues": [
+    "obs-transformation-incremental-mode"
+   ],
+   "note": "Definition model, runtime (batch/BOTH/incremental), sessions, export/native runtimes, parity, tests verified. No end-to-end tests for the synchronization engine or session service.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 21,
+     "variantsWithFunctionalDescription": 52
+    },
+    "elements": 21,
+    "variants": 52,
+    "domainMapNodes": 16,
+    "authoringMechanisms": 7,
+    "capabilityProcesses": 6,
+    "authoringMicroProcesses": 4,
+    "crossProcessesTouching": 3
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 42,
+    "methodsExplained": 46,
+    "excerptsExplained": 14,
+    "testsExplained": 13,
+    "traceRows": 17,
+    "responsibilities": [
+     {
+      "id": "lang_adapter",
+      "name": "TransformationLanguageAdapter",
+      "kind": "interface",
+      "group": "adp",
+      "responsibility": "Fijar el contrato de proyección.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/export/TransformationLanguageAdapter.java:8"
+     },
+     {
+      "id": "adapter_registry",
+      "name": "TransformationLanguageAdapterRegistry",
+      "kind": "registry",
+      "group": "adp",
+      "responsibility": "Selección y unicidad de adaptadores.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/export/TransformationLanguageAdapterRegistry.java:8"
+     },
+     {
+      "id": "atl_adapter",
+      "name": "AtlTransformationLanguageAdapter",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Renderizado textual ATL.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/export/AtlTransformationLanguageAdapter.java:8"
+     },
+     {
+      "id": "native_code_support",
+      "name": "NativeCodeTransformationLanguageAdapterSupport",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Validación del subconjunto exacto y serialización del plan.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/export/NativeCodeTransformationLanguageAdapterSupport.java:23"
+     },
+     {
+      "id": "canonical_bundle_support",
+      "name": "CanonicalRuntimeBundleSupport",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Empaquetado canónico.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/export/CanonicalRuntimeBundleSupport.java:12"
+     },
+     {
+      "id": "export_service",
+      "name": "TransformationExportService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestación y política previa a la proyección.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/export/TransformationExportService.java:15"
+     },
+     {
+      "id": "diag_enricher",
+      "name": "TransformationExportDiagnosticEnricher",
+      "kind": "util",
+      "group": "app",
+      "responsibility": "Redacción y localización de diagnósticos.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/export/TransformationExportDiagnosticEnricher.java:22"
+     },
+     {
+      "id": "native_support",
+      "name": "TransformationNativeRuntimeSupport",
+      "kind": "config",
+      "group": "dom",
+      "responsibility": "Política de capacidades.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeSupport.java:14"
+     },
+     {
+      "id": "native_executor",
+      "name": "TransformationNativeRuntimeExecutor",
+      "kind": "runtime",
+      "group": "rt",
+      "responsibility": "Preparar, lanzar y recoger.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeExecutor.java:48"
+     },
+     {
+      "id": "native_parity_service",
+      "name": "TransformationNativeParityService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestación de paridad nativa.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeParityService.java:21"
+     },
+     {
+      "id": "native_parity_controller",
+      "name": "TransformationNativeParityController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptación HTTP.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeParityController.java:13"
+     },
+     {
+      "id": "toolchain_service",
+      "name": "TransformationToolchainProvisioningService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Ciclo de vida del bundle administrado.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningService.java:44"
+     },
+     {
+      "id": "toolchain_controller",
+      "name": "TransformationToolchainProvisioningController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptación HTTP y planificación de trabajos; la lógica está en el servicio.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningController.java:15"
+     },
+     {
+      "id": "parity_service",
+      "name": "TransformationParityService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Decisión del veredicto.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/parity/TransformationParityService.java:17"
+     },
+     {
+      "id": "text_gen_service",
+      "name": "TransformationTextGenerationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestación y comprobación previa.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/text/TransformationTextGenerationService.java:13"
+     },
+     {
+      "id": "text_runtime",
+      "name": "CanonicalTextGenerationRuntime",
+      "kind": "runtime",
+      "group": "rt",
+      "responsibility": "Renderizado y política de colisión.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/text/CanonicalTextGenerationRuntime.java:23"
+     },
+     {
+      "id": "t2m_service",
+      "name": "TransformationTextToModelService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar parsing y proyección.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/textmodel/TransformationTextToModelService.java:13"
+     },
+     {
+      "id": "grammar_gateway",
+      "name": "GrammarTransformationTextParserGateway",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Adaptar el parser.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/textmodel/GrammarTransformationTextParserGateway.java:12"
+     },
+     {
+      "id": "test_service",
+      "name": "TransformationTestService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Ejecución, comparación y cobertura.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/testing/TransformationTestService.java:31"
+     },
+     {
+      "id": "export_panel",
+      "name": "TransformationExportPanel",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Presentación e interacción.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/transformation-designer/TransformationExportPanel.tsx:7"
+     },
+     {
+      "id": "testing_panel",
+      "name": "TransformationTestingPanel",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Interacción y presentación.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/transformation-designer/TransformationTestingPanel.tsx:11"
+     },
+     {
+      "id": "preview_panel",
+      "name": "TransformationPreviewPanel",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Estado de interfaz y selección.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/transformation-designer/TransformationPreviewPanel.tsx:31"
+     },
+     {
+      "id": "tdoc",
+      "name": "TransformationDefinitionDocument",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Representar y normalizar la definición.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/core/TransformationDefinitionDocument.java:9"
+     },
+     {
+      "id": "trule",
+      "name": "TransformationRule",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Describir una unidad de lógica de transformación.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/core/TransformationRule.java:12"
+     },
+     {
+      "id": "tbinding",
+      "name": "TransformationBinding",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Describir una asignación.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/core/TransformationBinding.java:11"
+     },
+     {
+      "id": "tvaluepolicy",
+      "name": "TransformationValuePolicy",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Declarar la adaptación.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/core/TransformationValuePolicy.java:8"
+     },
+     {
+      "id": "tsyncpolicy",
+      "name": "TransformationSynchronizationPolicy",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Declarar la política.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/core/TransformationSynchronizationPolicy.java:7"
+     },
+     {
+      "id": "checker",
+      "name": "TransformationDefinitionChecker",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Decidir si la definición es admisible y explicar por qué no.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java:38"
+     },
+     {
+      "id": "app_service",
+      "name": "TransformationApplicationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar persistencia con validación.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/TransformationApplicationService.java:29"
+     },
+     {
+      "id": "runtime_service",
+      "name": "TransformationRuntimeService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Preparar entrada y dirección y delegar.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/runtime/TransformationRuntimeService.java:16"
+     },
+     {
+      "id": "session_service",
+      "name": "TransformationSynchronizationSessionService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Custodiar baselines, revisiones y puntos de control con control de concurrencia optimista.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionService.java:30"
+     },
+     {
+      "id": "planner",
+      "name": "TransformationPlanCompiler",
+      "kind": "service",
+      "group": "rt",
+      "responsibility": "Validar y recortar la definición al plan de una dirección.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/runtime/TransformationPlanCompiler.java:17"
+     },
+     {
+      "id": "runtime",
+      "name": "CanonicalTransformationRuntime",
+      "kind": "runtime",
+      "group": "rt",
+      "responsibility": "Aplicar un plan ya compilado.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/runtime/CanonicalTransformationRuntime.java:38"
+     },
+     {
+      "id": "engine",
+      "name": "TransformationIncrementalSynchronizationEngine",
+      "kind": "engine",
+      "group": "rt",
+      "responsibility": "Calcular y fusionar.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/runtime/TransformationIncrementalSynchronizationEngine.java:32"
+     },
+     {
+      "id": "validator",
+      "name": "TransformationSynchronizationConsistencyValidator",
+      "kind": "service",
+      "group": "rt",
+      "responsibility": "Validar y fallar cerrado.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/runtime/TransformationSynchronizationConsistencyValidator.java:11"
+     },
+     {
+      "id": "session_records",
+      "name": "TransformationSynchronizationSession",
+      "kind": "record",
+      "group": "per",
+      "responsibility": "Guardar y validar su propio formato (esquema 1.0, revisión ≥1, baseline y traza obligatorias).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/sync/TransformationSynchronizationSession.java:10"
+     },
+     {
+      "id": "controller",
+      "name": "TransformationController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP a llamadas de servicio y poner ETag en las respuestas.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/web/TransformationController.java:40"
+     },
+     {
+      "id": "session_controller",
+      "name": "TransformationSynchronizationSessionController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducción HTTP; sin reglas.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionController.java:18"
+     },
+     {
+      "id": "designer",
+      "name": "TransformationDesigner",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Orquestar el flujo de autoría.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/transformation-designer/TransformationDesigner.tsx:22"
+     },
+     {
+      "id": "designer_model",
+      "name": "transformationDesignerModel",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Derivar documentos nuevos (inmutable).",
+      "rationale": "proven",
+      "primarySource": "frontend/src/transformation-designer/transformationDesignerModel.ts:23"
+     },
+     {
+      "id": "mapping_ws",
+      "name": "TransformationMappingWorkspace",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Editar reglas y asignaciones sobre el documento recibido y emitir cambios vía onChange.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/transformation-designer/TransformationMappingWorkspace.tsx:20"
+     },
+     {
+      "id": "binding_row",
+      "name": "TransformationBindingRow",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Editar una asignación.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/transformation-designer/TransformationBindingRow.tsx:8"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 59,
+     "byStatus": {
+      "PASS": 46,
+      "DISCOVERED": 6,
+      "STALE_EVIDENCE": 7
+     },
+     "byStrength": {
+      "LIMITED": 17,
+      "MEDIUM": 21,
+      "STRONG": 21
+     },
+     "byType": {
+      "STATIC_VERIFICATION": 7,
+      "QUALIFICATION": 5,
+      "BEHAVIOR": 15,
+      "UNIT": 4,
+      "INTEGRATION": 20,
+      "END_TO_END": 7,
+      "RUNTIME": 1
+     },
+     "endToEnd": true,
+     "stagesTotal": 88,
+     "stagesWithEvidence": 87,
+     "stagesDirectlyVerified": 87
+    },
+    "evidenceIds": [
+     "java:com.example.editor.transformation.export.TransformationExportServiceRealIntegrationTests",
+     "java:com.example.editor.transformation.nativeexec.TransformationNativeRunAndParityEndToEndIntegrationTests",
+     "java:com.example.editor.transformation.nativeexec.TransformationToolchainManagedLifecycleIntegrationTests",
+     "java:com.example.editor.transformation.nativeexec.TransformationToolchainProvisioningServiceIntegrationTests",
+     "java:com.example.editor.transformation.runtime.CanonicalTransformationRuntimeTests",
+     "java:com.example.editor.transformation.runtime.TransformationRuntimeServiceBatchSynchronizationTests",
+     "java:com.example.editor.transformation.runtime.TransformationRuntimeServiceExecuteDraftDistinctMetamodelsReverseIntegrationTests",
+     "java:com.example.editor.transformation.sync.TransformationSynchronizationEligibilityIntegrationTests",
+     "java:com.example.editor.transformation.sync.TransformationSynchronizationSessionLifecycleIntegrationTests",
+     "java:com.example.editor.transformation.text.TransformationTextGenerationServiceIntegrationTests",
+     "java:com.example.editor.transformation.textmodel.TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests",
+     "java:com.example.editor.transformation.TransformationApplicationServiceSaveIntegrationTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "transformation_define": {
+     "kind": "ok",
+     "ends": "ok",
+     "k": "ok",
+     "m2m": "ok",
+     "m2t": "ok",
+     "t2m": "ok",
+     "pol": "ok",
+     "chk": "ok",
+     "ok": "ok",
+     "sv": "ok",
+     "art": "ok"
+    },
+    "transformation_execute": {
+     "in": "ok",
+     "cmp": "ok",
+     "ok": "ok",
+     "alloc": "ok",
+     "pop": "ok",
+     "tr": "ok",
+     "out": "ok"
+    },
+    "transformation_batch_both": {
+     "pol": "ok",
+     "fail": "ok",
+     "fw": "ok",
+     "rv": "ok",
+     "res": "ok"
+    },
+    "transformation_sync": {
+     "cr": "ok",
+     "chg": "ok",
+     "sy": "ok",
+     "nc": "ok",
+     "cf": "ok",
+     "pl": "ok",
+     "blk": "ok",
+     "ap": "ok",
+     "rev": "ok",
+     "ot": "ok",
+     "rb": "ok",
+     "rs": "ok"
+    },
+    "transformation_export_native": {
+     "lg": "ok",
+     "cp": "ok",
+     "ex": "ok",
+     "dg": "ok",
+     "rd": "ok",
+     "run": "ok",
+     "art": "ok"
+    },
+    "transformation_parity": {
+     "ev": "ok",
+     "cp": "ok",
+     "ru": "ok",
+     "kd": "ok",
+     "cm": "ok",
+     "mt": "ok",
+     "bl": "ok",
+     "iv": "ok"
+    },
+    "transformation_author_guided": {
+     "nm": "ok",
+     "ty": "ok",
+     "isM": "ok",
+     "di": "ok",
+     "isB": "ok",
+     "cn": "ok",
+     "mm": "ok",
+     "wk": "ok",
+     "ck": "ok",
+     "ok": "ok",
+     "sv": "ok",
+     "art": "ok"
+    },
+    "transformation_author_mapping": {
+     "sc": "ok",
+     "bi": "ok",
+     "dr": "ok",
+     "ar": "ok",
+     "mp": "ok",
+     "kd": "ok",
+     "vp": "ok",
+     "rl": "ok",
+     "gd": "ok",
+     "ck": "ok",
+     "ok": "ok",
+     "art": "ok"
+    },
+    "transformation_author_generation": {
+     "cc": "ok",
+     "df": "ok",
+     "ed": "ok",
+     "en": "ok",
+     "ck": "ok",
+     "ok": "ok",
+     "art": "ok"
+    },
+    "transformation_author_text2model": {
+     "gr": "ok",
+     "pt": "ok",
+     "po": "ok",
+     "ck": "ok",
+     "ok": "ok",
+     "art": "ok"
+    }
+   }
+  },
+  "validation": {
+   "validationState": "VALIDATED",
+   "evidenceRoots": [
+    "src/main/java/com/example/editor/validation",
+    "frontend/src/validation-designer",
+    "frontend/src/problems"
+   ],
+   "knownIssues": [
+    "obs-validation-triggers",
+    "obs-validation-session-bypass",
+    "obs-quickfix-textual"
+   ],
+   "note": "Rule model, scopes, triggers, severities, diagnostics, 10 quick fix operation kinds, preview/apply/undo/redo verified. Textual quick fix runtime has no frontend caller and no dedicated tests.",
+   "portalContent": {
+    "file": "hydra-model-*.js + hydra-lens-*.js",
+    "audienceLens": {
+     "functionalTechnicalLens": true,
+     "elementsWithLens": 19,
+     "variantsWithFunctionalDescription": 80
+    },
+    "elements": 19,
+    "variants": 80,
+    "domainMapNodes": 19,
+    "authoringMechanisms": 6,
+    "capabilityProcesses": 4,
+    "authoringMicroProcesses": 4,
+    "crossProcessesTouching": 5
+   },
+   "technicalDocumentation": {
+    "source": "hydra-tech-*.js (verified against source files/lines by portal-check.js)",
+    "components": 47,
+    "methodsExplained": 50,
+    "excerptsExplained": 15,
+    "testsExplained": 21,
+    "traceRows": 17,
+    "responsibilities": [
+     {
+      "id": "qf_action_definition",
+      "name": "ActionDefinition",
+      "kind": "record",
+      "group": "def",
+      "responsibility": "Representar y autovalidar la forma de una acción.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/action/ActionDefinition.java:12"
+     },
+     {
+      "id": "qf_action_operation",
+      "name": "ActionOperation",
+      "kind": "interface",
+      "group": "def",
+      "responsibility": "Fijar el vocabulario cerrado de operaciones y su formato JSON.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/action/ActionOperation.java:7"
+     },
+     {
+      "id": "qf_action_model_checker",
+      "name": "ActionModelChecker",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Producir diagnósticos de diseño (ActionDiagnostic con código, ruta JSON y mensaje).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/action/ActionModelChecker.java:35"
+     },
+     {
+      "id": "qf_canonical_action_executor",
+      "name": "CanonicalActionExecutor",
+      "kind": "engine",
+      "group": "rt",
+      "responsibility": "Aplicar operaciones a un documento en memoria.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/action/CanonicalActionExecutor.java:42"
+     },
+     {
+      "id": "qf_runtime_service",
+      "name": "QuickFixRuntimeService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar el ciclo de vida de una corrección sobre una sesión.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/quickfix/QuickFixRuntimeService.java:83"
+     },
+     {
+      "id": "qf_editor_session_runtime",
+      "name": "EditorSessionQuickFixRuntime",
+      "kind": "runtime",
+      "group": "app",
+      "responsibility": "Resolver y ejecutar sin persistir.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/definition/runtime/session/EditorSessionQuickFixRuntime.java:51"
+     },
+     {
+      "id": "qf_validation_runtime_controller",
+      "name": "ModelValidationRuntimeController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptar HTTP al servicio.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/quickfix/web/ModelValidationRuntimeController.java:22"
+     },
+     {
+      "id": "qf_problems_api",
+      "name": "problemsApi",
+      "kind": "adapter",
+      "group": "ui",
+      "responsibility": "Traducir llamadas a peticiones HTTP tipadas.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/problems/problemsApi.ts:26"
+     },
+     {
+      "id": "qf_problems_panel",
+      "name": "ProblemsPanel",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Presentación y estado de interacción.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/problems/ProblemsPanel.tsx:62"
+     },
+     {
+      "id": "qf_quickfix_designer",
+      "name": "QuickFixDesigner",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Editar el ActionModel en memoria y mostrar bloqueos de diseño.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/validation-designer/QuickFixDesigner.tsx:31"
+     },
+     {
+      "id": "qf_textual_runtime",
+      "name": "TextualQuickFixRuntimeService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar la corrección sobre sesiones textuales.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/textual/runtime/TextualQuickFixRuntimeService.java:50"
+     },
+     {
+      "id": "qf_neutral_syntax_contract",
+      "name": "NeutralGrammarSyntaxContract",
+      "kind": "engine",
+      "group": "dom",
+      "responsibility": "Describir el error sintáctico y, si procede, su corrección local como metadatos.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/textual/runtime/NeutralGrammarSyntaxContract.java:194"
+     },
+     {
+      "id": "qf_textual_model_editor",
+      "name": "TextualModelEditor",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Aplicar la edición y relanzar el flujo.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/textual-model-editor/TextualModelEditor.tsx:442"
+     },
+     {
+      "id": "qf_grammar_code_action",
+      "name": "GrammarCodeAction",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Contener datos de la corrección.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/diagnostic/GrammarCodeAction.java:7"
+     },
+     {
+      "id": "qf_grammar_source_analyzer",
+      "name": "GrammarSourceAnalyzer",
+      "kind": "engine",
+      "group": "dom",
+      "responsibility": "Calcular diagnósticos y acciones sobre texto de gramática.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java:187"
+     },
+     {
+      "id": "qf_grammar_controller",
+      "name": "GrammarController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptación HTTP.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/grammar/web/GrammarController.java:46"
+     },
+     {
+      "id": "qf_grammar_code_actions_ts",
+      "name": "grammarCodeActions",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Transformar documentos con ediciones declarativas.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/grammar-language-service/grammarCodeActions.ts:4"
+     },
+     {
+      "id": "qf_grammar_local_quickfixes",
+      "name": "grammarLocalQuickFixes",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Producir acciones y diagnósticos enriquecidos.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/grammar-designer/grammarLocalQuickFixes.ts:13"
+     },
+     {
+      "id": "qf_grammar_monaco_editor",
+      "name": "GrammarMonacoEditor",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Traducir GrammarCodeAction a acciones Monaco.",
+      "rationale": "observable",
+      "primarySource": "frontend/src/grammar-designer/GrammarMonacoEditor.tsx:179"
+     },
+     {
+      "id": "qf_transformation_service",
+      "name": "TransformationQuickFixService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Calcular propuestas.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/quickfix/TransformationQuickFixService.java:40"
+     },
+     {
+      "id": "qf_transformation_controller",
+      "name": "TransformationQuickFixController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Adaptación HTTP.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/transformation/quickfix/TransformationQuickFixController.java:10"
+     },
+     {
+      "id": "qf_transformation_panel",
+      "name": "TransformationQuickFixPanel",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Mostrar y entregar.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/transformation-designer/TransformationQuickFixPanel.tsx:7"
+     },
+     {
+      "id": "validation_rule",
+      "name": "ValidationRule",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Representar y proteger la forma de una regla; NO evalúa nada ni resuelve referencias (eso lo hacen el comprobador y el compilador).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/validation/ValidationRule.java:12"
+     },
+     {
+      "id": "validation_context",
+      "name": "ValidationContext",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Describir el ámbito; NO comprueba que la clase o el atributo existan en el metamodelo (lo hace ValidationModelChecker.checkContext).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/validation/ValidationContext.java:8"
+     },
+     {
+      "id": "validation_model",
+      "name": "ValidationModel",
+      "kind": "schema",
+      "group": "dom",
+      "responsibility": "Contener y versionar las definiciones; NO las ejecuta ni garantiza coherencia entre documentos (lo hace ValidationModelChecker).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/validation/ValidationModel.java:14"
+     },
+     {
+      "id": "expression_model",
+      "name": "ExpressionModel",
+      "kind": "schema",
+      "group": "dom",
+      "responsibility": "Almacenar y localizar definiciones de expresión; NO las evalúa (ExpressionEvaluator) ni las tipa (ExpressionTypeChecker).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/expression/ExpressionModel.java:14"
+     },
+     {
+      "id": "validation_model_checker",
+      "name": "ValidationModelChecker",
+      "kind": "service",
+      "group": "dom",
+      "responsibility": "Verificar coherencia y devolver diagnósticos con código y ruta JSON; NO modifica el modelo ni bloquea el guardado (el servicio guarda aunque haya errores y los devuelve).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/validation/ValidationModelChecker.java:34"
+     },
+     {
+      "id": "model_validation_diagnostic",
+      "name": "ModelValidationDiagnostic",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Transportar un problema; NO decide si bloquea (DefaultValidationBlockingPolicy) ni cómo se muestra (panel de problemas).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/runtime/ModelValidationDiagnostic.java:10"
+     },
+     {
+      "id": "model_validation_report",
+      "name": "ModelValidationReport",
+      "kind": "record",
+      "group": "dom",
+      "responsibility": "Resumir una ejecución; NO guarda histórico (lo hace el orquestador en memoria).",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/runtime/ModelValidationReport.java:9"
+     },
+     {
+      "id": "validation_compiler",
+      "name": "ValidationCompiler",
+      "kind": "engine",
+      "group": "rt",
+      "responsibility": "Producir el plan y diagnosticar exclusiones; NO evalúa condiciones sobre modelos (el motor) ni lee los documentos (ValidationRuntimeApplicationService).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/runtime/ValidationCompiler.java:42"
+     },
+     {
+      "id": "validation_plan_cache",
+      "name": "ValidationPlanCache",
+      "kind": "repository",
+      "group": "rt",
+      "responsibility": "Guardar y expulsar planes; NO decide cuándo compilar.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/runtime/ValidationPlanCache.java:28"
+     },
+     {
+      "id": "validation_engine",
+      "name": "ValidationEngine",
+      "kind": "engine",
+      "group": "rt",
+      "responsibility": "Evaluar y emitir diagnósticos; NO carga documentos (ValidationRuntimeApplicationService), NO consolida con informes previos ni decide bloqueo (ValidationOrchestrator, DefaultValidationBlockingPolicy).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/runtime/ValidationEngine.java:54"
+     },
+     {
+      "id": "validation_runtime_service",
+      "name": "ValidationRuntimeApplicationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Orquestar carga→compilación→ejecución para una petición; NO consolida informes ni publica eventos (ValidationOrchestrator).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/runtime/ValidationRuntimeApplicationService.java:50"
+     },
+     {
+      "id": "validation_orchestrator",
+      "name": "ValidationOrchestrator",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Consolidar, comparar, bloquear y avisar; NO evalúa condiciones (motor) ni define la política (DefaultValidationBlockingPolicy).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrator.java:55"
+     },
+     {
+      "id": "default_blocking_policy",
+      "name": "DefaultValidationBlockingPolicy",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Decidir el bloqueo; NO modifica diagnósticos ni informe y NO ejecuta el guardado/exportación (otros llamadores deben respetar la decisión).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/orchestration/DefaultValidationBlockingPolicy.java:19"
+     },
+     {
+      "id": "orchestration_properties",
+      "name": "ValidationOrchestrationProperties",
+      "kind": "config",
+      "group": "def",
+      "responsibility": "Contener valores; NO aplica la política.",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrationProperties.java:8"
+     },
+     {
+      "id": "validation_model_service",
+      "name": "ValidationModelApplicationService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Persistir y comprobar; NO ejecuta validaciones sobre modelos.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/validation/ValidationModelApplicationService.java:35"
+     },
+     {
+      "id": "safe_external_translator",
+      "name": "SafeExternalConstraintTranslator",
+      "kind": "adapter",
+      "group": "adp",
+      "responsibility": "Traducir o rechazar; NO evalúa, NO ejecuta código importado y NO decide qué hacer con la regla no traducida (el llamador la conserva como externa/parcial).",
+      "rationale": "proven",
+      "primarySource": "src/main/java/com/example/editor/validation/importing/SafeExternalConstraintTranslator.java:45"
+     },
+     {
+      "id": "editor_session_validation",
+      "name": "EditorModelSessionService",
+      "kind": "service",
+      "group": "app",
+      "responsibility": "Disparar y guardar el informe en la sesión; NO consolida ni aplica la política de bloqueo: llama directamente al runtime, no al orquestador.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java:538"
+     },
+     {
+      "id": "validation_runtime_controller",
+      "name": "ValidationRuntimeController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP a llamadas de servicio; NO contiene lógica de validación.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/runtime/web/ValidationRuntimeController.java:37"
+     },
+     {
+      "id": "model_validation_runtime_controller",
+      "name": "ModelValidationRuntimeController",
+      "kind": "controller",
+      "group": "api",
+      "responsibility": "Traducir HTTP a validateLive/latest.",
+      "rationale": "observable",
+      "primarySource": "src/main/java/com/example/editor/validation/quickfix/web/ModelValidationRuntimeController.java:33"
+     },
+     {
+      "id": "validation_designer",
+      "name": "ValidationDesigner",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Coordinar edición y guardado; NO ejecuta validaciones sobre modelos ni valida semántica (el servidor devuelve el informe).",
+      "rationale": "proven",
+      "primarySource": "frontend/src/validation-designer/ValidationDesigner.tsx:64"
+     },
+     {
+      "id": "validation_rule_editor",
+      "name": "ValidationRuleEditor",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Editar una regla; NO la guarda (lo hace ValidationDesigner) ni la ejecuta.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/validation-designer/ValidationRuleEditor.tsx:46"
+     },
+     {
+      "id": "guided_condition_builder",
+      "name": "GuidedConditionBuilder",
+      "kind": "ui",
+      "group": "ui",
+      "responsibility": "Producir y reinterpretar el subconjunto guiado del árbol; NO evalúa la condición ni admite funciones, condicionales o colecciones anidadas (eso es el modo avanzado).",
+      "rationale": "observable",
+      "primarySource": "frontend/src/validation-designer/GuidedConditionBuilder.tsx:36"
+     },
+     {
+      "id": "validation_designer_validation",
+      "name": "validationDesignerValidation",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Detectar errores estructurales evidentes; NO sustituye al comprobador del servidor (no tipa ni resuelve referencias al metamodelo).",
+      "rationale": "proven",
+      "primarySource": "frontend/src/validation-designer/validationDesignerValidation.ts:14"
+     },
+     {
+      "id": "validation_verification",
+      "name": "validationVerification",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Calcular firmas y estado verificado; NO ejecuta las comprobaciones (las hace el servidor).",
+      "rationale": "proven",
+      "primarySource": "frontend/src/validation-designer/validationVerification.ts:38"
+     },
+     {
+      "id": "validation_designer_factory",
+      "name": "validationDesignerFactory",
+      "kind": "util",
+      "group": "ui",
+      "responsibility": "Construir valores iniciales; NO persiste ni valida.",
+      "rationale": "proven",
+      "primarySource": "frontend/src/validation-designer/validationDesignerFactory.ts:117"
+     }
+    ]
+   },
+   "testEvidence": {
+    "evidenceSummary": {
+     "tests": 95,
+     "byStatus": {
+      "PASS": 84,
+      "DISCOVERED": 9,
+      "STALE_EVIDENCE": 2
+     },
+     "byStrength": {
+      "STRONG": 19,
+      "LIMITED": 48,
+      "MEDIUM": 28
+     },
+     "byType": {
+      "INTEGRATION": 19,
+      "BEHAVIOR": 23,
+      "UNIT": 16,
+      "OTHER": 3,
+      "CONTRACT": 3,
+      "STATIC_VERIFICATION": 13,
+      "END_TO_END": 5,
+      "UI": 10,
+      "RUNTIME": 1,
+      "QUALIFICATION": 2
+     },
+     "endToEnd": true,
+     "stagesTotal": 79,
+     "stagesWithEvidence": 77,
+     "stagesDirectlyVerified": 74
+    },
+    "evidenceIds": [
+     "java:com.example.editor.definition.runtime.session.EditorModelSessionRealStackLifecycleIntegrationTests",
+     "java:com.example.editor.gamification.feedback.ValidateFixRewardChainIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalValidationImportPersistenceIntegrationTests",
+     "java:com.example.editor.project.recovery.ExternalValidationRecoveryRealStoresIntegrationTests",
+     "java:com.example.editor.validation.action.QuickFixDefinitionPersistenceAndCheckIntegrationTests",
+     "java:com.example.editor.validation.orchestration.ValidationOrchestratorRealEngineIntegrationTests",
+     "java:com.example.editor.validation.quickfix.QuickFixApplyUndoRedoRuntimeIntegrationTests",
+     "java:com.example.editor.validation.quickfix.QuickFixSelectorValueArgumentRuntimeIntegrationTests",
+     "java:com.example.editor.validation.quickfix.ValidationQuickFixEventEmissionRuntimeIntegrationTests",
+     "java:com.example.editor.validation.runtime.ValidationCompilerTests",
+     "java:com.example.editor.validation.runtime.ValidationEngineTests",
+     "java:com.example.editor.validation.validation.ValidationModelApplicationServiceSaveIntegrationTests"
+    ],
+    "failingIds": [],
+    "store": "knowledge/tests/"
+   },
+   "processStageEvidence": {
+    "validation_define_rule": {
+     "meta": "ok",
+     "id": "ok",
+     "ctx": "ok",
+     "msg": "ok",
+     "trg": "ok",
+     "cnd": "ok",
+     "qf": "ok",
+     "blk": "ok",
+     "sv": "ok",
+     "chk": "ok",
+     "ok": "ok"
+    },
+    "validation_execute": {
+     "mode": "ok",
+     "comp": "ok",
+     "exec": "ok",
+     "cand": "ok",
+     "eval": "ok",
+     "diag": "ok",
+     "cons": "ok",
+     "ev": "ok",
+     "blk": "ok",
+     "rep": "ok"
+    },
+    "validation_apply_quickfix": {
+     "list": "ok",
+     "pick": "ok",
+     "par": "ok",
+     "pv": "ok",
+     "ok": "ok",
+     "ap": "ok",
+     "fail": "ok",
+     "rb": "ok",
+     "rv": "ok",
+     "st": "ok",
+     "hist": "ok",
+     "evq": "ok",
+     "undo": "ok",
+     "res": "ok"
+    },
+    "validation_define_quickfix": {
+     "id": "ok",
+     "pol": "ok",
+     "pre": "ok",
+     "par": "ok",
+     "op": "ok",
+     "more": "ok",
+     "lnk": "ok",
+     "chk": "ok",
+     "art": "ok"
+    },
+    "validation_author_guided": {
+     "id": "ok",
+     "ctx": "ok",
+     "dec": "partial",
+     "tar": "ok",
+     "dg": "ok",
+     "cn": "ok",
+     "qf": "ok",
+     "rv": "ok",
+     "ok": "ok",
+     "sv": "ok"
+    },
+    "validation_author_form": {
+     "idc": "ok",
+     "tg": "ok",
+     "ex": "partial",
+     "rp": "ok",
+     "qf": "ok",
+     "ok": "ok",
+     "sv": "ok"
+    },
+    "validation_author_quickfix": {
+     "id": "ok",
+     "sf": "partial",
+     "pr": "ok",
+     "op": "ok",
+     "sl": "ok",
+     "vs": "ok",
+     "ag": "ok",
+     "rv": "ok",
+     "sv": "ok"
+    },
+    "validation_author_import": {
+     "ex": "ok",
+     "cv": "ok",
+     "dc": "ok",
+     "pt": "ok",
+     "lk": "ok",
+     "rv": "ok",
+     "sv": "ok"
+    }
+   }
+  }
+ },
+ "capabilitiesNotYetModeled": [],
+ "testEvidence": {
+  "generatedAt": "2026-10-23T19:39:37.726Z",
+  "store": "knowledge/tests/",
+  "note": "Per-capability testEvidence / processStageEvidence are compact references into knowledge/tests/*; regenerate with build-test-evidence.js after regenerating this cache."
+ }
+}
