@@ -52,6 +52,19 @@ SIX_FILES = [KT / "test-catalog.json", KT / "test-execution-state.json", KT / "t
              ROOT / "docs/architecture/archify/hydra-tests-data.js", KN / "capabilities-cache.json"]
 MAVEN_CMD_LIMIT = 6000  # Windows command line limit is 8191 characters
 
+# ------------------------------------------------------------------ physical isolation of the processes the runner starts
+# Maven, Vitest and Playwright (and the servers and child JVMs they start) resolve `./data/...` against their working directory. With
+# HYDRA_V3_EXEC_ROOT set, every such process runs in that directory (a verified copy of the workspace that has its own, initially empty, data/)
+# while state, evidence and runs stay in the real target/archify-v3. HYDRA_V3_REQUIRE_ISOLATION=1 (set by the launcher) makes `run` refuse to
+# execute anything when the execution root is the real workspace or fails the checks below.
+_EXEC_ENV = os.environ.get("HYDRA_V3_EXEC_ROOT", "").strip()
+EXEC_ROOT = Path(_EXEC_ENV).resolve() if _EXEC_ENV else ROOT
+REQUIRE_ISOLATION = os.environ.get("HYDRA_V3_REQUIRE_ISOLATION", "") == "1"
+_REPARSE_POINT = 0x400
+ALLOWED_LINKS = {"frontend/node_modules"}  # read-only dependency store shared with the workspace; never a persistence location
+_PATH_ENV_PREFIXES = ("HYDRA_", "DSL_", "SPRING_")
+_JVM_OPTION_VARS = ("JAVA_TOOL_OPTIONS", "_JAVA_OPTIONS", "JDK_JAVA_OPTIONS", "MAVEN_OPTS", "MAVEN_ARGS", "SPRING_APPLICATION_JSON")
+
 
 # ------------------------------------------------------------------ utilities
 def now_iso() -> str:
@@ -114,6 +127,85 @@ def inside_repo(p: Path) -> bool:
         return True
     except ValueError:
         return False
+
+
+def _is_link(p: Path) -> bool:
+    try:
+        return p.is_symlink() or bool(getattr(os.lstat(p), "st_file_attributes", 0) & _REPARSE_POINT)
+    except OSError:
+        return False
+
+
+def _resolved_under(child: Path, parent: Path) -> bool:
+    try:
+        child.resolve().relative_to(parent.resolve())
+        return True
+    except (ValueError, OSError):
+        return False
+
+
+def isolation_problems(root: Path | None = None, exec_root: Path | None = None) -> list[str]:
+    """Reasons why `exec_root` cannot be trusted to keep the real workspace storage (root/data) untouched. Empty list = safe."""
+    root = (root or ROOT).resolve()
+    ex = (exec_root or EXEC_ROOT).resolve()
+    if ex == root:
+        return ["the execution root is the real workspace: relative ./data paths would resolve against the real storage"]
+    problems: list[str] = []
+    if _resolved_under(ex, root):
+        problems.append(f"the execution root {ex} is inside the real workspace")
+    if _resolved_under(root, ex):
+        problems.append(f"the execution root {ex} contains the real workspace")
+    for need in ("pom.xml", "mvnw.cmd"):
+        if not (ex / need).is_file():
+            problems.append(f"{need} is missing from the execution root (it is not a copy of the workspace)")
+    real_data = (root / "data").resolve()
+    ex_data = ex / "data"
+    if ex_data.exists() or ex_data.is_symlink():
+        if _is_link(ex_data):
+            problems.append("data/ of the execution root is a link")
+        if _resolved_under(ex_data, real_data) or not _resolved_under(ex_data, ex):
+            problems.append("data/ of the execution root resolves outside the root or into the real data/")
+    for dirpath, dirnames, filenames in os.walk(ex, followlinks=False):
+        here = Path(dirpath)
+        for name in list(dirnames) + list(filenames):
+            entry = here / name
+            relative = entry.relative_to(ex).as_posix()
+            if _is_link(entry):
+                if relative not in ALLOWED_LINKS:
+                    problems.append(f"link inside the execution root: {relative} -> {os.path.realpath(entry)}")
+                elif _resolved_under(entry, real_data):
+                    problems.append(f"allowed link {relative} points into the real data/")
+        dirnames[:] = [d for d in dirnames if d not in (".git", "node_modules") and not _is_link(here / d)]
+    return problems
+
+
+def unsafe_env_problems(root: Path | None = None) -> list[str]:
+    """Environment variables inherited by every child process that would silently redirect storage into the real data/."""
+    real_data = (root or ROOT).resolve() / "data"
+    needle = os.path.normcase(str(real_data)).replace("/", "\\")
+    problems = []
+    for name, value in os.environ.items():
+        flat = os.path.normcase(value).replace("/", "\\")
+        if needle in flat:
+            problems.append(f"{name} points into the real data/")
+            continue
+        if name in _JVM_OPTION_VARS and "user.dir" in value:
+            problems.append(f"{name} overrides user.dir")
+        if name.upper().startswith(_PATH_ENV_PREFIXES) and ("\\" in value or "/" in value or ":" in value) and len(value) < 400:
+            try:
+                if _resolved_under(Path(value), real_data):
+                    problems.append(f"{name} resolves into the real data/")
+            except (OSError, ValueError):
+                pass
+    return problems
+
+
+def isolation_report() -> dict:
+    """What the child processes will really use: written next to the logs of every run."""
+    return {"root": str(ROOT), "execRoot": str(EXEC_ROOT), "isolated": EXEC_ROOT != ROOT, "requireIsolation": REQUIRE_ISOLATION,
+            "realData": str(ROOT / "data"), "effectiveData": str(EXEC_ROOT / "data"), "mavenCwd": str(EXEC_ROOT), "playwrightCwd": str(EXEC_ROOT / "frontend"),
+            "e2eBackendWorkDir": str(EXEC_ROOT / "target" / "archify-v3" / "e2e" / "work"), "surefireReports": str(EXEC_ROOT / "build" / "hydra-maven" / "surefire-reports"),
+            "inheritedPathEnv": {k: v for k, v in os.environ.items() if k.upper().startswith(_PATH_ENV_PREFIXES) or k in _JVM_OPTION_VARS}, "createdAt": now_iso()}
 
 
 def log(msg: str) -> None:
@@ -630,6 +722,8 @@ def classify(task: dict, state: dict, force: set, retry_failed: bool, strict: bo
         return "BLOCKED", task.get("blockedReason", "")
     if st == "PLANNED":
         return "PLANNED", "not implemented yet"
+    if task.get("isolation") == "blocked":  # a task that cannot be proven to run isolated from the real storage is never started
+        return "BLOCKED", "isolation: " + (task.get("isolationReason") or "cannot be proven to run isolated from the real data/")
     miss = missing_requirements(task)
     if miss:
         return "BLOCKED", "missing prerequisite: " + ", ".join(miss)
@@ -727,7 +821,7 @@ def maven_batches(tasks: list[dict]) -> list[list[dict]]:
 
 def maven_argv(selectors: list[str], extra: list[str] | None = None) -> list[str]:
     pats = sorted({surefire_pattern(s) for s in selectors})
-    exe = str(ROOT / ("mvnw.cmd" if os.name == "nt" else "mvnw"))
+    exe = str(EXEC_ROOT / ("mvnw.cmd" if os.name == "nt" else "mvnw"))
     return [exe, "-B", "test", "-Dtest=" + ",".join(pats), "-Dsurefire.failIfNoSpecifiedTests=false", "-DfailIfNoTests=false"] + (extra or [])
 
 
@@ -759,11 +853,11 @@ def run_maven_batch(tasks: list[dict], run_id: str, run_dir: Path, timeout: int,
         raise SystemExit("another Maven/Surefire process is running (race on the shared build directory); wait for it to finish")
     started = now_iso()
     log(f"maven batch: {len(tasks)} tasks, {len(selectors)} selectors -> {rel(console_path)}")
-    rc, secs = run_logged(argv, ROOT, console_path, timeout)
+    rc, secs = run_logged(argv, EXEC_ROOT, console_path, timeout)
     console = console_path.read_text(encoding="utf-8", errors="replace")
     comp = parse_compile_errors(console) if "COMPILATION ERROR" in console else []
     result = {"argv": argv, "rc": rc, "seconds": round(secs, 1), "console": rel(console_path), "startedAt": started, "compileErrors": comp, "quarantined": []}
-    if comp and allow_quarantine:
+    if comp and allow_quarantine and EXEC_ROOT == ROOT:  # quarantine edits sources: never done through an isolated copy (the workspace stays untouched)
         owned = {}
         for t in (all_tasks or tasks):  # a file already broken in an earlier batch of the same run must stay quarantinable in the next ones
             if t.get("quarantinable", True) and t.get("kind") == "maven":
@@ -793,7 +887,7 @@ def run_maven_batch(tasks: list[dict], run_id: str, run_dir: Path, timeout: int,
                     argv2 = maven_argv(sel2)
                     cp2 = run_dir / "logs" / "maven-batch-retry-without-quarantined.log"
                     log(f"retrying {len(remaining)} tasks without {len(moved)} quarantined test file(s)")
-                    rc, secs2 = run_logged(argv2, ROOT, cp2, timeout)
+                    rc, secs2 = run_logged(argv2, EXEC_ROOT, cp2, timeout)
                     result.update({"retryArgv": argv2, "retryRc": rc, "retrySeconds": round(secs2, 1), "retryConsole": rel(cp2)})
                     console += "\n" + cp2.read_text(encoding="utf-8", errors="replace")
             finally:
@@ -806,7 +900,7 @@ def run_maven_batch(tasks: list[dict], run_id: str, run_dir: Path, timeout: int,
                         q["restored"] = True
                 save_state(state)
             result["quarantined"] = moved
-    reports = ROOT / "build" / "hydra-maven" / "surefire-reports"
+    reports = EXEC_ROOT / "build" / "hydra-maven" / "surefire-reports"
     captured = capture_reports(reports, run_id, started)  # immutable copies + evidence index, immediately after Maven finished
     result["xmlCaptured"] = sum(len(v["files"]) for v in captured.values())
     result["captured"] = captured
@@ -846,16 +940,18 @@ def e2e_prepare(steps: list[str], run_dir: Path, timeout: int) -> str | None:
     if "maven-classpath" in steps:
         if other_maven_running():
             return "another Maven/Surefire process is running; wait for it to finish"
-        cp = E2E_DIR() / "classpath.txt"
-        argv = [str(ROOT / "mvnw.cmd"), "-B", "-q", "compile", "dependency:build-classpath", f"-Dmdep.outputFile={cp}"]
-        rc, secs = run_logged(argv, ROOT, logs / "e2e-prepare-maven.log", timeout)
+        exec_e2e = EXEC_ROOT / "target" / "archify-v3" / "e2e"  # real-backend.mjs reads it relative to the repository it runs from
+        exec_e2e.mkdir(parents=True, exist_ok=True)
+        cp = exec_e2e / "classpath.txt"
+        argv = [str(EXEC_ROOT / "mvnw.cmd"), "-B", "-q", "compile", "dependency:build-classpath", f"-Dmdep.outputFile={cp}"]
+        rc, secs = run_logged(argv, EXEC_ROOT, logs / "e2e-prepare-maven.log", timeout)
         if rc or not cp.is_file():
             return f"maven compile/dependency:build-classpath failed (rc={rc}); see {rel(logs / 'e2e-prepare-maven.log')}"
     if "frontend-dist" in steps:
-        dist = ROOT / "frontend" / "dist" / "index.html"
-        src_newest = max((p.stat().st_mtime for p in (ROOT / "frontend" / "src").rglob("*") if p.is_file()), default=0)
+        dist = EXEC_ROOT / "frontend" / "dist" / "index.html"
+        src_newest = max((p.stat().st_mtime for p in (EXEC_ROOT / "frontend" / "src").rglob("*") if p.is_file()), default=0)
         if not dist.is_file() or dist.stat().st_mtime < src_newest:
-            rc, _ = run_logged([npm_exe("npm"), "run", "build"], ROOT / "frontend", logs / "e2e-prepare-frontend.log", timeout)
+            rc, _ = run_logged([npm_exe("npm"), "run", "build"], EXEC_ROOT / "frontend", logs / "e2e-prepare-frontend.log", timeout)
             if rc or not dist.is_file():
                 return f"frontend build failed (rc={rc}); see {rel(logs / 'e2e-prepare-frontend.log')}"
     return None
@@ -917,7 +1013,7 @@ def run_playwright_batch(tasks: list[dict], run_id: str, run_dir: Path, timeout:
     argv = [npm_exe("npx"), "playwright", "test", "-c", cfg, *specs]
     env = {"PLAYWRIGHT_JSON_OUTPUT_NAME": str(jsonp), "HYDRA_E2E_WEB_PORT": str(E2E_WEB_PORT), "HYDRA_E2E_API_PORT": str(E2E_API_PORT), "HYDRA_E2E_OUTPUT_DIR": str(run_dir / "pw-results"), "CI": "1"}
     log(f"playwright batch: {len(tasks)} tasks, {len(specs)} specs -> {rel(logs / 'playwright-batch.log')}")
-    rc, secs = run_logged(argv, ROOT / "frontend", logs / "playwright-batch.log", timeout, env)
+    rc, secs = run_logged(argv, EXEC_ROOT / "frontend", logs / "playwright-batch.log", timeout, env)
     kill_e2e_leftovers()
     finished = now_iso()
     cases = parse_playwright_json(jsonp) if jsonp.is_file() else []
@@ -991,9 +1087,19 @@ def cmd_run(args) -> int:
         log("nothing to run: all certified tasks are reused (same fingerprint)")
         save_state(state)
         return cmd_sync(args) if not args.no_sync else 0
+    if EXEC_ROOT != ROOT or REQUIRE_ISOLATION:
+        problems = isolation_problems() + unsafe_env_problems()
+        if problems:
+            log("REFUSING TO RUN: the execution environment is not isolated from the real storage")
+            for p in problems:
+                log("  - " + p)
+            return 3
+    else:
+        log("WARNING: running in the real workspace (HYDRA_V3_EXEC_ROOT not set): ./data resolves to the real storage")
     run_id = dt.datetime.now(dt.timezone.utc).strftime("run-%Y%m%dT%H%M%SZ")
     run_dir = OUT / "runs" / run_id
     (run_dir / "logs").mkdir(parents=True, exist_ok=True)
+    write_json_atomic(run_dir / "isolation-report.json", isolation_report())
     with Lock():
         state["runs"].append({"runId": run_id, "startedAt": now_iso(), "tasks": [t["id"] for t in to_run]})
         save_state(state)
@@ -1096,8 +1202,8 @@ def capture_vitest(js: dict, src: Path, run_id: str) -> dict:
 
 
 def run_command_task(t: dict, run_id: str, run_dir: Path, timeout: int, state: dict) -> dict:
-    cwd = ROOT / t.get("cwd", ".")
-    if not inside_repo(cwd):
+    cwd = EXEC_ROOT / t.get("cwd", ".")
+    if not _resolved_under(cwd, EXEC_ROOT):
         return {"kind": t["kind"], "verdict": "BLOCKED", "reason": "cwd outside repo", "runId": run_id, "finishedAt": now_iso()}
     argv = [a.replace("{RUN_DIR}", str(run_dir)) for a in t["argv"]]
     resolved = shutil.which(argv[0]) or shutil.which(argv[0] + ".cmd")
@@ -1578,6 +1684,25 @@ def cmd_attest_closure(args) -> int:
     return 0
 
 
+def cmd_fingerprints(args) -> int:
+    """Read-only: the declared-input (v1) fingerprint of every manifest task, so the launcher can bind its checkpoints to real content."""
+    m = load_manifest()
+    _JAVA_CACHE.clear()
+    out = {}
+    for t in m["tasks"]:
+        fp = fingerprint(t)
+        out[t["id"]] = {"kind": t["kind"], "v1": fp["sha256"], "missing": fp["missing"]}
+    print(json.dumps(out))
+    return 0
+
+
+def cmd_isolation_check(args) -> int:
+    """Read-only: does the current HYDRA_V3_EXEC_ROOT keep the real data/ out of reach of every child process?"""
+    problems = isolation_problems() + unsafe_env_problems()
+    print(json.dumps({"root": str(ROOT), "execRoot": str(EXEC_ROOT), "realData": str(ROOT / "data"), "effectiveData": str(EXEC_ROOT / "data"), "problems": problems}))
+    return 0 if not problems else 3
+
+
 def cmd_selftest(args) -> int:
     return subprocess.call([sys.executable, "-m", "unittest", "discover", "-s", str(Path(__file__).parent / "tests"), "-v"], cwd=ROOT)
 
@@ -1594,7 +1719,7 @@ def main(argv=None) -> int:
     at = sub.add_parser("attest-closure"); at.add_argument("--changed-file", required=True); at.add_argument("--baseline-ref", default="HEAD")
     at.add_argument("--only"); at.add_argument("--apply", action="store_true"); at.add_argument("--report")
     ad = sub.add_parser("adopt"); ad.add_argument("--run-id", required=True)
-    sy = sub.add_parser("sync"); sy.add_argument("--restage", action="store_true"); sub.add_parser("status"); sub.add_parser("audit-strong"); sub.add_parser("audit-evidence"); sub.add_parser("selftest"); sub.add_parser("restore-quarantine")
+    sy = sub.add_parser("sync"); sy.add_argument("--restage", action="store_true"); sub.add_parser("status"); sub.add_parser("audit-strong"); sub.add_parser("audit-evidence"); sub.add_parser("fingerprints"); sub.add_parser("isolation-check"); sub.add_parser("selftest"); sub.add_parser("restore-quarantine")
     cb = sub.add_parser("capture-baseline"); cb.add_argument("--src"); cb.add_argument("--run-id"); cb.add_argument("--started")
     ap.add_argument("--sandbox", action="store_true", help="isolate state/evidence/runs under target/archify-v3-sandbox (for self-tests; sync is not allowed)")
     ap.add_argument("--manifest", help="alternative manifest (default: knowledge/tests/v3/MANIFEST_CERTIFICACION_V3.json)")
@@ -1610,7 +1735,7 @@ def main(argv=None) -> int:
             raise SystemExit("sync is not allowed in sandbox mode")
     fn = {"run": cmd_run, "plan": cmd_plan, "sync": cmd_sync, "status": cmd_status, "audit-strong": cmd_audit, "audit-evidence": cmd_audit_evidence, "selftest": cmd_selftest,
           "capture-baseline": cmd_capture_baseline, "restore-quarantine": cmd_restore_quarantine, "adopt": cmd_adopt,
-          "attest-closure": cmd_attest_closure}[a.cmd]
+          "attest-closure": cmd_attest_closure, "fingerprints": cmd_fingerprints, "isolation-check": cmd_isolation_check}[a.cmd]
     return fn(a)
 
 

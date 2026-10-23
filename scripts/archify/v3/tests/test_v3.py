@@ -374,5 +374,129 @@ class ClosureFingerprintTests(Sandbox):
         self.assertEqual(entry, {"verdict": "PASS", "fingerprint": "f1", "fingerprintV2": "g1", "runId": "r1", "finishedAt": "t1"})
 
 
+class IsolationTests(Sandbox):
+    """The runner may only start child processes in an execution root that cannot reach the real workspace storage (root/data)."""
+
+    def setUp(self):
+        super().setUp()
+        self.saved_exec = (v3.EXEC_ROOT, v3.REQUIRE_ISOLATION)
+        self.real = self.tmp / "workspace"
+        (self.real / "data" / "audit-log").mkdir(parents=True)
+        (self.real / "data" / "audit-log" / "d.jsonl").write_text("{}")
+        self.box = self.tmp / "box"
+        for rel_path in ("pom.xml", "mvnw.cmd", "frontend/src/a.ts"):
+            p = self.box / rel_path
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text("x")
+        v3.ROOT = self.real
+        self.saved_env = dict(os.environ)
+
+    def tearDown(self):
+        v3.EXEC_ROOT, v3.REQUIRE_ISOLATION = self.saved_exec
+        os.environ.clear()
+        os.environ.update(self.saved_env)
+        super().tearDown()
+
+    def link(self, link: Path, target: Path):
+        link.parent.mkdir(parents=True, exist_ok=True)
+        rc = os.system(f'cmd /c mklink /J "{link}" "{target}" > NUL')
+        self.assertEqual(rc, 0, "could not create the junction used by the test")
+
+    @unittest.skipUnless(os.name == "nt", "junctions are a Windows scenario")
+    def test_a_separate_copy_is_accepted(self):
+        self.assertEqual(v3.isolation_problems(self.real, self.box), [])
+
+    def test_the_real_workspace_is_never_an_isolated_root(self):
+        self.assertTrue(any("real workspace" in p for p in v3.isolation_problems(self.real, self.real)))
+
+    def test_a_root_nested_in_or_around_the_workspace_is_rejected(self):
+        nested = self.real / "target" / "sandbox"
+        nested.mkdir(parents=True)
+        for need in ("pom.xml", "mvnw.cmd"):
+            (nested / need).write_text("x")
+        self.assertTrue(any("inside the real workspace" in p for p in v3.isolation_problems(self.real, nested)))
+        self.assertTrue(any("contains the real workspace" in p for p in v3.isolation_problems(self.real, self.tmp)))
+
+    def test_a_directory_that_is_not_a_copy_of_the_workspace_is_rejected(self):
+        (self.box / "pom.xml").unlink()
+        self.assertTrue(any("pom.xml" in p for p in v3.isolation_problems(self.real, self.box)))
+
+    @unittest.skipUnless(os.name == "nt", "junctions are a Windows scenario")
+    def test_data_linked_to_the_real_storage_is_rejected(self):
+        self.link(self.box / "data", self.real / "data")
+        problems = v3.isolation_problems(self.real, self.box)
+        self.assertTrue(any("data/" in p for p in problems), problems)
+
+    @unittest.skipUnless(os.name == "nt", "junctions are a Windows scenario")
+    def test_any_other_link_inside_the_root_is_rejected_but_the_dependency_store_is_allowed(self):
+        store = self.tmp / "node_modules_store"
+        store.mkdir()
+        self.link(self.box / "frontend" / "node_modules", store)
+        self.assertEqual(v3.isolation_problems(self.real, self.box), [], "frontend/node_modules is the declared read-only exception")
+        self.link(self.box / "src" / "sneaky", self.real / "data")
+        self.assertTrue(any("sneaky" in p for p in v3.isolation_problems(self.real, self.box)))
+
+    @unittest.skipUnless(os.name == "nt", "junctions are a Windows scenario")
+    def test_the_dependency_store_must_not_point_into_the_real_data(self):
+        self.link(self.box / "frontend" / "node_modules", self.real / "data")
+        self.assertTrue(any("points into the real data" in p for p in v3.isolation_problems(self.real, self.box)))
+
+    def test_inherited_environment_that_redirects_storage_is_rejected(self):
+        for name in [k for k in os.environ if k.upper().startswith(("HYDRA_", "DSL_", "SPRING_")) or k in v3._JVM_OPTION_VARS]:
+            del os.environ[name]
+        self.assertEqual(v3.unsafe_env_problems(self.real), [])
+        os.environ["HYDRA_TRANSFORMATION_SYNC_SESSION_DIRECTORY"] = str(self.real / "data" / "sessions")
+        self.assertTrue(any("HYDRA_TRANSFORMATION_SYNC_SESSION_DIRECTORY" in p for p in v3.unsafe_env_problems(self.real)))
+        del os.environ["HYDRA_TRANSFORMATION_SYNC_SESSION_DIRECTORY"]
+        os.environ["DSL_STORAGE_METAMODELS"] = str(self.real / "data" / ".." / "data" / "metamodels")
+        self.assertTrue(any("DSL_STORAGE_METAMODELS" in p for p in v3.unsafe_env_problems(self.real)))
+        del os.environ["DSL_STORAGE_METAMODELS"]
+        os.environ["MAVEN_OPTS"] = "-Xmx1g -Duser.dir=C:\\somewhere"
+        self.assertTrue(any("user.dir" in p for p in v3.unsafe_env_problems(self.real)))
+        os.environ["MAVEN_OPTS"] = "-Xmx1g"
+        os.environ["HYDRA_SOMETHING"] = str(self.box / "elsewhere")
+        self.assertEqual(v3.unsafe_env_problems(self.real), [])
+
+    def test_run_refuses_to_start_anything_when_isolation_is_required_and_missing(self):
+        started = []
+        saved = (v3.load_manifest, v3.load_state, v3.build_plan, v3.run_maven_batch, v3.save_state)
+        task = self.task()
+        v3.load_manifest = lambda *a, **k: {"tasks": [task]}
+        v3.load_state = lambda: {"tasks": {}, "runs": [], "quarantine": []}
+        v3.build_plan = lambda *a, **k: [{"id": "t.one", "kind": "maven", "action": "RUN", "reason": "x", "priority": 5}]
+        v3.run_maven_batch = lambda *a, **k: started.append(a)
+        v3.save_state = lambda s: None
+        v3.OUT = self.real / "target" / "archify-v3"
+        try:
+            args = type("A", (), {"only": None, "force": None, "include_stale": False, "retry_failed": False, "dry_run": False, "no_sync": True, "no_quarantine": False, "timeout": 5})()
+            v3.EXEC_ROOT, v3.REQUIRE_ISOLATION = v3.ROOT, True
+            self.assertEqual(v3.cmd_run(args), 3)
+            self.assertEqual(started, [], "no Maven batch may start")
+            self.assertFalse((v3.OUT / "runs").exists(), "no run directory is created for a refused run")
+            os.environ["HYDRA_X"] = str(self.real / "data")
+            v3.EXEC_ROOT = self.box
+            self.assertEqual(v3.cmd_run(args), 3, "an inherited variable pointing into data/ also refuses")
+            self.assertEqual(started, [])
+        finally:
+            v3.load_manifest, v3.load_state, v3.build_plan, v3.run_maven_batch, v3.save_state = saved
+
+    def test_isolated_commands_use_the_execution_root(self):
+        v3.EXEC_ROOT = self.box
+        self.assertTrue(v3.maven_argv(["a.b.CTests"])[0].startswith(str(self.box)))
+        report = v3.isolation_report()
+        self.assertTrue(report["isolated"])
+        self.assertEqual(report["effectiveData"], str(self.box / "data"))
+        self.assertEqual(report["realData"], str(self.real / "data"))
+        self.assertTrue(report["mavenCwd"].startswith(str(self.box)) and report["playwrightCwd"].startswith(str(self.box)))
+
+    def test_a_task_marked_isolation_blocked_is_never_planned_to_run(self):
+        task = self.task(isolation="blocked", isolationReason="writes outside its working directory")
+        self.touch("src/main/java/a/b/C.java", "package a.b;\npublic class C {}\n")
+        action, reason = v3.classify(task, {"tasks": {}}, {"*"}, False)
+        self.assertEqual(action, "BLOCKED", "even a forced run must not start it")
+        self.assertIn("writes outside its working directory", reason)
+        plan = v3.build_plan({"tasks": [task]}, {"tasks": {}}, None, {"*"}, False)
+        self.assertEqual([p["action"] for p in plan], ["BLOCKED"])
+
 if __name__ == "__main__":
     unittest.main()
