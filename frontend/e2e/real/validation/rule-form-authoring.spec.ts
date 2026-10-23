@@ -1,4 +1,4 @@
-﻿import { expect, test, type APIRequestContext, type Locator } from '@playwright/test';
+import { expect, test, type APIRequestContext, type Locator } from '@playwright/test';
 import { uid } from '../support';
 import { advancedRoot, branchChild, diskDoc, directChild, expectSavedMessage, field, forceEnglish, getExpressions, getValidations, kindSelect, literalType, literalValueInput, modeSwitch, nodeKinds, nodeSelect, openValidationDesigner, saveFromToolbar, seedValidationMetamodel, select, useAdvancedCondition, waitForRule } from './helpers';
 
@@ -132,9 +132,9 @@ const textField = (node: Locator, idSuffix: string): Locator => node.locator(`:s
 
 // Etapa «ex» (árbol de expresión): el usuario construye en el constructor avanzado una condición que usa los 13 tipos de nodo y el backend
 // real guarda la expresión completa, que se lee por API y desde el fichero del backend.
-// PENDIENTE (fase 3): el guardado de esta condición no llegó a completarse en la ejecución real (el botón «Save validations» no produjo el mensaje
-// de guardado). Se conserva el recorrido como test pendiente hasta diagnosticarlo; la etapa «ex» no se reclama como directa.
-test.fixme('una condición construida con los 13 tipos de nodo se guarda tal cual en el backend', async ({ page, request }) => {
+// Antes pendiente (fixme): el guardado devolvía 400 porque el nodo MODEL generaba la dependencia { kind: 'MODEL', elementId: '' } y el backend exige un
+// id estable ('model'). Corregido en validationDesignerSelectors.ts (campaña consolidada 2026-10-23); la etapa «ex» sigue sin reclamarse como directa.
+test('una condición construida con los 13 tipos de nodo se guarda tal cual en el backend', async ({ page, request }) => {
     test.setTimeout(150_000);
     await forceEnglish(page);
     const mm = await seedOperationMetamodel(request);
