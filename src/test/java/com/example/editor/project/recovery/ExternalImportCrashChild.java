@@ -129,6 +129,8 @@ public final class ExternalImportCrashChild {
                     System.out.println("IMPORT_OK");
                 } catch (RuntimeException failure) {
                     System.out.println("IMPORT_FAILED " + failure.getMessage());
+                    // cadena de causas completa: un fallo de E/S (p. ej. un bloqueo de fichero de Windows) debe quedar diagnosticable
+                    for (Throwable cause = failure.getCause(); cause != null; cause = cause.getCause()) System.out.println("  CAUSED_BY " + cause);
                 }
             }
             System.out.println("PENDING=" + compensation.pendingDescriptions());
