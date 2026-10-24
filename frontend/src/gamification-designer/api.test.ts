@@ -9,7 +9,8 @@ describe('gamification catalog API: respuestas de create/replace', () => {
     /** Respuesta tal como la serializa el backend: omite las cadenas vacías de la regla. */
     const backendResponseWithoutEmptyStrings = () => {
         const models = createEmptyGamificationModels('people');
-        const { conditionPath: _c, achievementId: _a, challengeId: _h, rewardId: _r, ...rule } = createRule('event:test', 'points:a');
+        const omitted = new Set(['conditionPath', 'achievementId', 'challengeId', 'rewardId']);
+        const rule = Object.fromEntries(Object.entries(createRule('event:test', 'points:a')).filter(([key]) => !omitted.has(key)));
         const definitions = { ...models.definitions, pointTypes: [{ id: 'points:a', name: 'A' }], levels: [{ id: 'level:a', name: 'L', pointTypeId: 'points:a' }] };
         return { models, body: { definitions, bindings: { ...models.bindings, rules: [rule] }, definitionEtag: 'd', bindingEtag: 'b' } };
     };

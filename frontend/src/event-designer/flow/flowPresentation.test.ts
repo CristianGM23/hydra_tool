@@ -6,8 +6,8 @@ import type { EventFlowModel, FlowNode } from './types';
 
 /** Nodo con la forma que devuelve el backend: sin las cadenas vacías. */
 function backendNode(kind: FlowNode['kind']): FlowNode {
-    const { eventTypeId: _e, referenceId: _r, conditionExpressionId: _c, ...rest } = createFlowNode(kind);
-    return rest as unknown as FlowNode;
+    const omitted = new Set(['eventTypeId', 'referenceId', 'conditionExpressionId']);
+    return Object.fromEntries(Object.entries(createFlowNode(kind)).filter(([key]) => !omitted.has(key))) as unknown as FlowNode;
 }
 
 describe('flow node presentation with backend-omitted empty strings', () => {
