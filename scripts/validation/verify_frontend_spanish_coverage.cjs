@@ -13,7 +13,8 @@ try {
   try { ts = require('typescript'); } catch {
     const { execFileSync } = require('child_process');
     const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-    const globalRoot = execFileSync(npm, ['root', '-g'], { encoding:'utf8' }).trim();
+    // Node >= 18.20.2/20.12.2 (CVE-2024-27980) rejects running .cmd files without a shell on Windows (EINVAL).
+    const globalRoot = execFileSync(npm, ['root', '-g'], { encoding:'utf8', shell: process.platform === 'win32' }).trim();
     ts = require(path.join(globalRoot, 'typescript'));
   }
 }
