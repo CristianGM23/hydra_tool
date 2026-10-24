@@ -17,6 +17,7 @@ import com.example.editor.definition.EditorDefinitionApplicationException;
 import com.example.editor.definition.EditorDefinitionApplicationService;
 import com.example.editor.definition.EditorDefinitionModel;
 import com.example.editor.definition.assets.EditorVisualAssetService;
+import com.example.editor.io.BoundedIo;
 import com.example.editor.metamodel.application.CanonicalMetamodelApplicationService;
 import com.example.editor.metamodel.application.MetamodelApplicationException;
 import com.example.editor.metamodel.core.MetaModel;
@@ -288,7 +289,7 @@ public class ExternalImportCompensationService {
         Path marker = root.resolve(OPERATION_MARKER);
         try {
             if(!Files.isRegularFile(marker) || !Files.isRegularFile(root.resolve(ProjectDescriptorStore.FILE_NAME))
-                    || !journal.operationId().equals(mapper.readTree(Files.readAllBytes(marker)).path("operationId").asString(""))) {
+                    || !journal.operationId().equals(mapper.readTree(BoundedIo.readInternal(marker)).path("operationId").asString(""))) {
                 return "the directory " + root + " exists without this operation's ownership marker; it was not deleted (manual review needed)";
             }
             // La marca prueba que el proyecto es de esta operación. Si HYDRA lo reabrió al arrancar (último proyecto activo) se cierra antes de borrar;

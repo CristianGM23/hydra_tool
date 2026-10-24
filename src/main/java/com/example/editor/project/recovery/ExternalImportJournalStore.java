@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.editor.config.StorageProperties;
 import com.example.editor.io.AtomicFiles;
+import com.example.editor.io.BoundedIo;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -97,7 +98,7 @@ public class ExternalImportJournalStore {
     /** Descripción: Obtiene la información correspondiente a «load» dentro de Hold. Entradas: operationId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ Optional<ExternalImportJournal> load(String operationId) {
         Path source = path(operationId);
         if(!Files.isRegularFile(source)) return Optional.empty();
-        try { return Optional.of(mapper.readValue(Files.readAllBytes(source), ExternalImportJournal.class)); }
+        try { return Optional.of(mapper.readValue(BoundedIo.readInternal(source), ExternalImportJournal.class)); }
         catch(IOException | RuntimeException exception) {
             throw new ExternalImportJournalException("The external import journal " + operationId + " cannot be read", exception);
         }
