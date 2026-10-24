@@ -23,10 +23,10 @@ with tempfile.TemporaryDirectory(prefix='hydra-rc1-install-') as td:
   cmds=[[sys.executable,'scripts/validation/verify_manifest.py'],[sys.executable,'scripts/release/verify_release_metadata.py']]
   ok=True; outputs=[]
   for cmd in cmds:
-   cp=subprocess.run(cmd,cwd=target,text=True,capture_output=True); ok &= cp.returncode==0; outputs.append((cp.stdout+cp.stderr)[-3000:])
+   cp=subprocess.run(cmd,cwd=target,text=True,encoding='utf-8',errors='replace',capture_output=True); ok &= cp.returncode==0; outputs.append((cp.stdout+cp.stderr)[-3000:])
   if args.smoke_build and case['required']:
-   mvn=['mvnw.cmd','-B','-DskipTests','compile'] if os.name=='nt' else ['./mvnw','-B','-DskipTests','compile']
-   cp=subprocess.run(mvn,cwd=target,text=True,capture_output=True); ok &= cp.returncode==0; outputs.append((cp.stdout+cp.stderr)[-3000:])
+   mvn=[str(target/'mvnw.cmd'),'-B','-DskipTests','compile'] if os.name=='nt' else ['./mvnw','-B','-DskipTests','compile']
+   cp=subprocess.run(mvn,cwd=target,text=True,encoding='utf-8',errors='replace',capture_output=True); ok &= cp.returncode==0; outputs.append((cp.stdout+cp.stderr)[-3000:])
   results.append({'id':case['id'],'path':str(target),'required':case['required'],'passed':ok,'outputTail':'\n'.join(outputs)[-6000:]})
 report={'schemaVersion':'1.0','archive':archive.name,'smokeBuild':args.smoke_build,'results':results,'passed':all(r['passed'] or not r['required'] for r in results)}
 out=ROOT/policy['report']; out.parent.mkdir(parents=True,exist_ok=True); out.write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')

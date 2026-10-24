@@ -147,7 +147,7 @@ if not args.structural_only:
     full_ok &= run('Vitest full suite', ['node', 'scripts/hydra-test-runner.mjs', 'full'], cwd=ROOT / 'frontend', timeout=7200, facet='tests')
     full_ok &= run('Axe component suite', ['node', './node_modules/vitest/vitest.mjs', 'run', 'src/accessibility/axeAccessibility.test.tsx'], cwd=ROOT / 'frontend', facet='a11y')
     full_ok &= run('Playwright keyboard/focus/zoom suite', ['npm.cmd', 'run', 'test:a11y:e2e'] if os.name == 'nt' else ['npm', 'run', 'test:a11y:e2e'], cwd=ROOT / 'frontend', timeout=1800, facet='a11y')
-    full_ok &= run('Maven full verify', ['mvnw.cmd', '-B', 'clean', 'verify'] if os.name == 'nt' else ['./mvnw', '-B', 'clean', 'verify'], facet='backend')
+    full_ok &= run('Maven full verify', [str(ROOT / 'mvnw.cmd'), '-B', 'clean', 'verify'] if os.name == 'nt' else ['./mvnw', '-B', 'clean', 'verify'], timeout=7200, facet='backend')
 
 status = 'STRUCTURAL_PASS' if args.structural_only and structural_ok else ('PASS' if full_ok else 'FAIL')
 facets: dict[str, dict[str, object]] = {}
