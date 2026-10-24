@@ -70,7 +70,7 @@ export function ProjectExplorerWorkspace({ children, onWorkspaceReload, workbenc
     const [tabs, setTabs] = useState<ProjectTab[]>([]);
     // Pestañas del último render: abrir varios ficheros seguidos no debe persistir la lista obsoleta del render que inició el bucle.
     const tabsRef = useRef<ProjectTab[]>([]);
-    tabsRef.current = tabs;
+    useEffect(() => { tabsRef.current = tabs; }, [tabs]);
     const [activeLocation, setActiveLocation] = useState<{ workbenchId: string; path: string }>({ workbenchId, path: '' });
     const activePath = activeLocation.workbenchId === workbenchId ? activeLocation.path : '';
     const setActivePath = (path: string): void => setActiveLocation({ workbenchId, path });
