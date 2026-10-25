@@ -177,6 +177,7 @@ public class VsCodeExtensionTechnologyAdapter implements TechnologyAdapter {
                     "typescript": "5.9.2",
                     "vitest": "4.1.10"
                   },
+                  %s,
                   "contributes": {
                     "commands": [
                       {"command": "%s.runtime.toggle", "title": "HYDRA: Toggle runtime"},
@@ -214,7 +215,7 @@ public class VsCodeExtensionTechnologyAdapter implements TechnologyAdapter {
                 }
                 """.formatted(escapedName, escapeJsonText(packageName), json(engine),
                         commandPrefix, commandPrefix, commandPrefix, commandPrefix, commandPrefix, extension,
-                        json(glspVersion), json(langiumVersion), json(engine.replace("^", "")),
+                        json(glspVersion), json(langiumVersion), json(engine.replace("^", "")), TechnologyAdapterSupport.VITEST_VITE_OVERRIDE,
                         commandPrefix, commandPrefix, commandPrefix, commandPrefix,
                         commandPrefix, commandPrefix, commandPrefix, commandPrefix, commandPrefix,
                         commandPrefix, extension, textualContribution, commandPrefix, commandPrefix, commandPrefix, commandPrefix, json(glspVersion));

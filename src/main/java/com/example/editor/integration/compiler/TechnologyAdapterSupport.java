@@ -12,6 +12,9 @@ import com.example.editor.integration.projection.CanonicalArtifactContent;
 
 /** Funciones deterministas compartidas por los generadores EMF, Sirius y futuros adaptadores. */
 public final class TechnologyAdapterSupport {
+    /** Fragmento package.json para los proyectos generados con vitest 4: npm 10 aborta («Cannot read properties of null (reading 'edgesOut')»)
+     * al resolver el peer opcional @vitejs/devtools de vite 8, cuyo peer vitest@* arrastra vitest 5. vitest 4 admite vite 6, 7 y 8, así que se fija la línea 7. */
+    public static final String VITEST_VITE_OVERRIDE = "\"overrides\":{\"vite\":\"7.3.7\"}";
     /** Descripción: Inicializa una instancia de TechnologyAdapterSupport con sus dependencias y datos de entrada. Entradas: no requiere parámetros de entrada. Salida: deja la instancia inicializada y lista para su uso. */ private TechnologyAdapterSupport(){ }
 
     /** Descripción: Ejecuta la operación «text» correspondiente a la responsabilidad de TechnologyAdapterSupport. Entradas: path: ruta o ubicación utilizada por la operación; mediaType: dato de entrada necesario para la operación; content: valor de entrada que debe procesarse; sources: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public static TechnologyGeneratedFile text(String path, String mediaType, String content, List<String> sources){

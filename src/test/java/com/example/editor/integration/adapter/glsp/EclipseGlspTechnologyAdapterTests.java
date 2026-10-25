@@ -67,6 +67,7 @@ class EclipseGlspTechnologyAdapterTests {
                 .contains("extends OperationHandler","createCommand","undo()","redo()","activationEpoch","rollbackRuntime","currentRuntime","throw error");
         assertThat(text(result,"server/package.json")).contains("@eclipse-glsp/server","@eclipse-glsp/graph","inversify","6.1.3").doesNotContain("server-node");
     }
+    @Test void nodePackagesPinViteSoNpmCanResolveVitest(){var result=adapter.compile(configured(Map.of("serverLanguage","typescript")));assertThat(text(result,"client/package.json")).contains("\"overrides\":{\"vite\":\"7.3.7\"}");assertThat(text(result,"server/package.json")).contains("\"overrides\":{\"vite\":\"7.3.7\"}");}
     @Test void exportsHonestScopedFidelityObligations(){
         var result = adapter.compile(TechnologyAdapterTestFixtures.glspRequest());
         String report = text(result,"hydra-fidelity-obligations.json");
