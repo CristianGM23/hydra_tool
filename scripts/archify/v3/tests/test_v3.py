@@ -1,4 +1,5 @@
 """Unit tests for the V3 runner's pure logic (no Maven, no network). Run: python scripts/archify/v3/hydra_archify_v3.py selftest"""
+import argparse
 import importlib.util
 import json
 import os
@@ -372,6 +373,146 @@ class ClosureFingerprintTests(Sandbox):
         old = {"verdict": "PASS", "fingerprint": "f1", "fingerprintV2": "g1", "runId": "r1", "finishedAt": "t1", "evidence": {}}
         entry = v3._history_entry(old)
         self.assertEqual(entry, {"verdict": "PASS", "fingerprint": "f1", "fingerprintV2": "g1", "runId": "r1", "finishedAt": "t1"})
+
+
+class EolCanonicalTests(Sandbox):
+    """A clean checkout (LF) recognises evidence recorded on a working copy whose sources were written with CRLF, and nothing else."""
+
+    def setUp(self):
+        super().setUp()
+        self.put("src/main/java/a/b/C.java", b"package a.b;\r\npublic class C { }\r\n")
+        self.put("src/test/java/a/b/CTests.java", b"package a.b;\r\nclass CTests { C c; }\r\n")
+
+    def put(self, rel, data: bytes):
+        p = self.tmp / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(data)  # bytes, not text: write_text would translate line endings on Windows
+        v3._SHA_CACHE.clear(); v3._GLOB_CACHE.clear(); v3._JAVA_CACHE.clear()
+
+    def to_lf(self, rel):
+        self.put(rel, (self.tmp / rel).read_bytes().replace(b"\r\n", b"\n"))
+
+    def recorded(self, t):
+        src = self.tmp / "build"
+        write_xml(src, "a.b.CTests", [("t", None)])
+        info = v3.capture_reports(src, "r1", "2026-10-19T08:00:00.000Z")["a.b.CTests"]
+        v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        return {"verdict": "PASS", "kind": "maven", "evidence": {"a.b.CTests": info}, "finishedAt": "2026-10-19T09:00:00.000Z", **v3.fp_fields(t)}
+
+    def test_line_endings_of_source_files_fold_and_their_content_does_not(self):
+        t = self.task()
+        raw, canonical = v3.fingerprint(t)["sha256"], v3.fingerprint(t, canonical=True)["sha256"]
+        self.to_lf("src/main/java/a/b/C.java")
+        self.assertNotEqual(raw, v3.fingerprint(t)["sha256"], "the raw fingerprint still sees every byte")
+        self.assertEqual(canonical, v3.fingerprint(t, canonical=True)["sha256"], "CRLF and LF are the same Java line terminator")
+        self.put("src/main/java/a/b/C.java", b"package a.b;\npublic class C { int changed; }\n")
+        self.assertNotEqual(canonical, v3.fingerprint(t, canonical=True)["sha256"], "a content change always invalidates")
+        self.put("src/main/java/a/b/C.java", b"package a.b;\rpublic class C { }\r")
+        self.assertNotEqual(canonical, v3.fingerprint(t, canonical=True)["sha256"], "only CRLF is folded, a lone CR is kept")
+
+    def test_files_whose_bytes_may_matter_keep_their_raw_hash(self):
+        t = self.task(inputs=["src/main/java/a/b/C.java", "src/main/resources/app.properties", "scripts/run.sh"])
+        self.put("src/main/resources/app.properties", b"a=1\r\nb=2\r\n")
+        self.put("scripts/run.sh", b"#!/bin/sh\r\necho ok\r\n")
+        canonical = v3.fingerprint(t, canonical=True)["sha256"]
+        self.to_lf("src/main/resources/app.properties")
+        self.assertNotEqual(canonical, v3.fingerprint(t, canonical=True)["sha256"], "resources are read at runtime: their bytes stay strict")
+        self.put("src/main/resources/app.properties", b"a=1\r\nb=2\r\n")
+        self.to_lf("scripts/run.sh")
+        self.assertNotEqual(canonical, v3.fingerprint(t, canonical=True)["sha256"], "shell scripts are line-ending sensitive")
+
+    def test_a_clean_checkout_reuses_the_evidence_only_through_the_canonical_twin(self):
+        t = self.task()
+        rec = self.recorded(t)
+        self.assertIn("fingerprintCanonical", rec)
+        self.assertIn("fingerprintV2Canonical", rec)
+        state = {"tasks": {"t.one": rec}}
+        self.to_lf("src/main/java/a/b/C.java")
+        self.to_lf("src/test/java/a/b/CTests.java")
+        action, why = v3.classify(t, state, set(), False)
+        self.assertEqual(action, "REUSE", why)
+        self.assertIn("eol-canonical", why)
+        self.assertEqual(v3.write_currency({"tasks": [t]}, state)["ids"]["java:a.b.CTests"]["scheme"], "fingerprint-v1+eol-canonical")
+        self.assertEqual(v3.classify(t, state, set(), False, strict=True)[0], "RUN", "--strict-fingerprint demands identical bytes")
+        self.assertEqual(v3.classify(t, state, {"t.one"}, False)[0], "RUN", "a revalidation can always be forced")
+        info = rec["evidence"]["a.b.CTests"]
+        stored = self.tmp / info["dir"] / info["files"][0]
+        os.chmod(stored, 0o666)  # the store is read-only by design
+        stored.write_text("tampered")
+        v3._SHA_CACHE.clear()
+        self.assertEqual(v3.classify(t, state, set(), False)[0], "RUN", "tampered evidence is never reused")
+
+    def test_a_content_change_on_the_clean_checkout_is_not_reused(self):
+        t = self.task()
+        state = {"tasks": {"t.one": self.recorded(t)}}
+        self.put("src/main/java/a/b/C.java", b"package a.b;\npublic class C { int x; }\n")
+        action, why = v3.classify(t, state, set(), False)
+        self.assertEqual(action, "RUN")
+        self.assertIn("inputs changed", why)
+
+    def attest(self, t, state, **kw):
+        v3.save_state(state)
+        saved = v3.load_manifest
+        v3.load_manifest = lambda path=None: {"tasks": [t]}
+        try:
+            args = argparse.Namespace(**{"changed_file": None, "baseline_dir": None, "only": None, "apply": True, "report": None, **kw})
+            v3.cmd_attest_eol(args)
+        finally:
+            v3.load_manifest = saved
+            v3._SHA_CACHE.clear(); v3._JAVA_CACHE.clear()
+        return v3.load_state()
+
+    def test_legacy_evidence_gains_the_twin_only_when_its_recorded_bytes_reproduce_the_stored_fingerprint(self):
+        t = self.task()
+        rec = self.recorded(t)
+        for key in ("fingerprintCanonical", "fingerprintV2Canonical"):
+            rec.pop(key)  # evidence recorded before the eol-canonical scheme existed
+        recorded_tree = self.tmp / "recorded"  # the working copy the evidence was recorded in (CRLF)
+        for rel in ("src/main/java/a/b/C.java", "src/test/java/a/b/CTests.java"):
+            (recorded_tree / rel).parent.mkdir(parents=True, exist_ok=True)
+            (recorded_tree / rel).write_bytes((self.tmp / rel).read_bytes())
+            self.to_lf(rel)  # the clean checkout of the same commit
+        self.assertEqual(v3.classify(t, {"tasks": {"t.one": rec}}, set(), False)[0], "RUN", "legacy evidence is not reused until it is attested")
+        changed = self.tmp / "changed.txt"
+        changed.write_text("src/main/java/a/b/C.java\nsrc/test/java/a/b/CTests.java\n")
+        state = self.attest(t, {"tasks": {"t.one": rec}}, changed_file=str(changed), baseline_dir=str(recorded_tree))
+        attested = state["tasks"]["t.one"]
+        self.assertEqual(attested["eolAttestation"]["baselineFingerprint"], rec["fingerprint"])
+        self.assertIn("fingerprintV2Canonical", attested)
+        self.assertEqual(v3.classify(t, state, set(), False)[0], "REUSE")
+
+        drifted = self.tmp / "drifted"  # a "baseline" whose bytes are not the recorded ones is refused
+        (drifted / "src/main/java/a/b").mkdir(parents=True)
+        (drifted / "src/main/java/a/b/C.java").write_bytes(b"package a.b;\r\npublic class C { int drift; }\r\n")
+        (drifted / "src/test/java/a/b").mkdir(parents=True)
+        (drifted / "src/test/java/a/b/CTests.java").write_bytes((recorded_tree / "src/test/java/a/b/CTests.java").read_bytes())
+        state = self.attest(t, {"tasks": {"t.one": dict(rec)}}, changed_file=str(changed), baseline_dir=str(drifted))
+        self.assertNotIn("fingerprintCanonical", state["tasks"]["t.one"], "nothing is recorded when the stored fingerprint is not reproduced")
+        self.assertEqual(v3.classify(t, state, set(), False)[0], "RUN")
+
+    def test_closure_reused_evidence_gains_only_the_closure_twin(self):
+        self.put("src/main/java/a/b/Unrelated.java", b"package a.b;\npublic class Unrelated { }\n")
+        t = self.task(inputs=["src/main/java/a/b/C.java", "src/main/java/a/b/Unrelated.java"])
+        rec = self.recorded(t)
+        for key in ("fingerprintCanonical", "fingerprintV2Canonical"):
+            rec.pop(key)
+        recorded_tree = self.tmp / "recorded"
+        for rel in ("src/main/java/a/b/C.java", "src/test/java/a/b/CTests.java"):
+            (recorded_tree / rel).parent.mkdir(parents=True, exist_ok=True)
+            (recorded_tree / rel).write_bytes((self.tmp / rel).read_bytes())
+            self.to_lf(rel)
+        self.put("src/main/java/a/b/Unrelated.java", b"package a.b;\npublic class Unrelated { int later; }\n")  # unreachable change committed after the run
+        changed = self.tmp / "changed.txt"
+        changed.write_text("src/main/java/a/b/C.java\nsrc/test/java/a/b/CTests.java\n")
+        state = self.attest(t, {"tasks": {"t.one": rec}}, changed_file=str(changed), baseline_dir=str(recorded_tree))
+        attested = state["tasks"]["t.one"]
+        self.assertNotIn("fingerprintCanonical", attested, "the declared inputs changed, so v1 is not reproduced and gets no twin")
+        self.assertIn("fingerprintV2Canonical", attested, "the reachable closure is reproduced byte for byte")
+        action, why = v3.classify(t, state, set(), False)
+        self.assertEqual(action, "REUSE", why)
+        self.assertIn("closure-v2, eol-canonical", why)
+        self.put("src/main/java/a/b/C.java", b"package a.b;\npublic class C { int reachable; }\n")
+        self.assertEqual(v3.classify(t, state, set(), False)[0], "RUN", "a reachable content change still invalidates")
 
 
 class IsolationTests(Sandbox):

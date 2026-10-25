@@ -315,21 +315,39 @@ def task_files(task: dict) -> list[str]:
 # Empty during normal operation. They let `attest-closure` recompute the fingerprints of the state the evidence was recorded in.
 _OVERRIDES: dict = {}
 
+# Line-ending canonical hashing (scheme "eol-canonical"). .gitattributes stores sources as LF (text=auto eol=lf), but a file written on Windows keeps
+# CRLF in the working copy while Git reports it clean, so a raw hash recorded there never matches a clean checkout of the same commit. Only for
+# languages whose specification makes CRLF and LF the same line terminator is CRLF folded into LF; every other file keeps its raw bytes.
+EOL_NEUTRAL_SUFFIXES = (".java", ".ts", ".tsx", ".js", ".mjs", ".cjs")
 
-def _tracked_sha(f: str) -> str | None:
-    """SHA-256 of a tracked input in the current tree (or in the baseline when overridden); None when it does not exist."""
+
+def _canonical_bytes(f: str, data: bytes) -> bytes:
+    return data.replace(b"\r\n", b"\n") if f.endswith(EOL_NEUTRAL_SUFFIXES) else data
+
+
+def _tracked_sha(f: str, canonical: bool = False) -> str | None:
+    """SHA-256 of a tracked input in the current tree (or in the baseline when overridden); None when it does not exist.
+    `canonical` folds CRLF into LF for EOL_NEUTRAL_SUFFIXES and is identical to the raw hash for every other file."""
+    eol = canonical and f.endswith(EOL_NEUTRAL_SUFFIXES)
     if f in _OVERRIDES:
         data = _OVERRIDES[f]
-        return None if data is None else hashlib.sha256(data).hexdigest()
+        return None if data is None else hashlib.sha256(_canonical_bytes(f, data) if eol else data).hexdigest()
     p = ROOT / f
-    return sha256_file(p) if p.is_file() else None
+    if not p.is_file():
+        return None
+    if not eol:
+        return sha256_file(p)
+    key = "eol-canonical:" + str(p)  # shares the per-process memo (and its invalidation) with sha256_file
+    if key not in _SHA_CACHE:
+        _SHA_CACHE[key] = hashlib.sha256(_canonical_bytes(f, p.read_bytes())).hexdigest()
+    return _SHA_CACHE[key]
 
 
-def fingerprint(task: dict) -> dict:
+def fingerprint(task: dict, canonical: bool = False) -> dict:
     h = hashlib.sha256()
     missing, count = [], 0
     for f in task_files(task):
-        sha = _tracked_sha(f)
+        sha = _tracked_sha(f, canonical)
         if sha is None:
             if f in _OVERRIDES:
                 continue  # did not exist in the baseline (it may come from a glob that matches files added later)
@@ -343,6 +361,8 @@ def fingerprint(task: dict) -> dict:
     for name in sorted(task.get("envFingerprint", [])):
         h.update(f"ENV:{name}={hashlib.sha256(os.environ.get(name, '').encode()).hexdigest()}\n".encode())
     h.update(f"JAVA_HOME={os.environ.get('JAVA_HOME', '')}\nkind={task.get('kind')}\n".encode())
+    if canonical:
+        h.update(b"scheme=eol-canonical\n")
     return {"sha256": h.hexdigest(), "files": count, "missing": missing}
 
 
@@ -463,10 +483,10 @@ def _tree_files(*bases: str) -> list:
     return out
 
 
-def fingerprint_v2(task: dict) -> dict:
+def fingerprint_v2(task: dict, canonical: bool = False) -> dict:
     """Closure fingerprint. `bounded` is True only when the dependencies of the task were determined statically with confidence; otherwise the
     result equals v1 and `reasons` says why. `unreachableDeclared` lists declared production inputs the test provably cannot reach."""
-    v1 = fingerprint(task)
+    v1 = fingerprint(task, canonical)
     base = {**v1, "scheme": "declared", "bounded": False, "reasons": [], "unreachableDeclared": [], "closureSize": v1["files"], "hashes": {}}
     if task.get("fingerprintPolicy") == "declared":
         base["reasons"].append("manifest policy: declared")
@@ -498,7 +518,7 @@ def fingerprint_v2(task: dict) -> dict:
     h = hashlib.sha256()
     missing, hashes = [], {}
     for f in sorted(keep):
-        sha = _tracked_sha(f)
+        sha = _tracked_sha(f, canonical)
         if sha is None:
             if f in EXTRA_INPUTS and f != "pom.xml":
                 continue
@@ -512,16 +532,20 @@ def fingerprint_v2(task: dict) -> dict:
     for name in sorted(task.get("envFingerprint", [])):
         h.update(f"ENV:{name}={hashlib.sha256(os.environ.get(name, '').encode()).hexdigest()}\n".encode())
     h.update(f"JAVA_HOME={os.environ.get('JAVA_HOME', '')}\nkind={task.get('kind')}\nscheme=closure-v2\n".encode())
+    if canonical:
+        h.update(b"scheme=eol-canonical\n")
     return {"sha256": h.hexdigest(), "files": len(hashes), "missing": missing, "scheme": "closure-v2", "bounded": True, "reasons": [],
             "unreachableDeclared": sorted(unreachable), "closureSize": len(keep), "hashes": hashes}
 
 
 def fp_fields(task: dict) -> dict:
-    """Fingerprint fields stored in every result record: v1 (declared inputs) always, v2 (closure) when it is bounded."""
-    out = {"fingerprint": fingerprint(task)["sha256"]}
+    """Fingerprint fields stored in every result record: v1 (declared inputs) always, v2 (closure) when it is bounded, and the eol-canonical twin of
+    each, so a clean checkout of the same commit (LF) recognises evidence recorded on a working copy with CRLF sources."""
+    out = {"fingerprint": fingerprint(task)["sha256"], "fingerprintCanonical": fingerprint(task, canonical=True)["sha256"]}
     v2 = fingerprint_v2(task)
     if v2["bounded"]:
-        out.update({"fingerprintV2": v2["sha256"], "closureHashes": v2["hashes"], "closureSummary": {"size": v2["closureSize"], "unreachableDeclared": len(v2["unreachableDeclared"])}})
+        out.update({"fingerprintV2": v2["sha256"], "closureHashes": v2["hashes"], "closureSummary": {"size": v2["closureSize"], "unreachableDeclared": len(v2["unreachableDeclared"])},
+                    "fingerprintV2Canonical": fingerprint_v2(task, canonical=True)["sha256"]})
     return out
 
 
@@ -716,7 +740,8 @@ def run_logged(argv: list[str], cwd: Path, log_path: Path, timeout: int, env: di
 def classify(task: dict, state: dict, force: set, retry_failed: bool, strict: bool = False) -> tuple[str, str]:
     """-> (action, reason): RUN | REUSE | BLOCKED | PLANNED | SKIP.
 
-    `strict` disables the closure scheme: only an identical v1 fingerprint (all declared inputs) allows reuse. `force` ({"*"} or ids) always wins."""
+    `strict` disables the closure and eol-canonical schemes: only a byte-identical v1 fingerprint (all declared inputs) allows reuse.
+    `force` ({"*"} or ids) always wins."""
     st = task.get("status", "ACTIVE")
     if st == "BLOCKED":
         return "BLOCKED", task.get("blockedReason", "")
@@ -735,12 +760,16 @@ def classify(task: dict, state: dict, force: set, retry_failed: bool, strict: bo
         return "RUN", "forced"
     if rec.get("verdict") == "PASS" and rec.get("fingerprint") == fp["sha256"] and evidence_intact(rec):
         return "REUSE", "same fingerprint, immutable evidence intact"
+    if not strict and rec.get("verdict") == "PASS" and rec.get("fingerprintCanonical") == fingerprint(task, canonical=True)["sha256"] and evidence_intact(rec):
+        return "REUSE", "same content up to CRLF/LF line endings of source files (eol-canonical), immutable evidence intact"
     closure_note = ""
     if not strict and rec.get("verdict") == "PASS" and rec.get("fingerprintV2"):
         fp2 = fingerprint_v2(task)
         if fp2["bounded"]:
             if rec["fingerprintV2"] == fp2["sha256"] and not fp2["missing"] and evidence_intact(rec):
                 return "REUSE", "closure unchanged (closure-v2): only inputs the test cannot reach changed since " + rec.get("finishedAt", "?")
+            if rec.get("fingerprintV2Canonical") and rec["fingerprintV2Canonical"] == fingerprint_v2(task, canonical=True)["sha256"] and not fp2["missing"] and evidence_intact(rec):
+                return "REUSE", "closure unchanged (closure-v2, eol-canonical): only line endings or inputs the test cannot reach changed since " + rec.get("finishedAt", "?")
             old = rec.get("closureHashes") or {}
             changed = sorted([f for f, h in fp2["hashes"].items() if old.get(f) != h] + [f for f in old if f not in fp2["hashes"]])
             if changed:
@@ -1317,7 +1346,7 @@ def write_currency(m: dict, state: dict) -> dict:
         rec = state["tasks"].get(t["id"], {})
         if action != "REUSE" or rec.get("verdict") != "PASS":
             continue
-        scheme = "closure-v2" if "closure-v2" in why else "fingerprint-v1"
+        scheme = ("closure-v2" if "closure-v2" in why else "fingerprint-v1") + ("+eol-canonical" if "eol-canonical" in why else "")
         for i in task_evidence_ids(t):
             ids[i] = {"task": t["id"], "scheme": scheme, "runId": rec.get("runId"), "evidenceFinishedAt": rec.get("finishedAt"), "verifiedAt": now_iso()}
     out = {"schemaVersion": 1, "generatedAt": now_iso(), "note": "Evidence ids whose currency was verified by content hash (see write_currency in hydra_archify_v3.py).", "ids": ids}
@@ -1684,6 +1713,83 @@ def cmd_attest_closure(args) -> int:
     return 0
 
 
+def cmd_attest_eol(args) -> int:
+    """Give PASS records the eol-canonical twin of their fingerprints, without promoting anything.
+
+    A record is attested only when its stored fingerprint is reproduced byte for byte: from the current tree, or with the files named in
+    `--changed-file` read from `--baseline-dir` (the working copy the evidence was recorded in, e.g. one whose sources still have CRLF). That proves
+    the inputs are the recorded ones, so the canonical fingerprint computed from the same bytes describes the same evidence. The closure twin is
+    added only when the stored closure fingerprint is reproduced too. Records that do not reproduce are left untouched; reuse still requires intact
+    immutable evidence. Default is a dry run; `--apply` writes the state (with a backup) and an attestation report."""
+    paths = []
+    if args.changed_file:
+        if not args.baseline_dir:
+            raise SystemExit("--changed-file needs --baseline-dir")
+        paths = [l.strip() for l in Path(args.changed_file).read_text(encoding="utf-8-sig").splitlines() if l.strip() and not l.startswith("#")]
+        base = Path(args.baseline_dir).resolve()
+        for p in paths:
+            if Path(p).is_absolute() or ".." in Path(p).parts:
+                raise SystemExit(f"unsafe path in --changed-file: {p}")
+            src = base / p
+            _OVERRIDES[p] = src.read_bytes() if src.is_file() else None
+    m = load_manifest()
+    state = load_state()
+    _JAVA_CACHE.clear()
+    only = set(args.only.split(",")) if args.only else None
+    report = {"generatedAt": now_iso(), "baselineDir": args.baseline_dir, "changedFiles": paths, "tasks": {}}
+    counts = {"attested-v1": 0, "attested-v1-and-closure": 0, "attested-closure": 0, "already-canonical": 0, "not-attestable": 0, "no-pass-record": 0}
+    for t in sorted(m["tasks"], key=lambda x: x["id"]):
+        if only and t["id"] not in only:
+            continue
+        rec = state["tasks"].get(t["id"])
+        if not rec or rec.get("verdict") != "PASS" or not rec.get("fingerprint"):
+            counts["no-pass-record"] += 1
+            report["tasks"][t["id"]] = {"decision": "no-pass-record"}
+            continue
+        if rec.get("fingerprintCanonical") or rec.get("fingerprintV2Canonical"):
+            counts["already-canonical"] += 1
+            report["tasks"][t["id"]] = {"decision": "already-canonical"}
+            continue
+        # Each twin is backed by its own byte-for-byte reproduction: v1 (every declared input) and, for closure-reused evidence, the bounded closure.
+        twins = {}
+        if fingerprint(t)["sha256"] == rec["fingerprint"]:
+            twins["fingerprintCanonical"] = fingerprint(t, canonical=True)["sha256"]
+        if rec.get("fingerprintV2"):
+            v2 = fingerprint_v2(t)
+            if v2["bounded"] and v2["sha256"] == rec["fingerprintV2"]:
+                twins["fingerprintV2Canonical"] = fingerprint_v2(t, canonical=True)["sha256"]
+        if not twins:
+            counts["not-attestable"] += 1
+            report["tasks"][t["id"]] = {"decision": "not-attestable", "why": "neither the stored v1 nor the stored closure fingerprint is reproduced from these bytes: the evidence does not belong to them"}
+            continue
+        decision = ("attested-v1-and-closure" if len(twins) == 2 else "attested-v1") if "fingerprintCanonical" in twins else "attested-closure"
+        counts[decision] += 1
+        report["tasks"][t["id"]] = {"decision": decision, "twins": sorted(twins)}
+        if args.apply:
+            rec.update(twins)
+            rec["eolAttestation"] = {"scheme": "eol-canonical", "attestedAt": now_iso(), "twins": sorted(twins),
+                                     "baselineFingerprint": rec["fingerprint"] if "fingerprintCanonical" in twins else None,
+                                     "baselineFingerprintV2": rec.get("fingerprintV2") if "fingerprintV2Canonical" in twins else None,
+                                     "baselineDir": args.baseline_dir or "current tree", "changedFilesConsidered": len(paths),
+                                     "note": "stored fingerprint reproduced byte for byte before the canonical twin was recorded; nothing promoted"}
+    _OVERRIDES.clear()
+    report["counts"] = counts
+    print(json.dumps(counts))
+    if args.apply:
+        with Lock():
+            backup = STATE.with_name(f"state.before-attest-eol-{dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.json")
+            if STATE.is_file():
+                shutil.copy2(STATE, backup)
+            save_state(state)
+        write_json_atomic(OUT / "attestations" / f"attest-eol-{dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.json", report)
+        log("eol attestation applied; state backup and report written under " + rel(OUT))
+    else:
+        log("dry run: nothing written (use --apply)")
+    if args.report:
+        write_json_atomic(Path(args.report), report)
+    return 0
+
+
 def cmd_fingerprints(args) -> int:
     """Read-only: the declared-input (v1) fingerprint of every manifest task, so the launcher can bind its checkpoints to real content."""
     m = load_manifest()
@@ -1715,9 +1821,11 @@ def main(argv=None) -> int:
         p.add_argument("--only"); p.add_argument("--force"); p.add_argument("--retry-failed", action="store_true"); p.add_argument("--dry-run", action="store_true")
         p.add_argument("--no-sync", action="store_true", default=False); p.add_argument("--no-quarantine", action="store_true"); p.add_argument("--timeout", type=int, default=3600)
         p.add_argument("--include-stale", action="store_true", help="also re-run tasks whose test Archify reports as STALE_EVIDENCE")
-        p.add_argument("--strict-fingerprint", action="store_true", help="ignore the closure scheme: reuse only when every declared input (v1) is unchanged")
+        p.add_argument("--strict-fingerprint", action="store_true", help="ignore the closure and eol-canonical schemes: reuse only when every declared input (v1) is byte-identical")
     at = sub.add_parser("attest-closure"); at.add_argument("--changed-file", required=True); at.add_argument("--baseline-ref", default="HEAD")
     at.add_argument("--only"); at.add_argument("--apply", action="store_true"); at.add_argument("--report")
+    ae = sub.add_parser("attest-eol"); ae.add_argument("--changed-file"); ae.add_argument("--baseline-dir")
+    ae.add_argument("--only"); ae.add_argument("--apply", action="store_true"); ae.add_argument("--report")
     ad = sub.add_parser("adopt"); ad.add_argument("--run-id", required=True)
     sy = sub.add_parser("sync"); sy.add_argument("--restage", action="store_true"); sub.add_parser("status"); sub.add_parser("audit-strong"); sub.add_parser("audit-evidence"); sub.add_parser("fingerprints"); sub.add_parser("isolation-check"); sub.add_parser("selftest"); sub.add_parser("restore-quarantine")
     cb = sub.add_parser("capture-baseline"); cb.add_argument("--src"); cb.add_argument("--run-id"); cb.add_argument("--started")
@@ -1735,7 +1843,7 @@ def main(argv=None) -> int:
             raise SystemExit("sync is not allowed in sandbox mode")
     fn = {"run": cmd_run, "plan": cmd_plan, "sync": cmd_sync, "status": cmd_status, "audit-strong": cmd_audit, "audit-evidence": cmd_audit_evidence, "selftest": cmd_selftest,
           "capture-baseline": cmd_capture_baseline, "restore-quarantine": cmd_restore_quarantine, "adopt": cmd_adopt,
-          "attest-closure": cmd_attest_closure, "fingerprints": cmd_fingerprints, "isolation-check": cmd_isolation_check}[a.cmd]
+          "attest-closure": cmd_attest_closure, "attest-eol": cmd_attest_eol, "fingerprints": cmd_fingerprints, "isolation-check": cmd_isolation_check}[a.cmd]
     return fn(a)
 
 
