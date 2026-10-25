@@ -49,13 +49,17 @@ test.setTimeout(180_000); // compila una gramática y encadena varias sesiones y
 
 test('se rellena el ejemplo, se escribe, se corrige a mano y con la sugerencia del panel, y solo un borrador válido se promueve', async ({ page, request }) => {
     const { definitionId } = await seedTextualEditor(request);
-    // Los ids se guardan en el ORDEN DE LLEGADA de las respuestas (de forma síncrona en el evento): antes se añadían cuando se resolvía
-    // response.json(), cuyo orden no está garantizado; con dos sesiones (la inicial y «New session») la prueba podía consultar la antigua
-    // mientras la interfaz escribía en la nueva (fallo intermitente observado en la campaña consolidada, traza con 2 POST).
+    // La interfaz adopta la sesión de la ÚLTIMA PETICIÓN INICIADA (sessionSerial en TextualModelEditor descarta las respuestas antiguas),
+    // así que los ids se guardan en orden de inicio (evento request) y no de llegada: con dos POST casi simultáneos (la sesión inicial y
+    // «New session») la respuesta de la petición más antigua puede llegar después (traza 2026-10-25: 317 ms frente a 64 ms) y la prueba
+    // consultaba una sesión que la interfaz ya había descartado.
     const sessionIds: Promise<string | undefined>[] = [];
-    page.on('response', response => {
-        if (response.request().method() !== 'POST' || !/\/api\/textual-model-sessions$/.test(response.url()) || !response.ok()) return;
-        sessionIds.push(response.json().then((body: { id?: string }) => body.id).catch(() => undefined));
+    page.on('request', sessionRequest => {
+        if (sessionRequest.method() !== 'POST' || !/\/api\/textual-model-sessions$/.test(sessionRequest.url())) return;
+        sessionIds.push(sessionRequest.response()
+            .then(response => (response?.ok() ? response.json() : undefined))
+            .then((body?: { id?: string }) => body?.id)
+            .catch(() => undefined));
     });
     const session = async (): Promise<SessionJson> => apiGet<SessionJson>(request, `/api/textual-model-sessions/${await sessionIds[sessionIds.length - 1]}`);
     const settled = (predicate: (value: SessionJson) => boolean) => eventually(session, predicate, 30_000);
