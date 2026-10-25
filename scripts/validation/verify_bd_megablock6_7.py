@@ -23,7 +23,8 @@ from run_native_parity_matrix import load_matrix, run_matrix
 from run_native_parity_portfolio import read_policy, assess
 from editor_release_registry import promote
 from editor_release_trust import claim, sign_detached
-from install_standalone_web import install, rollback, inspect_install, location
+from install_standalone_web import install, rollback, inspect_install, location, commit_staged_version
+from unittest import mock
 
 
 class NativeParityContract(unittest.TestCase):
@@ -49,6 +50,51 @@ class NativeParityContract(unittest.TestCase):
         b=ROOT/'reference-projects/bd6-java-runtime/tests/hydra-parity'
         for file in sorted(a.rglob('*.json')):
             self.assertEqual(file.read_bytes(),(b/file.relative_to(a)).read_bytes())
+
+
+class StagedVersionCommit(unittest.TestCase):
+    """Windows antivirus/indexer handles must not abort an otherwise verified installation."""
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix='hydra-bd7-stage-')
+        self.addCleanup(self.temp.cleanup)
+        self.stage = Path(self.temp.name) / '.stage-test'
+        self.stage.mkdir()
+        self.target = Path(self.temp.name) / '1.0.0'
+
+    @staticmethod
+    def denied():
+        error = PermissionError(13, 'Access is denied')
+        error.winerror = 5
+        return error
+
+    def test_transient_windows_denial_is_retried_until_the_rename_succeeds(self):
+        native = Path.rename
+        calls = []
+        def flaky(path, target):
+            calls.append(path)
+            if len(calls) <= 2:
+                raise self.denied()
+            return native(path, target)
+        with mock.patch.object(Path, 'rename', flaky), mock.patch('install_standalone_web.os.name', 'nt'), \
+                mock.patch('install_standalone_web.time.sleep') as pause:
+            commit_staged_version(self.stage, self.target)
+        self.assertTrue(self.target.is_dir())
+        self.assertEqual((len(calls), pause.call_count), (3, 2))
+
+    def test_persistent_denial_fails_after_bounded_retries(self):
+        with mock.patch.object(Path, 'rename', side_effect=self.denied()), mock.patch('install_standalone_web.os.name', 'nt'), \
+                mock.patch('install_standalone_web.time.sleep') as pause:
+            with self.assertRaises(PermissionError):
+                commit_staged_version(self.stage, self.target, retries=3)
+        self.assertEqual(pause.call_count, 3)
+        self.assertFalse(self.target.exists())
+
+    def test_other_errors_are_not_retried(self):
+        with mock.patch.object(Path, 'rename', side_effect=FileExistsError(17, 'exists')), \
+                mock.patch('install_standalone_web.time.sleep') as pause:
+            with self.assertRaises(FileExistsError):
+                commit_staged_version(self.stage, self.target)
+        pause.assert_not_called()
 
 
 class InstalledWebLifecycle(unittest.TestCase):

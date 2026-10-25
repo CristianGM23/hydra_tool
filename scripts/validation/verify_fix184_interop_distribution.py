@@ -4,6 +4,7 @@ from __future__ import annotations
 import base64
 import importlib.util
 import json
+import os
 import re
 from pathlib import Path
 import subprocess
@@ -168,6 +169,55 @@ public class Test {public static void main(String[] args) {
         subprocess.run(['javac','--release','21','-encoding','UTF-8','-d',str(build),*(str(p) for p in java),str(test_java)],check=True,capture_output=True,timeout=45)
         result=subprocess.run(['java','-cp',str(build),'Test'],check=True,capture_output=True,text=True,timeout=20)
         self.assertIn('FIX184_REAL_GENERATOR=PASS',result.stdout)
+
+class TransientReplaceRegression(unittest.TestCase):
+    """Windows antivirus/indexer handles must not abort the updater configuration."""
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix='hydra-fix184-replace-')
+        self.addCleanup(self.temp.cleanup)
+        root = Path(self.temp.name)
+        self.target = root/'tauri.conf.json'
+        self.target.write_text('old')
+        self.staged = root/'.hydra-updater-test'
+        self.staged.write_text('new')
+
+    @staticmethod
+    def denied():
+        error = PermissionError(13, 'Access is denied')
+        error.winerror = 5
+        return error
+
+    def test_transient_denial_is_retried_until_replaced(self):
+        from unittest import mock
+        native = os.replace
+        calls = []
+        def flaky(source, destination):
+            calls.append(source)
+            if len(calls) <= 2:
+                raise self.denied()
+            return native(source, destination)
+        with mock.patch.object(updater.os, 'replace', flaky), mock.patch.object(updater.os, 'name', 'nt'), \
+                mock.patch.object(updater.time, 'sleep') as pause:
+            updater.replace_file(str(self.staged), self.target)
+        self.assertEqual(self.target.read_text(), 'new')
+        self.assertEqual((len(calls), pause.call_count), (3, 2))
+
+    def test_persistent_denial_fails_after_bounded_retries(self):
+        from unittest import mock
+        with mock.patch.object(updater.os, 'replace', side_effect=self.denied()), mock.patch.object(updater.os, 'name', 'nt'), \
+                mock.patch.object(updater.time, 'sleep') as pause:
+            with self.assertRaises(PermissionError):
+                updater.replace_file(str(self.staged), self.target, retries=3)
+        self.assertEqual(pause.call_count, 3)
+        self.assertEqual(self.target.read_text(), 'old')
+
+    def test_other_errors_are_not_retried(self):
+        from unittest import mock
+        with mock.patch.object(updater.os, 'replace', side_effect=FileNotFoundError(2, 'missing')), \
+                mock.patch.object(updater.time, 'sleep') as pause:
+            with self.assertRaises(FileNotFoundError):
+                updater.replace_file(str(self.staged), self.target)
+        pause.assert_not_called()
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

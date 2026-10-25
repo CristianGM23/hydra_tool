@@ -14,9 +14,29 @@ import os
 from pathlib import Path
 import re
 import tempfile
+import time
 from urllib.parse import urlsplit
 
 MAX_FILE = 128 * 1024
+_WINDOWS_SHARING_ERRORS = frozenset({5, 32, 33})
+
+
+def replace_file(staged: str, target: Path, *, retries: int = 7) -> None:
+    """Atomically replace a generated file, retrying only transient Windows sharing errors.
+
+    Antivirus or indexer handles on a just-written file make os.replace fail with
+    access denied or a sharing violation for a short time. Any other error, or a
+    persistent one after the bounded retries, is raised unchanged.
+    """
+    for attempt in range(retries + 1):
+        try:
+            os.replace(staged, target)
+            return
+        except OSError as exc:
+            transient = os.name == 'nt' and getattr(exc, 'winerror', None) in _WINDOWS_SHARING_ERRORS
+            if attempt == retries or not transient:
+                raise
+            time.sleep(min(0.05 * (attempt + 1), 0.4))
 
 
 def plain_file(root: Path, name: str) -> Path:
@@ -133,7 +153,7 @@ def configure(root: Path, pubkey: str, endpoint: str, *, apply: bool = False) ->
                             handle.write(proposed[name].encode('utf-8'))
                             handle.flush()
                             os.fsync(handle.fileno())
-                        os.replace(tempname, paths[name])
+                        replace_file(tempname, paths[name])
                     finally:
                         if os.path.exists(tempname):
                             os.unlink(tempname)
