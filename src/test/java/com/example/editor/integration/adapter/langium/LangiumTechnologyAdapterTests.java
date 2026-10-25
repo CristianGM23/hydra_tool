@@ -45,7 +45,24 @@ class LangiumTechnologyAdapterTests {
         assertThat(paths(plain)).noneMatch(value->value.endsWith("syntaxes/hydra-custom.tmLanguage.json"));
         assertThat(text(plain,"package.json")).doesNotContain("hydra-custom.tmLanguage.json");
     }
-    private TechnologyCompilationRequest configured(){var source=TechnologyAdapterTestFixtures.langiumRequest();var t=source.profile().target();var target=new IntegrationTarget(t.technology(),t.kind(),t.technologyVersion(),t.projectId(),t.moduleName(),t.buildSystem(),t.sourceRoots(),t.configurationFiles(),t.endpoint(),Map.of("packageName","@example/people-language","languageName","PeopleLanguage","fileExtension","ppl"));var p=source.profile();var profile=new IntegrationProfileModel(p.schemaVersion(),p.id(),p.metamodelId(),p.name(),target,p.deliveryMode(),p.features(),p.artifacts(),p.mappings(),p.injectionPolicy(),p.requiredCapabilities(),p.annotations());return new TechnologyCompilationRequest(profile,source.artifacts(),"test",Map.of());}
+    @Test void pinsAConsistentLangium4ToolchainThatNpmCanResolve(){
+        String pkg=text(adapter.compile(TechnologyAdapterTestFixtures.langiumRequest()),"package.json");
+        assertThat(pkg).contains("\"langium\": \"4.3.0\"","\"langium-cli\": \"4.3.0\"","\"vscode-languageserver\": \"10.0.1\"","\"vscode-languageserver-textdocument\": \"1.0.16\"",
+                "\"typescript\": \"6.0.2\"","\"vitest\": \"4.1.10\"","\"overrides\":{\"vite\":\"7.3.7\"}").doesNotContain("\"^");
+    }
+    @Test void keepsTheLanguageServerLineOfLangium3(){
+        var result=adapter.compile(configured(Map.of("langiumVersion","3.3.1")));
+        assertThat(text(result,"package.json")).contains("\"langium\": \"3.3.1\"","\"vscode-languageserver\": \"9.0.1\"");
+        assertThat(text(result,"src/main.ts")).contains("from 'vscode-languageserver/node.js';");
+    }
+    @Test void importsLangiumServicesFromTheirEntryPoints(){
+        var result=adapter.compile(TechnologyAdapterTestFixtures.langiumRequest());
+        assertThat(text(result,"-module.ts")).contains("import { inject, type Module } from 'langium';","type LangiumServices, type LangiumSharedServices, type PartialLangiumServices } from 'langium/lsp';",
+                "createPeopleServices(context:DefaultSharedModuleContext):{shared:LangiumSharedServices;People:PeopleServices}").doesNotContain("inject } from 'langium/lsp'","context:any");
+        assertThat(text(result,"src/main.ts")).contains("from 'vscode-languageserver/node';").doesNotContain("node.js");
+    }
+    private TechnologyCompilationRequest configured(){return configured(Map.of("packageName","@example/people-language","languageName","PeopleLanguage","fileExtension","ppl"));}
+    private TechnologyCompilationRequest configured(Map<String,String> settings){var source=TechnologyAdapterTestFixtures.langiumRequest();var t=source.profile().target();var target=new IntegrationTarget(t.technology(),t.kind(),t.technologyVersion(),t.projectId(),t.moduleName(),t.buildSystem(),t.sourceRoots(),t.configurationFiles(),t.endpoint(),settings);var p=source.profile();var profile=new IntegrationProfileModel(p.schemaVersion(),p.id(),p.metamodelId(),p.name(),target,p.deliveryMode(),p.features(),p.artifacts(),p.mappings(),p.injectionPolicy(),p.requiredCapabilities(),p.annotations());return new TechnologyCompilationRequest(profile,source.artifacts(),"test",Map.of());}
     private List<String> paths(com.example.editor.integration.compiler.TechnologyCompilationResult result){return result.files().stream().map(value->value.relativePath()).toList();}
     private String text(com.example.editor.integration.compiler.TechnologyCompilationResult result,String suffix){return result.files().stream().filter(value->value.relativePath().endsWith(suffix)).map(value->new String(value.content(),StandardCharsets.UTF_8)).findFirst().orElseThrow();}
 }
