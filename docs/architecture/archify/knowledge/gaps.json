@@ -111,7 +111,7 @@
    "kind": "TEST_EVIDENCE",
    "severity": "medium",
    "status": "OPEN",
-   "title": "48 qualification gates carry stale or carry-forward evidence",
+   "title": "58 qualification gates carry stale or carry-forward evidence",
    "detail": "Release/RC1/RC2 qualification reports predate recent product changes (or reuse historical PASS); re-run the qualification to refresh them.",
    "ref": "knowledge/tests/test-gaps.json"
   },
@@ -285,13 +285,13 @@
   ]
  },
  "testEvidenceSummary": {
-  "generatedAt": "2026-10-23T19:39:37.726Z",
+  "generatedAt": "2026-10-25T17:59:24.135Z",
   "byStatus": {
-   "PASS": 903,
+   "PASS": 893,
    "DISCOVERED": 133,
+   "STALE_EVIDENCE": 58,
    "SKIPPED": 2,
-   "FAIL": 1,
-   "STALE_EVIDENCE": 48
+   "FAIL": 1
   },
   "store": "knowledge/tests/"
  }

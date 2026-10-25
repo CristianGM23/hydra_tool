@@ -61,8 +61,8 @@
       "en": "A compiled and active grammar and a textual editor definition pointing to it are seeded through the real API."
     },
     "setup": {
-      "es": "Playwright con Chromium, sin simulaciones. El oráculo lee por la API real la sesión que guarda el servidor y su fichero.",
-      "en": "Playwright with Chromium, no simulations. The oracle reads through the real API the session the server stores and its file."
+      "es": "Playwright con Chromium, sin simulaciones. El oráculo lee por la API real la sesión de la última petición de creación iniciada (la misma regla que aplica el editor) y su fichero.",
+      "en": "Playwright with Chromium, no mocks. The oracle reads through the real API the session of the latest started creation request (the same rule the editor applies) and its file."
     },
     "executes": {
       "es": "Abre #/textual-models, comprueba el ejemplo inicial, pulsa 'New session', escribe un modelo con el teclado en Monaco, lo rompe con un token inválido, lo corrige a mano, lo rompe otra vez, pulsa el botón de corrección sugerida del panel y promueve el modelo válido.",
@@ -114,38 +114,41 @@
     "src": [
       {
         "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
-        "line": 63
+        "line": 57
       },
       {
         "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
-        "line": 68
+        "line": 64
       },
       {
         "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
-        "line": 74
+        "line": 67
       },
       {
         "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
-        "line": 83
+        "line": 72
       },
       {
         "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
-        "line": 87
+        "line": 78
       },
       {
         "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
-        "line": 92
+        "line": 91
       },
       {
         "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
-        "line": 103
+        "line": 96
       },
       {
         "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
-        "line": 106
+        "line": 107
+      },
+      {
+        "path": "frontend/e2e/real/grammar/textual-model-edit-fix-save.spec.ts",
+        "line": 110
       }
     ],
-    "ambiguous": null,
     "confidence": "ANALYZED"
   }
 ]

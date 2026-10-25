@@ -132,13 +132,13 @@
   {
     "id": "vitest:src/gamification-designer/api.test.ts",
     "name": {
-      "es": "API del diagrama de gamificaciÃ³n",
-      "en": "Gamification diagram API"
+      "es": "API de gamificación: normalización de respuestas y geometría del diagrama",
+      "en": "Gamification API: response normalization and diagram geometry"
     },
     "type": "CONTRACT",
     "typeNote": [
-      "Prueba de forma de la API HTTP (ruta, mÃ©todo, ETag)",
-      "API contract test of route, method and ETag"
+      "Prueba de forma de la API HTTP (ruta, método, ETag) y de normalización de respuestas",
+      "HTTP API shape test (route, method, ETag) and response normalization"
     ],
     "layer": "behavior",
     "caps": [
@@ -158,73 +158,136 @@
       "frontend/src/gamification-designer/gamificationFactory.ts",
       "frontend/src/gamification-designer/gamificationDiagram.ts"
     ],
-    "pre": null,
     "executes": {
-      "es": "Llama loadGamificationDiagram y saveGamificationDiagram con fetch espiado que devuelve JSON.",
-      "en": "Calls loadGamificationDiagram and saveGamificationDiagram with a spied fetch returning JSON."
+      "es": "Con fetch espiado que devuelve JSON, llama a createGamification y replaceGamification con una respuesta que omite las cadenas vacías de la regla, y a loadGamificationDiagram y saveGamificationDiagram con un diagrama vacío y con una arista nueva.",
+      "en": "With a spied fetch returning JSON, it calls createGamification and replaceGamification with a response that omits the rule's empty strings, and loadGamificationDiagram and saveGamificationDiagram with an empty diagram and with a new edge."
     },
     "asserts": {
-      "es": "Ruta /api/canonical-metamodels/people/gamification/diagram, mÃ©todo PUT y cabecera If-Match con el ETag anterior.",
-      "en": "Route /api/canonical-metamodels/people/gamification/diagram, PUT method and If-Match header with the previous ETag."
+      "es": "create y replace normalizan la respuesta como la carga (cadenas, descripción y diagnósticos vacíos); la geometría usa /api/canonical-metamodels/people/gamification/diagram con PUT e If-Match del ETag anterior; una arista nueva envía todos sus campos numéricos.",
+      "en": "create and replace normalize the response like loading does (empty strings, description and diagnostics); geometry uses /api/canonical-metamodels/people/gamification/diagram with PUT and If-Match of the previous ETag; a new edge sends all its numeric fields."
     },
     "behavior": {
-      "es": "La geometrÃ­a del diagrama de gamificaciÃ³n se carga y guarda por separado del modelo, y al guardar se envÃ­a el ETag anterior para evitar sobrescrituras concurrentes.",
-      "en": "Gamification diagram geometry is loaded and saved separately from the model, and saving sends the previous ETag to avoid concurrent overwrites."
+      "es": "Las respuestas del servidor se normalizan antes de usarse en el diseñador, y la geometría del diagrama se carga y guarda por separado del modelo enviando el ETag anterior para evitar sobrescrituras concurrentes.",
+      "en": "Server responses are normalized before the designer uses them, and the diagram geometry is loaded and saved separately from the model, sending the previous ETag to avoid concurrent overwrites."
     },
     "rule": {
       "es": "Guardar el diagrama exige enviar If-Match con el ETag cargado.",
       "en": "Saving the diagram must send If-Match with the loaded ETag."
     },
     "scenario": {
-      "es": "Respuesta 200 simulada con diagrama vacÃ­o.",
-      "en": "Mocked 200 response with an empty diagram."
+      "es": "Respuestas 200 simuladas: modelos de gamificación sin cadenas vacías, diagrama vacío y diagrama con una arista nueva.",
+      "en": "Simulated 200 responses: gamification models without empty strings, an empty diagram and a diagram with a new edge."
     },
     "result": {
-      "es": "Misma ruta en carga y guardado; PUT con If-Match=old.",
-      "en": "Same route for load and save; PUT with If-Match=old."
+      "es": "Campos restaurados; misma ruta en carga y guardado; PUT con If-Match=old; campos numéricos de la arista presentes.",
+      "en": "Fields restored; same path for load and save; PUT with If-Match=old; numeric edge fields present."
     },
     "expected": {
-      "es": "fetch recibe ruta, mÃ©todo y cabecera indicados.",
-      "en": "fetch receives the stated route, method and header."
+      "es": "fetch recibe la ruta, el método y la cabecera indicados y los resultados normalizados coinciden.",
+      "en": "fetch receives the stated path, method and header and the normalized results match."
     },
     "guarantee": {
-      "es": "Evidencia de la forma de la peticiÃ³n del cliente.",
-      "en": "Evidence of the client request shape."
+      "es": "Evidencia de la forma de las peticiones del cliente y de la normalización de sus respuestas.",
+      "en": "Evidence of the client's request shape and of the normalization of its responses."
     },
     "limits": {
-      "es": "Sin backend real: no prueba aceptaciÃ³n del servidor ni conflictos de ETag.",
-      "en": "No real backend: no server acceptance or ETag conflict handling."
+      "es": "Sin backend real: fetch está simulado; no prueba que el servidor acepte la petición, conflictos de ETag ni la deserialización real.",
+      "en": "No real backend: fetch is simulated; it does not prove server acceptance, ETag conflicts or real deserialization."
     },
     "strength": "LIMITED",
-    "strengthWhy": [
-      "ComprobaciÃ³n de cliente con fetch simulado.",
-      "Client check against a stubbed fetch."
-    ],
+    "strengthWhy": {
+      "es": "Pruebas unitarias del cliente con fetch simulado.",
+      "en": "Client unit tests with a simulated fetch."
+    },
     "external": "mocked",
-    "cases": [],
+    "cases": [
+      {
+        "n": "normaliza la respuesta de createGamification igual que la de carga",
+        "scenario": {
+          "es": "Respuesta de creación sin cadenas vacías.",
+          "en": "Creation response without empty strings."
+        },
+        "result": {
+          "es": "Cadenas vacías restauradas y legibles.",
+          "en": "Empty strings restored and readable."
+        }
+      },
+      {
+        "n": "normaliza la respuesta de replaceGamification igual que la de carga",
+        "scenario": {
+          "es": "Respuesta de sustitución sin cadenas vacías.",
+          "en": "Replacement response without empty strings."
+        },
+        "result": {
+          "es": "Campos, descripción y diagnósticos restaurados.",
+          "en": "Fields, description and diagnostics restored."
+        }
+      },
+      {
+        "n": "loads and saves the separate geometry with ETag",
+        "scenario": {
+          "es": "Diagrama vacío.",
+          "en": "Empty diagram."
+        },
+        "result": {
+          "es": "Ruta de geometría, PUT e If-Match=old.",
+          "en": "Geometry path, PUT and If-Match=old."
+        }
+      },
+      {
+        "n": "sends every numeric connection field for a newly created edge so the backend can deserialize it",
+        "scenario": {
+          "es": "Arista recién creada.",
+          "en": "Newly created edge."
+        },
+        "result": {
+          "es": "Siete campos numéricos con valores por defecto.",
+          "en": "Seven numeric fields with defaults."
+        }
+      }
+    ],
     "related": [],
     "src": [
       {
-        "path": "frontend/src/gamification-designer/api.test.ts"
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 12
       },
       {
-        "path": "frontend/src/gamification-designer/api.test.ts"
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 19
       },
       {
-        "path": "frontend/src/gamification-designer/api.test.ts"
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 29
       },
       {
-        "path": "frontend/src/gamification-designer/api.test.ts"
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 32
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 45
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 58
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 61
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 70
       }
     ],
-    "ambiguous": null,
     "confidence": "ANALYZED"
   },
   {
     "id": "vitest:src/event-designer/flow/flowPresentation.test.ts",
     "name": {
-      "es": "Presentación de nodos de flujo: tolera textos omitidos por el servidor",
-      "en": "Flow node presentation: tolerates texts omitted by the server"
+      "es": "Presentación y normalización de nodos de flujo con textos omitidos por el servidor",
+      "en": "Flow node presentation and normalization with server-omitted texts"
     },
     "type": "UNIT",
     "layer": "behavior",
@@ -232,20 +295,23 @@
       "events"
     ],
     "procs": [],
-    "pre": null,
+    "prod": [
+      "frontend/src/event-designer/flow/flowPresentation.ts",
+      "frontend/src/event-designer/flow/eventFlowNormalization.ts",
+      "frontend/src/event-designer/flow/eventFlowFactory.ts"
+    ],
     "executes": {
-      "es": "Pinta la descripción de un nodo de flujo cuyo servidor omite el tipo de evento.",
-      "en": "Describes a flow node whose event type the server omits."
+      "es": "Crea nodos con createFlowNode, retira eventTypeId, referenceId y conditionExpressionId como hace el servidor al omitir cadenas vacías y llama a describeFlowNode; además normaliza con normalizeEventFlowModel un modelo de flujos crudo sin campos opcionales.",
+      "en": "Creates nodes with createFlowNode, drops eventTypeId, referenceId and conditionExpressionId as the server does when omitting empty strings, and calls describeFlowNode; it also normalizes a raw flow model without optional fields with normalizeEventFlowModel."
     },
     "asserts": {
-      "es": "La descripción se obtiene sin errores.",
-      "en": "The description is obtained without errors."
+      "es": "Textos esperados para START y ACTION_STEP sin identificadores y para EMIT con tipo de evento; tras normalizar, cadenas vacías, configuración {}, políticas de reintento y de tiempo por defecto, enabled=true, etiqueta de transición vacía, listas vacías y descripción del nodo START.",
+      "en": "Expected texts for START and ACTION_STEP without identifiers and for EMIT with an event type; after normalization, empty strings, {} configuration, default retry and timeout policies, enabled=true, empty transition label, empty lists and the START node description."
     },
     "behavior": {
-      "es": "Protege la corrección de un defecto: la pantalla se rompía al dibujar un flujo guardado con campos vacíos omitidos.",
-      "en": "Protects the fix of a defect: the screen broke when drawing a saved flow with omitted empty fields."
+      "es": "Protege la corrección de un defecto: la pantalla se rompía al dibujar un flujo guardado con campos vacíos omitidos; ahora el modelo se normaliza y los nodos se describen igual.",
+      "en": "Guards a defect fix: the screen broke when drawing a saved flow whose empty fields were omitted; the model is now normalized and nodes are described the same way."
     },
-    "rule": null,
     "scenario": {
       "es": "Nodo de inicio sin tipo de evento.",
       "en": "Start node without an event type."
@@ -263,8 +329,8 @@
       "en": "The screen tolerates the real server responses."
     },
     "limits": {
-      "es": "Los datos están escritos en la prueba; no consulta el servidor real.",
-      "en": "The data is written in the test; it does not query the real server."
+      "es": "Los datos están escritos en la prueba; no consulta el servidor real ni pinta componentes.",
+      "en": "The data is written in the test; it neither queries the real server nor renders components."
     },
     "strength": "LIMITED",
     "strengthWhy": {
@@ -272,16 +338,82 @@
       "en": "Unit test with hand-written data."
     },
     "external": "mocked",
-    "cases": [],
+    "cases": [
+      {
+        "n": "describes a START node that has no eventTypeId or referenceId",
+        "scenario": {
+          "es": "Nodo START sin identificadores.",
+          "en": "START node without identifiers."
+        },
+        "result": {
+          "es": "«Entry point of the flow.»",
+          "en": "\"Entry point of the flow.\""
+        }
+      },
+      {
+        "n": "describes an action step without referenceId using the generic text",
+        "scenario": {
+          "es": "ACTION_STEP sin referencia.",
+          "en": "ACTION_STEP without reference."
+        },
+        "result": {
+          "es": "Texto genérico de acción reutilizable.",
+          "en": "Generic reusable-action text."
+        }
+      },
+      {
+        "n": "still describes nodes that do carry an event type",
+        "scenario": {
+          "es": "EMIT con core.model.saved.",
+          "en": "EMIT with core.model.saved."
+        },
+        "result": {
+          "es": "El texto empieza por «Publishes».",
+          "en": "The text starts with \"Publishes\"."
+        }
+      },
+      {
+        "n": "restores omitted strings, policies and collections so the designer can always read them",
+        "scenario": {
+          "es": "Modelo crudo sin campos opcionales.",
+          "en": "Raw model without optional fields."
+        },
+        "result": {
+          "es": "Valores por defecto restaurados y nodo descrito.",
+          "en": "Defaults restored and node described."
+        }
+      }
+    ],
     "related": [],
     "src": [
       {
         "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
-        "line": 1
+        "line": 8
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 14
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 17
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 20
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 26
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 34
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 40
       }
-    ],
-    "prod": [
-      "frontend/src/event-designer/flow/flowPresentation.ts"
     ],
     "confidence": "ANALYZED"
   },

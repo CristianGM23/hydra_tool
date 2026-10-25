@@ -777,7 +777,8 @@
     "evidenceSummary": {
      "tests": 110,
      "byStatus": {
-      "PASS": 88,
+      "PASS": 81,
+      "STALE_EVIDENCE": 7,
       "DISCOVERED": 21,
       "SKIPPED": 1
      },
@@ -1266,7 +1267,8 @@
     "evidenceSummary": {
      "tests": 29,
      "byStatus": {
-      "PASS": 15,
+      "PASS": 13,
+      "STALE_EVIDENCE": 2,
       "DISCOVERED": 14
      },
      "byStrength": {
@@ -3970,9 +3972,9 @@
     "evidenceSummary": {
      "tests": 46,
      "byStatus": {
-      "PASS": 37,
-      "DISCOVERED": 8,
-      "STALE_EVIDENCE": 1
+      "PASS": 36,
+      "STALE_EVIDENCE": 2,
+      "DISCOVERED": 8
      },
      "byStrength": {
       "LIMITED": 21,
@@ -5193,7 +5195,7 @@
  },
  "capabilitiesNotYetModeled": [],
  "testEvidence": {
-  "generatedAt": "2026-10-23T19:39:37.726Z",
+  "generatedAt": "2026-10-25T17:59:24.135Z",
   "store": "knowledge/tests/",
   "note": "Per-capability testEvidence / processStageEvidence are compact references into knowledge/tests/*; regenerate with build-test-evidence.js after regenerating this cache."
  }
