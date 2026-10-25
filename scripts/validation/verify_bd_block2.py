@@ -214,15 +214,37 @@ class BD2FunctionalTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'duplicate entries'):
             webverify.verify(package)
 
-    def test_native_build_requires_actual_installer_artifacts(self):
+    def test_native_build_blocks_missing_real_model_tests(self):
+        """An old fixture without Rust model tests must fail before packaging."""
         (self.editor / 'src-tauri').mkdir()
         (self.editor / 'src-tauri' / 'Cargo.toml').write_text('[package]\nname="fixture"\n')
         mock = subprocess.CompletedProcess([], 0, stdout='cargo build succeeded')
-        with patch.object(builder.shutil, 'which', return_value='cargo'), patch.object(builder.subprocess, 'run', return_value=mock):
+        with patch.object(builder.shutil, 'which', return_value='cargo'), patch.object(builder.subprocess, 'run', return_value=mock) as invoked:
             report = builder.build(self.root, 'trusted-editor', True, False, True, False, 60, False)
         self.assertFalse(report['qualified'])
+        self.assertEqual(report['steps']['nativeModelTests']['status'], 'BLOCKED')
+        self.assertIn('model_store.rs', report['steps']['nativeModelTests']['reason'])
+        self.assertNotIn('nativeBuild', report['steps'])
+        invoked.assert_not_called()
+
+    def test_native_build_requires_actual_installer_artifacts(self):
+        """Even when the native model tests pass, zero installer bundles must fail."""
+        rust = self.editor / 'src-tauri' / 'src'
+        rust.mkdir(parents=True)
+        (self.editor / 'src-tauri' / 'Cargo.toml').write_text('[package]\nname="fixture"\n')
+        (rust / 'model_store.rs').write_text(
+            'fn hydra_write_model() {}\n'
+            '#[cfg(test)] mod tests { #[test] fn storage_roundtrip() {} }\n', encoding='utf-8')
+        mock = subprocess.CompletedProcess([], 0, stdout='cargo build succeeded')
+        with patch.object(builder.shutil, 'which', return_value='cargo'), patch.object(builder.subprocess, 'run', return_value=mock) as invoked:
+            report = builder.build(self.root, 'trusted-editor', True, False, True, False, 60, False)
+        self.assertFalse(report['qualified'])
+        self.assertEqual(report['steps']['nativeModelTests']['status'], 'PASSED')
         self.assertEqual(report['steps']['nativeBuild']['status'], 'FAILED')
         self.assertIn('bundle', report['steps']['nativeBuild']['reason'])
+        self.assertEqual(invoked.call_count, 2)
+        for call in invoked.call_args_list:
+            self.assertFalse(call.kwargs['shell'])
 
     def test_web_package_rejects_misleading_certification(self):
         package = self.root / 'wrong-grade.zip'
