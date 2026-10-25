@@ -28,7 +28,7 @@ export function listFiles(relDir: string): string[] {
 
 /** Lee y parsea un JSON del almacenamiento del backend (oráculo independiente de la API). */
 export function readJson<T = unknown>(relPath: string): T {
-    return JSON.parse(fs.readFileSync(path.join(workDir, relPath), 'utf8').replace(/^﻿/, '')) as T;
+    return JSON.parse(fs.readFileSync(path.join(workDir, relPath), 'utf8').replace(/^\uFEFF/, '')) as T;
 }
 
 export function exists(relPath: string): boolean {

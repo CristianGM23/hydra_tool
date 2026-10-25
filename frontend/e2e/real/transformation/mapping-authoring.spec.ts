@@ -2,7 +2,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { eventually, uid } from '../support';
 import {
     BLOCKED_MESSAGE, clickSave, combo, findTransformationByName, loadTransformationDoc, openDesigner, readTransformationFromDisk,
-    runtimeMessage, savedSelector, seedMetamodel, SAVED_MESSAGE, switchToAdvanced, treeClass,
+    runtimeMessage, savedSelector, seedMetamodel, SAVED_MESSAGE, switchToAdvanced, treeClass, type TransformationBindingDoc,
 } from './helpers';
 
 /** Fila de asignación de una propiedad del destino (se localiza por su selector «Tipo de asignación»). */
@@ -96,14 +96,14 @@ test('el diseñador de correspondencias guarda reglas de ida y vuelta, asignacio
     const onDisk = readTransformationFromDisk(id);
     for (const doc of [persisted, onDisk]) {
         expect(doc.rules).toHaveLength(2);
-        const forward = doc.rules.find((rule: any) => rule.direction === 'FORWARD');
-        const reverse = doc.rules.find((rule: any) => rule.direction === 'REVERSE');
+        const forward = doc.rules.find((rule) => rule.direction === 'FORWARD')!;
+        const reverse = doc.rules.find((rule) => rule.direction === 'REVERSE')!;
         expect(forward.sourceTypeId).toBe(`${srcId}-person`);
         expect(forward.targets[0].typeId).toBe(`${tgtId}-contact`);
         expect(reverse.sourceTypeId).toBe(`${tgtId}-contact`);
         expect(reverse.correspondenceId).toBe(forward.correspondenceId);
         expect(forward.correspondenceId).not.toBe('');
-        const bindingFor = (feature: string): any => forward.bindings.find((binding: any) => binding.targetFeatureId === feature);
+        const bindingFor = (feature: string): TransformationBindingDoc => forward.bindings.find((binding) => binding.targetFeatureId === feature)!;
         expect(forward.bindings).toHaveLength(4);
         expect(bindingFor(b('name'))).toMatchObject({ kind: 'DIRECT', sourceFeatureId: a('name') });
         expect(bindingFor(b('code'))).toMatchObject({ kind: 'CONSTANT', literalValue: 'K-1' });
@@ -112,7 +112,7 @@ test('el diseñador de correspondencias guarda reglas de ida y vuelta, asignacio
         expect(bindingFor(b('label')).kind).toBe('EXPRESSION');
         expect(bindingFor(b('label')).expression).toBeTruthy();
         expect(forward.guard).toBeTruthy();
-        expect(forward.guard.declaredReturnType.kind).toBe('BOOLEAN');
+        expect(forward.guard!.declaredReturnType.kind).toBe('BOOLEAN');
     }
 
     // Recarga: la interfaz muestra lo que el backend guardó.
@@ -195,14 +195,14 @@ test('el panel de relaciones enlaza una relación del destino con una del origen
     const persisted = await loadTransformationDoc(request, id);
     const onDisk = readTransformationFromDisk(id);
     for (const doc of [persisted, onDisk]) {
-        const teamRule = doc.rules.find((rule: any) => rule.sourceTypeId === src.ownerId);
-        const personRule = doc.rules.find((rule: any) => rule.sourceTypeId === src.memberId);
+        const teamRule = doc.rules.find((rule) => rule.sourceTypeId === src.ownerId)!;
+        const personRule = doc.rules.find((rule) => rule.sourceTypeId === src.memberId)!;
         expect(teamRule.targets[0].typeId).toBe(tgt.ownerId);
-        const relationBindings = teamRule.bindings.filter((binding: any) => binding.targetFeatureId === tgt.relationId);
+        const relationBindings = teamRule.bindings.filter((binding) => binding.targetFeatureId === tgt.relationId);
         expect(relationBindings).toHaveLength(1);
         expect(relationBindings[0]).toMatchObject({ kind: 'TRACE_EQUIVALENT', sourceFeatureId: src.relationId, targetAlias: teamRule.targets[0].alias });
         // La regla sin relaciones no guarda ningún enlace de relación.
-        expect(personRule.bindings.some((binding: any) => binding.kind === 'TRACE_EQUIVALENT')).toBe(false);
+        expect(personRule.bindings.some((binding) => binding.kind === 'TRACE_EQUIVALENT')).toBe(false);
     }
 
     // Recarga: la interfaz recupera el enlace guardado.

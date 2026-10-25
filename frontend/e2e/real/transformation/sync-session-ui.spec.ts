@@ -1,6 +1,6 @@
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
 import { apiGet, eventually, listFiles, readJson, uid } from '../support';
-import { openDesigner, savedSelector, seedMetamodel, switchToAdvanced } from './helpers';
+import { openDesigner, savedSelector, seedMetamodel, switchToAdvanced, type SyncModel, type SyncModelElement, type SyncSessionDoc } from './helpers';
 
 // Sesiones de sincronización gestionadas desde la interfaz: el usuario crea la sesión, edita uno o ambos lados (textos de modelo
 // del panel de sincronización) y sincroniza; el backend real avanza (o no) la revisión y guarda línea base y puntos de control.
@@ -63,17 +63,17 @@ async function createSessionFromUi(page: Page, request: APIRequestContext, fx: F
     return sessions[0].id;
 }
 
-function sessionOnDisk(sessionId: string): any {
+function sessionOnDisk(sessionId: string): SyncSessionDoc {
     const file = listFiles('data/transformation-sync-sessions').find((name) => name.includes(sessionId));
     if (file === undefined) throw new Error('sin fichero de sesión en disco para ' + sessionId);
-    return readJson('data/transformation-sync-sessions/' + file);
+    return readJson<SyncSessionDoc>('data/transformation-sync-sessions/' + file);
 }
 
-function element(model: any, classId: string): any {
-    return model.elements.find((item: any) => item.classId === classId);
+function element(model: SyncModel, classId: string): SyncModelElement {
+    return model.elements.find((item) => item.classId === classId)!;
 }
 
-async function editTextarea(page: Page, selector: string, mutate: (model: any) => void): Promise<void> {
+async function editTextarea(page: Page, selector: string, mutate: (model: SyncModel) => void): Promise<void> {
     const area = page.locator(selector);
     const model = JSON.parse(await area.inputValue());
     mutate(model);
@@ -102,7 +102,7 @@ test('editar el modelo origen y sincronizar avanza la sesión a la revisión 2 c
     await syncButton(page).click();
     await expect(page.locator('.transformation-sync-session-message')).toHaveText(/committed|confirmado/);
 
-    const loaded = await eventually(() => apiGet<any>(request, `/api/transformations/${fx.transformationId}/synchronization-sessions/${sessionId}`), (value) => value.revision === 2);
+    const loaded = await eventually(() => apiGet<SyncSessionDoc>(request, `/api/transformations/${fx.transformationId}/synchronization-sessions/${sessionId}`), (value) => value.revision === 2);
     const second = sessionOnDisk(sessionId);
     for (const session of [loaded, second]) {
         expect(session.revision).toBe(2);
@@ -111,7 +111,7 @@ test('editar el modelo origen y sincronizar avanza la sesión a la revisión 2 c
     }
     const checkpoints = listFiles('data/transformation-sync-history').filter((name) => name.includes(sessionId));
     expect(checkpoints.length).toBeGreaterThanOrEqual(2);
-    expect(checkpoints.map((name) => readJson<any>('data/transformation-sync-history/' + name).operation)).toContain('SYNCHRONIZED');
+    expect(checkpoints.map((name) => readJson<{ operation: string }>('data/transformation-sync-history/' + name).operation)).toContain('SYNCHRONIZED');
 
     // Recarga: la interfaz recupera la sesión guardada con la revisión 2.
     await page.reload();
@@ -119,7 +119,7 @@ test('editar el modelo origen y sincronizar avanza la sesión a la revisión 2 c
     await switchToAdvanced(page);
     await page.getByRole('combobox', { name: /Managed synchronization session|Sesión de sincronización gestionada/ }).selectOption(sessionId);
     await expect(page.locator('.transformation-sync-session-status strong')).toHaveText(/\b2$/);
-    expect(JSON.parse(await page.locator('#transformation-sync-target').inputValue()).elements.find((item: any) => item.classId === fx.tgtClass).attributes[fx.tgtName]).toBe('Grace');
+    expect(JSON.parse(await page.locator('#transformation-sync-target').inputValue()).elements.find((item: SyncModelElement) => item.classId === fx.tgtClass).attributes[fx.tgtName]).toBe('Grace');
 });
 
 test('editar ambos lados en elementos distintos fusiona los cambios y editar lo mismo en ambos lados con «parar ante conflicto» bloquea sin avanzar', async ({ page, request }) => {

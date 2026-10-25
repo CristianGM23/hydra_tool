@@ -46,14 +46,14 @@ test('la direccionalidad bidireccional y la política de conflictos elegidas en 
         expect(doc.directionality).toBe('BIDIRECTIONAL');
         expect(doc.synchronizationPolicy.conflictPolicy).toBe('REVERSE_WINS');
         expect(doc.tracePolicy.enabled).toBe(true);
-        expect(doc.rules.map((rule: any) => rule.direction).sort()).toEqual(['FORWARD', 'REVERSE']);
+        expect(doc.rules.map((rule) => rule.direction).sort()).toEqual(['FORWARD', 'REVERSE']);
     }
 
     // Oráculo de la puerta, independiente del navegador: la misma definición sin reglas es rechazada por el comprobador real.
     const response = await request.post('/api/transformations/check', { data: { ...persisted, rules: [] } });
     expect(response.ok()).toBeTruthy();
     const report = await response.json();
-    expect(report.diagnostics.map((item: any) => item.code)).toContain('BIDIRECTIONAL_RULE_PAIR_REQUIRED');
+    expect(report.diagnostics.map((item: { code: string }) => item.code)).toContain('BIDIRECTIONAL_RULE_PAIR_REQUIRED');
 
     // Recarga de la página: la elección persistida vuelve a la interfaz.
     await page.reload();

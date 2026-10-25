@@ -72,7 +72,7 @@ test('una regla de generación creada para la clase de contexto nace con ruta, p
     const checked = await request.post('/api/transformations/check', { data: persisted });
     expect(checked.ok()).toBeTruthy();
     const report = await checked.json();
-    expect(report.diagnostics.filter((item: any) => item.severity === 'ERROR')).toEqual([]);
+    expect(report.diagnostics.filter((item: { severity: string }) => item.severity === 'ERROR')).toEqual([]);
 
     // Recarga: la regla guardada reaparece en la interfaz.
     await page.reload();

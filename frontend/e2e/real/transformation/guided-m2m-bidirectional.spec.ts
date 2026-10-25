@@ -75,8 +75,8 @@ test('el asistente guiado construye y guarda una transformación M2M bidireccion
         expect(doc.sources[0].metamodelId).toBe(srcId);
         expect(doc.targets[0].metamodelId).toBe(tgtId);
         expect(doc.rules).toHaveLength(2);
-        const forward = doc.rules.find((rule: any) => rule.direction === 'FORWARD');
-        const reverse = doc.rules.find((rule: any) => rule.direction === 'REVERSE');
+        const forward = doc.rules.find((rule) => rule.direction === 'FORWARD')!;
+        const reverse = doc.rules.find((rule) => rule.direction === 'REVERSE')!;
         expect(forward.sourceTypeId).toBe(`${srcId}-person`);
         expect(forward.targets[0].typeId).toBe(`${tgtId}-contact`);
         expect(reverse.sourceTypeId).toBe(`${tgtId}-contact`);

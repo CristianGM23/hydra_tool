@@ -23,6 +23,29 @@ export async function seedMetamodel(request: APIRequestContext, spec: { id: stri
 
 interface TransformationSummaryDto { id: string; name: string }
 
+/** Campos del documento de transformación guardado (API real y disco) que comprueban los specs. */
+export interface TransformationBindingDoc {
+    kind: string; targetFeatureId: string; sourceFeatureId?: string; targetAlias?: string; expression?: unknown; valuePolicy?: Record<string, unknown>;
+}
+export interface TransformationRuleDoc {
+    direction: string; sourceTypeId: string; correspondenceId: string; targets: { typeId: string; alias: string }[];
+    bindings: TransformationBindingDoc[]; guard?: { declaredReturnType: { kind: string } } | null;
+}
+export interface TransformationGenerationRuleDoc {
+    contextTypeId: string; outputPathTemplate: string; contentTemplate: string; overwritePolicy: string; enabled: boolean; guard?: unknown;
+}
+export interface TransformationDoc {
+    name: string; kind: string; directionality: string; sources: { metamodelId: string }[]; targets: { metamodelId: string }[];
+    rules: TransformationRuleDoc[]; generationRules: TransformationGenerationRuleDoc[];
+    synchronizationPolicy: { conflictPolicy: string; propagateDeletions: boolean; requireTraceForUpdates: boolean };
+    tracePolicy: { enabled: boolean };
+}
+
+/** Sesión de sincronización gestionada guardada por el backend real (API y disco): solo lo que comprueban los specs. */
+export interface SyncModelElement { classId: string; attributes: Record<string, unknown> }
+export interface SyncModel { elements: SyncModelElement[] }
+export interface SyncSessionDoc { revision: number; sourceBaseline: SyncModel; targetBaseline: SyncModel }
+
 /** Busca por nombre una transformación guardada por el backend real (oráculo por API). */
 export async function findTransformationByName(request: APIRequestContext, name: string): Promise<TransformationSummaryDto | undefined> {
     const all = await apiGet<TransformationSummaryDto[]>(request, '/api/transformations');
@@ -30,16 +53,16 @@ export async function findTransformationByName(request: APIRequestContext, name:
 }
 
 /** Documento de transformación leído por la API real. */
-export async function loadTransformationDoc(request: APIRequestContext, id: string): Promise<any> {
-    const loaded = await apiGet<{ transformation: any }>(request, `/api/transformations/${encodeURIComponent(id)}`);
+export async function loadTransformationDoc(request: APIRequestContext, id: string): Promise<TransformationDoc> {
+    const loaded = await apiGet<{ transformation: TransformationDoc }>(request, `/api/transformations/${encodeURIComponent(id)}`);
     return loaded.transformation;
 }
 
 /** Documento de transformación leído directamente del disco del backend (oráculo independiente de la API). */
-export function readTransformationFromDisk(id: string): any {
+export function readTransformationFromDisk(id: string): TransformationDoc {
     const file = listFiles('data/transformations').find((name) => name.includes(id));
     if (file === undefined) throw new Error('no hay fichero de transformación en disco para ' + id);
-    return readJson('data/transformations/' + file);
+    return readJson<TransformationDoc>('data/transformations/' + file);
 }
 
 export function transformationExistsOnDisk(id: string): boolean {
