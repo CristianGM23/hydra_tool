@@ -25,7 +25,7 @@ with tempfile.TemporaryDirectory(prefix='hydra-rc1-install-') as td:
   for cmd in cmds:
    cp=subprocess.run(cmd,cwd=target,text=True,encoding='utf-8',errors='replace',capture_output=True); ok &= cp.returncode==0; outputs.append((cp.stdout+cp.stderr)[-3000:])
   if args.smoke_build and case['required']:
-   mvn=[str(target/'mvnw.cmd'),'-B','-DskipTests','compile'] if os.name=='nt' else ['./mvnw','-B','-DskipTests','compile']
+   mvn=[str(target/'mvnw.cmd'),'-B','-DskipTests','compile'] if os.name=='nt' else ['sh','./mvnw','-B','-DskipTests','compile']
    cp=subprocess.run(mvn,cwd=target,text=True,encoding='utf-8',errors='replace',capture_output=True); ok &= cp.returncode==0; outputs.append((cp.stdout+cp.stderr)[-3000:])
   results.append({'id':case['id'],'path':str(target),'required':case['required'],'passed':ok,'outputTail':'\n'.join(outputs)[-6000:]})
 report={'schemaVersion':'1.0','archive':archive.name,'smokeBuild':args.smoke_build,'results':results,'passed':all(r['passed'] or not r['required'] for r in results)}
