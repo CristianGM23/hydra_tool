@@ -69,7 +69,7 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
             String packageName = TechnologyAdapterGenerationSupport.npmPackage(request.profile().target().settings().get("packageName"),
                     "@hydra-generated/" + TechnologyAdapterSupport.slug(semanticId) + "-langium");
             String extension = request.profile().target().settings().getOrDefault("fileExtension", TechnologyAdapterSupport.slug(semanticId));
-            String langiumVersion = request.profile().target().settings().getOrDefault("langiumVersion", "4.3.0");
+            String langiumVersion = request.profile().target().settings().getOrDefault("langiumVersion", "4.4.0");
             String typescriptVersion = request.profile().target().settings().getOrDefault("typescriptVersion", "6.0.2");
             String sourceRoot = root + "/src/language";
             List<String> sourceIds = TechnologyAdapterGenerationSupport.sourceIds(request);
@@ -151,10 +151,15 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
             """.formatted(packageName, langiumVersion, languageServerVersion(langiumVersion), TEXT_DOCUMENT_VERSION, typescriptVersion, langiumVersion,
                 TechnologyAdapterSupport.VITEST_VITE_OVERRIDE, languageName.toLowerCase(), extension, languageName, grammarContribution);
     }
-    /** Descripción: Elige la versión exacta de vscode-languageserver que exige la línea de Langium: Langium 4 depende de ~10.0 (LSP 3.18) y Langium 3 de ~9.0
-     * (LSP 3.17); declarar otra línea instala una segunda copia de vscode-languageserver-types y rompe los tipos LSP compartidos con Langium.
-     * Entradas: langiumVersion: versión de Langium declarada. Salida: versión exacta compatible. */
-    private static String languageServerVersion(String langiumVersion){return langiumVersion.startsWith("3.") ? "9.0.1" : "10.0.1";}
+    /** Descripción: Elige la versión exacta de vscode-languageserver que exige la línea de Langium: Langium 4.4 depende de ~10.1, Langium 4.0-4.3 de ~10.0
+     * (ambas LSP 3.18) y Langium 3 de ~9.0 (LSP 3.17); declarar otra línea instala una segunda copia de vscode-languageserver y rompe los tipos LSP
+     * compartidos con Langium. También la usa el scaffold de LangiumGrammarProvider. Entradas: langiumVersion: versión de Langium declarada. Salida: versión exacta compatible. */
+    public static String languageServerVersion(String langiumVersion){
+        if(langiumVersion.startsWith("3.")) return "9.0.1";
+        String[] parts = langiumVersion.split("\\.");
+        int minor = parts.length > 1 && parts[1].chars().allMatch(Character::isDigit) && !parts[1].isEmpty() ? Integer.parseInt(parts[1]) : 0;
+        return parts[0].equals("4") && minor < 4 ? "10.0.1" : "10.1.2";
+    }
     /** Descripción: Ejecuta la operación «textMateCustomization» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: languageName: dato de entrada necesario para la operación; c: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String textMateCustomization(String languageName,com.example.editor.grammar.core.GrammarTextualEditorCustomization c){String keywords=java.util.Arrays.stream(c.keywords().split(",")).filter(v->!v.isBlank()).map(java.util.regex.Pattern::quote).reduce((a,b)->a+"|"+b).orElse("(?!)");return """
             {"name":"HYDRA %s","scopeName":"source.%s.hydra","patterns":[{"name":"keyword.control.hydra","match":"\\b(?:%s)\\b"},{"name":"string.quoted.double.hydra","begin":"\"","end":"\""},{"name":"comment.line.double-slash.hydra","match":"//.*$"},{"name":"constant.numeric.hydra","match":"\\b[0-9]+(?:\\.[0-9]+)?\\b"}]}
             """.formatted(languageName,languageName.toLowerCase(),keywords);}

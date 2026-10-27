@@ -61,7 +61,7 @@ class TextualBrokenDraftRecoveryIntegrationTests {
     @Autowired
     private JsonMapper mapper;
 
-    private static final String GRAMMAR_SOURCE = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\n";
+    private static final String GRAMMAR_SOURCE = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n";
     private static final String VALID_TEXT = "node alpha  \nnode beta\n";
     private static final String TRUNCATED_TEXT = "node alpha\nnode";
     private static final String BROKEN_TEXT = "node alpha  \nnode 123\n";
@@ -97,11 +97,11 @@ class TextualBrokenDraftRecoveryIntegrationTests {
         String grammarId = "tb-grammar-" + key, editorId = "tb-editor-" + key, sessionId = "tb-session-" + key;
         GrammarSourceDocument source = new GrammarSourceDocument("main", "main.langium", "langium", GRAMMAR_SOURCE, "", true, false);
         GrammarDefinitionModel grammar = new GrammarDefinitionModel("1.0", grammarId, grammarId, GrammarTechnology.LANGIUM,
-                GrammarAuthoringMode.GRAMMAR_FIRST, "", "langium-4.3-browser", "main", "Model", List.of(source),
+                GrammarAuthoringMode.GRAMMAR_FIRST, "", "langium-4.4-browser", "main", "Model", List.of(source),
                 GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of());
         mockMvc.perform(post("/api/grammars").contentType(MediaType.APPLICATION_JSON).content(body(grammar))).andExpect(status().is2xxSuccessful());
         Map<String, Object> snapshot = read(mockMvc.perform(post("/api/grammars/" + grammarId + "/compile").contentType(MediaType.APPLICATION_JSON)
-                .content(body(new GrammarCompilationRequest("", grammarId, 1, List.of(source), "langium-4.3-browser", "", true, Map.of()))))
+                .content(body(new GrammarCompilationRequest("", grammarId, 1, List.of(source), "langium-4.4-browser", "", true, Map.of()))))
                 .andExpect(status().isOk()));
         assertThat(snapshot.get("status")).isEqualTo("SUCCESS");
 

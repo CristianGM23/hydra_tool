@@ -61,7 +61,7 @@ import tools.jackson.databind.json.JsonMapper;
  */
 class TransformationTextToModelRealGrammarIntegrationTests {
 
-    private static final String SOURCE = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\n";
+    private static final String SOURCE = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n";
 
     private GrammarApplicationService grammars;
     private GrammarCompilationService compilations;
@@ -93,8 +93,8 @@ class TransformationTextToModelRealGrammarIntegrationTests {
     private GrammarCompilationSnapshot createAndCompile(String id, boolean activate) {
         GrammarSourceDocument document = new GrammarSourceDocument("main", "main.langium", "langium", SOURCE, "", true, false);
         grammars.create(new GrammarDefinitionModel("1.0", id, id, GrammarTechnology.LANGIUM, GrammarAuthoringMode.GRAMMAR_FIRST, "",
-                "langium-4.3-browser", "main", "Model", List.of(document), GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of()));
-        GrammarCompilationSnapshot snapshot = compilations.compile(id, new GrammarCompilationRequest(id, 1, List.of(document), "langium-4.3-browser", activate));
+                "langium-4.4-browser", "main", "Model", List.of(document), GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of()));
+        GrammarCompilationSnapshot snapshot = compilations.compile(id, new GrammarCompilationRequest(id, 1, List.of(document), "langium-4.4-browser", activate));
         assertThat(snapshot.status()).isEqualTo(CompilationStatus.SUCCESS);
         return snapshot;
     }

@@ -8,10 +8,13 @@ import { compileViaApi, grammarDraft, langiumSource, openGrammarDesigner, saveGr
 // y dos compilaciones por la API real (antes y después) que dan el mismo proyecto generado.
 
 const PREFIX = 'hydra.textual.';
+// Cada compilación por la API real ejecuta ya la comprobación nativa de Langium (npm install, langium generate, tsc, esbuild y las
+// pruebas generadas: hasta 60 s por paso), así que el presupuesto de la prueba cubre dos compilaciones además de la jornada en el navegador.
+test.setTimeout(420_000);
 
 test('fuentes, colores, palabras clave, estilos por regla y ayudas se guardan con la gramática, se pintan al recargar y no alteran la compilación', async ({ page, request }) => {
     const grammarId = uid('look');
-    const source = langiumSource('Look', 'entry Model: nodes+=Node* edges+=Edge*;', "Node: 'node' name=ID;", "Edge: 'edge' label=ID;");
+    const source = langiumSource('Look', 'entry Model: nodes+=Node* edges+=Edge*;', "Node: 'node' name=ID;", "Edge: 'edge' label=ID;", 'hidden terminal WS: /\\s+/;', 'terminal ID: /[_a-zA-Z][\\w_]*/;');
     await seedGrammar(request, grammarDraft(grammarId, uid('Look language'), source, { 'hydra.custom.keep': 'intacta' }));
     const seeded = await apiGet<GrammarJson>(request, `/api/grammars/${grammarId}`);
     expect(Object.keys(seeded.settings).filter(key => key.startsWith(PREFIX))).toHaveLength(0);

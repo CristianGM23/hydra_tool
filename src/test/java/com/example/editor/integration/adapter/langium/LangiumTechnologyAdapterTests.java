@@ -47,8 +47,12 @@ class LangiumTechnologyAdapterTests {
     }
     @Test void pinsAConsistentLangium4ToolchainThatNpmCanResolve(){
         String pkg=text(adapter.compile(TechnologyAdapterTestFixtures.langiumRequest()),"package.json");
-        assertThat(pkg).contains("\"langium\": \"4.3.0\"","\"langium-cli\": \"4.3.0\"","\"vscode-languageserver\": \"10.0.1\"","\"vscode-languageserver-textdocument\": \"1.0.16\"",
+        assertThat(pkg).contains("\"langium\": \"4.4.0\"","\"langium-cli\": \"4.4.0\"","\"vscode-languageserver\": \"10.1.2\"","\"vscode-languageserver-textdocument\": \"1.0.16\"",
                 "\"typescript\": \"6.0.2\"","\"vitest\": \"4.1.10\"","\"overrides\":{\"vite\":\"7.3.7\"}").doesNotContain("\"^");
+    }
+    @Test void keepsTheLanguageServerLineOfEarlierLangium4Releases(){
+        var result=adapter.compile(configured(Map.of("langiumVersion","4.3.0")));
+        assertThat(text(result,"package.json")).contains("\"langium\": \"4.3.0\"","\"langium-cli\": \"4.3.0\"","\"vscode-languageserver\": \"10.0.1\"");
     }
     @Test void keepsTheLanguageServerLineOfLangium3(){
         var result=adapter.compile(configured(Map.of("langiumVersion","3.3.1")));

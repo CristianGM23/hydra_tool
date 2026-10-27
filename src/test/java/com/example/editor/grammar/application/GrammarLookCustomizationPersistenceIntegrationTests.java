@@ -48,7 +48,7 @@ import tools.jackson.databind.json.JsonMapper;
 class GrammarLookCustomizationPersistenceIntegrationTests {
 
     private static final String DEFAULT_FONT = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
-    private static final String SOURCE = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\n";
+    private static final String SOURCE = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n";
 
     private GrammarApplicationService grammars;
     private GrammarCompilationService service;
@@ -80,7 +80,7 @@ class GrammarLookCustomizationPersistenceIntegrationTests {
 
     private static GrammarDefinitionModel grammar(String id, Map<String, String> settings) {
         return new GrammarDefinitionModel("1.0", id, id, GrammarTechnology.LANGIUM, GrammarAuthoringMode.GRAMMAR_FIRST, "",
-                "langium-4.3-browser", "main", "Model", List.of(document()), GrammarSemanticBindingMap.empty(), "", settings, Map.of());
+                "langium-4.4-browser", "main", "Model", List.of(document()), GrammarSemanticBindingMap.empty(), "", settings, Map.of());
     }
 
     private static Map<String, String> validSettings() {
@@ -183,13 +183,13 @@ class GrammarLookCustomizationPersistenceIntegrationTests {
         wire(temporary);
         var created = grammars.create(grammar("look-compile", Map.of("custom.other.key", "keep-me")));
         GrammarCompilationSnapshot plain = service.compile("look-compile", new GrammarCompilationRequest("look-plain", "look-compile", 1,
-                List.of(document()), "langium-4.3-browser", "", false, Map.of()));
+                List.of(document()), "langium-4.4-browser", "", false, Map.of()));
         assertThat(plain.status()).isEqualTo(CompilationStatus.SUCCESS);
 
         grammars.replace("look-compile", grammar("look-compile", dangerousSettings()), created.etag());
         assertThat(grammars.find("look-compile").grammar().settings()).isEqualTo(dangerousSettings());
         GrammarCompilationSnapshot styled = service.compile("look-compile", new GrammarCompilationRequest("look-styled", "look-compile", 1,
-                List.of(document()), "langium-4.3-browser", "", false, Map.of()));
+                List.of(document()), "langium-4.4-browser", "", false, Map.of()));
 
         assertThat(styled.status()).isEqualTo(CompilationStatus.SUCCESS);
         assertThat(styled.id()).isNotEqualTo(plain.id());

@@ -114,7 +114,7 @@ class GrammarIdentitySaveGateIntegrationTests {
         wire(temporary);
 
         assertThat(profiles.list()).extracting(GrammarToolchainProfile::id)
-                .containsExactly("antlr-4.13.2-java", "antlr-4.13.2-typescript", "langium-4.3-browser", "xtext-2.44-lsp");
+                .containsExactly("antlr-4.13.2-java", "antlr-4.13.2-typescript", "langium-4.3-browser", "langium-4.4-browser", "xtext-2.44-lsp");
 
         assertThatThrownBy(() -> grammars.create(grammar("unknown-profile", "Unknown profile", "does-not-exist", "Model")))
                 .isInstanceOf(IllegalArgumentException.class).hasMessage("Unknown grammar toolchain profile: does-not-exist");

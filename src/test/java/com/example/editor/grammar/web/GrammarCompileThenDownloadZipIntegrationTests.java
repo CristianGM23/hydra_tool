@@ -94,14 +94,14 @@ class GrammarCompileThenDownloadZipIntegrationTests {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new ApiExceptionHandler()).build();
 
         GrammarSourceDocument document = new GrammarSourceDocument("main", "main.langium", "langium",
-                "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\n", "", true, false);
+                "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n", "", true, false);
         grammars.create(new GrammarDefinitionModel("1.0", "stable", "Stable", GrammarTechnology.LANGIUM, GrammarAuthoringMode.GRAMMAR_FIRST, "",
-                "langium-4.3-browser", "main", "Model", List.of(document), GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of()));
+                "langium-4.4-browser", "main", "Model", List.of(document), GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of()));
     }
 
     private MockHttpServletResponse compile(String source, long revision) throws Exception {
         GrammarSourceDocument document = new GrammarSourceDocument("main", "main.langium", "langium", source, "", true, false);
-        GrammarCompilationRequest request = new GrammarCompilationRequest("", "stable", revision, List.of(document), "langium-4.3-browser", "", true, Map.of());
+        GrammarCompilationRequest request = new GrammarCompilationRequest("", "stable", revision, List.of(document), "langium-4.4-browser", "", true, Map.of());
         return mockMvc.perform(post("/api/grammars/stable/compile").contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))).andExpect(status().isOk()).andReturn().getResponse();
     }
@@ -122,7 +122,7 @@ class GrammarCompileThenDownloadZipIntegrationTests {
     @DisplayName("grammar_author_download.dl: el ZIP descargado contiene exactamente los ficheros del proyecto generado que declaro la compilacion")
     void downloadedArchiveMatchesTheGeneratedProjectDeclaredByTheCompileResponse(@TempDir Path temporary) throws Exception {
         wire(temporary);
-        MockHttpServletResponse compiled = compile("grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\n", 1);
+        MockHttpServletResponse compiled = compile("grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n", 1);
         Map<String, Object> snapshot = mapper.readValue(compiled.getContentAsString(StandardCharsets.UTF_8), Map.class);
         String snapshotId = (String) snapshot.get("id");
         assertThat(snapshot.get("status")).isEqualTo("SUCCESS");

@@ -14,7 +14,11 @@ interface SessionJson {
     lastCommittedRevision: number; metadata: Record<string, string>;
 }
 
-const GRAMMAR_RULES = ['entry Model: nodes+=Node*;', "Node: 'node' name=ID;"];
+// Cada compilación por la API real ejecuta ya la comprobación nativa de Langium (npm install, langium generate, tsc, esbuild y las
+// pruebas generadas: hasta 60 s por paso), así que el presupuesto de la prueba cubre una compilación además de la jornada en el navegador.
+test.setTimeout(240_000);
+
+const GRAMMAR_RULES = ['entry Model: nodes+=Node*;', "Node: 'node' name=ID;", 'hidden terminal WS: /\\s+/;', 'terminal ID: /[_a-zA-Z][\\w_]*/;'];
 const content = (value: SessionJson): string => lf(value.documents[0]?.content ?? '');
 const ids = (model: SessionJson['lastValidSemanticModel']): string[] => (model?.elements ?? []).map(element => element.id);
 

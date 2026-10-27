@@ -62,8 +62,10 @@ import tools.jackson.databind.json.JsonMapper;
  */
 class GrammarAuthoringCompilePipelineOutcomeTests {
 
-    private static final String PROFILE = "langium-4.3-browser";
-    private static final String STABLE = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\n";
+    // Native compilation needs a Langium CLI that runs on the HYDRA Node runtime: 4.3 fails langium generate on Node >= 24.20.
+    private static final String PROFILE = "langium-4.4-browser";
+    // langium generate rejects rules that reference undeclared terminals, so the fixture declares them like the designer's default grammar.
+    private static final String STABLE = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n";
 
     private GrammarProperties properties;
     private GrammarApplicationService grammars;

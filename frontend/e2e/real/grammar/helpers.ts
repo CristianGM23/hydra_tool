@@ -158,7 +158,7 @@ export async function analyzeViaApi(request: APIRequestContext, grammar: Grammar
 
 export function grammarDraft(id: string, name: string, content: string, settings: Record<string, string> = {}): GrammarJson {
     return {
-        schemaVersion: '1.0', id, name, technology: 'LANGIUM', authoringMode: 'GRAMMAR_FIRST', metamodelId: '', toolchainProfileId: 'langium-4.3-browser',
+        schemaVersion: '1.0', id, name, technology: 'LANGIUM', authoringMode: 'GRAMMAR_FIRST', metamodelId: '', toolchainProfileId: 'langium-4.4-browser',
         entryDocumentId: 'main', entryRule: 'Model',
         documents: [{ id: 'main', relativePath: 'main.langium', languageId: 'langium', content, sourceHash: '', entryPoint: true, generated: false }],
         semanticBindings: { schemaVersion: '1.0', bindings: [], annotations: {} }, syntaxStyleDefinitionId: '', settings, annotations: { 'hydra.entryRule.mode': 'AUTO' }

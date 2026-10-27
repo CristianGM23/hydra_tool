@@ -86,12 +86,12 @@ class GrammarCompilationServiceEndToEndIntegrationTests {
 
     private static GrammarSourceDocument stableDocument() {
         return new GrammarSourceDocument("main", "main.langium", "langium",
-                "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\n", "", true, false);
+                "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n", "", true, false);
     }
 
     private static GrammarDefinitionModel stableGrammar(String id, GrammarSourceDocument document) {
         return new GrammarDefinitionModel("1.0", id, id, GrammarTechnology.LANGIUM, GrammarAuthoringMode.GRAMMAR_FIRST,
-                "", "langium-4.3-browser", "main", "Model", List.of(document), GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of());
+                "", "langium-4.4-browser", "main", "Model", List.of(document), GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of());
     }
 
     @Test
@@ -105,14 +105,15 @@ class GrammarCompilationServiceEndToEndIntegrationTests {
         grammars.create(grammar);
 
         GrammarCompilationRequest request = new GrammarCompilationRequest("stable", 1, List.of(document),
-                "langium-4.3-browser", true);
+                "langium-4.4-browser", true);
 
         GrammarCompilationSnapshot snapshot = service.compile("stable", request);
 
         // El pipeline real de doce etapas termina en EXITO genuino: analisis, generacion de
         // proyecto y artefactos semanticos son reales y en el propio proceso; la comprobacion
-        // nativa se difiere honestamente (sin una toolchain real instalada en este servidor) en
-        // vez de fingir un resultado, y eso no bloquea el exito del resto de la tuberia real.
+        // nativa se ejecuta cuando el servidor dispone de Node/npm (por eso la gramatica declara
+        // sus terminales, como exige langium generate) y, si no, se difiere honestamente en vez
+        // de fingir un resultado, sin bloquear el exito del resto de la tuberia real.
         assertThat(snapshot.successful()).isTrue();
         assertThat(snapshot.status()).isEqualTo(CompilationStatus.SUCCESS);
         assertThat(snapshot.stages()).extracting(GrammarCompilationStageResult::stage).containsExactly(
@@ -145,7 +146,7 @@ class GrammarCompilationServiceEndToEndIntegrationTests {
         grammars.create(grammar);
 
         GrammarCompilationRequest request = new GrammarCompilationRequest("not-activated", 1, List.of(document),
-                "langium-4.3-browser", false);
+                "langium-4.4-browser", false);
         GrammarCompilationSnapshot snapshot = service.compile("not-activated", request);
 
         assertThat(snapshot.successful()).isTrue();
@@ -163,7 +164,7 @@ class GrammarCompilationServiceEndToEndIntegrationTests {
         GrammarDefinitionModel grammar = stableGrammar("regressing", goodDocument);
         grammars.create(grammar);
         GrammarCompilationSnapshot firstSnapshot = service.compile("regressing",
-                new GrammarCompilationRequest("regressing", 1, List.of(goodDocument), "langium-4.3-browser", true));
+                new GrammarCompilationRequest("regressing", 1, List.of(goodDocument), "langium-4.4-browser", true));
         assertThat(firstSnapshot.successful()).isTrue();
         assertThat(service.active("regressing")).isPresent();
 
@@ -172,7 +173,7 @@ class GrammarCompilationServiceEndToEndIntegrationTests {
         GrammarSourceDocument brokenDocument = new GrammarSourceDocument("main", "main.langium", "langium",
                 "!!! this is not a valid langium grammar !!!", "", true, false);
         GrammarCompilationSnapshot failedSnapshot = service.compile("regressing",
-                new GrammarCompilationRequest("regressing", 2, List.of(brokenDocument), "langium-4.3-browser", true));
+                new GrammarCompilationRequest("regressing", 2, List.of(brokenDocument), "langium-4.4-browser", true));
 
         // "fail": la etapa fallida y sus diagnosticos reales quedan registrados en un snapshot
         // real e inmutable, sin excepcion no controlada.

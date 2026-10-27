@@ -99,8 +99,8 @@ import tools.jackson.databind.json.JsonMapper;
  * valores literales del resultado, el JSON de la definicion leido del disco y una huella del texto calculada aqui.
  */
 class TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests {
-    private static final String NODE_GRAMMAR = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\n";
-    private static final String ITEM_GRAMMAR = "grammar Other\nentry Model: items+=Item*;\nItem: 'item' name=ID;\n";
+    private static final String NODE_GRAMMAR = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n";
+    private static final String ITEM_GRAMMAR = "grammar Other\nentry Model: items+=Item*;\nItem: 'item' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n";
     private static final String ENTRY = "class:Entry";
     private static final String LABEL = "attribute:Entry:label";
     private static final String TARGET_METAMODEL = "t2m-target";
@@ -160,8 +160,8 @@ class TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests {
     private GrammarCompilationSnapshot createAndCompile(String id, String source, boolean activate) {
         GrammarSourceDocument document = new GrammarSourceDocument("main", "main.langium", "langium", source, "", true, false);
         grammars.create(new GrammarDefinitionModel("1.0", id, id, GrammarTechnology.LANGIUM, GrammarAuthoringMode.GRAMMAR_FIRST, "",
-                "langium-4.3-browser", "main", "Model", List.of(document), GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of()));
-        GrammarCompilationSnapshot snapshot = compilations.compile(id, new GrammarCompilationRequest(id, 1, List.of(document), "langium-4.3-browser", activate));
+                "langium-4.4-browser", "main", "Model", List.of(document), GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of()));
+        GrammarCompilationSnapshot snapshot = compilations.compile(id, new GrammarCompilationRequest(id, 1, List.of(document), "langium-4.4-browser", activate));
         assertThat(snapshot.status()).isEqualTo(CompilationStatus.SUCCESS);
         return snapshot;
     }

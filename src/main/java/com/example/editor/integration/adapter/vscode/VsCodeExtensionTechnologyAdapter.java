@@ -56,7 +56,7 @@ public class VsCodeExtensionTechnologyAdapter implements TechnologyAdapter {
             String commandPrefix = TechnologyAdapterSupport.slug(request.profile().target().settings().getOrDefault("commandPrefix", "hydra." + slug));
             String modelExtension = safeExtension(request.profile().target().settings().getOrDefault("modelExtension", "hydra"));
             String glspVersion = request.profile().target().settings().getOrDefault("glspVersion", "2.7.0");
-            String langiumVersion = request.profile().target().settings().getOrDefault("langiumVersion", "4.3.0");
+            String langiumVersion = request.profile().target().settings().getOrDefault("langiumVersion", "4.4.0");
             String vscodeEngine = request.profile().target().settings().getOrDefault("vscodeEngine", "^1.103.0");
             List<String> sourceIds = TechnologyAdapterGenerationSupport.sourceIds(request);
             List<TechnologyGeneratedFile> files = new ArrayList<>();

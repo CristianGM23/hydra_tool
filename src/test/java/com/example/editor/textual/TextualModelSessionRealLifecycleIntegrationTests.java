@@ -73,7 +73,7 @@ class TextualModelSessionRealLifecycleIntegrationTests {
     @Autowired
     private TextualModelSessionService sessions;
 
-    private static final String GRAMMAR_SOURCE = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\n";
+    private static final String GRAMMAR_SOURCE = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n";
     private static final String VALID_TEXT = "node alpha  \nnode beta\n";
     private static final String BROKEN_TEXT = "node alpha  \nnode 123\n";
     private static final String FIXED_TEXT = "node alpha  \nnode valor\n";
@@ -121,11 +121,11 @@ class TextualModelSessionRealLifecycleIntegrationTests {
         String grammarId = "tx-grammar-" + key, editorId = "tx-editor-" + key, sessionId = "tx-session-" + key;
         GrammarSourceDocument source = new GrammarSourceDocument("main", "main.langium", "langium", GRAMMAR_SOURCE, "", true, false);
         GrammarDefinitionModel grammar = new GrammarDefinitionModel("1.0", grammarId, grammarId, GrammarTechnology.LANGIUM,
-                GrammarAuthoringMode.GRAMMAR_FIRST, "", "langium-4.3-browser", "main", "Model", List.of(source),
+                GrammarAuthoringMode.GRAMMAR_FIRST, "", "langium-4.4-browser", "main", "Model", List.of(source),
                 GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of());
         mockMvc.perform(post("/api/grammars").contentType(MediaType.APPLICATION_JSON).content(body(grammar))).andExpect(status().is2xxSuccessful());
         Map<String, Object> snapshot = read(mockMvc.perform(post("/api/grammars/" + grammarId + "/compile").contentType(MediaType.APPLICATION_JSON)
-                .content(body(new GrammarCompilationRequest("", grammarId, 1, List.of(source), "langium-4.3-browser", "", true, Map.of()))))
+                .content(body(new GrammarCompilationRequest("", grammarId, 1, List.of(source), "langium-4.4-browser", "", true, Map.of()))))
                 .andExpect(status().isOk()));
         assertThat(snapshot.get("status")).isEqualTo("SUCCESS");
 
@@ -156,9 +156,9 @@ class TextualModelSessionRealLifecycleIntegrationTests {
                 { "tx-an-plain", GRAMMAR_SOURCE, "false" } }) {
             GrammarSourceDocument document = new GrammarSourceDocument("main", "main.langium", "langium", candidate[1], "", true, false);
             GrammarDefinitionModel grammar = new GrammarDefinitionModel("1.0", candidate[0], candidate[0], GrammarTechnology.LANGIUM,
-                    GrammarAuthoringMode.GRAMMAR_FIRST, "", "langium-4.3-browser", "main", "Model", List.of(document),
+                    GrammarAuthoringMode.GRAMMAR_FIRST, "", "langium-4.4-browser", "main", "Model", List.of(document),
                     GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of());
-            GrammarAnalysisRequest analysis = new GrammarAnalysisRequest(candidate[0], 1, GrammarAnalysisMode.NORMAL, List.of("main"), List.of(document), "langium-4.3-browser");
+            GrammarAnalysisRequest analysis = new GrammarAnalysisRequest(candidate[0], 1, GrammarAnalysisMode.NORMAL, List.of("main"), List.of(document), "langium-4.4-browser");
             Map<String, Object> result = read(mockMvc.perform(post("/api/grammars/analyze-draft").contentType(MediaType.APPLICATION_JSON)
                     .content(body(new GrammarDraftAnalysisRequest(grammar, analysis)))).andExpect(status().isOk()));
             boolean blocked = list(result, "diagnostics").stream().anyMatch(item -> "ERROR".equals(item.get("severity")));

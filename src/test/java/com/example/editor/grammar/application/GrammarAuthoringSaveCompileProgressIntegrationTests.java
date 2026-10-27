@@ -84,10 +84,10 @@ class GrammarAuthoringSaveCompileProgressIntegrationTests {
 
     private static GrammarDefinitionModel grammar(String id, String name, GrammarSourceDocument document) {
         return new GrammarDefinitionModel("1.0", id, name, GrammarTechnology.LANGIUM, GrammarAuthoringMode.GRAMMAR_FIRST, "",
-                "langium-4.3-browser", "main", "Model", List.of(document), GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of());
+                "langium-4.4-browser", "main", "Model", List.of(document), GrammarSemanticBindingMap.empty(), "", Map.of(), Map.of());
     }
 
-    private static final String VALID = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\n";
+    private static final String VALID = "grammar Stable\nentry Model: nodes+=Node*;\nNode: 'node' name=ID;\nhidden terminal WS: /\\s+/;\nterminal ID: /[_a-zA-Z][\\w_]*/;\n";
 
     private long filesUnder(Path directory) throws IOException {
         if (!Files.exists(directory)) return 0;
@@ -125,7 +125,7 @@ class GrammarAuthoringSaveCompileProgressIntegrationTests {
         grammars.create(grammar("progress", "Progress grammar", document));
 
         GrammarCompilationSnapshot inactive = service.compile("progress", new GrammarCompilationRequest("req-inactive", "progress", 1,
-                List.of(document), "langium-4.3-browser", "", false, Map.of()));
+                List.of(document), "langium-4.4-browser", "", false, Map.of()));
         assertThat(inactive.status()).isEqualTo(CompilationStatus.SUCCESS);
         assertThat(service.active("progress")).isEmpty();
         GrammarCompilationProgress inactiveProgress = progress.find("req-inactive").orElseThrow();
@@ -134,7 +134,7 @@ class GrammarAuthoringSaveCompileProgressIntegrationTests {
         assertThat(inactiveProgress.totalStages()).isEqualTo(12);
 
         GrammarCompilationSnapshot active = service.compile("progress", new GrammarCompilationRequest("req-active", "progress", 1,
-                List.of(document), "langium-4.3-browser", "", true, Map.of()));
+                List.of(document), "langium-4.4-browser", "", true, Map.of()));
         assertThat(active.status()).isEqualTo(CompilationStatus.SUCCESS);
         assertThat(service.active("progress")).isPresent().get().extracting(GrammarCompilationSnapshot::id).isEqualTo(active.id());
         GrammarCompilationProgress activeProgress = progress.find("req-active").orElseThrow();
@@ -151,12 +151,12 @@ class GrammarAuthoringSaveCompileProgressIntegrationTests {
         GrammarSourceDocument good = document(VALID);
         grammars.create(grammar("regress", "Regress grammar", good));
         GrammarCompilationSnapshot first = service.compile("regress", new GrammarCompilationRequest("req-good", "regress", 1,
-                List.of(good), "langium-4.3-browser", "", true, Map.of()));
+                List.of(good), "langium-4.4-browser", "", true, Map.of()));
         assertThat(first.status()).isEqualTo(CompilationStatus.SUCCESS);
 
         GrammarSourceDocument broken = document("!!! this is not a valid langium grammar !!!");
         GrammarCompilationSnapshot failed = service.compile("regress", new GrammarCompilationRequest("req-broken", "regress", 2,
-                List.of(broken), "langium-4.3-browser", "", true, Map.of()));
+                List.of(broken), "langium-4.4-browser", "", true, Map.of()));
 
         assertThat(failed.status()).isEqualTo(CompilationStatus.FAILED);
         GrammarCompilationProgress failure = progress.find("req-broken").orElseThrow();
