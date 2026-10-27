@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '24', cache: maven }
       - uses: actions/setup-node@v4
-        with: { node-version: '22.16.0', cache: npm, cache-dependency-path: frontend/package-lock.json }
+        with: { node-version: '26.12.1', cache: npm, cache-dependency-path: frontend/package-lock.json }
       - uses: actions/setup-python@v5
         with: { python-version: '3.13' }
       - name: Canonical source integrity (cross-platform checkout)
