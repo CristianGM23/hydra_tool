@@ -86,7 +86,7 @@ public class LangiumGrammarProvider extends AbstractNeutralGrammarProvider {
                 "    \"cli\": \"node dist/cli/main.js\"\n"+
                 "  },\n"+
                 "  \"dependencies\": {\"langium\": \""+escape(version)+"\", \"vscode-languageserver\": \""+LangiumTechnologyAdapter.languageServerVersion(version)+"\", \"vscode-uri\": \"^3.1.0\"},\n"+
-                "  \"devDependencies\": {\"@types/node\": \"^22.0.0\", \"esbuild\": \"^0.25.0\", \"langium-cli\": \""+escape(version)+"\", \"typescript\": \"^5.8.0\", \"vitest\": \"^4.0.0\"}\n}\n";
+                "  \"devDependencies\": {\"@types/node\": \"^22.0.0\", \"esbuild\": \"0.28.2\", \"langium-cli\": \""+escape(version)+"\", \"typescript\": \"^5.8.0\", \"vite\": \"8.3.5\", \"vitest\": \"5.0.5\"}\n}\n";
     }
     /** Descripción: Ejecuta la operación «config» correspondiente a la responsabilidad de LangiumGrammarProvider. Entradas: projectName: dato de entrada necesario para la operación; languageId: identificador que delimita el recurso objetivo; grammarPath: ruta o ubicación utilizada por la operación; extension: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método; «out» es obligatorio en el esquema de langium-cli y coincide con el '../generated/module.js' que importa el módulo de servicios. */ private static String config(String projectName,String languageId,String grammarPath,String extension){
         return "{\n  \"projectName\": \""+escape(projectName)+"\",\n  \"languages\": [{\"id\": \""+escape(languageId)+"\", \"grammar\": \""+escape(grammarPath)+"\", \"fileExtensions\": [\""+escape(extension)+"\"]}],\n  \"out\": \"src/generated\"\n}\n";

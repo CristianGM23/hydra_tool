@@ -40,6 +40,10 @@ class LangiumGrammarProviderScaffoldTests {
         assertThat(generate("langium-4.3-browser").files().get("package.json")).contains("\"langium\": \"4.3.0\"", "\"langium-cli\": \"4.3.0\"",
                 "\"vscode-languageserver\": \"10.0.1\"");
     }
+    @Test void pinsVitest5WithAnExplicitViteAndTheEsbuildItAccepts(){
+        assertThat(generate("langium-4.4-browser").files().get("package.json")).contains("\"vitest\": \"5.0.5\"", "\"vite\": \"8.3.5\"", "\"esbuild\": \"0.28.2\"")
+                .doesNotContain("\"vitest\": \"^", "\"overrides\"");
+    }
     private GeneratedGrammarProject generate(String profileId){return generate(profileId,"stable",SOURCE);}
     private GeneratedGrammarProject generate(String profileId,String id,String source){
         GrammarSourceDocument document=new GrammarSourceDocument("main","main.langium","langium",source,"",true,false);
