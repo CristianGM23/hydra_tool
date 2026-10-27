@@ -36,6 +36,8 @@ import tools.jackson.databind.json.JsonMapper;
 @Component
 public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
     private static final Set<IntegrationArtifactKind> SUPPORTED = EnumSet.allOf(IntegrationArtifactKind.class);
+    /** org.eclipse.glsp.server logs through the log4j API but leaves it to the OSGi host; a plain Maven server must declare it (same line as HYDRA's Spring Boot). */
+    private static final String LOG4J_API_VERSION = "2.25.5";
     private final JsonMapper mapper;
 
     /** Descripción: Inicializa una instancia de EclipseGlspTechnologyAdapter con sus dependencias y datos de entrada. Entradas: mapper: componente de conversión utilizado durante el procesamiento. Salida: deja la instancia inicializada y lista para su uso. */ public EclipseGlspTechnologyAdapter(JsonMapper mapper){this.mapper = mapper;}
@@ -88,7 +90,7 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
             files.add(TechnologyAdapterSupport.text(root + "/README.md", "text/markdown", readme(request, metamodel, editor, diagramType, serverLanguage), sourceIds));
             files.addAll(TechnologyAdapterSelfContainedDependencySupport.npmVendorFiles(root + "/client", packageName + "-client", List.of("@eclipse-glsp/client@" + glspVersion, "@eclipse-glsp/protocol@" + glspVersion, "inversify@6.1.3"), sourceIds));
             if(serverLanguage.equals("typescript")) files.addAll(TechnologyAdapterSelfContainedDependencySupport.npmVendorFiles(root + "/server", packageName + "-server", List.of("@eclipse-glsp/server@" + glspVersion, "@eclipse-glsp/graph@" + glspVersion, "@eclipse-glsp/protocol@" + glspVersion, "inversify@6.1.3", "reflect-metadata@0.2.2"), sourceIds));
-            else files.addAll(TechnologyAdapterSelfContainedDependencySupport.mavenRuntimeVendorFiles(root + "/server", packageName + "-server", List.of("org.eclipse.glsp:org.eclipse.glsp.server:" + glspVersion), sourceIds));
+            else files.addAll(TechnologyAdapterSelfContainedDependencySupport.mavenRuntimeVendorFiles(root + "/server", packageName + "-server", List.of("org.eclipse.glsp:org.eclipse.glsp.server:" + glspVersion, "org.apache.logging.log4j:log4j-api:" + LOG4J_API_VERSION), sourceIds));
             files.add(TechnologyAdapterSupport.text(TechnologyAdapterSupport.join(root, "META-INF", "hydra-fidelity-obligations.json"),
                     "application/json", TechnologyFidelityManifestSupport.json(mapper, request, editor, "ECLIPSE_GLSP"), sourceIds));
             List<IntegrationDiagnostic> diagnostics = new ArrayList<>();
@@ -101,16 +103,16 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
             List<IntegrationDependencyChange> dependencies = new ArrayList<>();
             dependencies.add(dependency("npm", "@eclipse-glsp/client", glspVersion));
             dependencies.add(dependency("npm", "@eclipse-glsp/protocol", glspVersion));
-            if(serverLanguage.equals("java")){dependencies.add(dependency("maven", "org.eclipse.glsp:org.eclipse.glsp.server", glspVersion));dependencies.add(dependency("maven", "com.google.code.gson:gson", "2.11.0"));}
+            if(serverLanguage.equals("java")){dependencies.add(dependency("maven", "org.eclipse.glsp:org.eclipse.glsp.server", glspVersion));dependencies.add(dependency("maven", "com.google.code.gson:gson", "2.11.0"));dependencies.add(dependency("maven", "org.apache.logging.log4j:log4j-api", LOG4J_API_VERSION));}
             else{dependencies.add(dependency("npm", "@eclipse-glsp/server", glspVersion));dependencies.add(dependency("npm", "@eclipse-glsp/graph", glspVersion));}
             List<IntegrationVerificationStep> verification = new ArrayList<>();
             verification.add(new IntegrationVerificationStep("install-glsp-client", "Install GLSP client dependencies", root + "/client", List.of("npm", "install", "--ignore-scripts"), 0, true));
             verification.add(new IntegrationVerificationStep("build-glsp-client", "Compile and test the GLSP TypeScript client", root + "/client", List.of("npm", "run", "check"), 0, true));
             if(serverLanguage.equals("java")){
-                verification.add(new IntegrationVerificationStep("build-glsp-server", "Compile the GLSP Java server", root + "/server", List.of("mvn", "-q", "test"), 0, true));
+                verification.add(new IntegrationVerificationStep("build-glsp-server", "Compile the GLSP Java server and drive its diagram module through the GLSP server protocol API", root + "/server", List.of("mvn", "-q", "test"), 0, true));
             }else{
                 verification.add(new IntegrationVerificationStep("install-glsp-server", "Install GLSP server dependencies", root + "/server", List.of("npm", "install", "--ignore-scripts"), 0, true));
-                verification.add(new IntegrationVerificationStep("build-glsp-server", "Compile and test the GLSP TypeScript server", root + "/server", List.of("npm", "run", "check"), 0, true));
+                verification.add(new IntegrationVerificationStep("build-glsp-server", "Compile the GLSP TypeScript server and run the client-server protocol round trip over a socket", root + "/server", List.of("npm", "run", "check"), 0, true));
             }
             return new TechnologyCompilationResult(IntegrationTechnology.ECLIPSE_GLSP, files, dependencies,
                     List.of("Prepare client/server vendor bundles once", "Build the generated client and server", "Use only bundled npm packages or target/distribution/lib at deployment", "Embed the client in standalone, VS Code, Theia or Eclipse integration glue"),
@@ -173,7 +175,8 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
                 export const hydraPaletteLabels=[%s] as const;
                 export interface HydraToolDescriptor {id:string;label:string;kind:string;}
                 """.formatted(labels);}
-    /** Descripción: Ejecuta la operación «clientValidationSource» correspondiente a la responsabilidad de EclipseGlspTechnologyAdapter. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private String clientValidationSource(){return """
+    /** Descripción: Genera el punto de extensión de marcadores del cliente. Es un passthrough declarado como tal: HYDRA no decora todavía marcadores en el cliente ni lo verifica (cobertura pendiente); los marcadores del servidor llegan por SetMarkersAction de GLSP. Entradas: no requiere parámetros de entrada. Salida: fuente TypeScript. */ private String clientValidationSource(){return """
+            /** Extension hook only: HYDRA does not decorate client-side markers yet and no generated test covers it (pending coverage). Server markers arrive through GLSP's SetMarkersAction. */
             export class HydraValidationMarkerProvider { decorate(model:unknown,diagnostics:readonly unknown[]):unknown{return {model,diagnostics};} }
             """;}
     /** Descripción: Ejecuta la operación «clientEventSource» correspondiente a la responsabilidad de EclipseGlspTechnologyAdapter. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private String clientEventSource(){return """
@@ -216,11 +219,12 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
                 javaRuntimeService(basePackage), sourceIds));
         if(request.find(IntegrationArtifactKind.GRAMMAR).isPresent()){files.add(TechnologyAdapterSupport.text(root + "/server/src/main/java/" + path + "/HydraTextualFullStack.java", "text/x-java-source", TechnologyAdapterTextualCustomizationSupport.javaFullStackBridgeSource(basePackage, request, mapper), sourceIds));}
         if(TechnologyAdapterVisualFullStackSupport.available(request)){files.add(TechnologyAdapterSupport.text(root + "/server/src/main/java/" + path + "/HydraVisualFullStack.java", "text/x-java-source", TechnologyAdapterVisualFullStackSupport.javaBridgeSource(basePackage, request), sourceIds));}
+        files.add(TechnologyAdapterSupport.text(root + "/server/src/test/java/" + path + "/HydraGlspServerIntegrationTest.java", "text/x-java-source", new GlspProtocolTestSources(mapper).javaProtocolTest(basePackage, diagramType, editor), sourceIds));
     }
     /** Genera un servidor Java cuyo empaquetado copia todas las dependencias runtime a target/distribution/lib. */
     /** Descripción: Ejecuta la operación «javaServerPom» correspondiente a la responsabilidad de EclipseGlspTechnologyAdapter. Entradas: basePackage: dato de entrada necesario para la operación; glspVersion: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String javaServerPom(String basePackage, String glspVersion){return """
-            <?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>%s</groupId><artifactId>hydra-glsp-server</artifactId><version>1.0.0-SNAPSHOT</version><properties><maven.compiler.release>17</maven.compiler.release><glsp.version>%s</glsp.version></properties><dependencies><dependency><groupId>org.eclipse.glsp</groupId><artifactId>org.eclipse.glsp.server</artifactId><version>${glsp.version}</version></dependency><dependency><groupId>com.google.code.gson</groupId><artifactId>gson</artifactId><version>2.11.0</version></dependency></dependencies><build><plugins><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId><version>3.8.1</version><executions><execution><id>vendor-runtime</id><phase>package</phase><goals><goal>copy-dependencies</goal></goals><configuration><includeScope>runtime</includeScope><outputDirectory>${project.build.directory}/distribution/lib</outputDirectory></configuration></execution></executions></plugin></plugins></build></project>
-            """.formatted(basePackage, glspVersion);}
+            <?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>%s</groupId><artifactId>hydra-glsp-server</artifactId><version>1.0.0-SNAPSHOT</version><properties><maven.compiler.release>17</maven.compiler.release><glsp.version>%s</glsp.version></properties><dependencies><dependency><groupId>org.eclipse.glsp</groupId><artifactId>org.eclipse.glsp.server</artifactId><version>${glsp.version}</version></dependency><dependency><groupId>com.google.code.gson</groupId><artifactId>gson</artifactId><version>2.11.0</version></dependency><dependency><groupId>org.apache.logging.log4j</groupId><artifactId>log4j-api</artifactId><version>%s</version></dependency><dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>6.0.3</version><scope>test</scope></dependency></dependencies><build><plugins><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.5.6</version></plugin><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId><version>3.8.1</version><executions><execution><id>vendor-runtime</id><phase>package</phase><goals><goal>copy-dependencies</goal></goals><configuration><includeScope>runtime</includeScope><outputDirectory>${project.build.directory}/distribution/lib</outputDirectory></configuration></execution></executions></plugin></plugins></build></project>
+            """.formatted(basePackage, glspVersion, LOG4J_API_VERSION);}
 
     /** Descripción: Genera el módulo GLSP Java compatible con la API 2.5 y enlaza almacenamiento, proyección, validación y estado transaccional. Entradas: basePackage: paquete Java; diagramType: tipo de diagrama. Salida: devuelve el código fuente del módulo. */ private String javaDiagramModule(String basePackage, String diagramType){return """
             package %s;
@@ -346,13 +350,7 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
             """.formatted(basePackage);}
 
     /** Descripción: Genera la proyección GModel concreta desde CanonicalModelDocument y mappings del editor; el GModel nunca sustituye al source model. Entradas: basePackage: paquete Java; diagramType: tipo; editor: definición canónica. Salida: devuelve el código fuente de fábrica. */ private String javaFactory(String basePackage,String diagramType,EditorDefinitionModel editor){
-        Map<String,String> nodeTypes=new LinkedHashMap<>();
-        Map<String,String> edgeTypes=new LinkedHashMap<>();
-        editor.representations().stream().filter(r->r.kind()==RepresentationKind.DIAGRAM).forEach(r->{
-            r.nodeMappings().forEach(m->nodeTypes.putIfAbsent(m.targetClassId(),m.representationName()));
-            r.edgeMappings().stream().filter(m->!m.relationId().isBlank()).forEach(m->edgeTypes.putIfAbsent(m.relationId(),"hydra:edge"));
-        });
-        String nodes=javaMapEntries(nodeTypes);String edges=javaMapEntries(edgeTypes);
+        String nodes=javaMapEntries(GlspProtocolTestSources.nodeTypes(editor));String edges=javaMapEntries(GlspProtocolTestSources.edgeTypes(editor));
         return """
             package %s;
             import java.util.Map;
@@ -489,9 +487,10 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
                     nodeRuntimeService(), sourceIds));
         if(TechnologyAdapterVisualFullStackSupport.available(request)){files.add(TechnologyAdapterSupport.text(root + "/server/src/hydra-visual-full-stack.ts", "text/typescript", TechnologyAdapterVisualFullStackSupport.typescriptBridgeSource(request), sourceIds));}
         files.add(TechnologyAdapterSupport.text(root + "/server/src/hydra-server.test.ts", "text/typescript", nodeServerTest(diagramType), sourceIds));
+        files.add(TechnologyAdapterSupport.text(root + "/server/src/hydra-client-server.test.ts", "text/typescript", new GlspProtocolTestSources(mapper).nodeProtocolTest(diagramType, editor), sourceIds));
     }
     /** Descripción: Genera package.json compatible con los artefactos npm publicados por GLSP 2.5 y su peer de Inversify. Entradas: packageName: nombre; glspVersion: versión; typescriptVersion: versión TS. Salida: JSON del paquete Node. */ private String nodeServerPackage(String packageName, String glspVersion, String typescriptVersion){return """
-            {"name":"%s-server","version":"1.0.0","type":"module","scripts":{"build":"tsc -b","test":"vitest run","check":"npm run build && npm test"},"dependencies":{"@eclipse-glsp/server":"^%s","@eclipse-glsp/graph":"^%s","@eclipse-glsp/protocol":"^%s","inversify":"^6.1.3","reflect-metadata":"^0.2.2"},"devDependencies":{"@types/node":"^22.10.0","typescript":"^%s","vite":"8.3.5","vitest":"5.0.5"}}
+            {"name":"%s-server","version":"1.0.0","type":"module","scripts":{"build":"tsc -b","test":"vitest run","check":"npm run build && npm test"},"dependencies":{"@eclipse-glsp/server":"^%s","@eclipse-glsp/graph":"^%s","@eclipse-glsp/protocol":"^%s","inversify":"^6.1.3","reflect-metadata":"^0.2.2"},"devDependencies":{"@types/node":"^22.10.0","typescript":"^%s","vite":"8.3.5","vitest":"5.0.5","vscode-jsonrpc":"8.2.0"}}
             """.formatted(packageName, glspVersion, glspVersion, glspVersion, typescriptVersion);}
     /** Descripción: Genera la configuración neutral del diagrama exigida por DiagramModule de GLSP Node 2.5. Entradas: no requiere parámetros. Salida: fuente TypeScript. */ private String nodeDiagramConfiguration(){return """
             import type { DiagramConfiguration } from '@eclipse-glsp/server';
@@ -599,8 +598,7 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
             }
             """;}
     /** Descripción: Genera una fábrica GModel Node desde CanonicalModelDocument y mappings DIAGRAM, manteniendo el JSON como fuente de verdad. Entradas: diagramType: tipo; editor: definición. Salida: fuente TypeScript. */ private String nodeFactory(String diagramType,EditorDefinitionModel editor){
-        Map<String,String> nodeTypes=new LinkedHashMap<>();Map<String,String> edgeTypes=new LinkedHashMap<>();
-        editor.representations().stream().filter(r->r.kind()==RepresentationKind.DIAGRAM).forEach(r->{r.nodeMappings().forEach(m->nodeTypes.putIfAbsent(m.targetClassId(),m.representationName()));r.edgeMappings().stream().filter(m->!m.relationId().isBlank()).forEach(m->edgeTypes.putIfAbsent(m.relationId(),"hydra:edge"));});
+        Map<String,String> nodeTypes=GlspProtocolTestSources.nodeTypes(editor);Map<String,String> edgeTypes=GlspProtocolTestSources.edgeTypes(editor);
         return """
             import { GEdge, GGraph, GNode } from '@eclipse-glsp/graph';
             import { inject, injectable } from 'inversify';
@@ -691,5 +689,12 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
             - Client and server receive the same semantic-scope `HydraRuntimeActivation`/`hydraRuntimeActivation` gate with an activation epoch. Re-enabling performs a silent rebaseline so changes made while disabled are never replayed as HYDRA events.
             - GLSP GModels are derived views and never replace the HYDRA semantic model.
             - Injection profile: `%s`.
-            """.formatted(metamodel.id(), editor.id(), diagramType, serverLanguage, request.profile().id());}
+
+            ## Verification coverage
+
+            %s
+            - Not covered yet: the client DI module is compiled but never rendered, and `HydraValidationMarkerProvider` is a pass-through extension hook.
+            """.formatted(metamodel.id(), editor.id(), diagramType, serverLanguage, request.profile().id(), serverLanguage.equals("java")
+                    ? "- `mvn test` runs `HydraGlspServerIntegrationTest`: a real Guice `ServerModule` with this diagram module serves the canonical model through `GLSPServer` (session, client layout, projection, validator markers, save). It exercises the server protocol API, not the TypeScript client over a socket.\n- Not covered yet: `HydraOperationHandler` is a service API and is not registered as a GLSP operation handler."
+                    : "- `npm run check` in `server` runs `hydra-client-server.test.ts`: the official GLSP JSON-RPC client connects over a socket and loads, edits (`hydra.replaceSourceModel`), undoes, redoes and saves the canonical model, checking the projected GModel and the saved file.\n- Not covered yet: the TypeScript server binds no GLSP model validator, so markers are not served.");}
 }
