@@ -5,6 +5,7 @@ import type { CanonicalMetamodelSummary } from '../metamodel-designer/types';
 import { GrammarMetamodelField } from './GrammarMetamodelField';
 import type { GrammarAnalysisResult, GrammarDefinitionModel, GrammarTechnology, GrammarToolchainProfile } from './types';
 import type { GrammarLocalInspection } from './grammarLocalInspection';
+import { toolchainProfileDescription } from './toolchainProfileDescription';
 
 interface Props{
     model:GrammarDefinitionModel;
@@ -30,7 +31,7 @@ export function GrammarIdentityForm({model,displayedTechnology,analysis,localIns
         {value:'LINKED',label:'Grammar linked to metamodel',description:'Keep grammar and selected HYDRA metamodel related and use the metamodel to strengthen semantic reconciliation.',category:'Available values'},
         {value:'METAMODEL_FIRST',label:'Metamodel first',description:'Treat the selected HYDRA metamodel as the structural reference the grammar must implement.',category:'Available values'}
     ];
-    const toolchainOptions=compatibleProfiles.map(profile=>({value:profile.id,label:`${profile.id} · ${profile.executionMode}`,description:`Provider ${profile.providerVersion} · ${profile.buildSystem} · target ${profile.targetLanguage}${profile.javaVersion?` · Java ${profile.javaVersion}`:''}${profile.nodeVersion?` · Node ${profile.nodeVersion}`:''}`,category:profile.executionMode==='HYBRID'?'Recommended':'Available values'}));
+    const toolchainOptions=compatibleProfiles.map(profile=>({value:profile.id,label:`${profile.id} · ${profile.executionMode}`,description:toolchainProfileDescription(profile),category:profile.executionMode==='HYBRID'?'Recommended':'Available values'}));
     const inferredEntryRule=analysis?.metadata['entryRule.inferred']??localInspection.inferredEntryRule;
     const inferenceConfidence=Math.round((analysis===null?localInspection.confidence:Number(analysis.metadata['entryRule.confidence']??localInspection.confidence))*100);
     const parserRules=(analysis?.metadata['entryRule.candidates']??'').split('|').map(value=>value.trim()).filter(Boolean);
