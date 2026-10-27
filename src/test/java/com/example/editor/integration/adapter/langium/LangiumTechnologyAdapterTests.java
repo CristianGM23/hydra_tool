@@ -48,7 +48,7 @@ class LangiumTechnologyAdapterTests {
     @Test void pinsAConsistentLangium4ToolchainThatNpmCanResolve(){
         String pkg=text(adapter.compile(TechnologyAdapterTestFixtures.langiumRequest()),"package.json");
         assertThat(pkg).contains("\"langium\": \"4.4.0\"","\"langium-cli\": \"4.4.0\"","\"vscode-languageserver\": \"10.1.2\"","\"vscode-languageserver-textdocument\": \"1.0.16\"",
-                "\"typescript\": \"6.0.2\"","\"vitest\": \"4.1.10\"","\"overrides\":{\"vite\":\"7.3.7\"}").doesNotContain("\"^");
+                "\"typescript\": \"6.0.2\"","\"vitest\": \"5.0.5\"").doesNotContain("\"^","4.1.10","\"overrides\"");
     }
     @Test void keepsTheLanguageServerLineOfEarlierLangium4Releases(){
         var result=adapter.compile(configured(Map.of("langiumVersion","4.3.0")));

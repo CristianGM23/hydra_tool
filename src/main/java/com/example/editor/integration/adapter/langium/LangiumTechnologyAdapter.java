@@ -141,15 +141,14 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
                 "vscode-languageserver": "%s",
                 "vscode-languageserver-textdocument": "%s"
               },
-              "devDependencies": {"typescript": "%s", "vitest": "4.1.10", "langium-cli": "%s"},
-              %s,
+              "devDependencies": {"typescript": "%s", "vitest": "5.0.5", "langium-cli": "%s"},
               "contributes": {
                 "languages": [{"id": "%s", "extensions": [".%s"], "aliases": ["%s"]}],%s
                 "commands": [{"command": "hydra.toggleRuntime", "title": "HYDRA: Enable/disable runtime"}]
               }
             }
             """.formatted(packageName, langiumVersion, languageServerVersion(langiumVersion), TEXT_DOCUMENT_VERSION, typescriptVersion, langiumVersion,
-                TechnologyAdapterSupport.VITEST_VITE_OVERRIDE, languageName.toLowerCase(), extension, languageName, grammarContribution);
+                languageName.toLowerCase(), extension, languageName, grammarContribution);
     }
     /** Descripción: Elige la versión exacta de vscode-languageserver que exige la línea de Langium: Langium 4.4 depende de ~10.1, Langium 4.0-4.3 de ~10.0
      * (ambas LSP 3.18) y Langium 3 de ~9.0 (LSP 3.17); declarar otra línea instala una segunda copia de vscode-languageserver y rompe los tipos LSP
