@@ -74,7 +74,8 @@ class EclipseGlspTechnologyAdapterTests {
                 .doesNotContain("TYPES.","({bind,isBound})=>","as never");}
     @Test void typeScriptServerDeclaresNodeTypesForTypeScript6(){var result=adapter.compile(configured(Map.of("serverLanguage","typescript")));
         assertThat(text(result,"server/tsconfig.json")).contains("\"types\":[\"node\"]");assertThat(text(result,"client/tsconfig.json")).doesNotContain("\"types\"");}
-    @Test void nodePackagesPinViteSoNpmCanResolveVitest(){var result=adapter.compile(configured(Map.of("serverLanguage","typescript")));assertThat(text(result,"client/package.json")).contains("\"overrides\":{\"vite\":\"7.3.7\"}");assertThat(text(result,"server/package.json")).contains("\"overrides\":{\"vite\":\"7.3.7\"}");}
+    @Test void nodePackagesPinViteSoNpmCanResolveVitest(){var result=adapter.compile(configured(Map.of("serverLanguage","typescript")));
+        for(String pkg:List.of("client/package.json","server/package.json"))assertThat(text(result,pkg)).contains("\"vite\":\"8.3.5\"","\"vitest\":\"5.0.5\"").doesNotContain("\"overrides\"","4.1.10","\"vitest\":\"^");}
     @Test void exportsHonestScopedFidelityObligations(){
         var result = adapter.compile(TechnologyAdapterTestFixtures.glspRequest());
         String report = text(result,"hydra-fidelity-obligations.json");

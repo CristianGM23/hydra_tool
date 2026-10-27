@@ -131,8 +131,8 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
             """.formatted(packageName.replace('/', '-').replace('@', 'x'), workspaces);
     }
     /** Descripción: Ejecuta la operación «clientPackage» correspondiente a la responsabilidad de EclipseGlspTechnologyAdapter. Entradas: packageName: dato de entrada necesario para la operación; glspVersion: dato de entrada necesario para la operación; typescriptVersion: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String clientPackage(String packageName, String glspVersion, String typescriptVersion){return """
-            {"name":"%s-client","version":"1.0.0","type":"module","scripts":{"build":"tsc -b","test":"vitest run","check":"npm run build && npm test"},"dependencies":{"@eclipse-glsp/client":"^%s","@eclipse-glsp/protocol":"^%s","inversify":"^6.1.3"},"devDependencies":{"typescript":"^%s","vitest":"^4.1.10"},%s}
-            """.formatted(packageName, glspVersion, glspVersion, typescriptVersion, TechnologyAdapterSupport.VITEST_VITE_OVERRIDE);}
+            {"name":"%s-client","version":"1.0.0","type":"module","scripts":{"build":"tsc -b","test":"vitest run","check":"npm run build && npm test"},"dependencies":{"@eclipse-glsp/client":"^%s","@eclipse-glsp/protocol":"^%s","inversify":"^6.1.3"},"devDependencies":{"typescript":"^%s","vite":"8.3.5","vitest":"5.0.5"}}
+            """.formatted(packageName, glspVersion, glspVersion, typescriptVersion);}
     /** Descripción: Ejecuta la operación «tsconfig» correspondiente a la responsabilidad de EclipseGlspTechnologyAdapter. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private String tsconfig(){return """
             {"compilerOptions":{"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","strict":true,"outDir":"lib","rootDir":"src","skipLibCheck":true,"experimentalDecorators":true,"useDefineForClassFields":false},"include":["src/**/*.ts"]}
             """;}
@@ -491,8 +491,8 @@ public class EclipseGlspTechnologyAdapter implements TechnologyAdapter {
         files.add(TechnologyAdapterSupport.text(root + "/server/src/hydra-server.test.ts", "text/typescript", nodeServerTest(diagramType), sourceIds));
     }
     /** Descripción: Genera package.json compatible con los artefactos npm publicados por GLSP 2.5 y su peer de Inversify. Entradas: packageName: nombre; glspVersion: versión; typescriptVersion: versión TS. Salida: JSON del paquete Node. */ private String nodeServerPackage(String packageName, String glspVersion, String typescriptVersion){return """
-            {"name":"%s-server","version":"1.0.0","type":"module","scripts":{"build":"tsc -b","test":"vitest run","check":"npm run build && npm test"},"dependencies":{"@eclipse-glsp/server":"^%s","@eclipse-glsp/graph":"^%s","@eclipse-glsp/protocol":"^%s","inversify":"^6.1.3","reflect-metadata":"^0.2.2"},"devDependencies":{"@types/node":"^22.10.0","typescript":"^%s","vitest":"^4.1.10"},%s}
-            """.formatted(packageName, glspVersion, glspVersion, glspVersion, typescriptVersion, TechnologyAdapterSupport.VITEST_VITE_OVERRIDE);}
+            {"name":"%s-server","version":"1.0.0","type":"module","scripts":{"build":"tsc -b","test":"vitest run","check":"npm run build && npm test"},"dependencies":{"@eclipse-glsp/server":"^%s","@eclipse-glsp/graph":"^%s","@eclipse-glsp/protocol":"^%s","inversify":"^6.1.3","reflect-metadata":"^0.2.2"},"devDependencies":{"@types/node":"^22.10.0","typescript":"^%s","vite":"8.3.5","vitest":"5.0.5"}}
+            """.formatted(packageName, glspVersion, glspVersion, glspVersion, typescriptVersion);}
     /** Descripción: Genera la configuración neutral del diagrama exigida por DiagramModule de GLSP Node 2.5. Entradas: no requiere parámetros. Salida: fuente TypeScript. */ private String nodeDiagramConfiguration(){return """
             import type { DiagramConfiguration } from '@eclipse-glsp/server';
             import { ServerLayoutKind } from '@eclipse-glsp/server';
