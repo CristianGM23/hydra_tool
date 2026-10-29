@@ -8,17 +8,19 @@ import com.example.editor.grammar.runtime.GrammarCompilationSnapshot;
 
 /**
  * Bounded, technology-neutral syntax contract reconstructed from the exact grammar sources retained in a successful snapshot.
- * Model input is never matched through one global regular expression. Small inputs use an iterative Earley recognizer and large
- * repetitive inputs are checked declaration-by-declaration, so model size cannot turn Java regex recursion into a StackOverflowError.
+ * Model input is never matched through one global regular expression: the whole document is recognised by an iterative Earley
+ * recognizer whose cost grows linearly with the model for list-shaped languages (repetitions are left-recursive, nullable symbols
+ * are completed at prediction time and predictions are filtered by one token of lookahead). The work is bounded by a state budget
+ * proportional to the input; a document that exceeds it is reported as not provable, never as valid and never as a grammar error.
  */
 final class NeutralGrammarSyntaxContract {
     private static final int MAX_GRAMMAR_RULES=2_000;
     private static final int MAX_GRAMMAR_NESTING=96;
     private static final int MAX_PRODUCTIONS=12_000;
-    private static final int FULL_MAX_CHARS=65_536;
-    private static final int FULL_MAX_TOKENS=900;
-    private static final int INCREMENTAL_MAX_TOKENS=1_200;
-    private static final int MAX_EARLEY_STATES=300_000;
+    private static final int MAX_PRODUCTION_LENGTH=255;
+    private static final long MIN_EARLEY_STATES=300_000;
+    private static final long EARLEY_STATES_PER_TOKEN=48;
+    private static final long MAX_EARLEY_STATES=6_000_000;
     private static final Set<String> IDENT_TERMINALS=Set.of("ID","IDENTIFIER","NAME");
     private static final Set<String> NUMBER_TERMINALS=Set.of("INT","INTEGER","NUMBER","FLOAT","DOUBLE","DECIMAL","LONG","SHORT");
     private static final Set<String> STRING_TERMINALS=Set.of("STRING","TEXT","QUOTED_STRING");
@@ -37,22 +39,17 @@ final class NeutralGrammarSyntaxContract {
     private final Map<String,Node> parserRules;
     private final Set<String> terminalRules;
     private final Map<String,String> typeAliases;
-    private final List<String> incrementalRules;
-    private final Set<String> grammarLiterals;
     private final Grammar grammar;
     private final boolean available;
     private final boolean fullRecognitionAvailable;
 
-    /** Descripción: Inicializa una instancia de NeutralGrammarSyntaxContract con sus dependencias y datos de entrada. Entradas: technology: dato de entrada necesario para la operación; entryRule: dato de entrada necesario para la operación; parserRules: componente de conversión utilizado durante el procesamiento; terminalRules: dato de entrada necesario para la operación; typeAliases: dato de entrada necesario para la operación; incrementalRules: dato de entrada necesario para la operación; grammarLiterals: dato de entrada necesario para la operación; grammar: dato de entrada necesario para la operación; available: dato de entrada necesario para la operación; fullRecognitionAvailable: dato de entrada necesario para la operación. Salida: deja la instancia inicializada y lista para su uso. */ private NeutralGrammarSyntaxContract(GrammarTechnology technology,String entryRule,Map<String,Node> parserRules,
-            Set<String> terminalRules,Map<String,String> typeAliases,List<String> incrementalRules,Set<String> grammarLiterals,Grammar grammar,
-            boolean available,boolean fullRecognitionAvailable){
+    /** Descripción: Inicializa una instancia de NeutralGrammarSyntaxContract con sus dependencias y datos de entrada. Entradas: technology: dato de entrada necesario para la operación; entryRule: dato de entrada necesario para la operación; parserRules: componente de conversión utilizado durante el procesamiento; terminalRules: dato de entrada necesario para la operación; typeAliases: dato de entrada necesario para la operación; grammar: dato de entrada necesario para la operación; available: dato de entrada necesario para la operación; fullRecognitionAvailable: dato de entrada necesario para la operación. Salida: deja la instancia inicializada y lista para su uso. */ private NeutralGrammarSyntaxContract(GrammarTechnology technology,String entryRule,Map<String,Node> parserRules,
+            Set<String> terminalRules,Map<String,String> typeAliases,Grammar grammar,boolean available,boolean fullRecognitionAvailable){
         this.technology=technology;
         this.entryRule=entryRule==null?"":entryRule;
         this.parserRules=Map.copyOf(parserRules);
         this.terminalRules=Set.copyOf(terminalRules);
         this.typeAliases=Map.copyOf(typeAliases);
-        this.incrementalRules=List.copyOf(incrementalRules);
-        this.grammarLiterals=Set.copyOf(grammarLiterals);
         this.grammar=grammar;
         this.available=available;
         this.fullRecognitionAvailable=fullRecognitionAvailable;
@@ -91,8 +88,6 @@ final class NeutralGrammarSyntaxContract {
         }
         LinkedHashMap<String,String> aliases=new LinkedHashMap<>();
         nodes.forEach((name,node)->ownFirstLiteral(node).filter(NeutralGrammarSyntaxContract::identifierLike).ifPresent(literal->aliases.putIfAbsent(literal,name)));
-        List<String> incremental=incrementalCandidates(nodes.get(entry));
-        LinkedHashSet<String> literals=new LinkedHashSet<>();nodes.values().forEach(node->collectLiterals(node,literals,0));
 
         Grammar grammar=null;
         boolean full=!complex;
@@ -100,7 +95,7 @@ final class NeutralGrammarSyntaxContract {
             try{grammar=GrammarCompiler.compile(nodes,terminals,MAX_PRODUCTIONS);}
             catch(GrammarComplexityException ignored){full=false;}
         }
-        return new NeutralGrammarSyntaxContract(technology,entry,nodes,terminals,aliases,incremental,literals,grammar,true,full&&grammar!=null);
+        return new NeutralGrammarSyntaxContract(technology,entry,nodes,terminals,aliases,grammar,true,full&&grammar!=null);
     }
 
     /** Descripción: Ejecuta la operación «available» correspondiente a la responsabilidad de GrammarToken. Entradas: no requiere parámetros de entrada. Salida: devuelve un indicador que expresa el resultado de la condición. */ boolean available(){return available;}
@@ -122,68 +117,22 @@ final class NeutralGrammarSyntaxContract {
         }
         source=input;
         List<ModelToken> tokens=tokenizeModel(source);
-        if(tokens.isEmpty()){
-            if(fullRecognitionAvailable){
-                Recognition recognition=recognize(grammar,entryRule,tokens,MAX_EARLEY_STATES);
-                if(!recognition.accepted())return mismatch(source,tokens,recognition,"FULL_ITERATIVE",max);
-            }
-            return new ValidationResult(List.of(),"EMPTY",false);
+        long budget=stateBudget(tokens.size());
+        Recognition recognition=recognize(grammar,entryRule,tokens,budget);
+        if(recognition.status()==RecognitionStatus.TOO_COMPLEX){
+            // Never a grammar error (the text may well be valid) and never a pass: the draft is kept but cannot be promoted.
+            return new ValidationResult(List.of(new ValidationIssue(0,Math.min(1,input.length()),
+                    "El documento supera el presupuesto de verificación sintáctica completa ("+budget+" estados para "+tokens.size()+" símbolos). HYDRA conserva el borrador, pero no lo marcará como válido sin haberlo comprobado entero contra la gramática; divida el modelo en varios documentos o simplifique las construcciones ambiguas de la gramática.",
+                    Map.of("entryRule",entryRule,"strategy","FULL_STATE_BUDGET_EXCEEDED","validationUnavailable","true","technology",technology.name(),
+                            "tokens",Integer.toString(tokens.size()),"stateBudget",Long.toString(budget)))),"FULL_STATE_BUDGET_EXCEEDED",false);
         }
-        if(fullRecognitionAvailable&&source.length()<=FULL_MAX_CHARS&&tokens.size()<=FULL_MAX_TOKENS){
-            Recognition recognition=recognize(grammar,entryRule,tokens,MAX_EARLEY_STATES);
-            if(recognition.status()==RecognitionStatus.TOO_COMPLEX)return validateIncrementally(source,tokens,max,"INCREMENTAL_AFTER_STATE_BUDGET");
-            return recognition.accepted()?new ValidationResult(List.of(),"FULL_ITERATIVE",false):mismatch(source,tokens,recognition,"FULL_ITERATIVE",max);
-        }
-        return validateIncrementally(source,tokens,max,"INCREMENTAL_BOUNDED");
+        if(recognition.accepted())return new ValidationResult(List.of(),tokens.isEmpty()?"EMPTY":"FULL_ITERATIVE",false);
+        return mismatch(source,tokens,recognition,"FULL_ITERATIVE",max);
     }
 
-    /** Descripción: Valida las condiciones necesarias para «validateIncrementally» y rechaza entradas no válidas. Entradas: source: dato de entrada necesario para la operación; tokens: dato de entrada necesario para la operación; max: dato de entrada necesario para la operación; strategy: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private ValidationResult validateIncrementally(String source,List<ModelToken> tokens,int max,String strategy){
-        if(!fullRecognitionAvailable||incrementalRules.isEmpty()){
-            ValidationIssue first=firstTokenIssue(tokens);
-            return first==null?new ValidationResult(List.of(),strategy,false):new ValidationResult(List.of(first),strategy,false);
-        }
-        List<TokenSlice> slices=topLevelSlices(source,tokens);
-        if(slices.size()<=1&&tokens.size()>INCREMENTAL_MAX_TOKENS){
-            ValidationIssue first=firstTokenIssue(tokens);
-            return first==null?new ValidationResult(List.of(),strategy,false):new ValidationResult(List.of(first),strategy,false);
-        }
-        List<ValidationIssue> issues=new ArrayList<>();
-        Map<String,Recognition> recognitionCache=new HashMap<>();
-        boolean truncated=false;
-        for(TokenSlice slice:slices){
-            if(slice.tokens().isEmpty())continue;
-            if(slice.tokens().size()>INCREMENTAL_MAX_TOKENS){
-                ValidationIssue first=firstTokenIssue(slice.tokens());
-                if(first!=null)issues.add(first);
-                if(issues.size()>=max){truncated=true;break;}
-                continue;
-            }
-            Recognition best=null;
-            boolean accepted=false;
-            String signature=tokenSignature(slice.tokens(),grammarLiterals);
-            for(String candidate:incrementalRules){
-                String cacheKey=candidate+'|'+signature;
-                Recognition current=recognitionCache.computeIfAbsent(cacheKey,key->recognize(grammar,candidate,slice.tokens(),Math.min(MAX_EARLEY_STATES,120_000)));
-                if(current.accepted()){accepted=true;break;}
-                if(best==null||current.furthest()>best.furthest())best=current;
-            }
-            if(!accepted&&best!=null){
-                issues.add(issueFromRecognition(slice.tokens(),best,strategy));
-                if(issues.size()>=max){truncated=true;break;}
-            }
-        }
-        return new ValidationResult(issues,strategy,truncated);
-    }
-
-    /** Descripción: Ejecuta la operación «firstTokenIssue» correspondiente a la responsabilidad de GrammarToken. Entradas: tokens: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private ValidationIssue firstTokenIssue(List<ModelToken> tokens){
-        if(tokens.isEmpty())return null;
-        Set<String> expected=firstExpected(parserRules.get(entryRule),parserRules,new HashSet<>());
-        if(expected.isEmpty())return null;
-        ModelToken first=tokens.get(0);
-        boolean matches=expected.stream().anyMatch(value->expectedMatches(value,first));
-        if(matches)return null;
-        return new ValidationIssue(first.start(),first.end(),"El texto no comienza con una construcción aceptada por la regla de entrada \""+entryRule+"\".",Map.of(
-                "entryRule",entryRule,"expected",String.join(", ",expected.stream().limit(12).toList()),"strategy","INCREMENTAL_BOUNDED"));
+    /** Descripción: Presupuesto de estados del reconocedor para un texto de «tokens» símbolos: proporcional al tamaño, con un mínimo para textos pequeños y un máximo que acota la memoria de una petición. */
+    static long stateBudget(int tokens){
+        return Math.min(MAX_EARLEY_STATES,Math.max(MIN_EARLEY_STATES,EARLEY_STATES_PER_TOKEN*(long)tokens));
     }
 
     /** Descripción: Ejecuta la operación «mismatch» correspondiente a la responsabilidad de GrammarToken. Entradas: source: dato de entrada necesario para la operación; tokens: dato de entrada necesario para la operación; recognition: dato de entrada necesario para la operación; strategy: dato de entrada necesario para la operación; max: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private ValidationResult mismatch(String source,List<ModelToken> tokens,Recognition recognition,String strategy,int max){
@@ -266,7 +215,7 @@ final class NeutralGrammarSyntaxContract {
     }
 
     /** Descripción: Ejecuta la operación «unavailable» correspondiente a la responsabilidad de GrammarToken. Entradas: technology: dato de entrada necesario para la operación; entry: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static NeutralGrammarSyntaxContract unavailable(GrammarTechnology technology,String entry){
-        return new NeutralGrammarSyntaxContract(technology,entry,Map.of(),Set.of(),Map.of(),List.of(),Set.of(),null,false,false);
+        return new NeutralGrammarSyntaxContract(technology,entry,Map.of(),Set.of(),Map.of(),null,false,false);
     }
 
     /** Descripción: Ejecuta la operación «grammarSources» correspondiente a la responsabilidad de GrammarToken. Entradas: snapshot: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static List<Source> grammarSources(GrammarCompilationSnapshot snapshot){
@@ -371,59 +320,6 @@ final class NeutralGrammarSyntaxContract {
         return result;
     }
 
-    /** Descripción: Ejecuta la operación «tokenSignature» correspondiente a la responsabilidad de GrammarToken. Entradas: tokens: dato de entrada necesario para la operación; literals: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static String tokenSignature(List<ModelToken> tokens,Set<String> literals){
-        StringBuilder out=new StringBuilder(Math.min(512,tokens.size()*4));
-        for(ModelToken token:tokens){
-            switch(token.kind()){
-                case IDENT -> out.append(literals.contains(token.text())?'L':'I').append(literals.contains(token.text())?token.text():"");
-                case NUMBER -> out.append('N');
-                case STRING -> out.append('S');
-                case PUNCT -> out.append('P').append(token.text());
-            }
-            out.append(';');
-            if(out.length()>2_048)break;
-        }
-        return out.toString();
-    }
-
-    /** Descripción: Ejecuta la operación «topLevelSlices» correspondiente a la responsabilidad de GrammarToken. Entradas: source: dato de entrada necesario para la operación; tokens: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static List<TokenSlice> topLevelSlices(String source,List<ModelToken> tokens){
-        if(tokens.isEmpty())return List.of();
-        List<TokenSlice> result=new ArrayList<>();int start=0,depth=0;
-        for(int i=0;i<tokens.size();i++){
-            ModelToken token=tokens.get(i);
-            if(i>start&&depth==0){
-                ModelToken previous=tokens.get(i-1);
-                String gap=source.substring(Math.min(previous.end(),source.length()),Math.min(token.start(),source.length()));
-                if(gap.indexOf('\n')>=0||gap.indexOf('\r')>=0){result.add(new TokenSlice(List.copyOf(tokens.subList(start,i))));start=i;}
-            }
-            if(token.text().equals("{")||token.text().equals("(")||token.text().equals("["))depth++;
-            else if(token.text().equals("}")||token.text().equals(")")||token.text().equals("]"))depth=Math.max(0,depth-1);
-            if(depth==0&&token.text().equals("}")&&i+1>start){result.add(new TokenSlice(List.copyOf(tokens.subList(start,i+1))));start=i+1;}
-        }
-        if(start<tokens.size())result.add(new TokenSlice(List.copyOf(tokens.subList(start,tokens.size()))));
-        return result;
-    }
-
-    /** Descripción: Ejecuta la operación «incrementalCandidates» correspondiente a la responsabilidad de GrammarToken. Entradas: entry: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static List<String> incrementalCandidates(Node entry){
-        LinkedHashSet<String> result=new LinkedHashSet<>();collectRepeatedRefs(entry,false,result,0);
-        return List.copyOf(result);
-    }
-    /** Descripción: Ejecuta la operación «collectRepeatedRefs» correspondiente a la responsabilidad de GrammarToken. Entradas: node: dato de entrada necesario para la operación; repeated: dato de entrada necesario para la operación; out: dato de entrada necesario para la operación; depth: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private static void collectRepeatedRefs(Node node,boolean repeated,Set<String> out,int depth){
-        if(node==null||depth>MAX_GRAMMAR_NESTING)return;
-        if(node instanceof RepeatNode repeat){collectRepeatedRefs(repeat.child(),true,out,depth+1);return;}
-        if(node instanceof RefNode ref){if(repeated)out.add(ref.name());return;}
-        if(node instanceof SeqNode seq)for(Node child:seq.children())collectRepeatedRefs(child,repeated,out,depth+1);
-        else if(node instanceof ChoiceNode choice)for(Node child:choice.options())collectRepeatedRefs(child,repeated,out,depth+1);
-    }
-
-    /** Descripción: Ejecuta la operación «collectLiterals» correspondiente a la responsabilidad de GrammarToken. Entradas: node: dato de entrada necesario para la operación; out: dato de entrada necesario para la operación; depth: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private static void collectLiterals(Node node,Set<String> out,int depth){
-        if(node==null||depth>MAX_GRAMMAR_NESTING||out.size()>2_048)return;
-        if(node instanceof LitNode literal){out.add(literal.text());return;}
-        if(node instanceof RepeatNode repeat){collectLiterals(repeat.child(),out,depth+1);return;}
-        if(node instanceof SeqNode seq)for(Node child:seq.children())collectLiterals(child,out,depth+1);
-        else if(node instanceof ChoiceNode choice)for(Node child:choice.options())collectLiterals(child,out,depth+1);
-    }
-
     /** Descripción: Ejecuta la operación «ownFirstLiteral» correspondiente a la responsabilidad de GrammarToken. Entradas: node: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static Optional<String> ownFirstLiteral(Node node){
         if(node==null)return Optional.empty();
         if(node instanceof LitNode literal)return Optional.of(literal.text());
@@ -443,23 +339,6 @@ final class NeutralGrammarSyntaxContract {
         return Optional.empty();
     }
 
-    /** Descripción: Ejecuta la operación «firstExpected» correspondiente a la responsabilidad de GrammarToken. Entradas: node: dato de entrada necesario para la operación; rules: dato de entrada necesario para la operación; visiting: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static Set<String> firstExpected(Node node,Map<String,Node> rules,Set<String> visiting){
-        LinkedHashSet<String> out=new LinkedHashSet<>();firstExpected(node,rules,visiting,out,0);return out;
-    }
-    /** Descripción: Ejecuta la operación «firstExpected» correspondiente a la responsabilidad de GrammarToken. Entradas: node: dato de entrada necesario para la operación; rules: dato de entrada necesario para la operación; visiting: dato de entrada necesario para la operación; out: dato de entrada necesario para la operación; depth: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private static void firstExpected(Node node,Map<String,Node> rules,Set<String> visiting,Set<String> out,int depth){
-        if(node==null||depth>MAX_GRAMMAR_NESTING||out.size()>=32)return;
-        if(node instanceof LitNode literal){out.add("'"+literal.text()+"'");return;}
-        if(node instanceof RefNode ref){if(rules.containsKey(ref.name())&&visiting.add(ref.name())){firstExpected(rules.get(ref.name()),rules,visiting,out,depth+1);visiting.remove(ref.name());}else out.add("<"+ref.name()+">");return;}
-        if(node instanceof RepeatNode repeat){firstExpected(repeat.child(),rules,visiting,out,depth+1);return;}
-        if(node instanceof ChoiceNode choice){for(Node child:choice.options())firstExpected(child,rules,visiting,out,depth+1);return;}
-        if(node instanceof SeqNode seq){for(Node child:seq.children()){firstExpected(child,rules,visiting,out,depth+1);if(!nullable(child,rules,new HashSet<>()))break;}}
-    }
-    /** Descripción: Ejecuta la operación «expectedMatches» correspondiente a la responsabilidad de GrammarToken. Entradas: expected: dato de entrada necesario para la operación; token: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private static boolean expectedMatches(String expected,ModelToken token){
-        if(expected.startsWith("'")&&expected.endsWith("'"))return token.text().equals(expected.substring(1,expected.length()-1));
-        if(expected.startsWith("<")&&expected.endsWith(">"))return terminalMatches(expected.substring(1,expected.length()-1),token);
-        return false;
-    }
-
     /** Descripción: Ejecuta la operación «nullable» correspondiente a la responsabilidad de GrammarToken. Entradas: node: dato de entrada necesario para la operación; rules: dato de entrada necesario para la operación; visiting: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private static boolean nullable(Node node,Map<String,Node> rules,Set<String> visiting){
         if(node==null||node instanceof EmptyNode)return true;
         if(node instanceof RepeatNode repeat)return repeat.min()==0||nullable(repeat.child(),rules,visiting);
@@ -469,37 +348,65 @@ final class NeutralGrammarSyntaxContract {
         return false;
     }
 
-    /** Descripción: Ejecuta la operación «recognize» correspondiente a la responsabilidad de GrammarToken. Entradas: grammar: dato de entrada necesario para la operación; startRule: dato de entrada necesario para la operación; tokens: dato de entrada necesario para la operación; maxStates: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static Recognition recognize(Grammar grammar,String startRule,List<ModelToken> tokens,int maxStates){
+    /** Descripción: Reconoce «tokens» con la regla «startRule» mediante Earley iterativo. Las repeticiones son recursivas por la izquierda (un número constante de estados por elemento de una lista), los no terminales anulables se completan al predecirlos (Aycock-Horspool) y una producción solo se predice si su primer símbolo puede aceptar el siguiente token; las descartadas aportan sus terminales esperados al diagnóstico exactamente como si se hubieran probado. Entradas: grammar: gramática compilada; startRule: regla inicial; tokens: símbolos del modelo; maxStates: presupuesto de estados. Salida: aceptación, rechazo con la posición más lejana y lo esperado allí, o TOO_COMPLEX si se agota el presupuesto. */ private static Recognition recognize(Grammar grammar,String startRule,List<ModelToken> tokens,long maxStates){
         if(grammar==null||!grammar.byLhs().containsKey(startRule))return new Recognition(false,RecognitionStatus.INVALID_GRAMMAR,0,Set.of(),Set.of());
-        Production start=new Production("$START$",List.of(new Nonterminal(startRule)));
-        List<Chart> chart=new ArrayList<>(tokens.size()+1);for(int i=0;i<=tokens.size();i++)chart.add(new Chart());
-        chart.get(0).add(new State(start,0,0));int states=1;int furthest=0;LinkedHashSet<String> expectedAtFurthest=new LinkedHashSet<>();LinkedHashSet<String> contextsAtFurthest=new LinkedHashSet<>();
-        for(int position=0;position<=tokens.size();position++){
-            Chart current=chart.get(position);
-            for(int cursor=0;cursor<current.states.size();cursor++){
-                State state=current.states.get(cursor);
-                if(states>maxStates)return new Recognition(false,RecognitionStatus.TOO_COMPLEX,furthest,expectedAtFurthest,contextsAtFurthest);
-                if(state.complete()){
-                    Chart origin=chart.get(state.origin());
-                    for(int j=0;j<origin.states.size();j++){
-                        State parent=origin.states.get(j);Symbol next=parent.next();
-                        if(next instanceof Nonterminal nt&&nt.name().equals(state.production().lhs()))if(current.add(parent.advance()))states++;
+        Production start=grammar.start(startRule);
+        int n=tokens.size();
+        Chart[] chart=new Chart[n+1];chart[0]=new Chart();chart[0].add(Chart.item(start.id(),0,0));
+        long states=1;Frontier frontier=new Frontier();
+        for(int position=0;position<=n;position++){
+            Chart current=chart[position];
+            if(current==null)continue; // no derivation reaches this position: the furthest point is already recorded
+            if((position&1023)==0&&Thread.currentThread().isInterrupted())throw new java.util.concurrent.CancellationException("Textual parsing cancelled");
+            ModelToken lookahead=position<n?tokens.get(position):null;
+            for(int cursor=0;cursor<current.size();cursor++){
+                if(states>maxStates)return new Recognition(false,RecognitionStatus.TOO_COMPLEX,frontier.furthest,frontier.expected(),frontier.contexts());
+                long item=current.get(cursor);
+                Production production=grammar.production(Chart.production(item));int dot=Chart.dot(item);
+                if(dot>=production.rhs().size()){
+                    Chart origin=chart[Chart.origin(item)];
+                    for(int j=0;j<origin.size();j++){
+                        long parent=origin.get(j);Production waiting=grammar.production(Chart.production(parent));int parentDot=Chart.dot(parent);
+                        if(parentDot<waiting.rhs().size()&&waiting.rhs().get(parentDot) instanceof Nonterminal nt&&nt.name().equals(production.lhs())&&current.add(Chart.advance(parent)))states++;
                     }
                     continue;
                 }
-                Symbol next=state.next();
+                Symbol next=production.rhs().get(dot);
                 if(next instanceof Nonterminal nt){
-                    for(Production production:grammar.byLhs().getOrDefault(nt.name(),List.of()))if(current.add(new State(production,0,position)))states++;
+                    for(Production candidate:grammar.byLhs().getOrDefault(nt.name(),List.of())){
+                        if(grammar.canStart(candidate,lookahead)){if(current.add(Chart.item(candidate.id(),0,position)))states++;}
+                        else for(FirstTerminal first:grammar.first(candidate))frontier.record(position,first.terminal().label(),grammar.owner(nt.name()),position);
+                    }
+                    if(grammar.nullable(nt.name())&&current.add(Chart.advance(item)))states++;
                     continue;
                 }
                 Terminal terminal=(Terminal)next;
-                if(position<tokens.size()&&terminal.matches(tokens.get(position))){if(chart.get(position+1).add(state.advance()))states++;furthest=Math.max(furthest,position+1);}
-                else if(position>=furthest){if(position>furthest){expectedAtFurthest.clear();contextsAtFurthest.clear();furthest=position;}expectedAtFurthest.add(terminal.label());contextsAtFurthest.add(state.production().lhs());}
+                if(lookahead!=null&&terminal.matches(lookahead)){
+                    if(chart[position+1]==null)chart[position+1]=new Chart();
+                    if(chart[position+1].add(Chart.advance(item)))states++;
+                    frontier.furthest=Math.max(frontier.furthest,position+1);
+                }
+                else frontier.record(position,terminal.label(),grammar.owner(production.lhs()),Chart.origin(item));
             }
         }
-        boolean accepted=chart.get(tokens.size()).contains(new State(start,1,0));
-        if(accepted)return new Recognition(true,RecognitionStatus.ACCEPTED,tokens.size(),Set.of(),Set.of());
-        return new Recognition(false,RecognitionStatus.REJECTED,furthest,expectedAtFurthest,contextsAtFurthest);
+        boolean accepted=chart[n]!=null&&chart[n].contains(Chart.item(start.id(),1,0));
+        if(accepted)return new Recognition(true,RecognitionStatus.ACCEPTED,n,Set.of(),Set.of());
+        return new Recognition(false,RecognitionStatus.REJECTED,frontier.furthest,frontier.expected(),frontier.contexts());
+    }
+
+    /** Lo que la gramática esperaba en la posición más lejana alcanzada: solo de esa posición (nunca restos de la anterior) y con la regla más interna primero, que es la que da sentido al diagnóstico. */
+    private static final class Frontier{
+        int furthest;private int recordedAt=-1;private final LinkedHashSet<String> expected=new LinkedHashSet<>();private final LinkedHashSet<String> rules=new LinkedHashSet<>();private String innermost;private int innermostOrigin=-1;
+        /** Descripción: Registra que en «position» se esperaba «label» dentro de «rule», cuyo ítem empezó en «origin». */ void record(int position,String label,String rule,int origin){
+            if(position<furthest)return;
+            if(position!=recordedAt){expected.clear();rules.clear();innermost=null;innermostOrigin=-1;recordedAt=position;furthest=position;}
+            expected.add(label);
+            if(rule==null||rule.startsWith("$"))return;
+            rules.add(rule);
+            if(origin>innermostOrigin){innermost=rule;innermostOrigin=origin;}
+        }
+        Set<String> expected(){return recordedAt==furthest?expected:Set.of();}
+        Set<String> contexts(){LinkedHashSet<String> out=new LinkedHashSet<>();if(recordedAt!=furthest)return out;if(innermost!=null)out.add(innermost);out.addAll(rules);return out;}
     }
 
     /** Descripción: Ejecuta la operación «terminalMatches» correspondiente a la responsabilidad de GrammarToken. Entradas: name: dato de entrada necesario para la operación; token: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private static boolean terminalMatches(String name,ModelToken token){
@@ -523,7 +430,6 @@ final class NeutralGrammarSyntaxContract {
     private record RuleSource(String name,boolean parser,boolean explicitEntry,String body){}
     private enum ModelTokenKind{IDENT,NUMBER,STRING,PUNCT}
     private record ModelToken(String text,ModelTokenKind kind,int start,int end){}
-    private record TokenSlice(List<ModelToken> tokens){}
 
     private interface Node{}
     private record EmptyNode() implements Node{}
@@ -585,18 +491,80 @@ final class NeutralGrammarSyntaxContract {
         /** Descripción: Evalúa la condición «matches» sin modificar el estado externo. Entradas: token: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ boolean matches(ModelToken token){return kind.equals("LITERAL")?token.text().equals(value):terminalMatches(value,token);}
         /** Descripción: Ejecuta la operación «label» correspondiente a la responsabilidad de GrammarToken. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ String label(){return kind.equals("LITERAL")?"'"+value+"'":"<"+value+">";}
     }
-    private record Production(String lhs,List<Symbol> rhs){Production{rhs=List.copyOf(rhs);}}
-    private record Grammar(Map<String,List<Production>> byLhs){Grammar{Map<String,List<Production>> copy=new LinkedHashMap<>();byLhs.forEach((key,value)->copy.put(key,List.copyOf(value)));byLhs=Map.copyOf(copy);}}
-    private record State(Production production,int dot,int origin){boolean complete(){return dot>=production.rhs().size();}/** Descripción: Ejecuta la operación «next» correspondiente a la responsabilidad de GrammarToken. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ Symbol next(){return complete()?null:production.rhs().get(dot);}/** Descripción: Ejecuta la operación «advance» correspondiente a la responsabilidad de GrammarToken. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ State advance(){return new State(production,dot+1,origin);}}
-    private static final class Chart{private final List<State> states=new ArrayList<>();private final Set<State> unique=new HashSet<>();/** Descripción: Ejecuta la operación «add» correspondiente a la responsabilidad de GrammarToken. Entradas: state: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ boolean add(State state){if(!unique.add(state))return false;states.add(state);return true;}/** Descripción: Evalúa la condición «contains» sin modificar el estado externo. Entradas: state: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ boolean contains(State state){return unique.contains(state);}}
+    private record Production(int id,String lhs,List<Symbol> rhs){Production{rhs=List.copyOf(rhs);}}
+    private record FirstTerminal(Terminal terminal,String context){}
+    /** Gramática compilada: producciones indexadas, conjunto de no terminales anulables y, por producción, los terminales con los que puede empezar (con la regla en la que aparecen, para el diagnóstico). */
+    private static final class Grammar{
+        private final Map<String,List<Production>> byLhs;private final List<Production> productions;private final Map<String,Production> starts;private final Map<String,String> owners;
+        private final Set<String> nullable;private final List<List<FirstTerminal>> first;private final boolean[] nullableProduction;
+        /** Descripción: Indexa las producciones y calcula por punto fijo los anulables y los primeros terminales. Entradas: byLhs: producciones por regla. Salida: deja la gramática lista para reconocer. */ Grammar(Map<String,List<Production>> byLhs,List<Production> productions,Map<String,String> owners){
+            this.owners=Map.copyOf(owners);
+            Map<String,List<Production>> copy=new LinkedHashMap<>();byLhs.forEach((key,value)->copy.put(key,List.copyOf(value)));this.byLhs=Map.copyOf(copy);
+            List<Production> all=new ArrayList<>(productions);LinkedHashMap<String,Production> startProductions=new LinkedHashMap<>();
+            for(String rule:copy.keySet()){Production start=new Production(all.size(),"$START$",List.of(new Nonterminal(rule)));all.add(start);startProductions.put(rule,start);}
+            this.productions=List.copyOf(all);this.starts=Map.copyOf(startProductions);
+            Set<String> nulls=new HashSet<>();boolean changed=true;
+            while(changed){changed=false;for(Production p:all)if(!nulls.contains(p.lhs())&&p.rhs().stream().allMatch(s->s instanceof Nonterminal nt&&nulls.contains(nt.name()))){nulls.add(p.lhs());changed=true;}}
+            this.nullable=Set.copyOf(nulls);
+            this.nullableProduction=new boolean[all.size()];
+            for(Production p:all)nullableProduction[p.id()]=p.rhs().stream().allMatch(s->s instanceof Nonterminal nt&&nulls.contains(nt.name()));
+            Map<String,LinkedHashSet<FirstTerminal>> byRule=new HashMap<>();changed=true;
+            while(changed){changed=false;for(Production p:all){LinkedHashSet<FirstTerminal> target=byRule.computeIfAbsent(p.lhs(),key->new LinkedHashSet<>());if(target.addAll(firstOf(p,byRule,nulls)))changed=true;}}
+            List<List<FirstTerminal>> perProduction=new ArrayList<>(all.size());for(Production p:all)perProduction.add(List.copyOf(firstOf(p,byRule,nulls)));
+            this.first=List.copyOf(perProduction);
+        }
+        /** Descripción: Terminales con los que puede empezar «p», recorriendo su lado derecho mientras los símbolos sean anulables. */ private static LinkedHashSet<FirstTerminal> firstOf(Production p,Map<String,LinkedHashSet<FirstTerminal>> byRule,Set<String> nulls){
+            LinkedHashSet<FirstTerminal> out=new LinkedHashSet<>();
+            for(Symbol symbol:p.rhs()){
+                if(symbol instanceof Terminal terminal){out.add(new FirstTerminal(terminal,p.lhs()));return out;}
+                Nonterminal nt=(Nonterminal)symbol;out.addAll(byRule.getOrDefault(nt.name(),new LinkedHashSet<>()));
+                if(!nulls.contains(nt.name()))return out;
+            }
+            return out;
+        }
+        Map<String,List<Production>> byLhs(){return byLhs;}
+        Production production(int id){return productions.get(id);}
+        Production start(String rule){return starts.get(rule);}
+        String owner(String rule){return owners.getOrDefault(rule,rule);}
+        boolean nullable(String rule){return nullable.contains(rule);}
+        List<FirstTerminal> first(Production p){return first.get(p.id());}
+        /** Descripción: Indica si «p» puede derivar el siguiente token (o la cadena vacía, que nunca se descarta). */ boolean canStart(Production p,ModelToken lookahead){
+            if(nullableProduction[p.id()])return true;
+            if(lookahead==null)return false;
+            for(FirstTerminal candidate:first.get(p.id()))if(candidate.terminal().matches(lookahead))return true;
+            return false;
+        }
+    }
+    /** Conjunto ordenado de ítems Earley de una posición, codificados en un long (producción, punto, origen) para que la memoria crezca con el número de estados y no con objetos. */
+    private static final class Chart{
+        private long[] items=new long[4];private int size;private long[] table=new long[8];private int used; // ~4 items per position in list-shaped models
+        static long item(int production,int dot,int origin){return ((long)production<<40)|((long)dot<<32)|(origin&0xffffffffL);}
+        static int production(long item){return (int)(item>>>40);}
+        static int dot(long item){return (int)((item>>>32)&0xff);}
+        static int origin(long item){return (int)item;}
+        static long advance(long item){return item+(1L<<32);}
+        int size(){return size;}
+        long get(int index){return items[index];}
+        /** Descripción: Añade el ítem si no estaba. Salida: true si es nuevo. */ boolean add(long item){
+            if((used+1)*2>table.length)rehash();
+            long key=item+1;int mask=table.length-1;int slot=(int)(mix(key)&mask);
+            while(table[slot]!=0){if(table[slot]==key)return false;slot=(slot+1)&mask;}
+            table[slot]=key;used++;
+            if(size==items.length)items=Arrays.copyOf(items,size*2);
+            items[size++]=item;return true;
+        }
+        boolean contains(long item){long key=item+1;int mask=table.length-1;int slot=(int)(mix(key)&mask);while(table[slot]!=0){if(table[slot]==key)return true;slot=(slot+1)&mask;}return false;}
+        private void rehash(){long[] old=table;table=new long[old.length*2];int mask=table.length-1;for(long key:old)if(key!=0){int slot=(int)(mix(key)&mask);while(table[slot]!=0)slot=(slot+1)&mask;table[slot]=key;}}
+        private static long mix(long key){long h=key*0x9E3779B97F4A7C15L;return h^(h>>>29);}
+    }
     private enum RecognitionStatus{ACCEPTED,REJECTED,TOO_COMPLEX,INVALID_GRAMMAR}
     private record Recognition(boolean accepted,RecognitionStatus status,int furthest,Set<String> expected,Set<String> contexts){Recognition{expected=expected==null?Set.of():Collections.unmodifiableSet(new LinkedHashSet<>(expected));contexts=contexts==null?Set.of():Collections.unmodifiableSet(new LinkedHashSet<>(contexts));}}
     private record SuggestedFix(String kind,String replacement,String label){}
 
     private static final class GrammarCompiler{
-        private final Map<String,Node> rules;private final Set<String> terminals;private final int maxProductions;private final Map<String,List<Production>> productions=new LinkedHashMap<>();private int synthetic;
+        private final Map<String,Node> rules;private final Set<String> terminals;private final int maxProductions;private final Map<String,List<Production>> productions=new LinkedHashMap<>();private final List<Production> indexed=new ArrayList<>();private final Map<String,String> owners=new HashMap<>();private String currentRule;private int synthetic;
         /** Descripción: Inicializa una instancia de GrammarCompiler con sus dependencias y datos de entrada. Entradas: rules: dato de entrada necesario para la operación; terminals: dato de entrada necesario para la operación; maxProductions: dato de entrada necesario para la operación. Salida: deja la instancia inicializada y lista para su uso. */ private GrammarCompiler(Map<String,Node> rules,Set<String> terminals,int maxProductions){this.rules=rules;this.terminals=terminals;this.maxProductions=maxProductions;}
-        /** Descripción: Ejecuta la operación «compile» correspondiente a la responsabilidad de GrammarToken. Entradas: rules: dato de entrada necesario para la operación; terminals: dato de entrada necesario para la operación; maxProductions: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static Grammar compile(Map<String,Node> rules,Set<String> terminals,int maxProductions){GrammarCompiler compiler=new GrammarCompiler(rules,terminals,maxProductions);for(Map.Entry<String,Node> entry:rules.entrySet())compiler.lowerInto(entry.getKey(),entry.getValue(),0);return new Grammar(compiler.productions);}
+        /** Descripción: Ejecuta la operación «compile» correspondiente a la responsabilidad de GrammarToken. Entradas: rules: dato de entrada necesario para la operación; terminals: dato de entrada necesario para la operación; maxProductions: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static Grammar compile(Map<String,Node> rules,Set<String> terminals,int maxProductions){GrammarCompiler compiler=new GrammarCompiler(rules,terminals,maxProductions);for(Map.Entry<String,Node> entry:rules.entrySet()){compiler.currentRule=entry.getKey();compiler.lowerInto(entry.getKey(),entry.getValue(),0);}return new Grammar(compiler.productions,compiler.indexed,compiler.owners);}
         /** Descripción: Ejecuta la operación «lowerInto» correspondiente a la responsabilidad de GrammarToken. Entradas: lhs: dato de entrada necesario para la operación; node: dato de entrada necesario para la operación; depth: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void lowerInto(String lhs,Node node,int depth){if(depth>MAX_GRAMMAR_NESTING)throw new GrammarComplexityException();
             if(node instanceof ChoiceNode choice){for(Node option:choice.options())add(lhs,sequence(option,depth+1));return;}
             add(lhs,sequence(node,depth+1));
@@ -606,12 +574,12 @@ final class NeutralGrammarSyntaxContract {
             if(node instanceof SeqNode seq){List<Symbol> result=new ArrayList<>();for(Node child:seq.children())result.addAll(sequence(child,depth+1));return result;}
             if(node instanceof LitNode literal)return List.of(new Terminal("LITERAL",literal.text()));
             if(node instanceof RefNode ref)return List.of(rules.containsKey(ref.name())?new Nonterminal(ref.name()):new Terminal("LEXICAL",ref.name()));
-            String name="$N"+(++synthetic);
+            String name="$N"+(++synthetic);owners.put(name,currentRule);
             if(node instanceof ChoiceNode choice){for(Node option:choice.options())add(name,sequence(option,depth+1));return List.of(new Nonterminal(name));}
-            if(node instanceof RepeatNode repeat){List<Symbol> child=sequence(repeat.child(),depth+1);if(repeat.min()==0&&repeat.max()==1){add(name,List.of());add(name,child);}else if(repeat.min()==0){add(name,List.of());List<Symbol> recursive=new ArrayList<>(child);recursive.add(new Nonterminal(name));add(name,recursive);}else{add(name,child);List<Symbol> recursive=new ArrayList<>(child);recursive.add(new Nonterminal(name));add(name,recursive);}return List.of(new Nonterminal(name));}
+            if(node instanceof RepeatNode repeat){List<Symbol> child=sequence(repeat.child(),depth+1);List<Symbol> recursive=new ArrayList<>();recursive.add(new Nonterminal(name));recursive.addAll(child);if(repeat.min()==0&&repeat.max()==1){add(name,List.of());add(name,child);}else if(repeat.min()==0){add(name,List.of());add(name,recursive);}else{add(name,child);add(name,recursive);}return List.of(new Nonterminal(name));}
             throw new GrammarComplexityException();
         }
-        /** Descripción: Ejecuta la operación «add» correspondiente a la responsabilidad de GrammarToken. Entradas: lhs: dato de entrada necesario para la operación; rhs: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void add(String lhs,List<Symbol> rhs){if(productions.values().stream().mapToInt(List::size).sum()>=maxProductions)throw new GrammarComplexityException();productions.computeIfAbsent(lhs,key->new ArrayList<>()).add(new Production(lhs,rhs));}
+        /** Descripción: Ejecuta la operación «add» correspondiente a la responsabilidad de GrammarToken. Entradas: lhs: dato de entrada necesario para la operación; rhs: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void add(String lhs,List<Symbol> rhs){if(indexed.size()>=maxProductions||rhs.size()>MAX_PRODUCTION_LENGTH)throw new GrammarComplexityException();Production production=new Production(indexed.size(),lhs,rhs);indexed.add(production);productions.computeIfAbsent(lhs,key->new ArrayList<>()).add(production);}
     }
     private static final class GrammarComplexityException extends RuntimeException{private static final long serialVersionUID=1L;}
 }
