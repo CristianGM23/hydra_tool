@@ -1,6 +1,7 @@
 package com.example.editor.project.storage;
 
 import java.io.ByteArrayInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileVisitResult;
@@ -15,20 +16,30 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.springframework.stereotype.Component;
 import com.example.editor.io.AtomicFiles;
 import com.example.editor.io.BoundedIo;
+import com.example.editor.project.ArtifactKind;
 import com.example.editor.project.LocalProjectProperties;
 import com.example.editor.project.ProjectException;
+import com.example.editor.project.ProjectLayout;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 /** Importa y exporta proyectos ZIP con protección frente a Zip Slip y límites de tamaño. */
 @Component
 public class ProjectZipService {
     private static final int STREAM_BUFFER_BYTES=64*1024;
+    private static final JsonMapper JSON=JsonMapper.builder().build();
+    /** Tipos de usuario o genéricos: su contenido no lo interpreta HYDRA y no se exige que sea JSON válido. */
+    private static final Set<ArtifactKind> UNMANAGED=Set.of(ArtifactKind.GENERIC_FILE,ArtifactKind.ASSET,ArtifactKind.TEST_RESOURCE,ArtifactKind.DOCUMENTATION);
     private final LocalProjectProperties properties;
     private final ProjectFileOperations files;
+    private final ProjectArtifactClassifier classifier=new ProjectArtifactClassifier();
 
     /** Descripción: Inicializa una instancia de ProjectZipService con sus dependencias y datos de entrada. Entradas: properties: configuración que gobierna el comportamiento; files: archivo o contenido que debe procesarse. Salida: deja la instancia inicializada y lista para su uso. */ public ProjectZipService(LocalProjectProperties properties,ProjectFileOperations files) {
         this.properties=properties;
@@ -150,9 +161,23 @@ public class ProjectZipService {
                             output.write(buffer,0,read);
                         }
                     }
+                    verifyManagedJson(target,entryName);
                 }
                 zip.closeEntry();
             }
+        } catch(ZipException|EOFException exception) {
+            // Un ZIP truncado o dañado es una entrada del usuario malformada, no un fallo de almacenamiento del servidor.
+            throw invalid("The project archive is damaged or incomplete and cannot be read");
+        }
+    }
+
+    /** Descripción: Exige JSON bien formado en los artefactos que HYDRA interpreta (descriptor, metamodelos, editores, validaciones, eventos...), para no publicar un proyecto que después impediría leer los repositorios; los ficheros de usuario, documentación y pruebas no se interpretan. Entradas: file: fichero extraído en staging; entryName: ruta normalizada dentro del archivo. Salida: no devuelve valor; rechaza la importación con INVALID_REQUEST. */ private void verifyManagedJson(Path file,String entryName) throws IOException {
+        if(!entryName.toLowerCase(java.util.Locale.ROOT).endsWith(".json")||UNMANAGED.contains(classifier.classify(entryName,ProjectLayout.standard()))) return;
+        try(InputStream input=Files.newInputStream(file)) {
+            JsonNode node=JSON.readTree(input);
+            if(node==null||node.isMissingNode()) throw invalid("Project artifact is empty instead of JSON: "+entryName);
+        } catch(JacksonException exception) {
+            throw invalid("Project artifact is not valid JSON: "+entryName);
         }
     }
 
