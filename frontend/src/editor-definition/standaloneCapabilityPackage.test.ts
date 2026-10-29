@@ -25,6 +25,14 @@ describe('standalone capability package', () => {
         ]));
         expect(built.warnings).toEqual([]);
     });
+    it('declares an owned metamodel origin the backend accepts (no host integration technology)', async () => {
+        const result = { plan: { schemaVersion: '1.0', sourceEditorDefinitionId: 'shop-editor', name: 'Shop editor' } } as unknown as EditorDefinitionCompilationResult;
+        const built = await buildStandaloneCapabilityPackage(canonicalMetaModelFixture(), result);
+        const origin = (built.capabilityPackage as { manifest: { metamodelOrigin: { kind: string; technology: unknown } } }).manifest.metamodelOrigin;
+        // MetamodelOrigin.technology is an optional IntegrationTechnology (EMF, XTEXT, LANGIUM, ...); an owned HYDRA metamodel has none.
+        expect(origin.kind).toBe('OWNED');
+        expect(origin.technology).toBeNull();
+    });
     it('embeds image-backed imported notation resources so the standalone editor does not depend on an active HYDRA project', async () => {
         const metamodel = canonicalMetaModelFixture();
         const imagePath = 'hydra-assets/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef.svg';

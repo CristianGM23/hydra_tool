@@ -120,7 +120,8 @@ export async function buildStandaloneCapabilityPackage(
                 name: `${result.plan.name} standalone package`,
                 packageVersion: '1.0.0',
                 metamodelId: metamodel.id,
-                metamodelOrigin: { kind: 'OWNED', technology: 'HYDRA', sourceUri: '', sourceRevision: '', sourceChecksum: '', importedAt: '', synchronizedAt: '', elementMappings: {}, annotations: {} },
+                // technology is an optional IntegrationTechnology (EMF, XTEXT, ...): an owned HYDRA metamodel has none, as the backend default says
+                metamodelOrigin: { kind: 'OWNED', technology: null, sourceUri: '', sourceRevision: '', sourceChecksum: '', importedAt: '', synchronizedAt: '', elementMappings: {}, annotations: {} },
                 capabilities,
                 dependencies,
                 compatibility: [],
