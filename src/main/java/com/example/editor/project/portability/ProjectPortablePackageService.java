@@ -15,6 +15,7 @@ import com.example.editor.project.ProjectException;
 import com.example.editor.project.ProjectSession;
 import com.example.editor.testing.fault.HydraFaultInjectionService;
 import com.example.editor.product.HydraReleaseVersion;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 /** Exporta/importa proyectos en un contenedor portable con manifiesto y hash verificable. */
 @Service
@@ -32,6 +33,8 @@ public class ProjectPortablePackageService {
         faults.check(HydraFaultInjectionService.Point.PROJECT_PORTABLE_IMPORT); ProjectPortableManifest manifest=null;byte[] archive=null;
         try(ZipInputStream zip=new ZipInputStream(new ByteArrayInputStream(content==null?new byte[0]:content))){ZipEntry entry;int seen=0;while((entry=zip.getNextEntry())!=null){if(++seen>4)throw invalid("Portable package contains unexpected entries");if(entry.isDirectory())continue;byte[] bytes=zip.readNBytes(268_435_457);if(bytes.length>268_435_456)throw invalid("Portable package entry is too large");if(MANIFEST.equals(entry.getName()))manifest=mapper.readValue(bytes,ProjectPortableManifest.class);else if(ARCHIVE.equals(entry.getName()))archive=bytes;else throw invalid("Portable package contains an unexpected entry: "+entry.getName());}}
         catch(IOException exception){throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Could not read portable project package",exception);}
+        // Jackson 3: JacksonException is unchecked, so a malformed manifest is not an IOException and must be mapped explicitly.
+        catch(JacksonException exception){throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Portable package manifest is not valid JSON",exception);}
         if(manifest==null||archive==null)throw invalid("Portable package is incomplete");if(manifest.archiveBytes()!=archive.length||!manifest.archiveSha256().equals(sha256(archive)))throw invalid("Portable project checksum does not match the manifest");return projects.importArchive(parent,name,archive);
     }
 
