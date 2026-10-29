@@ -28,7 +28,10 @@ def run(name: str, cmd: list[str], *, cwd: Path = ROOT, required: bool = True,
         environment.setdefault('PYTHONUTF8', '1')
         environment.setdefault('PYTHONIOENCODING', 'utf-8')
         environment.setdefault('PYTHONUNBUFFERED', '1')
-        result = subprocess.run(cmd, cwd=cwd, text=True, capture_output=True, timeout=timeout, env=environment)
+        # Explicit decoding: in UTF-8 mode (default since Python 3.15) one non-UTF-8 byte would leave stdout as None and
+        # turn a step into a TypeError instead of judging it by its exit code.
+        result = subprocess.run(cmd, cwd=cwd, text=True, encoding='utf-8', errors='replace', capture_output=True,
+                                timeout=timeout, env=environment)
         passed = result.returncode == 0
         output = (result.stdout + '\n' + result.stderr).strip()
     except Exception as exc:  # gate boundary: preserve diagnostic in readiness report
