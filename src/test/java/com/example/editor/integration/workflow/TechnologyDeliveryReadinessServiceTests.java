@@ -5,17 +5,29 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
+import com.example.editor.config.StorageProperties;
+import com.example.editor.definition.EditorDefinitionTestFixtures;
+import com.example.editor.grammar.GrammarProperties;
+import com.example.editor.grammar.persistence.GrammarRepository;
+import com.example.editor.grammar.persistence.JsonGrammarRepository;
+import com.example.editor.integration.IntegrationArtifactResolution;
+import com.example.editor.integration.IntegrationArtifactResolver;
 import com.example.editor.integration.IntegrationCheckReport;
 import com.example.editor.integration.IntegrationDiagnostic;
 import com.example.editor.integration.IntegrationDiagnosticSeverity;
 import com.example.editor.integration.IntegrationProfileApplicationService;
+import com.example.editor.integration.IntegrationProfileChecker;
 import com.example.editor.integration.IntegrationProfileLoadResult;
+import com.example.editor.integration.IntegrationProfileProperties;
 import com.example.editor.integration.IntegrationProfileTestFixtures;
+import com.example.editor.integration.IntegrationResolutionStatus;
 import com.example.editor.integration.IntegrationSupportLevel;
 import com.example.editor.integration.InjectionFileOwnership;
 import com.example.editor.integration.IntegrationTargetKind;
@@ -25,6 +37,12 @@ import com.example.editor.integration.compiler.TechnologyCompilationException;
 import com.example.editor.integration.compiler.TechnologyCompilationResult;
 import com.example.editor.integration.compiler.TechnologyGeneratedFile;
 import com.example.editor.integration.compiler.TechnologyIntegrationApplicationService;
+import com.example.editor.metamodel.application.CanonicalMetamodelApplicationService;
+import com.example.editor.metamodel.canonical.CanonicalMetamodelProperties;
+import com.example.editor.metamodel.canonical.JsonCanonicalMetamodelRepository;
+import com.example.editor.metamodel.validation.NeutralMetamodelValidator;
+import com.example.editor.persistence.LocalCanonicalDocumentStoreFactory;
+import tools.jackson.databind.json.JsonMapper;
 
 class TechnologyDeliveryReadinessServiceTests {
     private IntegrationProfileApplicationService profiles;
@@ -97,6 +115,43 @@ class TechnologyDeliveryReadinessServiceTests {
         assertThat(action(readiness,TechnologyWorkflowStage.GENERATE).state()).isEqualTo(TechnologyDeliveryActionState.READY);
         assertThat(action(readiness,TechnologyWorkflowStage.GENERATE).hydraExecutable()).isFalse();
         assertThat(action(readiness,TechnologyWorkflowStage.PREVIEW).state()).isEqualTo(TechnologyDeliveryActionState.NOT_APPLICABLE);
+        verify(integrations,never()).compile("people",profile.id());
+    }
+
+    @Test void loadsARealProfileFromARealRepositoryAndComputesGenuineArtifactDiagnosticsInsteadOfAMockedLoad(@TempDir Path temp)throws Exception{
+        var mapper=JsonMapper.builder().findAndAddModules().build();
+        var storage=new StorageProperties(temp.resolve("metamodels"),temp.resolve("models"),temp.resolve("notations"),
+                temp.resolve("validations"),temp.resolve("quickfixes"),temp.resolve("generators"),temp.resolve("assets"),
+                temp.resolve("exports"),true);
+        var metamodelService=new CanonicalMetamodelApplicationService(new JsonCanonicalMetamodelRepository(storage,new CanonicalMetamodelProperties(),mapper),new NeutralMetamodelValidator());
+        metamodelService.create(EditorDefinitionTestFixtures.metamodel());
+
+        var profileProperties=new IntegrationProfileProperties();
+        profileProperties.setDirectory(temp.resolve("integration-profiles"));
+        var repository=new com.example.editor.integration.persistence.JsonIntegrationProfileRepository(profileProperties,mapper);
+        var profile=IntegrationProfileTestFixtures.emf();
+        repository.create(profile);
+
+        IntegrationArtifactResolver resolver=(metamodelId,artifact)->new IntegrationArtifactResolution(artifact,IntegrationResolutionStatus.NOT_FOUND,"No real artifact is registered for "+artifact.kind()+" "+artifact.documentId()+" in "+metamodelId);
+        var checker=new IntegrationProfileChecker(resolver);
+        var grammarProperties=new GrammarProperties();
+        grammarProperties.setDirectory(temp.resolve("grammars"));
+        GrammarRepository grammars=new JsonGrammarRepository(grammarProperties,mapper,new LocalCanonicalDocumentStoreFactory());
+        var realProfiles=new IntegrationProfileApplicationService(repository,metamodelService,checker,grammars);
+
+        var loaded=realProfiles.find("people",profile.id());
+
+        assertThat(loaded.profile().id()).isEqualTo(profile.id());
+        assertThat(loaded.etag()).isNotBlank();
+        assertThat(loaded.checkReport().artifactResolutions()).isNotEmpty().allMatch(value->value.status()==IntegrationResolutionStatus.NOT_FOUND);
+        assertThat(loaded.checkReport().diagnostics()).filteredOn(value->value.code().equals("UNRESOLVED_REQUIRED_ARTIFACT")).hasSize(4);
+        assertThat(loaded.checkReport().valid()).isFalse();
+
+        service=new TechnologyDeliveryReadinessService(realProfiles,workflows,integrations);
+        when(workflows.descriptor(IntegrationTechnology.EMF)).thenReturn(workflow(IntegrationTechnology.EMF,IntegrationTargetKind.MODELING_RUNTIME));
+        var readiness=service.readiness("people",profile.id());
+        assertThat(readiness.profileValid()).isFalse();
+        assertThat(action(readiness,TechnologyWorkflowStage.GENERATE).state()).isEqualTo(TechnologyDeliveryActionState.BLOCKED);
         verify(integrations,never()).compile("people",profile.id());
     }
 

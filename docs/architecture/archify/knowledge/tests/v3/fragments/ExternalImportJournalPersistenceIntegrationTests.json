@@ -1,0 +1,85 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalImportJournalPersistenceIntegrationTests",
+    "name": {
+      "es": "El diario de importaciones es obligatorio, durable y exclusivo",
+      "en": "The import journal is mandatory, durable and exclusive"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "recovery",
+      "project",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "x_recover_external_project",
+        "stages": [
+          "pers",
+          "rb"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportCompensationService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportJournal.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportJournalStore.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportJournalException.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring real con los almacenes y el diario en un directorio temporal.",
+      "en": "Real Spring context with the stores and the journal in a temporary directory."
+    },
+    "setup": {
+      "es": "MockMvc sobre la aplicación completa; el almacén del diario es un espía de Mockito para inyectar fallos de escritura y de borrado del propio diario. Dos hilos reales para la concurrencia.",
+      "en": "MockMvc over the whole application; the journal store is a Mockito spy to inject write and delete failures of the journal itself. Two real threads for concurrency."
+    },
+    "executes": {
+      "es": "Importa con el diario sin poder escribirse, con el diario fallando a mitad de operación (y sin poder borrarse) y con dos importaciones concurrentes del mismo contenido.",
+      "en": "Imports with the journal unwritable, with the journal failing mid-operation (and unable to be deleted) and with two concurrent imports of the same content."
+    },
+    "asserts": {
+      "es": "Sin diario la importación no empieza (error 5xx, sin proyecto ni documentos); con el diario fallando a mitad se compensa igualmente desde el estado real y la recuperación posterior reconcilia el diario desfasado sin efectos; con dos importaciones concurrentes una crea el metamodelo compartido y la otra lo reutiliza, sin diarios ni pendientes.",
+      "en": "Without a journal the import does not start (5xx error, no project or documents); with the journal failing mid-way it still compensates from the real state and the later recovery reconciles the stale journal with no effects; with two concurrent imports one creates the shared metamodel and the other reuses it, with no journals or pending items."
+    },
+    "behavior": {
+      "es": "Una importación solo empieza si puede registrarse de forma durable, y las importaciones no se pisan entre sí.",
+      "en": "An import only starts if it can be recorded durably, and imports do not step on each other."
+    },
+    "rule": {
+      "es": "Sin diario no hay importación; las importaciones son exclusivas.",
+      "en": "No journal, no import; imports are exclusive."
+    },
+    "scenario": {
+      "es": "Fallos del diario y concurrencia sobre recursos compartidos.",
+      "en": "Journal failures and concurrency over shared resources."
+    },
+    "result": {
+      "es": "Estado idéntico al previo tras cada fallo y un único creador del metamodelo compartido.",
+      "en": "State identical to the previous one after each failure and a single creator of the shared metamodel."
+    },
+    "expected": {
+      "es": "Sin residuos ni diarios.",
+      "en": "No residue or journals."
+    },
+    "guarantee": {
+      "es": "Un fallo del propio diario no deja a medias ni borra recursos ajenos.",
+      "en": "A failure of the journal itself neither leaves things half-done nor deletes foreign resources."
+    },
+    "limits": {
+      "es": "El bloqueo entre procesos distintos no se ejercita aquí: la concurrencia probada es entre hilos de un mismo proceso.",
+      "en": "The lock between different processes is not exercised here: the concurrency tested is between threads of the same process."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Aplicación completa, disco real y comparación del contenido de los almacenes.",
+      "en": "Whole application, real disk and comparison of the stores' content."
+    },
+    "external": "none",
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]

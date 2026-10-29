@@ -269,7 +269,8 @@ export async function analyzeExternalProject(file: File): Promise<ExternalProjec
     return readJson<ExternalProjectRecoveryReport>(await backendFetch('/api/external-project-recovery/analyze', { method: 'POST', body: data }));
 }
 
-export async function importExternalProjectArchive(parentDirectory: string, projectName: string, file: File): Promise<ExternalProjectImportResult> {
+export async function importExternalProjectArchive(parentDirectory: string, projectName: string, file: File, confirmedFingerprint: string): Promise<ExternalProjectImportResult> {
     const data = new FormData(); data.append('file', file); data.append('parentDirectory', parentDirectory); data.append('projectName', projectName);
+    data.append('confirmedFingerprint', confirmedFingerprint);
     return readJson<ExternalProjectImportResult>(await backendFetch('/api/external-project-recovery/import', { method: 'POST', body: data }));
 }

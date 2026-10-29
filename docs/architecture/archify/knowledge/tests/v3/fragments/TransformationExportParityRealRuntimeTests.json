@@ -1,0 +1,179 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.export.TransformationExportParityRealRuntimeTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Exportar a cada lenguaje y comprobar la paridad con HYDRA",
+      "en": "Export to each language and check parity with HYDRA"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "x_transformation_run_and_sync",
+        "stages": [
+          "exp",
+          "par"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/export/TransformationExportService.java",
+      "src/main/java/com/example/editor/transformation/parity/TransformationParityService.java",
+      "src/main/java/com/example/editor/transformation/parity/TransformationParityComparator.java",
+      "src/main/java/com/example/editor/transformation/runtime/TransformationRuntimeService.java",
+      "src/main/java/com/example/editor/transformation/text/TransformationTextGenerationService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible; metamodelo de ejemplo guardado; sin herramientas externas.",
+      "en": "Writable temporary directory; sample metamodel stored; no external tools."
+    },
+    "setup": {
+      "es": "Exportación, runtime, generación de texto, comparador y servicio de paridad reales; los ficheros exportados se escriben en @TempDir y se leen de disco; huellas recalculadas en la prueba.",
+      "en": "Real export, runtime, text generation, comparator and parity service; exported files are written to @TempDir and read back; fingerprints recomputed in the test."
+    },
+    "executes": {
+      "es": "export a ATL, ETL, JAVA, XTEND, PYTHON, GO, JAVASCRIPT, TYPESCRIPT, EGL y ACCELEO escribiendo los ficheros; bloqueos por tipo o guarda; paridad M2M con un resultado esperado y uno divergente; paridad M2T; exportación bloqueada y evidencia ausente.",
+      "en": "export to ATL, ETL, JAVA, XTEND, PYTHON, GO, JAVASCRIPT, TYPESCRIPT, EGL and ACCELEO writing the files; blocks by kind or guard; M2M parity with an expected and a divergent result; M2T parity; blocked export and missing evidence."
+    },
+    "asserts": {
+      "es": "Los ficheros releídos de disco contienen lo esperado (módulo ATL, plan nativo, envoltorios, .egx/.egl); los tipos incompatibles dan UNSUPPORTED_KIND/GUARD_NOT_NATIVE sin ficheros; la paridad da MATCHED con la huella recalculada, MISMATCHED con diferencias con ruta, EXPORT_BLOCKED o INVALID_EVIDENCE.",
+      "en": "Files reread from disk contain the expected content (ATL module, native plan, wrappers, .egx/.egl); incompatible kinds give UNSUPPORTED_KIND/GUARD_NOT_NATIVE without files; parity gives MATCHED with the recomputed fingerprint, MISMATCHED with path differences, EXPORT_BLOCKED or INVALID_EVIDENCE."
+    },
+    "behavior": {
+      "es": "HYDRA exporta la transformación a ficheros de cada lenguaje compatible y puede comparar el resultado de su propio motor con un resultado esperado, indicando si coincide o qué difiere.",
+      "en": "HYDRA exports the transformation to files for each compatible language and can compare its own engine result with an expected result, saying whether it matches or what differs."
+    },
+    "rule": {
+      "es": "Una exportación bloqueada o sin evidencia no produce veredicto de coincidencia; un valor distinto se señala con su ruta.",
+      "en": "A blocked export or missing evidence yields no matching verdict; a different value is reported with its path."
+    },
+    "scenario": {
+      "es": "Exportar una M2M y una M2T a todos los lenguajes compatibles, pedir combinaciones no admitidas y comparar el motor de HYDRA con un resultado esperado, uno alterado y casos sin evidencia válida.",
+      "en": "Export an M2M and an M2T to every compatible language, request unsupported combinations and compare the HYDRA engine with an expected result, an altered one and cases with no valid evidence."
+    },
+    "result": {
+      "es": "Ficheros presentes y con el contenido esperado; veredictos MATCHED, MISMATCHED, exportación bloqueada e invalid evidence coherentes con las huellas esperadas.",
+      "en": "Files present with the expected content; MATCHED, MISMATCHED, export blocked and invalid evidence verdicts consistent with the expected fingerprints."
+    },
+    "expected": {
+      "es": "Los contenidos, rutas, códigos, huellas SHA-256 y diferencias coinciden con los literales de la prueba.",
+      "en": "Contents, paths, codes, SHA-256 fingerprints and differences match the test literals."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la exportación escribe ficheros por lenguaje y de que el servicio de paridad distingue coincidencia, divergencia y falta de evidencia.",
+      "en": "Real evidence that export writes files per language and that the parity service distinguishes match, divergence and missing evidence."
+    },
+    "limits": {
+      "es": "El resultado «nativo» es escrito a mano, no lo produce una herramienta ni un proceso; varios lenguajes se comprueban solo por existencia de plan y ficheros; reglas directas simples.",
+      "en": "The «native» result is handwritten, not produced by a tool or process; several languages are checked only by plan and file existence; simple direct rules."
+    },
+    "strengthWhy": {
+      "es": "Servicios reales y huellas recalculadas, pero parte del oráculo es parcial (existencia de ficheros) y la evidencia nativa es manual.",
+      "en": "Real services and recomputed fingerprints, but part of the oracle is partial (file existence) and the native evidence is manual."
+    },
+    "cases": [
+      {
+        "n": "exportsEachCompatibleLanguageToATemporaryDirectory",
+        "scenario": {
+          "es": "Escribir y releer los ficheros de cada lenguaje.",
+          "en": "Write and reread each language's files."
+        },
+        "result": {
+          "es": "Ficheros y planes esperados.",
+          "en": "Expected files and plans."
+        }
+      },
+      {
+        "n": "incompatibleKindsAndNonNativeDefinitionsAreBlockedWithoutFiles",
+        "scenario": {
+          "es": "ACCELEO con M2M, ATL con M2T y con guarda.",
+          "en": "ACCELEO with M2M, ATL with M2T and with a guard."
+        },
+        "result": {
+          "es": "Bloqueado sin ficheros.",
+          "en": "Blocked without files."
+        }
+      },
+      {
+        "n": "parityMatchesTheExpectedResultAndDetectsADivergentOne",
+        "scenario": {
+          "es": "Resultado esperado y divergente.",
+          "en": "Expected and divergent result."
+        },
+        "result": {
+          "es": "MATCHED / MISMATCHED con diferencias.",
+          "en": "MATCHED / MISMATCHED with differences."
+        }
+      },
+      {
+        "n": "m2tParityComparesFilesAndBlockedOrMissingEvidenceIsNotAVerdict",
+        "scenario": {
+          "es": "M2T, export bloqueado y evidencia ausente.",
+          "en": "M2T, blocked export and missing evidence."
+        },
+        "result": {
+          "es": "MATCHED, MISMATCHED, EXPORT_BLOCKED, INVALID_EVIDENCE.",
+          "en": "MATCHED, MISMATCHED, EXPORT_BLOCKED, INVALID_EVIDENCE."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 90
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 105
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 121
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 133
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 137
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 157
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 164
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 200
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 204
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 207
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 211
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportParityRealRuntimeTests.java",
+        "line": 213
+      }
+    ]
+  }
+]

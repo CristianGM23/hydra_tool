@@ -1,0 +1,6 @@
+- x_grammar_to_text_model.an: leftRecursionBlocksTheGrammarAnalysisAndItsAbsenceDoesNot (line 165: left-recursive grammar has an ERROR diagnostic, the plain one does not).
+- x_grammar_to_text_model.parse + grammar_author_textmodel.pa + grammar_textual_editing.pa: aBrokenDraftKeepsTheLastValidModel... (lines 175-206: valid model, broken draft keeps last valid model, repaired draft) and staleRevisionsAndConflictingSameRevisionAreRejected (lines 213-224: stale and conflicting revisions 400, identical retry idempotent).
+- grammar_diagnostics_actions.d / .ra: lines 186-190 (error diagnostic with code and line 1 columns 5-8) and 204 (no diagnostics after applying the replacement and re-analysing).
+- grammar_language_service.er: line 193 (interactions rejected while the draft is not the last valid revision). .a / .rn / .fm: languageServiceAnswersOnAValidDraftWithoutPersistingAnything (lines 235-269: capabilities, completion, symbols, rename plan only, format, session unchanged).
+- x_grammar_to_text_model.sv + grammar_author_textmodel.sv + grammar_textual_editing.sv: savePromotesTheAnalyzedValidModelAndRejectsABrokenDraft (lines 279-290: committed revision equals draft revision; broken draft not promotable and committed model unchanged).
+- Not claimed: x_grammar_to_text_model.t2m and the shared validation rule rejection on save.

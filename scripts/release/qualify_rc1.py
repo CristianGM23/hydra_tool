@@ -1,9 +1,9 @@
 from __future__ import annotations
-import argparse,contextlib,hashlib,json,os,subprocess,sys,tempfile,time,urllib.request
+import argparse,contextlib,hashlib,json,os,socket,subprocess,sys,tempfile,time,urllib.request
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'target/release';OUT.mkdir(parents=True,exist_ok=True)
 sys.path.insert(0,str(ROOT/'scripts/release'))
-from qualification_engine import QualificationRunner,add_resume_arguments,validate_evidence_report  # noqa:E402
+from qualification_engine import QualificationRunner,_kill_tree,add_resume_arguments,validate_evidence_report  # noqa:E402
 p=argparse.ArgumentParser(description='Cualifica HYDRA 4.32.107 como RC1 de producto.')
 p.add_argument('--full',action='store_true');p.add_argument('--primary-release-qualified',action='store_true');p.add_argument('--base-url',default='http://127.0.0.1:8081');add_resume_arguments(p);args=p.parse_args()
 policy=json.loads((ROOT/'config/rc1-qualification-policy.json').read_text(encoding='utf-8'));runner=QualificationRunner('rc1',args,fingerprint_extra={'full':args.full,'releaseVersion':policy['releaseVersion']});steps=[]
@@ -20,16 +20,29 @@ def wait_http(url,timeout=60):
 
 @contextlib.contextmanager
 def managed_backend():
- port=18081;base=f'http://127.0.0.1:{port}';jars=sorted((ROOT/'build/hydra-maven').glob('editor-*.jar'));temporary=tempfile.TemporaryDirectory(prefix='hydra-rc1-live-');cwd=Path(temporary.name)
+ port=18081;base=f'http://127.0.0.1:{port}';temporary=tempfile.TemporaryDirectory(prefix='hydra-rc1-live-');cwd=Path(temporary.name)
  java_home=os.environ.get('HYDRA_JAVA_HOME') or os.environ.get('JAVA_HOME');java=str(Path(java_home)/'bin'/('java.exe' if os.name=='nt' else 'java')) if java_home else 'java'
- if jars:cmd=[java,'-jar',str(jars[-1]),f'--server.port={port}','--server.address=127.0.0.1','--spring.profiles.active=headless-server','--hydra.instance-lock.enabled=false','--dsl.projects.local.native-path-picker-enabled=false']
- else:
-  mvn='mvnw.cmd' if os.name=='nt' else './mvnw';cmd=[str(ROOT/mvn),'-B','-DskipTests','spring-boot:run',f'-Dspring-boot.run.arguments=--server.port={port} --server.address=127.0.0.1 --spring.profiles.active=headless-server --hydra.instance-lock.enabled=false --dsl.projects.local.native-path-picker-enabled=false']
- log_path=ROOT/'target/release/logs/rc1/managed-backend.log';log_path.parent.mkdir(parents=True,exist_ok=True);log=log_path.open('w',encoding='utf-8');creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name=='nt' else 0
- proc=subprocess.Popen(cmd,cwd=cwd if jars else ROOT,stdout=log,stderr=subprocess.STDOUT,text=True,creationflags=creationflags,start_new_session=(os.name!='nt'))
+ # A backend already listening (e.g. left over by an interrupted run) would answer the health check with stale code.
+ with contextlib.closing(socket.socket()) as probe:
+  if probe.connect_ex(('127.0.0.1',port))==0:temporary.cleanup();raise RuntimeError(f'Port {port} is already in use; refusing to qualify against an unknown backend')
+ log_dir=ROOT/'target/release/logs/rc1';log_dir.mkdir(parents=True,exist_ok=True);creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name=='nt' else 0
+ jars=sorted((ROOT/'build/hydra-maven').glob('editor-*.jar'))
+ if not jars:
+  # The pom cleans build/hydra-maven on every Maven run, so an earlier gate's jar is normally gone. Package it first: compiling
+  # inside the Spring Boot Maven run goal (2,600+ sources) consumed the 90 s readiness budget and started the backend with devtools.
+  with (log_dir/'managed-backend-package.log').open('w',encoding='utf-8') as package_log:
+   builder=subprocess.Popen([str(ROOT/('mvnw.cmd' if os.name=='nt' else 'mvnw')),'-B','-DskipTests','package'],cwd=ROOT,stdout=package_log,stderr=subprocess.STDOUT,creationflags=creationflags,start_new_session=(os.name!='nt'))
+   try:code=builder.wait(timeout=1800)
+   except subprocess.TimeoutExpired:_kill_tree(builder,15);code=None
+  jars=sorted((ROOT/'build/hydra-maven').glob('editor-*.jar'))
+  if code!=0 or not jars:temporary.cleanup();raise RuntimeError('Could not package the RC1 backend jar; see target/release/logs/rc1/managed-backend-package.log')
+ cmd=[java,'-jar',str(jars[-1]),f'--server.port={port}','--server.address=127.0.0.1','--spring.profiles.active=headless-server','--hydra.instance-lock.enabled=false','--dsl.projects.local.native-path-picker-enabled=false']
+ log=(log_dir/'managed-backend.log').open('w',encoding='utf-8')
+ proc=subprocess.Popen(cmd,cwd=cwd,stdout=log,stderr=subprocess.STDOUT,text=True,creationflags=creationflags,start_new_session=(os.name!='nt'))
  try:wait_http(base+'/actuator/health',90);yield base
  finally:
-  proc.terminate()
+  # mvnw.cmd -> Maven JVM -> application JVM: terminating only the wrapper leaves the backend listening.
+  _kill_tree(proc,15)
   try:proc.wait(timeout=15)
   except subprocess.TimeoutExpired:proc.kill();proc.wait(timeout=5)
   log.close();temporary.cleanup()

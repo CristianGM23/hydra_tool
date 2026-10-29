@@ -1,0 +1,41 @@
+[
+  {
+    "id": "java:com.example.editor.validation.validation.ValidationRuleRepresentationRejectionsIntegrationTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": { "es": "Reglas de validación: representación y conversión incoherentes", "en": "Validation rules: inconsistent representation and conversion" },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": ["validation"],
+    "procs": [{ "id": "validation_author_form", "stages": ["rp"], "match": "direct" }],
+    "prod": [
+      "src/main/java/com/example/editor/validation/validation/ValidationModelChecker.java",
+      "src/main/java/com/example/editor/validation/validation/ValidationModelApplicationService.java"
+    ],
+    "pre": { "es": "Metamodelo y modelo de expresiones guardados en un directorio temporal.", "en": "Metamodel and expression model saved in a temporary directory." },
+    "setup": { "es": "Servicio de guardado, comprobador y repositorios JSON reales; el fichero de reglas se lee aparte.", "en": "Real save service, checker and JSON repositories; the rules file is read separately." },
+    "executes": { "es": "Guardar una regla con modo externo y representación canónica, otra canónica con conversión externa, una externa con procedencia y otra externa sin ella.", "en": "Save a rule with external mode and canonical representation, a canonical one with external conversion, an external one with provenance and an external one without." },
+    "asserts": { "es": "Cada combinación incoherente devuelve exactamente un error con código y ruta literales; la externa con procedencia no tiene errores y queda en disco con su procedencia; sin procedencia solo hay un aviso.", "en": "Each inconsistent combination returns exactly one error with a literal code and path; the external rule with provenance has no errors and is on disk with its provenance; without provenance there is only a warning." },
+    "behavior": { "es": "Al guardar una regla, la sección avanzada de representación y conversión avisa de las combinaciones imposibles.", "en": "When saving a rule, the advanced representation and conversion section reports impossible combinations." },
+    "rule": { "es": "Una regla de ejecución externa no puede ser canónica y una regla canónica no puede tener conversión externa.", "en": "An externally executed rule cannot be canonical, and a canonical rule cannot have external conversion." },
+    "scenario": { "es": "Cuatro reglas con distintas combinaciones de modo, representación, conversión y procedencia.", "en": "Four rules with different combinations of mode, representation, conversion and provenance." },
+    "result": { "es": "Dos errores literales, una regla externa guardada limpia y un aviso de procedencia ausente.", "en": "Two literal errors, one external rule saved cleanly and one missing-provenance warning." },
+    "expected": { "es": "Los códigos, rutas y el contenido del fichero coinciden con lo descrito.", "en": "Codes, paths and file content match the description." },
+    "guarantee": { "es": "El comprobador detecta las combinaciones incoherentes de representación y conversión con el almacén real.", "en": "The checker detects inconsistent representation and conversion combinations with the real store." },
+    "limits": { "es": "No ejercita el formulario de la interfaz. El guardado informa de los errores pero conserva el documento, así que no prueba un bloqueo del guardado.", "en": "Does not exercise the form in the interface. Saving reports the errors but keeps the document, so it does not prove saving is blocked." },
+    "strengthWhy": { "es": "Colaboradores reales y oráculo literal, pero la etapa es una sección de formulario que aquí solo se cubre por el servicio.", "en": "Real collaborators and a literal oracle, but the stage is a form section covered here only through the service." },
+    "cases": [
+      { "n": "externalModeWithCanonicalRepresentationIsReported", "scenario": { "es": "Modo externo y representación canónica.", "en": "External mode, canonical representation." }, "result": { "es": "Un error literal.", "en": "One literal error." } },
+      { "n": "canonicalRepresentationWithExternalConversionIsReported", "scenario": { "es": "Canónica con conversión externa.", "en": "Canonical with external conversion." }, "result": { "es": "Un error literal.", "en": "One literal error." } },
+      { "n": "anExternalRuleWithProvenanceIsSavedCleanly", "scenario": { "es": "Externa con procedencia.", "en": "External with provenance." }, "result": { "es": "Sin errores; en disco.", "en": "No errors; on disk." } },
+      { "n": "anExternalRuleWithoutProvenanceOnlyGetsAWarning", "scenario": { "es": "Externa sin procedencia.", "en": "External without provenance." }, "result": { "es": "Solo un aviso.", "en": "Only a warning." } }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleRepresentationRejectionsIntegrationTests.java", "line": 58 },
+      { "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleRepresentationRejectionsIntegrationTests.java", "line": 70 },
+      { "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleRepresentationRejectionsIntegrationTests.java", "line": 83 }
+    ]
+  }
+]

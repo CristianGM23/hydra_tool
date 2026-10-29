@@ -1,0 +1,48 @@
+[
+  {
+    "id": "java:com.example.editor.validation.quickfix.QuickFixSelectorValueArgumentRuntimeIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": { "es": "Correcciones rápidas: elementos destino, origen de valores y argumentos", "en": "Quick fixes: target elements, value sources and arguments" },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["validation"],
+    "procs": [{ "id": "validation_author_quickfix", "stages": ["sl", "vs", "ag"], "match": "direct" }],
+    "prod": [
+      "src/main/java/com/example/editor/validation/action/CanonicalActionExecutor.java",
+      "src/main/java/com/example/editor/validation/action/ActionSelector.java",
+      "src/main/java/com/example/editor/validation/action/ActionValueSource.java",
+      "src/main/java/com/example/editor/validation/quickfix/QuickFixRuntimeService.java"
+    ],
+    "pre": { "es": "Modelo vivo con dos elementos, uno de ellos incumple una regla; acciones guardadas en un directorio temporal.", "en": "Live model with two elements, one of which breaks a rule; actions saved in a temporary directory." },
+    "setup": { "es": "Metamodelo real, orquestador de validación, servicio de correcciones y persistencia JSON reales; el modelo guardado se lee aparte como XML.", "en": "Real metamodel, validation orchestrator, quick-fix service and JSON persistence; the saved model is read separately as XML." },
+    "executes": { "es": "Aplicar correcciones cuyas operaciones usan cada tipo de destino, cada origen de valor y argumentos de acciones anidadas y operaciones invocadas.", "en": "Apply fixes whose operations use each kind of target, each value source and arguments of nested actions and invoked operations." },
+    "asserts": { "es": "El fichero del modelo muestra el cambio exacto en el elemento esperado y en ningún otro; los destinos ausentes o parámetros que faltan se rechazan con su mensaje y el fichero queda idéntico byte a byte.", "en": "The model file shows the exact change on the expected element and on no other; missing targets or parameters are rejected with their message and the file stays byte-identical." },
+    "behavior": { "es": "Una corrección rápida puede actuar sobre el elemento con el problema, la selección, un elemento indicado, uno fijo o uno recién creado, con valores fijos, calculados o pedidos.", "en": "A quick fix can act on the faulty element, the selection, an indicated element, a fixed one or a newly created one, with fixed, computed or requested values." },
+    "rule": { "es": "Cada destino y cada origen de valor se resuelve contra el modelo vivo; si no se puede resolver, la corrección se aborta sin tocar el modelo.", "en": "Each target and value source is resolved against the live model; if it cannot be resolved, the fix is aborted without touching the model." },
+    "scenario": { "es": "Doce acciones sobre un modelo de dos elementos, aplicadas una a una sobre el mismo problema.", "en": "Twelve actions on a two-element model, each applied to the same problem." },
+    "result": { "es": "Cambios exactos en disco para cada tipo de destino, de valor y de argumento; cuatro rechazos sin cambios.", "en": "Exact on-disk changes for each kind of target, value and argument; four rejections with no changes." },
+    "expected": { "es": "Los atributos del fichero y los mensajes coinciden con los literales esperados.", "en": "File attributes and messages match the expected literals." },
+    "guarantee": { "es": "Los destinos, orígenes de valor y argumentos de las correcciones funcionan de extremo a extremo con el servicio real.", "en": "Quick-fix targets, value sources and arguments work end to end with the real service." },
+    "limits": { "es": "No prueba el deshacer de estas acciones ni la interfaz; el valor calculado cubre solo una expresión de texto y la operación invocada solo una acción enlazada.", "en": "Does not prove undo of these actions nor the interface; the computed value covers only one text expression and the invoked operation only one bound action." },
+    "strengthWhy": { "es": "Pila real sin simulaciones, oráculo en el fichero del modelo y mapeo directo a cada etapa.", "en": "Real stack with no simulations, an oracle in the model file and a direct mapping to each stage." },
+    "cases": [
+      { "n": "selectionSelectorUsesTheFirstSelectedElement", "scenario": { "es": "Destino: selección.", "en": "Target: selection." }, "result": { "es": "Cambia el primer seleccionado.", "en": "First selected changes." } },
+      { "n": "createdElementSelectorReachesTheNewElement", "scenario": { "es": "Destino: elemento creado.", "en": "Target: created element." }, "result": { "es": "Aparece un tercer elemento con sus valores.", "en": "A third element appears with its values." } },
+      { "n": "selectorsWithoutATargetAreRejectedAndTheModelIsUntouched", "scenario": { "es": "Destinos que no existen.", "en": "Targets that do not exist." }, "result": { "es": "Cuatro rechazos, fichero idéntico.", "en": "Four rejections, identical file." } },
+      { "n": "expressionValueSourceIsEvaluatedAgainstTheModel", "scenario": { "es": "Valor por expresión.", "en": "Expression value." }, "result": { "es": "Texto calculado en disco.", "en": "Computed text on disk." } },
+      { "n": "nestedActionArgumentsReachTheNestedParameter", "scenario": { "es": "Acción anidada con argumento.", "en": "Nested action with argument." }, "result": { "es": "El argumento se escribe.", "en": "Argument is written." } },
+      { "n": "invokedOperationArgumentsReachTheBoundAction", "scenario": { "es": "Operación invocada con argumento.", "en": "Invoked operation with argument." }, "result": { "es": "La acción enlazada lo escribe.", "en": "Bound action writes it." } }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixSelectorValueArgumentRuntimeIntegrationTests.java", "line": 242 },
+      { "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixSelectorValueArgumentRuntimeIntegrationTests.java", "line": 274 },
+      { "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixSelectorValueArgumentRuntimeIntegrationTests.java", "line": 291 },
+      { "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixSelectorValueArgumentRuntimeIntegrationTests.java", "line": 303 },
+      { "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixSelectorValueArgumentRuntimeIntegrationTests.java", "line": 326 },
+      { "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixSelectorValueArgumentRuntimeIntegrationTests.java", "line": 337 }
+    ]
+  }
+]

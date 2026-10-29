@@ -1,0 +1,50 @@
+[
+  {
+    "id": "pw:e2e/real/project/generated-project-wizard.spec.ts",
+    "name": { "es": "Proyectos generados: registrar, previsualizar, ejecutar con fallo real y reajustar", "en": "Generated projects: register, preview, run with a real failure and readjust" },
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": ["generated_projects"],
+    "procs": [
+      { "id": "generated_projects_author_wizard", "stages": ["rg", "pj", "st", "pv", "ru", "ok", "rp"], "match": "direct" }
+    ],
+    "pre": { "es": "Sin condiciones previas: si npm no está instalado, la fase real también falla y el informe lo refleja igual.", "en": "No preconditions: if npm is not installed the real stage also fails and the report shows it just the same." },
+    "executes": { "es": "Navegador real sobre la aplicación compilada y el backend real: registra un proyecto generado con perfil Langium, elige etapas, previsualiza, ejecuta de verdad la preparación (que falla) y reajusta a solo Open.", "en": "Real browser on the built application and the real backend: registers a generated project with the Langium profile, chooses stages, previews, really runs the prepare stage (which fails) and readjusts to Open only." },
+    "asserts": { "es": "El registro escrito en disco tiene el proyecto; la vista previa muestra estados y comandos igual que el backend, no crea ficheros y Launch queda deshabilitada; la ejecución real falla y el reajuste termina bien, con insignias iguales a un segundo informe del backend.", "en": "The registry written on disk has the project; the preview shows statuses and commands as the backend does, creates no files and Launch is disabled; the real run fails and the readjustment ends well, with badges equal to a second backend report." },
+    "behavior": { "es": "El usuario registra un proyecto generado, elige qué etapas ejecutar, comprueba primero qué se haría y luego ejecuta; si algo falla ve el detalle y puede reajustar las etapas.", "en": "The user registers a generated project, chooses which stages to run, first checks what would be done and then runs; if something fails they see the detail and can readjust the stages." },
+    "rule": { "es": "Solo se pueden marcar las etapas que el perfil admite, la simulación no ejecuta nada y una carpeta fuera de la raíz de proyectos no se registra.", "en": "Only the stages the profile supports can be ticked, the dry run executes nothing and a folder outside the projects root is not registered." },
+    "scenario": { "es": "Registro rechazado con una carpeta fuera de la raíz, registro correcto, vista previa con tres etapas, ejecución real de la preparación sin ficheros de proyecto y nueva ejecución solo de Open.", "en": "A rejected registration with a folder outside the root, a correct registration, a preview with three stages, a real run of the prepare stage without project files and a new run of Open only." },
+    "result": { "es": "La vista previa informa preparar y validar como planificadas y abrir como correcta sin tocar el disco; la ejecución real marca el fallo de preparar; tras reajustar, el informe queda correcto.", "en": "The preview reports prepare and validate as planned and open as passed without touching the disk; the real run flags the prepare failure; after readjusting, the report passes." },
+    "expected": { "es": "Registro persistido, carpeta intacta tras la simulación, informe en pantalla coincidente con el del backend y estado final correcto.", "en": "A persisted registry, an untouched folder after the dry run, an on-screen report matching the backend's and a correct final state." },
+    "guarantee": { "es": "El asistente de proyectos generados registra, simula y ejecuta realmente y muestra al usuario el mismo resultado que calcula el backend.", "en": "The generated-projects wizard registers, simulates and really runs, and shows the user the same result the backend computes." },
+    "limits": { "es": "El éxito real solo se demuestra para la etapa Open; el éxito de preparar y validar con herramientas nativas no se prueba (el fallo real depende de npm). El perfil standalone-web de producción no se usa porque la política de procesos rechaza sus comandos. No recorre el modo guiado paso a paso. Interfaz en inglés.", "en": "Real success is only proven for the Open stage; success of prepare and validate with native tools is not tested (the real failure depends on npm). The production standalone-web profile is not used because the process policy rejects its commands. It does not walk the step-by-step guided mode. English interface." },
+    "strength": "MEDIUM",
+    "strengthWhy": { "es": "Acciones reales del usuario y backend real, pero el resultado de ejecutar se compara con un segundo informe del propio backend, no con ficheros escritos por el proceso.", "en": "Real user actions and a real backend, but the run result is compared with a second report from the backend itself, not with files written by the process." },
+    "external": "none",
+    "cases": [
+      { "n": "registro rechazado", "scenario": { "es": "Registrar con una carpeta fuera de la raíz.", "en": "Register with a folder outside the root." }, "result": { "es": "Aviso en pantalla y el registro no contiene el proyecto.", "en": "A notice on screen and the registry does not contain the project." } },
+      { "n": "previsualizar", "scenario": { "es": "Tres etapas con simulación activa.", "en": "Three stages with the dry run on." }, "result": { "es": "Planificadas con comandos, abrir correcta y ningún fichero creado.", "en": "Planned with commands, open passed and no file created." } },
+      { "n": "ejecutar y reajustar", "scenario": { "es": "Ejecución real de preparar y luego solo Open.", "en": "A real run of prepare and then Open only." }, "result": { "es": "Primero FALLO real; después todo correcto.", "en": "First a real failure; then everything passes." } }
+    ],
+    "related": ["java:com.example.editor.generated.project.GeneratedProjectLifecycleRealProcessIntegrationTests"],
+    "src": [
+      { "path": "frontend/e2e/real/project/generated-project-wizard.spec.ts", "line": 46 },
+      { "path": "frontend/e2e/real/project/generated-project-wizard.spec.ts", "line": 55 },
+      { "path": "frontend/e2e/real/project/generated-project-wizard.spec.ts", "line": 66 },
+      { "path": "frontend/e2e/real/project/generated-project-wizard.spec.ts", "line": 76 },
+      { "path": "frontend/e2e/real/project/generated-project-wizard.spec.ts", "line": 84 },
+      { "path": "frontend/e2e/real/project/generated-project-wizard.spec.ts", "line": 93 },
+      { "path": "frontend/e2e/real/project/generated-project-wizard.spec.ts", "line": 107 }
+    ],
+    "prod": [
+      "frontend/src/generated-project-center/GeneratedProjectCenter.tsx",
+      "frontend/src/generated-project-center/api.ts",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleController.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleService.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectRuntimeProfileCatalog.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectRegistryStore.java",
+      "src/main/java/com/example/editor/integration/verification/ExternalToolProcessRunner.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

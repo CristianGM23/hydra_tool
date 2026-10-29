@@ -1,0 +1,130 @@
+[
+  {
+    "id": "vitest:src/update-site-import-center/UpdateSiteReleaseGovernancePanel.test.tsx",
+    "name": {
+      "es": "Fusión semántica en pantalla: una decisión explícita por conflicto",
+      "en": "Semantic merge on screen: one explicit decision per conflict"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "portability"
+    ],
+    "procs": [
+      {
+        "id": "portability_author_merge",
+        "stages": [
+          "c"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [],
+    "pre": null,
+    "executes": {
+      "es": "Renderiza el panel con la API simulada, previsualiza la fusión, elige una decisión por conflicto y aplica.",
+      "en": "Renders the panel with the API mocked, previews the merge, picks one decision per conflict and applies."
+    },
+    "asserts": {
+      "es": "La solicitud no envía MERGE por defecto; hay un selector por conflicto; Aplicar queda deshabilitado mientras falte alguna decisión y tras cambiarlas hasta volver a previsualizar; sin conflictos no hay controles.",
+      "en": "The request does not send MERGE by default; there is one selector per conflict; Apply stays disabled while any decision is missing and after changing them until previewed again; with no conflicts there are no controls."
+    },
+    "behavior": {
+      "es": "La pantalla obliga a decidir cada conflicto antes de aplicar la fusión.",
+      "en": "The screen forces each conflict to be decided before applying the merge."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Vista previa con dos conflictos sin decisión.",
+      "en": "Preview with two undecided conflicts."
+    },
+    "result": {
+      "es": "Aplicar solo se habilita con todas las decisiones vigentes.",
+      "en": "Apply is only enabled with every decision current."
+    },
+    "expected": {
+      "es": "Solicitud con las decisiones elegidas.",
+      "en": "Request with the chosen decisions."
+    },
+    "guarantee": {
+      "es": "La interfaz y el servidor comparten el contrato de decisión explícita.",
+      "en": "The interface and the server share the explicit-decision contract."
+    },
+    "limits": {
+      "es": "El servidor está simulado; el contrato real lo prueban las pruebas Java de fusión.",
+      "en": "The server is mocked; the real contract is tested by the Java merge tests."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "La API del servidor está simulada: comprueba la pantalla, no la cadena completa.",
+      "en": "The server API is mocked: it checks the screen, not the full chain."
+    },
+    "external": "mocked",
+    "confidence": "ANALYZED",
+    "src": []
+  },
+  {
+    "id": "vitest:src/update-site-import-center/UpdateSiteLayerMergePanel.test.tsx",
+    "name": {
+      "es": "Composición selectiva de capas: sin decisión por defecto ante colisiones",
+      "en": "Selective layer composition: no default decision for collisions"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "portability"
+    ],
+    "procs": [
+      {
+        "id": "portability_author_merge",
+        "stages": [
+          "c"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [],
+    "pre": null,
+    "executes": {
+      "es": "Renderiza el panel con las API simuladas, elige metamodelo y editor, previsualiza y decide cada colisión.",
+      "en": "Renders the panel with the APIs mocked, picks the metamodel and editor, previews and decides each collision."
+    },
+    "asserts": {
+      "es": "Ya no existe la decisión predeterminada y la solicitud no la envía; Aplicar está deshabilitado mientras haya colisiones sin decisión y tras cambiar una decisión hasta volver a previsualizar; la solicitud lleva la decisión elegida.",
+      "en": "The default decision no longer exists and the request does not send it; Apply is disabled while collisions have no decision and after changing a decision until previewed again; the request carries the chosen decision."
+    },
+    "behavior": {
+      "es": "La composición selectiva no resuelve colisiones por su cuenta.",
+      "en": "Selective composition does not resolve collisions on its own."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Una colisión y un elemento nuevo.",
+      "en": "One collision and one new element."
+    },
+    "result": {
+      "es": "Aplicar se habilita solo con la colisión decidida y la vista previa vigente.",
+      "en": "Apply is enabled only with the collision decided and the preview current."
+    },
+    "expected": {
+      "es": "Solicitud con la decisión explícita.",
+      "en": "Request with the explicit decision."
+    },
+    "guarantee": {
+      "es": "Las dos pantallas de fusión respetan el mismo contrato.",
+      "en": "Both merge screens respect the same contract."
+    },
+    "limits": {
+      "es": "El servidor está simulado; la validación de decisiones ausentes o inválidas la prueban las pruebas del servicio de fusión.",
+      "en": "The server is mocked; validation of missing or invalid decisions is tested by the merge service tests."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "La API del servidor está simulada: comprueba la pantalla, no la cadena completa.",
+      "en": "The server API is mocked: it checks the screen, not the full chain."
+    },
+    "external": "mocked",
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]

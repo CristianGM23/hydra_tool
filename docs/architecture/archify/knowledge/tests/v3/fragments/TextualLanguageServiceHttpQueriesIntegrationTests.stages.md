@@ -1,0 +1,2 @@
+TextualLanguageServiceHttpQueriesIntegrationTests - stage mapping (MEDIUM)
+- grammar_language_service.q (remaining queries): hoverDefinitionReferencesAndTokensAnswerWithTheLiteralPositionsOfTheText (hover l.123, definition l.129, tokens l.143); foldingInvalidationAndSnapshotCompatibilityAnswerWithoutChangingTheSession (folding l.164, invalidation l.173, compatibility l.179-185, unchanged session l.189).

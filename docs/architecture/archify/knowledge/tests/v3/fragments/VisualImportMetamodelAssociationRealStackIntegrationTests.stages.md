@@ -1,0 +1,3 @@
+- model_editor_visual_import.as: existingModeUsesTheStoredMetamodel (line 110), externalAndEmbeddedModesAreSideEffectFree (lines 126-134) and ambiguousOrMissingMetamodelsAreRejected (lines 155-161).
+- model_editor_visual_import.d1: preview writes nothing (lines 183-185) and commit() with validations persists the metamodel and a validation document with a stable id (lines 203-209).
+- model_editor_visual_import.art: editors.create persists the definition (lines 229-230).

@@ -1,0 +1,210 @@
+[
+  {
+    "id": "java:com.example.editor.codegen.ModelCodeGenerationServiceTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Generación y vista previa de código desde un modelo",
+      "en": "Code generation and preview from a model"
+    },
+    "type": "BEHAVIOR",
+    "layer": "delivery",
+    "caps": [
+      "publication"
+    ],
+    "procs": [
+      {
+        "id": "publication_generate_publish",
+        "stages": [
+          "pv",
+          "g"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "publication_author_codegen",
+        "stages": [
+          "tr",
+          "pv",
+          "g"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "metamodel_export_generate",
+        "stages": [
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_generate_certify_distribute",
+        "stages": [
+          "tgt"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "publication_author_codegen",
+        "stages": [
+          "t"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationService.java",
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationRendererRegistry.java",
+      "src/main/java/com/example/editor/codegen/SourceModelCodeGenerationRenderer.java",
+      "src/main/java/com/example/editor/codegen/ProjectionModelCodeGenerationRenderer.java",
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationTarget.java",
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationOptions.java",
+      "src/main/java/com/example/editor/definition/CodeGenerationFeatureOptions.java"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Llama a ModelCodeGenerationService.generate y preview con un metamodelo y modelo canónico sintéticos para los destinos java, json y xml, y descomprime el ZIP resultante en memoria.",
+      "en": "Calls ModelCodeGenerationService.generate and preview with a synthetic metamodel and canonical model for the java, json and xml targets, and unzips the resulting ZIP in memory."
+    },
+    "asserts": {
+      "es": "ZIP 'PeopleModel-java.zip' con fuente y test Java; rechazo de la característica EQUALITY en json; trazabilidad opcional sin quitar ids semánticos; selección estable de elementos; rechazo de id desconocido; características por destino.",
+      "en": "ZIP 'PeopleModel-java.zip' with Java source and test; rejection of the EQUALITY feature for json; optional traceability without dropping semantic ids; stable element selection; rejection of unknown id; per-target features."
+    },
+    "behavior": {
+      "es": "HYDRA genera código y artefactos portables a partir de un modelo, permite elegir qué elementos incluir, hace opcional la trazabilidad y rechaza opciones o selecciones que el destino no admite en vez de ignorarlas.",
+      "en": "HYDRA generates code and portable artifacts from a model, lets the user pick which elements to include, makes traceability optional and rejects options or selections the target does not support instead of ignoring them."
+    },
+    "rule": {
+      "es": "Un destino solo de proyección (json, xmi) no admite características de código fuente, y un id de elemento seleccionado inexistente no amplía el alcance: se rechaza.",
+      "en": "A projection-only target (json, xmi) does not support source-code features, and a selected element id that does not exist does not widen scope: it is rejected."
+    },
+    "scenario": {
+      "es": "Modelo Person con uno o dos elementos; Java con las cinco características; json con EQUALITY; xml con y sin trazabilidad; selección de person-two; id 'missing-element'.",
+      "en": "Person model with one or two elements; Java with all five features; json with EQUALITY; xml with and without traceability; selecting person-two; id 'missing-element'."
+    },
+    "result": {
+      "es": "Artefactos con nombre, tipo de medio y contenido concretos, previsualización filtrada (selectedElementCount=1) y errores con el motivo.",
+      "en": "Artifacts with concrete name, media type and content, a filtered preview (selectedElementCount=1) and errors giving the reason."
+    },
+    "expected": {
+      "es": "Cada artefacto contiene lo esperado y las opciones inválidas se rechazan con mensaje.",
+      "en": "Each artifact contains what is expected and invalid options are rejected with a message."
+    },
+    "guarantee": {
+      "es": "Evidencia de que el servicio genera y previsualiza código para Java, JSON y XML y valida opciones y selección con un modelo sintético.",
+      "en": "Evidence that the service generates and previews code for Java, JSON and XML and validates options and selection with a synthetic model."
+    },
+    "limits": {
+      "es": "Modelo de una sola clase; no compila ni ejecuta el Java generado, no prueba los demás destinos (python, sql, ts…), ni el controlador HTTP ni la descarga desde la interfaz.",
+      "en": "Single-class model; does not compile or run the generated Java, does not test other targets (python, sql, ts...), nor the HTTP controller or UI download."
+    },
+    "strengthWhy": {
+      "es": "Integración real sin mocks (traits.mocks=false) de ModelCodeGenerationService real. Enlace adicional al diálogo de generación (publication_author_codegen): 'sourceTargetsAdvertiseFeaturesWhilePortableTargetsRemainClean' ejercita 't' (elegir destino/lenguaje y sus características propias), la aceptación/rechazo de trazabilidad y de la característica EQUALITY ejercita 'tr' (trazabilidad y características), 'previewAndGenerationCanBeScopedToAStableElementSelection' ejercita 'pv' (previsualizar sin descargar) de verdad, y la generación real del ZIP ejercita 'g' (código descargado) -- el mismo servicio real visto desde el diálogo de generación en vez del flujo de generar-y-publicar, no una coincidencia de nombre.",
+      "en": "Real, mock-free integration (traits.mocks=false) of a real ModelCodeGenerationService. Additive link to the generation dialog (publication_author_codegen): 'sourceTargetsAdvertiseFeaturesWhilePortableTargetsRemainClean' exercises 't' (choosing a target/language and its own features), the real traceability and EQUALITY-feature acceptance/rejection exercises 'tr' (traceability and features), 'previewAndGenerationCanBeScopedToAStableElementSelection' genuinely exercises 'pv' (preview without downloading), and the real ZIP generation exercises 'g' (code downloaded) -- the same real service seen from the generation dialog instead of the generate-and-publish flow, not a name coincidence."
+    },
+    "cases": [
+      {
+        "n": "javaCanGenerateTestsAndConventionalHelpersAsOnePortableBundle",
+        "scenario": {
+          "es": "Java con cinco características y trazabilidad.",
+          "en": "Java with five features and traceability."
+        },
+        "result": {
+          "es": "ZIP con PeopleModel.java con helpers y PeopleModelTest.java.",
+          "en": "ZIP with PeopleModel.java containing helpers and PeopleModelTest.java."
+        }
+      },
+      {
+        "n": "portableProjectionRejectsSourceOnlyFeaturesInsteadOfIgnoringThem",
+        "scenario": {
+          "es": "json con característica EQUALITY.",
+          "en": "json with the EQUALITY feature."
+        },
+        "result": {
+          "es": "Rechazo que menciona EQUALITY y json.",
+          "en": "Rejection mentioning EQUALITY and json."
+        }
+      },
+      {
+        "n": "traceabilityIsExplicitAndOptionalWithoutRemovingSemanticModelIdentifiers",
+        "scenario": {
+          "es": "xml y java con trazabilidad activa y desactivada.",
+          "en": "xml and java with traceability on and off."
+        },
+        "result": {
+          "es": "Sin trazas hydra* pero con xmi:id y classId.",
+          "en": "No hydra* traces but xmi:id and classId remain."
+        }
+      },
+      {
+        "n": "previewAndGenerationCanBeScopedToAStableElementSelection",
+        "scenario": {
+          "es": "Dos elementos y selección de uno.",
+          "en": "Two elements and a one-element selection."
+        },
+        "result": {
+          "es": "Solo el seleccionado en preview y en el artefacto json.",
+          "en": "Only the selected one in the preview and the json artifact."
+        }
+      },
+      {
+        "n": "selectedGenerationRejectsUnknownElementIdsInsteadOfSilentlyExpandingScope",
+        "scenario": {
+          "es": "Id de elemento inexistente.",
+          "en": "Non-existent element id."
+        },
+        "result": {
+          "es": "Rechazo que menciona el id.",
+          "en": "Rejection mentioning the id."
+        }
+      },
+      {
+        "n": "sourceTargetsAdvertiseFeaturesWhilePortableTargetsRemainClean",
+        "scenario": {
+          "es": "Catálogo de destinos.",
+          "en": "Target catalog."
+        },
+        "result": {
+          "es": "java anuncia todas las características y xmi ninguna.",
+          "en": "java advertises all features and xmi none."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationServiceTests.java",
+        "line": 24
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationServiceTests.java",
+        "line": 30
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationServiceTests.java",
+        "line": 34
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationServiceTests.java",
+        "line": 48
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationServiceTests.java",
+        "line": 60
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationServiceTests.java",
+        "line": 76
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationServiceTests.java",
+        "line": 84
+      },
+      {
+        "path": "src/test/java/com/example/editor/codegen/ModelCodeGenerationServiceTests.java",
+        "line": 93
+      }
+    ]
+  }
+]

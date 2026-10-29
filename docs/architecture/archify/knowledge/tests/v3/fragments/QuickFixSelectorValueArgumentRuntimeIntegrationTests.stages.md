@@ -1,0 +1,4 @@
+QuickFixSelectorValueArgumentRuntimeIntegrationTests - stage mapping
+- validation_author_quickfix.sl (selectors): selfSelectorTouchesOnlyTheDiagnosticElement (l.233), selectionSelectorUsesTheFirstSelectedElement (l.242), parameterSelectorUsesTheSuppliedElementId (l.251), elementIdSelectorPointsAtTheFixedElement (l.260), createdElementSelectorReachesTheNewElement (l.274) and the rejections in selectorsWithoutATargetAreRejectedAndTheModelIsUntouched (l.291).
+- validation_author_quickfix.vs (value sources): expressionValueSourceIsEvaluatedAgainstTheModel (l.303); requestedParameterValueIsWrittenAndItsAbsenceIsRejected (l.312-316); literal values are used by every selector test.
+- validation_author_quickfix.ag (arguments): nestedActionArgumentsReachTheNestedParameter (l.326); invokedOperationArgumentsReachTheBoundAction (l.337).

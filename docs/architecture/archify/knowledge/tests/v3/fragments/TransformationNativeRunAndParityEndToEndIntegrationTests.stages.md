@@ -1,0 +1,5 @@
+- transformation_export_native.run: m2mIdentityThroughARealBridgeProcessMatchesTheCanonicalResult (lines 116-120, PID in the marker) and aBridgeThatNeverEndsIsTimedOutAndItsProcessIsTerminated (line 264 onward) establish launching the bridge in a controlled process with a time limit.
+- transformation_export_native.rd: unconfiguredEngineIsNotConfiguredAndProducesNoParityReport (lines 248-250) establishes that without a ready tool nothing runs.
+- transformation_parity.ev: unsupportedLanguageKindOrMissingSourceModelIsInvalidEvidenceWithoutLaunchingTheBridge (lines 209-220) establishes INVALID_EVIDENCE for unsupported language/kind with no process launched.
+- transformation_parity.cp: blockedExportIsExportBlockedWithoutLaunchingAProcess (lines 231-238) establishes EXPORT_BLOCKED without launching the bridge.
+- transformation_parity.ru + .kd + .cm: lines 122-130 (MATCHED with recomputed canonical fingerprint), 144-160 (MISMATCHED with paths), 170-188 (M2T compares files) establish the in-memory canonical run, the model-or-text branch and the verdict.

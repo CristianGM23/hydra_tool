@@ -1,0 +1,2 @@
+- grammar_author_identity.n: «New grammar» arranca de Langium con texto por defecto sin nada guardado (líneas 17-24) y elegir la guardada de la lista restaura identidad, tecnología, modo y texto (líneas 51-59).
+- grammar_author_identity.t: Xtext con su diálogo de conversión y modo vinculado con metamodelo; tras guardar, API y fichero lo reflejan (líneas 27-47).

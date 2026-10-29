@@ -1,0 +1,113 @@
+[
+  {
+    "id": "pw:e2e/real/integration/wizard-features-mappings.spec.ts",
+    "name": {
+      "es": "Asistente de integración en el navegador real: capacidades, entradas automáticas y mapeo con el anfitrión",
+      "en": "Integration wizard in a real browser: capabilities, automatic inputs and host mapping"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": [
+      "delivery"
+    ],
+    "caps": [
+      "integration",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "integration_author_wizard",
+        "stages": [
+          "cp",
+          "mp"
+        ],
+        "match": "direct"
+      }
+    ],
+    "pre": {
+      "es": "Un metamodelo guardado con la clase Person, sembrado con la API real; el perfil lo crea el usuario.",
+      "en": "A saved metamodel with the Person class, seeded through the real API; the profile is created by the user."
+    },
+    "executes": {
+      "es": "Un navegador real recorre el asistente de integración: nombra el perfil, elige una tecnología con flujo implementado, aplica el preajuste de ejecución portátil (marca capacidades y selecciona sus entradas), añade un mapeo con el anfitrión y guarda; antes intenta guardar con un mapeo sin identificador.",
+      "en": "A real browser walks through the integration wizard: it names the profile, picks a technology with an implemented workflow, applies the portable runtime preset (ticks capabilities and selects their inputs), adds a host mapping and saves; before that it tries to save with a mapping that has no identifier."
+    },
+    "asserts": {
+      "es": "Con el mapeo sin identificador aparece el aviso y no hay perfil en la API ni fichero en disco; después el servidor devuelve y escribe el perfil con las capacidades marcadas, los documentos de entrada autoseleccionados (validaciones, correcciones y condiciones reutilizables) y el mapeo con su elemento y localizador.",
+      "en": "With the identifier-less mapping the warning appears and there is no profile in the API nor file on disk; afterwards the server returns and writes the profile with the ticked capabilities, the auto-selected input documents (validations, quick fixes and reusable conditions) and the mapping with its element and locator."
+    },
+    "behavior": {
+      "es": "Marcar capacidades hace que HYDRA proponga los documentos de entrada que necesitan, y el mapeo definido se guarda con el perfil; un mapeo incompleto no se guarda.",
+      "en": "Ticking capabilities makes HYDRA propose the input documents they need, and the defined mapping is saved with the profile; an incomplete mapping is not saved."
+    },
+    "rule": {
+      "es": "Cada capacidad exige sus documentos de entrada y cada mapeo necesita identificador.",
+      "en": "Every capability requires its input documents and every mapping needs an identifier."
+    },
+    "scenario": {
+      "es": "Capacidades de validación y de correcciones rápidas con un mapeo de la clase Person.",
+      "en": "Validation and quick-fix capabilities with a mapping of the Person class."
+    },
+    "result": {
+      "es": "Perfil guardado con capacidades, entradas y mapeo; el intento incompleto no dejó rastro.",
+      "en": "Profile saved with capabilities, inputs and mapping; the incomplete attempt left no trace."
+    },
+    "expected": {
+      "es": "Perfil del servidor y del disco igual a lo elegido en el asistente.",
+      "en": "Server and disk profile equal to what was chosen in the wizard."
+    },
+    "guarantee": {
+      "es": "Las capacidades, la autoselección de entradas y el mapeo del asistente llegan al perfil persistido.",
+      "en": "Capabilities, input auto-selection and wizard mapping reach the persisted profile."
+    },
+    "limits": {
+      "es": "No genera ni aplica la integración; la comprobación de compatibilidad solo se verifica en que responde. Capacidades con el preajuste y entradas no obligatorias (sus documentos no existen). El diseñador falla al leer la respuesta de guardado de un perfil sin capacidades requeridas (defecto), así que el resultado se contrasta solo con el servidor.",
+      "en": "It neither generates nor applies the integration; the compatibility check is only verified to answer. Capabilities come from the preset and inputs are optional (their documents do not exist). The designer fails to read the save response of a profile without required capabilities (defect), so the result is checked only against the server."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción real de usuario, servidor real, comprobación independiente en API y disco y rechazo del mapeo incompleto.",
+      "en": "Real user action, real server, independent API and disk checks and rejection of the incomplete mapping."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "pw:e2e/real/integration/designer-structure-views.spec.ts"
+    ],
+    "src": [
+      {
+        "path": "frontend/e2e/real/integration/wizard-features-mappings.spec.ts",
+        "line": 27
+      },
+      {
+        "path": "frontend/e2e/real/integration/wizard-features-mappings.spec.ts",
+        "line": 41
+      },
+      {
+        "path": "frontend/e2e/real/integration/wizard-features-mappings.spec.ts",
+        "line": 48
+      },
+      {
+        "path": "frontend/e2e/real/integration/wizard-features-mappings.spec.ts",
+        "line": 55
+      },
+      {
+        "path": "frontend/e2e/real/integration/wizard-features-mappings.spec.ts",
+        "line": 58
+      },
+      {
+        "path": "frontend/e2e/real/integration/wizard-features-mappings.spec.ts",
+        "line": 67
+      }
+    ],
+    "prod": [
+      "frontend/src/integration-designer/IntegrationDesigner.tsx",
+      "frontend/src/integration-designer/integrationProfileValidation.ts",
+      "frontend/src/integration-designer/integrationProfileFactory.ts",
+      "frontend/src/integration-designer/api.ts",
+      "frontend/src/design-system/HydraGuidedWorkflow.tsx",
+      "src/main/java/com/example/editor/integration/web/CanonicalIntegrationProfileController.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

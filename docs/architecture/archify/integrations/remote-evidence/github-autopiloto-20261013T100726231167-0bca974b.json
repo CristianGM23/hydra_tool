@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "generatedUtc": "2026-10-13T10:07:25+00:00",
+  "status": "COMPLETE_WITH_ISSUES",
+  "counts": {
+    "PASS": 11,
+    "NOT_CONFIGURED": 1
+  },
+  "results": [
+    {
+      "id": "GH001",
+      "description": "GitHub HTTPS: metadatos reales",
+      "status": "PASS",
+      "reason": "Respuesta HTTPS real verificada",
+      "scope": "EXTERNAL_GITHUB_READ_ONLY"
+    },
+    {
+      "id": "GH002",
+      "description": "GitHub HTTPS: consulta de ramas",
+      "status": "PASS",
+      "reason": "Respuesta HTTPS real verificada",
+      "scope": "EXTERNAL_GITHUB_READ_ONLY"
+    },
+    {
+      "id": "GH003",
+      "description": "GitHub HTTPS: lectura del README",
+      "status": "PASS",
+      "reason": "Respuesta HTTPS real verificada",
+      "scope": "EXTERNAL_GITHUB_READ_ONLY"
+    },
+    {
+      "id": "GH004",
+      "description": "Git: consulta remota real sin clonar",
+      "status": "PASS",
+      "reason": "Referencia HEAD obtenida de git remoto",
+      "scope": "EXTERNAL_GIT_READ_ONLY"
+    },
+    {
+      "id": "GH101",
+      "description": "GitHub protocol HTTP y credenciales seguras",
+      "status": "PASS",
+      "reason": "JUnit ejecutado",
+      "scope": "HYDRA_JUNIT",
+      "suite": "AggressiveRemoteProviderProtocolTests",
+      "log": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraAutopilotoGitHubV2\\runs\\20261013-111409-c0aedc\\remote-github\\logs\\GH101.log"
+    },
+    {
+      "id": "GH102",
+      "description": "GitHub y proveedores: escritura, lectura y conflictos en memoria",
+      "status": "PASS",
+      "reason": "JUnit ejecutado",
+      "scope": "HYDRA_JUNIT",
+      "suite": "AggressiveRemoteRepositoryRoundTripTests",
+      "log": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraAutopilotoGitHubV2\\runs\\20261013-111409-c0aedc\\remote-github\\logs\\GH102.log"
+    },
+    {
+      "id": "GH103",
+      "description": "Arquitectura y seguridad de rutas remotas",
+      "status": "PASS",
+      "reason": "JUnit ejecutado",
+      "scope": "HYDRA_JUNIT",
+      "suite": "RemoteStorageArchitectureTests",
+      "log": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraAutopilotoGitHubV2\\runs\\20261013-111409-c0aedc\\remote-github\\logs\\GH103.log"
+    },
+    {
+      "id": "GH104",
+      "description": "Credenciales remotas y autenticación",
+      "status": "PASS",
+      "reason": "JUnit ejecutado",
+      "scope": "HYDRA_JUNIT",
+      "suite": "RemoteAuthenticationSecurityTests",
+      "log": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraAutopilotoGitHubV2\\runs\\20261013-111409-c0aedc\\remote-github\\logs\\GH104.log"
+    },
+    {
+      "id": "GH105",
+      "description": "Conversión y aislamiento de rutas remotas",
+      "status": "PASS",
+      "reason": "JUnit ejecutado",
+      "scope": "HYDRA_JUNIT",
+      "suite": "RemoteStorageLocationResolverTests",
+      "log": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraAutopilotoGitHubV2\\runs\\20261013-111409-c0aedc\\remote-github\\logs\\GH105.log"
+    },
+    {
+      "id": "GH106",
+      "description": "Seguridad de proveedores OAuth",
+      "status": "PASS",
+      "reason": "JUnit ejecutado",
+      "scope": "HYDRA_JUNIT",
+      "suite": "MultiProviderOAuthProviderTests",
+      "log": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraAutopilotoGitHubV2\\runs\\20261013-111409-c0aedc\\remote-github\\logs\\GH106.log"
+    },
+    {
+      "id": "GH107",
+      "description": "Configuración de perfiles OAuth",
+      "status": "PASS",
+      "reason": "JUnit ejecutado",
+      "scope": "HYDRA_JUNIT",
+      "suite": "RemoteOAuthProviderSetupServiceTests",
+      "log": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraAutopilotoGitHubV2\\runs\\20261013-111409-c0aedc\\remote-github\\logs\\GH107.log"
+    },
+    {
+      "id": "GH201",
+      "description": "Conector HYDRA a GitHub: conexión, escritura y lectura reales",
+      "status": "NOT_CONFIGURED",
+      "reason": "Escritura desactivada: HYDRA_ENABLE_GITHUB_WRITE_TESTS=YES obligatorio",
+      "scope": "HYDRA_GITHUB_LIVE_WRITE"
+    }
+  ],
+  "rootManifestSha256": "a53e35359d3724d8a583e9328af11c41be859165ade323d7ce7aafb7f7238729",
+  "nativeOfficialCertification": "NOT_VERIFIED",
+  "scopeNote": "Public tests verify HTTPS/Git; JUnit tests verify HYDRA provider with controlled doubles; live write requires explicit sandbox configuration."
+}

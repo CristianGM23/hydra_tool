@@ -1,0 +1,92 @@
+[
+  {
+    "id": "pw:e2e/real/grammar/look-customize-save.spec.ts",
+    "name": {
+      "es": "Personalizar el aspecto del editor textual de una gramática y guardarlo con ella",
+      "en": "Customizing a grammar's textual editor appearance and saving it with the grammar"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["delivery"],
+    "caps": ["grammar", "persistence"],
+    "procs": [
+      { "id": "grammar_author_look", "stages": ["f", "k", "ro", "h", "sv", "r"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/grammar-designer/GrammarTextualCustomization.tsx",
+      "frontend/src/grammar-designer/textualCustomization.ts",
+      "frontend/src/grammar-designer/GrammarMonacoEditor.tsx",
+      "frontend/src/grammar-designer/GrammarDesigner.tsx",
+      "src/main/java/com/example/editor/grammar/web/GrammarController.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarRepository.java"
+    ],
+    "pre": {
+      "es": "Una gramática guardada con un ajuste ajeno al aspecto se siembra por la API real y se compila antes de empezar.",
+      "en": "A saved grammar with a setting unrelated to appearance is seeded through the real API and compiled before starting."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, sin simulaciones. El oráculo lee la API real, el fichero guardado, el pintado del editor tras recargar y compara dos compilaciones por la API real.",
+      "en": "Playwright with Chromium, no simulations. The oracle reads the real API, the stored file, the editor painting after reload and compares two compilations through the real API."
+    },
+    "executes": {
+      "es": "Abre la gramática, en 'Editor appearance' cambia tipo de letra, tamaño, interlineado, colores y palabras clave, un estilo general y el estilo de la regla 'Node'; en 'Contextual information' escribe la ayuda de 'Node'; guarda, recarga, abre 'Editor preview' y pasa el ratón por una palabra.",
+      "en": "Opens the grammar; in 'Editor appearance' changes font, size, line height, colours and keywords, a general style and the style of rule 'Node'; in 'Contextual information' writes the help for 'Node'; saves, reloads, opens 'Editor preview' and hovers a word."
+    },
+    "asserts": {
+      "es": "Antes de guardar el servidor no tiene ajustes de aspecto; después la API y el fichero traen todos los valores elegidos y conservan el ajuste ajeno; al recargar los campos muestran lo guardado, el fondo y los estilos se pintan en el editor y la ayuda emerge al pasar el ratón; dos compilaciones dan la misma huella y los mismos ficheros.",
+      "en": "Before saving the server has no appearance settings; afterwards the API and the file carry all the chosen values and keep the unrelated setting; after reload the fields show what was saved, the background and styles are painted in the editor and the help appears on hover; two compilations give the same fingerprint and the same files."
+    },
+    "behavior": {
+      "es": "La persona elige cómo se verán los modelos escritos con su gramática (letra, colores, palabras resaltadas, estilos por regla y ayudas), lo guarda con la gramática y lo vuelve a ver al reabrirla, sin que cambie lo que se genera.",
+      "en": "The person chooses how models written with their grammar will look (font, colours, highlighted words, per-rule styles and help), saves it with the grammar and sees it again on reopening, without changing what is generated."
+    },
+    "rule": {
+      "es": "El aspecto se guarda en los ajustes de la gramática y no altera su compilación.",
+      "en": "The appearance is stored in the grammar's settings and does not alter its compilation."
+    },
+    "scenario": {
+      "es": "Una gramática ya guardada recibe un aspecto personalizado, se guarda confirmando la sobrescritura y se recarga la página.",
+      "en": "An already saved grammar receives a custom appearance, is saved confirming the overwrite and the page is reloaded."
+    },
+    "result": {
+      "es": "El servidor devuelve el aspecto elegido tras recargar, el editor lo pinta y la compilación sigue igual.",
+      "en": "The server returns the chosen appearance after reload, the editor paints it and the compilation stays the same."
+    },
+    "expected": {
+      "es": "Una ejecución correcta muestra tras recargar el fondo, los estilos y la ayuda elegidos y la misma huella de compilación que antes.",
+      "en": "A passing run shows after reload the chosen background, styles and help and the same compilation fingerprint as before."
+    },
+    "guarantee": {
+      "es": "Lo que la persona configura en los paneles de aspecto llega al servidor, vuelve al reabrir y se ve en el editor.",
+      "en": "What the person configures in the appearance panels reaches the server, comes back on reopening and shows in the editor."
+    },
+    "limits": {
+      "es": "Las palabras clave propias se guardan, pero solo se ve pintada una palabra inferida de la gramática. La segunda compilación se lanza por la API y no con el botón; se compara la huella y los nombres de los ficheros, no su contenido.",
+      "en": "Custom keywords are stored, but only a word inferred from the grammar is seen painted. The second compilation is launched through the API rather than the button; the fingerprint and file names are compared, not their content."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Paneles y guardado reales en navegador, servidor real, relectura de API y fichero, pintado comprobado en el editor y comparación independiente de compilaciones.",
+      "en": "Real panels and saving in a browser, real server, API and file re-reading, painting checked in the editor and an independent comparison of compilations."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "vitest:frontend/src/grammar-designer/GrammarTextualCustomization.test.tsx",
+      "vitest:frontend/src/grammar-designer/textualCustomization.test.ts"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/grammar/look-customize-save.spec.ts", "line": 51 },
+      { "path": "frontend/e2e/real/grammar/look-customize-save.spec.ts", "line": 55 },
+      { "path": "frontend/e2e/real/grammar/look-customize-save.spec.ts", "line": 62 },
+      { "path": "frontend/e2e/real/grammar/look-customize-save.spec.ts", "line": 66 },
+      { "path": "frontend/e2e/real/grammar/look-customize-save.spec.ts", "line": 79 },
+      { "path": "frontend/e2e/real/grammar/look-customize-save.spec.ts", "line": 82 },
+      { "path": "frontend/e2e/real/grammar/look-customize-save.spec.ts", "line": 85 },
+      { "path": "frontend/e2e/real/grammar/look-customize-save.spec.ts", "line": 89 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

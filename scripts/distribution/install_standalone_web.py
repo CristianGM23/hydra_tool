@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 import shutil
 import sys
+import time
 import uuid
 from zipfile import ZipFile
 
@@ -26,6 +27,26 @@ from editor_release_trust import verify_detached, read_document as trust_documen
 from verify_web_package import verify as verify_package
 
 RESERVED = {'hydra-release.sha256', 'hydra-deployment.json'}
+_WINDOWS_SHARING_ERRORS = frozenset({5, 32, 33})
+
+
+def commit_staged_version(temp: Path, target: Path, *, retries: int = 7) -> None:
+    """Rename the verified staging directory to its immutable version directory.
+
+    On Windows, antivirus or indexer handles on the freshly written files make a
+    directory rename fail transiently (access denied / sharing violation). Those
+    are retried a bounded number of times; any other error, a persistent one or
+    an already existing target is raised and the caller removes the stage.
+    """
+    for attempt in range(retries + 1):
+        try:
+            temp.rename(target)
+            return
+        except OSError as exc:
+            transient = os.name == 'nt' and getattr(exc, 'winerror', None) in _WINDOWS_SHARING_ERRORS
+            if attempt == retries or not transient or target.exists():
+                raise
+            time.sleep(min(0.05 * (attempt + 1), 0.4))
 
 
 def location(destination: Path, product: str, channel: str) -> Path:
@@ -157,7 +178,7 @@ def install(registry: Path, destination: Path, product: str, channel: str,
                     shutil.copyfile(source / 'release-signature.json', temp / 'release-signature.json')
                 atomic_json(temp / 'installation.json', {'schemaVersion':1,'product':product,
                     'channel':channel,'version':version,'sha256':verified['sha256'],'signed':bool(policy)})
-                temp.rename(target)
+                commit_staged_version(temp, target)
             finally:
                 if temp.exists():
                     shutil.rmtree(temp)

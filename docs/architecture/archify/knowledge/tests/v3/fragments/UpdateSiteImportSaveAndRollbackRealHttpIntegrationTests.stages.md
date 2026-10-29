@@ -1,0 +1,6 @@
+- recovery_persist_rollback.d1: notSavingLeavesTheStoresEmpty (line 222, persist=false leaves disk empty) versus savingWritesTheMetamodelAndTheEditorWithTheChosenLayerOnly (lines 252-260, documents on disk); savingANonApplicablePreviewIsRejectedWithoutWriting (line 232, 400 and nothing written).
+- recovery_lifecycle.a1: analysisOffersTheDirectCandidateAndOneRepresentationDraft (lines 203-208) feeds the save whose editor on disk has only the chosen representation (line 260).
+- recovery_persist_rollback.d3: rollbackRestoresTheStoresToTheirInitialState (lines 272-275, rollback flags true and no .metamodel.json/.editor.json left).
+- recovery_author_wizard.h: importAndSaveWritesTheMetamodelAndRefusesToOverwriteIt (lines 286-301, metamodel and recovery package on disk, no editors, second import 4xx with bytes unchanged).
+Note: only a non-Sirius update site is used (generic editor path); the Sirius persist outcome is not asserted.
+- recovery_author_workspace.g (save the selected layers) and .h (undo, offered only when the result allows it): preview has rollbackAvailable=false (line 220), saving one chosen representation writes the metamodel and the editor with that single representation and offers the undo (lines 244, 252-260), and the undo leaves no documents (lines 272-275). Generic editor only; the Sirius layers are not covered.

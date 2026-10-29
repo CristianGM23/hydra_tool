@@ -1,0 +1,155 @@
+[
+  {
+    "id": "java:com.example.editor.definition.EditorDefinitionApplicationServiceGuidedSaveIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Guardado final real de un editor de modelos: revisión y persistencia",
+      "en": "Real final save of a model editor: review and persistence"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "model_editor"
+    ],
+    "procs": [
+      {
+        "id": "model_editor_author_guided",
+        "stages": [
+          "p5",
+          "sv",
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_language_to_published_editor",
+        "stages": [
+          "e1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "model_editor_design_flow",
+        "stages": [
+          "rv",
+          "sv",
+          "art",
+          "d1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "model_editor_design_flow",
+        "stages": [
+          "id",
+          "rp"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "model_editor_author_guided",
+        "stages": [
+          "p1",
+          "p2",
+          "d1"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/definition/EditorDefinitionApplicationService.java",
+      "src/main/java/com/example/editor/definition/EditorDefinitionChecker.java",
+      "src/main/java/com/example/editor/definition/persistence/JsonEditorDefinitionRepository.java",
+      "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java",
+      "src/main/java/com/example/editor/metamodel/validation/NeutralMetamodelValidator.java",
+      "src/main/java/com/example/editor/validation/expression/persistence/JsonExpressionModelRepository.java",
+      "src/main/java/com/example/editor/validation/action/persistence/JsonActionModelRepository.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible y un metamodelo real ya guardado.",
+      "en": "Writable temp directory and a real, already-saved metamodel."
+    },
+    "executes": {
+      "es": "EditorDefinitionApplicationService.create real, con todos sus colaboradores reales sin mocks (JsonCanonicalMetamodelRepository, CanonicalMetamodelApplicationService, NeutralMetamodelValidator, JsonExpressionModelRepository, JsonActionModelRepository, EditorDefinitionChecker, JsonEditorDefinitionRepository), sin capa web ni MockMvc.",
+      "en": "Real EditorDefinitionApplicationService.create, with all of its real collaborators and no mocks (JsonCanonicalMetamodelRepository, CanonicalMetamodelApplicationService, NeutralMetamodelValidator, JsonExpressionModelRepository, JsonActionModelRepository, EditorDefinitionChecker, JsonEditorDefinitionRepository), with no web layer or MockMvc."
+    },
+    "asserts": {
+      "es": "Una definición completa pasa la revisión real sin errores y queda realmente guardada en disco, releída desde un fichero real; una definición con un mapeo a una clase inexistente falla la revisión real con una excepción de solicitud inválida y nunca llega a guardarse.",
+      "en": "A complete definition passes the real review with no errors and is genuinely saved to disk, read back from a real file; a definition with a mapping to a nonexistent class fails the real review with an invalid-request exception and is never saved."
+    },
+    "behavior": {
+      "es": "El guardado final de un editor de modelos siempre pasa por la misma revisión real de completitud antes de persistir: una definición completa se guarda de verdad, y una incompleta se rechaza sin dejar rastro en disco, sin importar qué vista disparó el guardado.",
+      "en": "The final save of a model editor always goes through the same real completeness review before persisting: a complete definition is genuinely saved, and an incomplete one is rejected without leaving any trace on disk, regardless of which view triggered the save."
+    },
+    "rule": {
+      "es": "Una definición con errores bloqueantes nunca se guarda; solo una definición válida pasa a disco.",
+      "en": "A definition with blocking errors is never saved; only a valid definition reaches disk."
+    },
+    "scenario": {
+      "es": "Un editor completo y válido, y un editor con un mapeo de nodo a una clase que no existe en el metamodelo.",
+      "en": "A complete, valid editor, and an editor with a node mapping to a class that does not exist in the metamodel."
+    },
+    "result": {
+      "es": "El editor válido queda guardado y releíble; el inválido se rechaza y no deja fichero alguno.",
+      "en": "The valid editor is saved and can be read back; the invalid one is rejected and leaves no file at all."
+    },
+    "expected": {
+      "es": "Cada escenario produce exactamente el resultado de revisión y persistencia indicado.",
+      "en": "Each scenario produces exactly the stated review and persistence outcome."
+    },
+    "guarantee": {
+      "es": "Evidencia real, de punta a punta en el backend, de que el guardado final de un editor de modelos comprueba y persiste de verdad, sin simular ningún colaborador real citado por el modelo.",
+      "en": "Real, end-to-end backend evidence that the final save of a model editor genuinely reviews and persists, without simulating any real collaborator the model cites."
+    },
+    "limits": {
+      "es": "No ejecuta la interfaz del asistente guiado en sí ni la capa HTTP/web; un solo metamodelo y editor sin concurrencia.",
+      "en": "Does not run the guided wizard UI itself or the HTTP/web layer; a single metamodel and editor with no concurrency."
+    },
+    "strengthWhy": {
+      "es": "Prueba nueva de integración real sin mocks (traits.mocks=false) de EditorDefinitionApplicationService.create con la cadena completa de colaboradores reales (metamodelo, comprobador, repositorios de expresión/acción/editor), sin capa web, cubriendo directamente d1/p5/sv/art -- la orquestación de revisión-y-guardado es la misma independientemente de la vista de autoría que la dispare.",
+      "en": "New real, mock-free integration test (traits.mocks=false) of EditorDefinitionApplicationService.create with the full chain of real collaborators (metamodel, checker, expression/action/editor repositories), with no web layer, directly covering d1/p5/sv/art -- the review-and-save orchestration is the same regardless of which authoring view triggers it."
+    },
+    "cases": [
+      {
+        "n": "aCompleteValidDefinitionPassesReviewAndIsReallySaved",
+        "scenario": {
+          "es": "Editor completo de la fixture compartida",
+          "en": "Complete editor from the shared fixture"
+        },
+        "result": {
+          "es": "Revisión válida y fichero real releído con el mismo id",
+          "en": "Valid review and a real file re-read with the same id"
+        }
+      },
+      {
+        "n": "anIncompleteDefinitionFailsReviewAndIsNeverSaved",
+        "scenario": {
+          "es": "Mapeo de nodo a una clase inexistente",
+          "en": "Node mapping to a nonexistent class"
+        },
+        "result": {
+          "es": "Excepción de solicitud inválida y ningún fichero guardado",
+          "en": "Invalid-request exception and no file saved"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.definition.web.CanonicalEditorDefinitionControllerTests",
+      "java:com.example.editor.definition.persistence.JsonEditorDefinitionRepositoryCodeGenerationTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/definition/EditorDefinitionApplicationServiceGuidedSaveIntegrationTests.java",
+        "line": 38
+      },
+      {
+        "path": "src/test/java/com/example/editor/definition/EditorDefinitionApplicationServiceGuidedSaveIntegrationTests.java",
+        "line": 64
+      }
+    ]
+  }
+]

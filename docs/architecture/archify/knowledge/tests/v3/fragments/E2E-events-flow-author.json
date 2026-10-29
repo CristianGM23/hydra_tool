@@ -1,0 +1,89 @@
+[
+  {
+    "id": "pw:e2e/real/events/flow-author.spec.ts",
+    "name": {
+      "es": "Diseñador de flujos de eventos: crear un flujo, configurar pasos, variable y compensación, con backend real",
+      "en": "Event flow designer: create a flow, configure steps, variable and compensation, with a real backend"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["events"],
+    "procs": [
+      { "id": "events_author_flow", "stages": ["a1", "a2", "a3", "a5"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/event-designer/flow/EventFlowDesigner.tsx",
+      "frontend/src/event-designer/flow/EventFlowVisualEditor.tsx",
+      "frontend/src/event-designer/flow/api.ts",
+      "frontend/src/event-designer/flow/eventFlowNormalization.ts",
+      "frontend/src/event-designer/flow/flowPresentation.ts",
+      "src/main/java/com/example/editor/event/flow/web/CanonicalEventFlowController.java",
+      "src/main/java/com/example/editor/event/flow/EventFlowApplicationService.java",
+      "src/main/java/com/example/editor/event/flow/EventFlowChecker.java",
+      "src/main/java/com/example/editor/event/flow/persistence/JsonEventFlowModelRepository.java"
+    ],
+    "pre": {
+      "es": "Metamodelo mínimo sembrado por la API real y sin flujos guardados; navegador real contra la aplicación compilada y el backend real con almacenamiento propio.",
+      "en": "Minimal metamodel seeded through the real API and no saved flows; real browser against the built application and the real backend with its own storage."
+    },
+    "setup": {
+      "es": "Sin simulaciones de la API. Solo se siembra el metamodelo; todo lo demás lo hace el usuario en el diseñador.",
+      "en": "No API simulation. Only the metamodel is seeded; everything else is done by the user in the designer."
+    },
+    "executes": {
+      "es": "Añade un flujo con identificador, nombre y evento disparador; añade un paso por defecto y dos pasos desde la paleta; configura reintento, plazo y compensable; añade variable y compensación; intenta guardar sin conectar; conecta el grafo, guarda, comprueba el aviso de guardado y recarga la pantalla.",
+      "en": "Adds a flow with identifier, name and trigger event; adds a default step and two steps from the palette; configures retry, time limit and compensable; adds a variable and a compensation; tries to save unconnected; connects the graph, saves, checks the save notice and reloads the screen."
+    },
+    "asserts": {
+      "es": "El fichero de flujos escrito por el backend trae flujo, disparador, tipos de paso, reintento y plazo exactos, variable, compensación y las cuatro transiciones; con el grafo sin conectar el servidor rechaza y no escribe nada; tras guardar la pantalla avisa «Event flows and diagram saved» y, al recargar, dibuja cinco pasos y cuatro conexiones.",
+      "en": "The flows file written by the backend holds the flow, trigger, step kinds, exact retry and time limit, variable, compensation and the four transitions; with the graph unconnected the server refuses and writes nothing; after saving the screen reports “Event flows and diagram saved” and, on reload, draws five steps and four connections."
+    },
+    "behavior": {
+      "es": "El usuario crea un flujo de eventos: lo nombra, elige qué evento lo dispara, añade pasos (el nuevo es de evento por defecto), les pone reintentos y plazo, define una variable y una compensación y conecta el recorrido.",
+      "en": "The user creates an event flow: names it, chooses which event triggers it, adds steps (a new one is an event step by default), sets retries and a time limit, defines a variable and a compensation and connects the path."
+    },
+    "rule": {
+      "es": "Un flujo solo se guarda con todos sus pasos conectados entre inicio y final; la compensación enlaza un paso compensable con un paso de compensar.",
+      "en": "A flow is saved only with all its steps connected between start and end; the compensation links a compensable step with a compensating step."
+    },
+    "scenario": {
+      "es": "Flujo con inicio, paso de evento, acción con tres reintentos y plazo de cinco segundos, paso de compensar y final; primer guardado sin conectar y segundo con las cuatro conexiones.",
+      "en": "Flow with start, event step, action with three retries and a five-second limit, compensating step and end; first save unconnected and second with the four connections."
+    },
+    "result": {
+      "es": "El flujo guardado contiene exactamente lo introducido y el guardado sin conectar no deja fichero.",
+      "en": "The saved flow holds exactly what was entered and the unconnected save leaves no file."
+    },
+    "expected": {
+      "es": "El disco refleja el flujo configurado y lo rechazado no deja rastro.",
+      "en": "The disk reflects the configured flow and what was refused leaves no trace."
+    },
+    "guarantee": {
+      "es": "Lo que el usuario configura en el diseñador de flujos llega al backend como flujo persistido y un grafo inválido no se guarda.",
+      "en": "What the user configures in the flow designer reaches the backend as a persisted flow and an invalid graph is not saved."
+    },
+    "limits": {
+      "es": "Solo dos tipos de paso de la paleta y el por defecto, no los 29. Conecta con clics en los puertos, no por arrastre. No ejecuta el flujo ni prueba condiciones.",
+      "en": "Only two palette step kinds and the default one, not all 29. It connects by clicking ports, not dragging. It does not run the flow or test conditions."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones reales, oráculo en disco y por la API real, un rechazo del servidor, confirmación en pantalla del guardado y recarga que redibuja el flujo guardado.",
+      "en": "Real actions, an oracle on disk and through the real API, a server refusal, an on-screen save confirmation and a reload that redraws the saved flow."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/events/flow-author.spec.ts", "line": 40 },
+      { "path": "frontend/e2e/real/events/flow-author.spec.ts", "line": 69 },
+      { "path": "frontend/e2e/real/events/flow-author.spec.ts", "line": 91 },
+      { "path": "frontend/e2e/real/events/flow-author.spec.ts", "line": 95 },
+      { "path": "frontend/e2e/real/events/flow-author.spec.ts", "line": 101 },
+      { "path": "frontend/e2e/real/events/flow-author.spec.ts", "line": 112 },
+      { "path": "frontend/e2e/real/events/flow-author.spec.ts", "line": 116 },
+      { "path": "frontend/e2e/real/events/flow-author.spec.ts", "line": 122 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

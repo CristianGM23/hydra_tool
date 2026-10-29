@@ -1,0 +1,122 @@
+[
+  {
+    "id": "vitest:src/grammar-designer/GrammarDesignerInitialLoad.test.tsx",
+    "name": {
+      "es": "El borrador de una gramática nueva no se pierde por una carga inicial lenta",
+      "en": "A new grammar draft is not lost to a slow initial load"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "grammar"
+    ],
+    "procs": [],
+    "prod": [
+      "frontend/src/grammar-designer/GrammarDesigner.tsx"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Monta el diseñador con la API simulada, retiene la carga de la última gramática guardada, pulsa «New grammar», escribe el identificador y libera la carga.",
+      "en": "Mounts the designer with the API mocked, holds back the load of the last saved grammar, presses «New grammar», types the identifier and releases the load."
+    },
+    "asserts": {
+      "es": "El identificador escrito se conserva tras la carga tardía; sin intervención del usuario, la última gramática guardada sí se carga.",
+      "en": "The typed identifier survives the late load; without user action the last saved grammar is loaded."
+    },
+    "behavior": {
+      "es": "El trabajo que el usuario empieza nunca lo pisa la carga inicial del diseñador.",
+      "en": "The work the user starts is never overwritten by the designer's initial load."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Carga inicial que termina después de que el usuario cree una gramática nueva.",
+      "en": "Initial load that finishes after the user creates a new grammar."
+    },
+    "result": {
+      "es": "Se mantiene el borrador del usuario.",
+      "en": "The user's draft is kept."
+    },
+    "expected": {
+      "es": "Identificador «mi-borrador» tras la carga.",
+      "en": "Identifier «mi-borrador» after the load."
+    },
+    "guarantee": {
+      "es": "Cubre la carrera hallada por la prueba de navegador real de vinculación de gramáticas.",
+      "en": "Covers the race found by the real-browser grammar linking test."
+    },
+    "limits": {
+      "es": "La API está simulada; la cadena real la cubre la prueba de navegador.",
+      "en": "The API is mocked; the real chain is covered by the browser test."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Prueba de componente con la API simulada.",
+      "en": "Component test with the API mocked."
+    },
+    "external": "mocked",
+    "cases": [],
+    "related": [],
+    "confidence": "ANALYZED",
+    "src": []
+  },
+  {
+    "id": "vitest:src/validation-designer/validationDesignerSelectors.test.ts",
+    "name": {
+      "es": "Las dependencias de una regla usan identificadores estables, también la del modelo",
+      "en": "Rule dependencies use stable identifiers, including the model one"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "validation"
+    ],
+    "procs": [],
+    "prod": [
+      "frontend/src/validation-designer/validationDesignerSelectors.ts"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Infiere las dependencias de condiciones con el nodo del modelo, atributos, relaciones e instancias de clase.",
+      "en": "Infers the dependencies of conditions with the model node, attributes, relations and class instances."
+    },
+    "asserts": {
+      "es": "La dependencia del modelo usa el identificador «model»; todas cumplen el patrón de identificador estable del servidor; el resto se conserva sin duplicados.",
+      "en": "The model dependency uses the identifier «model»; all match the server's stable identifier pattern; the rest are kept without duplicates."
+    },
+    "behavior": {
+      "es": "Una regla que usa el nodo del modelo se puede guardar.",
+      "en": "A rule that uses the model node can be saved."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Condiciones con el nodo del modelo y con navegación.",
+      "en": "Conditions with the model node and with navigation."
+    },
+    "result": {
+      "es": "Dependencias aceptables para el servidor.",
+      "en": "Dependencies the server accepts."
+    },
+    "expected": {
+      "es": "Dependencia del modelo con «model».",
+      "en": "Model dependency with «model»."
+    },
+    "guarantee": {
+      "es": "Cubre el rechazo que impedía guardar la condición con los 13 tipos de nodo.",
+      "en": "Covers the rejection that prevented saving the condition with the 13 node kinds."
+    },
+    "limits": {
+      "es": "Comprueba la inferencia, no el guardado; el guardado real lo cubre la prueba de navegador.",
+      "en": "Checks the inference, not the save; the real save is covered by the browser test."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Prueba unitaria de una función pura.",
+      "en": "Unit test of a pure function."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]

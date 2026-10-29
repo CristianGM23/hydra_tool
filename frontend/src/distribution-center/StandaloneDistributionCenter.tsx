@@ -4,6 +4,7 @@ import { HydraActionableErrorNotice, HydraButton, HydraCheckbox, HydraCreationMo
 import { assessStandaloneReleaseReadiness, materializeStandaloneDistribution, packageStandaloneDistribution, planStandaloneDistribution, validateStandaloneDistribution } from './api';
 import type { StandaloneDistributionArtifact, StandaloneDistributionPreparationResult, StandaloneDistributionProfile, StandaloneDistributionTarget, StandaloneDistributionValidationReport } from './types';
 import './distribution-center.css';
+import { NativeEvidenceStatusPanel } from './NativeEvidenceStatusPanel';
 
 const targets: Array<{ id: StandaloneDistributionTarget; label: string; description: string }> = [
     { id: 'PWA', label: 'Progressive Web App', description: 'Installable web editor with optional offline application shell.' },
@@ -159,5 +160,6 @@ export function StandaloneDistributionCenter() {
                 {downloadSha !== '' && <section className="distribution-download-result"><h3>{t('Package downloaded')}</h3><span>SHA-256</span><code>{downloadSha}</code></section>}
             </aside>
         </div>}
+        <NativeEvidenceStatusPanel />
     </section>;
 }

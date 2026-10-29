@@ -83,6 +83,48 @@ class RoundTripResolutionWorkflowServiceTests {
                 .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("safe relative");
     }
 
+    @Test void rejectsApplyWhenNativeFileChangedAfterPreview() throws Exception {
+        managed("src/A.txt", "old");
+        TechnologyCompilationResult generated = compilation(file("src/A.txt", "new"));
+        RoundTripResolutionPlan plan = service.prepare(generated, "profile", root, List.of());
+        Files.writeString(root.resolve("src/A.txt"), "modified after preview");
+        assertThatThrownBy(() -> service.apply(plan)).isInstanceOf(TechnologyCompilationException.class)
+                .hasMessageContaining("changed since round-trip preview");
+        assertThat(Files.readString(root.resolve("src/A.txt"))).isEqualTo("modified after preview");
+    }
+
+    @Test void blocksRollbackWhenUserEditsInstalledFileAfterApply() throws Exception {
+        managed("src/A.txt", "old");
+        RoundTripResolutionPlan plan = service.prepare(compilation(file("src/A.txt", "new")), "profile", root, List.of());
+        service.apply(plan);
+        Files.writeString(root.resolve("src/A.txt"), "later user edit");
+        assertThatThrownBy(() -> service.rollback(root, plan.operationId()))
+                .isInstanceOf(TechnologyCompilationException.class).hasMessageContaining("changed after round-trip apply");
+        assertThat(Files.readString(root.resolve("src/A.txt"))).isEqualTo("later user edit");
+    }
+
+    @Test void blocksRollbackWhenBackupIsTamperedWith() throws Exception {
+        managed("src/A.txt", "old");
+        RoundTripResolutionPlan plan = service.prepare(compilation(file("src/A.txt", "new")), "profile", root, List.of());
+        var applied = service.apply(plan);
+        Files.writeString(applied.journalPath().getParent().resolve("files/src/A.txt"), "bad backup");
+        assertThatThrownBy(() -> service.rollback(root, plan.operationId()))
+                .isInstanceOf(TechnologyCompilationException.class).hasMessageContaining("backup altered");
+        assertThat(Files.readString(root.resolve("src/A.txt"))).isEqualTo("new");
+    }
+
+    @Test void refusesSymbolicDirectoryInRoundTripTarget() throws Exception {
+        Path external = Files.createTempDirectory("hydra-rt-external-");
+        try {
+            Path link = root.resolve("linked");
+            try {Files.createSymbolicLink(link, external);} catch(Exception unsupported) {
+                org.junit.jupiter.api.Assumptions.assumeTrue(false,"Symlinks unavailable");
+            }
+            assertThatThrownBy(() -> com.example.editor.integration.roundtrip.RoundTripSafePaths.resolve(root,"linked/A.txt"))
+                    .isInstanceOf(TechnologyCompilationException.class).hasMessageContaining("Symbolic");
+        } finally {Files.deleteIfExists(external);}
+    }
+
     private TechnologyGeneratedFile file(String path, String value){
         return new TechnologyGeneratedFile(path, "text/plain", value.getBytes(StandardCharsets.UTF_8),
                 InjectionFileOwnership.GENERATED, true, List.of("people"), Map.of());

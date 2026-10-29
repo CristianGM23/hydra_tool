@@ -1,0 +1,2 @@
+- gamification_author_ledger.rd: filas, personas con puntos y número de avisos de la pantalla coinciden con el servidor y con el fichero de libro mayor (l.29-40).
+- gamification_author_ledger.rf: tras una concesión nueva por la API la tabla no cambia hasta pulsar «Actualizar» (l.45-47) y después muestra la fila nueva y los puntos nuevos (l.49-55).

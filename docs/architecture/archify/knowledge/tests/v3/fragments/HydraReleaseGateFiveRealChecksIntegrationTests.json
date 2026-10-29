@@ -1,0 +1,142 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.importing.updatesite.HydraReleaseGateFiveRealChecksIntegrationTests",
+    "name": {
+      "es": "Puerta de release con las cinco comprobaciones reales",
+      "en": "Release gate with all five real checks"
+    },
+    "type": "INTEGRATION",
+    "layer": "quality",
+    "caps": [
+      "publication",
+      "portability"
+    ],
+    "procs": [
+      {
+        "id": "publication_generate_publish",
+        "stages": [
+          "gt",
+          "ok",
+          "cert",
+          "blk"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "recovery_author_governance",
+        "stages": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "r"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/release/HydraReleaseGateService.java",
+      "src/main/java/com/example/editor/release/HydraReleaseGateController.java",
+      "src/main/java/com/example/editor/portability/CapabilityPackageChecker.java",
+      "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeService.java",
+      "src/main/java/com/example/editor/performance/CapabilityPerformanceService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteP2MirrorService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRemoteSnapshotService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteAdapterBenchService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteDeclarativeAdapterService.java"
+    ],
+    "pre": {
+      "es": "Directorios temporales para informes, instantánea, espejo, banco y rendimiento; sin red ni credenciales.",
+      "en": "Temporary directories for reports, snapshot, mirror, bench and performance; no network or credentials."
+    },
+    "executes": {
+      "es": "Controlador y servicio de la puerta reales con comprobador de paquete, servicio de instantáneas remotas, espejo p2, banco de adaptadores declarativos, fusión semántica y rendimiento reales sobre directorios temporales; solo se simulan la captura de red y el análisis de la instantánea.",
+      "en": "Real gate controller and service with real package checker, remote snapshot service, p2 mirror, declarative adapter bench, semantic merge and performance over temp directories; only the network capture and the snapshot analysis are simulated."
+    },
+    "asserts": {
+      "es": "Cinco comprobaciones en PASS e informe apto; banco con caso fallido o desconocido, fusión con referencia colgante o distinta del paquete y evidencia exigida ausente en FAIL; opcionales ausentes en WARNING; identificador y huella recalculados; HTML con una fila por comprobación; lectura rechazada tras alterar el fichero.",
+      "en": "Five checks PASS and the report is passed; a bench with a failed or unknown case, a merge with a dangling reference or differing from the package and missing required evidence FAIL; missing optional ones WARNING; identifier and fingerprint recomputed; HTML with one row per check; read rejected after the file is altered."
+    },
+    "behavior": {
+      "es": "La puerta de release evalúa con evidencias reales el paquete, la fusión semántica, el espejo p2, el banco de adaptadores y el rendimiento; bloquea si falla o falta una exigida, solo avisa si falta una opcional y emite un informe con huella verificable.",
+      "en": "The release gate evaluates the package, semantic merge, p2 mirror, adapter bench and performance with real evidence; it blocks when a required one fails or is missing, only warns when an optional one is missing, and issues a report with a verifiable fingerprint."
+    },
+    "rule": {
+      "es": "Una comprobación exigida que falla o falta bloquea el release; una opcional ausente solo avisa; la huella del informe debe coincidir con su contenido.",
+      "en": "A required check that fails or is missing blocks the release; an absent optional one only warns; the report fingerprint must match its content."
+    },
+    "scenario": {
+      "es": "Paquete fusionado, espejo creado desde una instantánea con licencias revisadas, banco con casos positivo y negativo y rendimiento base/candidato; luego un banco con caso fallido, una fusión con referencia colgante, evidencia ausente y alteración del informe guardado.",
+      "en": "Merged package, mirror built from a snapshot with reviewed licenses, bench with positive and negative cases and baseline/candidate performance; then a bench with a failed case, a merge with a dangling reference, missing evidence and tampering with the stored report."
+    },
+    "result": {
+      "es": "Cinco estados correctos, informe en disco con identificador y huella recalculada, filas HTML por comprobación y lecturas rechazadas tras alterar el fichero.",
+      "en": "Five correct statuses, report on disk with identifier and recomputed fingerprint, HTML rows per check and reads rejected after the file is altered."
+    },
+    "expected": {
+      "es": "Todos los casos pasan; un informe alterado en disco deja de poder leerse y certificarse.",
+      "en": "All cases pass; a report altered on disk can no longer be read or certified."
+    },
+    "guarantee": {
+      "es": "La decisión de release con las cinco comprobaciones es reproducible, se apoya en evidencia real y no puede alterarse sin detección.",
+      "en": "The release decision with the five checks is reproducible, backed by real evidence and cannot be altered undetected."
+    },
+    "limits": {
+      "es": "Retenida como MEDIUM: la red y el análisis de la instantánea se simulan. Solo pasará a STRONG cuando ambos sean reales (captura remota real y análisis completo), no por tener las cinco comprobaciones reales.",
+      "en": "Held as MEDIUM: the network and the snapshot analysis are simulated. It only becomes STRONG when both are real (real remote capture and full analysis), not just because the five checks are real."
+    },
+    "strength": "MEDIUM",
+    "external": "mocked",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 217
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 228
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 244
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 249
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 261
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 267
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 289
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 309
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 315
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 328
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 335
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/HydraReleaseGateFiveRealChecksIntegrationTests.java",
+        "line": 349
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

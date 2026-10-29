@@ -19,7 +19,7 @@ ignore=text('.gitignore'); check('runtime/build payload excluded',all(x in ignor
 package=text('scripts/release/package_source.py'); inventory=text('scripts/release/source_inventory.py'); check('source packager uses allowlist','source_files' in package and 'ALLOWED_ROOTS' in inventory and 'excluded(' in inventory)
 check('toolchain manifest exists',exists('config/hydra-toolchain.json'))
 version=json.loads(text('config/hydra-version.json'))['version']; check('version is synchronized',version in text('pom.xml') and f'"version": "{version}"' in text('frontend/package.json'))
-check('CI covers Windows and Linux',all(x in text('.github/workflows/hydra-ci.yml') for x in ['ubuntu-latest','windows-latest','java-version: \'24\'','npm ci']))
+check('CI covers Windows and Linux',all(x in text('.github/workflows/hydra-ci.yml') for x in ['ubuntu-latest','windows-latest','java-version: \'25.0.5\'','npm ci']))
 check('SBOM generator inventories npm and Maven',all(x in text('scripts/release/generate_sbom.py') for x in ['pkg:npm/','pkg:maven/']))
 check('POM exposes release metadata',all(x in text('pom.xml') for x in ['<licenses>','<scm>','<inceptionYear>']))
 

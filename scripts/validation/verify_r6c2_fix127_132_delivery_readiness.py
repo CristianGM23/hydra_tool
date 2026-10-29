@@ -51,9 +51,21 @@ require('spanish-delivery-readiness','Preparación de entrega del perfil' in spa
 require('api-surface-uses-technology-prefix','/technology/compile' in service and '/technology/validate' in service and '/technology/preview' in service)
 
 require('openapi-publishes-readiness-route','technology/readiness' in openapi and 'TechnologyDeliveryReadinessController_get_get' in generated_client)
-require('openapi-generator-is-cross-platform-deterministic',openapi_generator.count("newline='\\n'") >= 3 and openapi_generator.count("encoding='utf-8'") >= 3)
+require('openapi-generator-is-cross-platform-deterministic',
+    'from generated_output import write_generated' in openapi_generator
+    and openapi_generator.count('write_generated(') == 3
+    and 'ensure_ascii=False' in openapi_generator
+    and 'sorted(SRC.rglob' in openapi_generator
+    and 'ops.sort(' in openapi_generator
+    and 'write_generated' in read('scripts/api/generated_output.py')
+    and 'expected = content.encode("utf-8")' in read('scripts/api/generated_output.py')
+    and 'if path.read_bytes() == expected:' in read('scripts/api/generated_output.py'))
 require('designer-fail-closes-generation-action',"generationReadiness?.state === 'BLOCKED'" in designer and "generationReadiness.reason" in designer)
-require('designer-clears-stale-readiness','setDeliveryReadiness(null); setTechnologyValidation(null);' in designer)
+require('designer-clears-stale-readiness',
+    'setReadinessSnapshot(null)' in designer
+    and 'setTechnologyValidation(null)' in designer
+    and 'readinessSnapshot?.key === readinessKey' in designer
+    and 'return () => { active = false; };' in designer)
 require('projection-summary-uses-generation-state',"const generationReady=" in journey and 'Technology delivery can be generated now.' in journey and 'does not report projection delivery as blocked' in journey_test)
 
 failed=[name for name,ok in checks if not ok]

@@ -26,7 +26,7 @@ interface ProjectManagerDialogProps {
     onImportDirectory?: (source: string, parent: string, name: string) => Promise<void>;
     onImportBrowserDirectory?: (files: File[], relativePaths: string[], parent: string, name: string) => Promise<void>;
     onImportRemote?: (request: { profileId: string; remotePath: string; parentDirectory: string; projectName: string }) => Promise<void>;
-    onImportExternal?: (parent: string, name: string, file: File) => Promise<void>;
+    onImportExternal?: (parent: string, name: string, file: File, confirmedFingerprint: string) => Promise<void>;
 }
 
 type DialogMode = 'CREATE' | 'ACCESS';
@@ -127,7 +127,7 @@ function ProjectManagerDialogContent({ recentProjects, onClose, onCreate, onOpen
             } else if (accessSource === 'EXTERNAL') {
                 if (onImportExternal === undefined) throw new Error(t('External project import is not available'));
                 if (externalRecovery === null) throw new Error(t('Analyze the external project before importing it'));
-                await onImportExternal(parent, name, file as File);
+                await onImportExternal(parent, name, file as File, externalRecovery.fingerprint);
             } else if (accessSource === 'DIRECTORY') {
                 if (browserDirectoryFiles.length > 0) {
                     if (onImportBrowserDirectory === undefined) throw new Error(t('Directory import is not available'));

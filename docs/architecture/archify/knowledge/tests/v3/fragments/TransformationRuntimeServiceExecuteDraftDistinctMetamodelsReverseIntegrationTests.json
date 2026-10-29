@@ -1,0 +1,136 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.runtime.TransformationRuntimeServiceExecuteDraftDistinctMetamodelsReverseIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Ejecutar una transformación en ambos sentidos entre dos metamodelos distintos",
+      "en": "Running a transformation in both directions between two different metamodels"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "transformation_execute",
+        "stages": [
+          "in",
+          "ok"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/runtime/TransformationRuntimeService.java",
+      "src/main/java/com/example/editor/transformation/runtime/TransformationPlanCompiler.java",
+      "src/main/java/com/example/editor/transformation/runtime/CanonicalTransformationRuntime.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible; dos metamodelos distintos guardados (personas y plantilla) con clases y atributos diferentes.",
+      "en": "Writable temporary directory; two different metamodels saved (people and staff) with different classes and attributes."
+    },
+    "setup": {
+      "es": "Servicio de ejecución, compilador del plan, motor canónico, comprobador y repositorios JSON reales sobre carpetas temporales; el borrador no se guarda. Ninguna simulación.",
+      "en": "Real execution service, plan compiler, canonical engine, checker and JSON repositories on temporary folders; the draft is never saved. No mocks."
+    },
+    "executes": {
+      "es": "Ejecución de un borrador bidireccional (ida y vuelta) sobre un modelo de personas y sobre un modelo de plantilla, con el modelo del lado equivocado, con una vuelta pedida a una unidireccional y con un error solo en la regla de vuelta.",
+      "en": "Execution of a bidirectional draft (forward and reverse) on a people model and on a staff model, with a model from the wrong side, with a reverse run requested on a one-way definition and with an error only in the return rule."
+    },
+    "asserts": {
+      "es": "El modelo resultante pertenece al otro metamodelo, con las clases, valores y dirección esperados escritos a mano; el modelo del lado equivocado y la vuelta sobre una unidireccional se rechazan con mensaje literal; un error en la regla de vuelta detiene también la ida antes de ejecutar; no se crea ninguna definición en disco.",
+      "en": "The resulting model belongs to the other metamodel, with the expected classes, values and direction written by hand; a wrong-side model and a reverse run on a one-way definition are rejected with a literal message; an error in the return rule also stops the forward run before executing; no definition is created on disk."
+    },
+    "behavior": {
+      "es": "Al ejecutar una transformación se elige el modelo de entrada y la dirección: la ida lee el modelo del primer metamodelo y escribe el del segundo, y la vuelta al revés; si la definición tiene un error, ni siquiera la ida se ejecuta.",
+      "en": "When running a transformation you choose the input model and the direction: forward reads the first metamodel's model and writes the second's, and reverse does the opposite; if the definition has an error, not even the forward run executes."
+    },
+    "rule": {
+      "es": "El modelo de entrada debe ser del metamodelo de entrada de la dirección elegida; la vuelta exige una definición bidireccional; los errores de la definición, también los de la vuelta, detienen la ejecución.",
+      "en": "The input model must belong to the input metamodel of the chosen direction; reverse requires a bidirectional definition; definition errors, including those in the return rule, stop execution."
+    },
+    "scenario": {
+      "es": "Una definición bidireccional entre personas y plantilla: ida con dos personas, vuelta con una trabajadora, modelo del lado equivocado, vuelta sobre una unidireccional y definición con la regla de vuelta rota.",
+      "en": "A bidirectional definition between people and staff: forward with two people, reverse with one worker, wrong-side model, reverse on a one-way definition and a definition with a broken return rule."
+    },
+    "result": {
+      "es": "La ida produce dos trabajadores con los nombres esperados; la vuelta produce una persona con el nombre esperado; los tres casos de rechazo terminan con mensaje concreto y sin nada guardado.",
+      "en": "Forward produces two workers with the expected names; reverse produces one person with the expected name; the three rejection cases end with a concrete message and nothing saved."
+    },
+    "expected": {
+      "es": "Identificadores de metamodelo, clases, valores, anotaciones de dirección y mensajes coinciden con los literales escritos en la prueba, y el directorio de definiciones queda vacío.",
+      "en": "Metamodel identifiers, classes, values, direction annotations and messages match the literals written in the test, and the definitions folder stays empty."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la ejecución distingue modelo de entrada y dirección entre metamodelos distintos y de que un plan con errores no se ejecuta.",
+      "en": "Real evidence that execution tells the input model and direction apart between different metamodels and that a plan with errors is not executed."
+    },
+    "limits": {
+      "es": "Solo reglas directas de un atributo; no ejecuta la sincronización incremental ni la ejecución por identificador guardado; el borrador no pasa por la capa web.",
+      "en": "Only direct one-attribute rules; it does not run incremental synchronization or execution by saved identifier; the draft does not go through the web layer."
+    },
+    "strengthWhy": {
+      "es": "Motor y metamodelos reales distintos, valores esperados escritos a mano y varios rechazos reales.",
+      "en": "Real engine and distinct real metamodels, hand-written expected values and several real rejections."
+    },
+    "cases": [
+      {
+        "n": "reverseReadsTheStaffSideAndWritesTheLibrarySide",
+        "scenario": {
+          "es": "Vuelta sobre un modelo de plantilla con una trabajadora.",
+          "en": "Reverse on a staff model with one worker."
+        },
+        "result": {
+          "es": "Una persona con el nombre esperado en el metamodelo de personas.",
+          "en": "One person with the expected name in the people metamodel."
+        }
+      },
+      {
+        "n": "anErrorInTheReturnRuleStopsEvenTheForwardRunBeforeExecuting",
+        "scenario": {
+          "es": "La regla de vuelta apunta a una clase inexistente.",
+          "en": "The return rule points to a class that does not exist."
+        },
+        "result": {
+          "es": "Ni la ida ni la vuelta se ejecutan; el mensaje nombra el error.",
+          "en": "Neither forward nor reverse runs; the message names the error."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftDistinctMetamodelsReverseIntegrationTests.java",
+        "line": 83
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftDistinctMetamodelsReverseIntegrationTests.java",
+        "line": 91
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftDistinctMetamodelsReverseIntegrationTests.java",
+        "line": 106
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftDistinctMetamodelsReverseIntegrationTests.java",
+        "line": 125
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftDistinctMetamodelsReverseIntegrationTests.java",
+        "line": 134
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftDistinctMetamodelsReverseIntegrationTests.java",
+        "line": 148
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationRuntimeServiceExecuteDraftDistinctMetamodelsReverseIntegrationTests.java",
+        "line": 152
+      }
+    ]
+  }
+]

@@ -53,6 +53,52 @@ class EventBindingRuntimeServiceTests {
         runtime.close();
     }
 
+    @Test
+    void anEventAtTheMaximumBindingDepthIsIgnoredWithoutEvenLoadingTheEventModel() {
+        var bus = new InMemoryCanonicalEventBus();
+        EventModelApplicationService eventModels = Mockito.mock(EventModelApplicationService.class);
+        ExpressionModelRepository expressions = Mockito.mock(ExpressionModelRepository.class);
+        CanonicalMetamodelApplicationService metamodels = Mockito.mock(CanonicalMetamodelApplicationService.class);
+        ExpressionEvaluator evaluator = Mockito.mock(ExpressionEvaluator.class);
+        var runtime = new EventBindingRuntimeService(bus, eventModels, expressions, metamodels, evaluator);
+        var received = new ArrayList<CanonicalEvent>();
+        bus.subscribe(value -> true, received::add);
+
+        CanonicalEvent atDepthLimit = new CanonicalEvent(null, "event:deep", "source.saved", "1.0", Instant.now(),
+                new EventSource("TEST", "", "", ""), new EventContext(EventContextKind.SYSTEM, "", "", "grammar.main-language", "", "", ""),
+                null, null, "", "", "", Map.of(), Map.of("hydra.binding.depth", "32"));
+        bus.publish(atDepthLimit);
+
+        assertThat(received).extracting(CanonicalEvent::eventTypeId).containsExactly("source.saved");
+        Mockito.verifyNoInteractions(eventModels);
+        runtime.close();
+    }
+
+    @Test
+    void aBindingConfiguredToDisableOnFailureStopsRespondingToFurtherEventsAfterARealFailure() {
+        var bus = new InMemoryCanonicalEventBus();
+        EventModelApplicationService eventModels = Mockito.mock(EventModelApplicationService.class);
+        ExpressionModelRepository expressions = Mockito.mock(ExpressionModelRepository.class);
+        CanonicalMetamodelApplicationService metamodels = Mockito.mock(CanonicalMetamodelApplicationService.class);
+        ExpressionEvaluator evaluator = Mockito.mock(ExpressionEvaluator.class);
+        String scope = "grammar.disable-on-failure";
+        var definitions = new EventDefinitionModel(null, "event-definitions", scope, "demo", List.of(), Map.of());
+        var binding = new EventBinding("fragile-binding", "Fragile binding", "source.saved", "domain.saved", "condition:missing",
+                List.of(), true, EventBindingErrorPolicy.DISABLE_BINDING, Map.of());
+        var bindings = new EventBindingModel(null, "event-bindings", scope, definitions.id(), "", List.of(binding), Map.of());
+        when(eventModels.find(scope)).thenReturn(new EventModelLoadResult(definitions, "d", bindings, "b", null));
+        when(metamodels.findById(scope)).thenReturn(new MetamodelLoadResult(EditorDefinitionTestFixtures.metamodel(), "m"));
+        var runtime = new EventBindingRuntimeService(bus, eventModels, expressions, metamodels, evaluator);
+        var received = new ArrayList<CanonicalEvent>();
+        bus.subscribe(value -> true, received::add);
+
+        bus.publish(event(scope, "event:first", "source.saved"));
+        bus.publish(event(scope, "event:second", "source.saved"));
+
+        assertThat(received).extracting(CanonicalEvent::eventTypeId).containsExactly("source.saved", "source.saved");
+        runtime.close();
+    }
+
     private CanonicalEvent event(String scope, String id, String type) {
         return new CanonicalEvent(null, id, type, "1.0", Instant.now(), new EventSource("TEST", "", "", ""),
                 new EventContext(EventContextKind.SYSTEM, "", "", scope, "", "", ""), null, null,

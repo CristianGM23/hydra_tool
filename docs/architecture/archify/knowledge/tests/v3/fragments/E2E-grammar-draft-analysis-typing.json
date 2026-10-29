@@ -1,0 +1,92 @@
+[
+  {
+    "id": "pw:e2e/real/grammar/draft-analysis-typing.spec.ts",
+    "name": {
+      "es": "Análisis del borrador mientras se escribe: revisión rápida y proyección de clases tras la pausa",
+      "en": "Draft analysis while typing: quick check and class projection after the pause"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["behavior"],
+    "caps": ["grammar"],
+    "procs": [
+      { "id": "grammar_analyze_generate", "stages": ["fast", "pn"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/grammar-designer/GrammarDesigner.tsx",
+      "frontend/src/grammar-designer/GrammarMonacoEditor.tsx",
+      "frontend/src/grammar-designer/GrammarStatusDock.tsx",
+      "frontend/src/grammar-designer/api.ts",
+      "src/main/java/com/example/editor/grammar/web/GrammarController.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java"
+    ],
+    "pre": {
+      "es": "Backend real con almacenamiento temporal propio; no hace falta sembrar nada.",
+      "en": "Real backend with its own temporary storage; nothing needs to be seeded."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, sin simulaciones. Las peticiones que envía la propia pantalla se observan sin interceptarlas.",
+      "en": "Playwright with Chromium, no simulations. The requests the screen itself sends are observed without intercepting them."
+    },
+    "executes": {
+      "es": "Abre #/grammars, pulsa 'New grammar', escribe con el teclado en el editor Monaco una regla con referencia inexistente, espera, vuelve a teclear carácter a carácter y espera de nuevo; observa las peticiones POST analyze-draft y class-diagram-draft con page.on('request'/'response').",
+      "en": "Opens #/grammars, presses 'New grammar', types into the Monaco editor a rule with a missing reference, waits, types again character by character and waits again; observes the POST analyze-draft and class-diagram-draft requests with page.on('request'/'response')."
+    },
+    "asserts": {
+      "es": "Se envía una petición FAST con el texto escrito y su respuesta tiene los mismos diagnósticos que una llamada directa a la API real; aparece el problema en pantalla; después se pide la proyección NORMAL con la misma revisión y se muestra el recuento de clasificadores; durante el tecleo no sale ninguna petición; el borrador no se guarda (404 y sin fichero).",
+      "en": "A FAST request carrying the typed text is sent and its response has the same diagnostics as a direct call to the real API; the problem appears on screen; then the NORMAL projection is requested with the same revision and the classifier count is shown; no request leaves while typing; the draft is not saved (404 and no file)."
+    },
+    "behavior": {
+      "es": "Mientras la persona escribe una gramática, el diseñador espera a que haga una pausa y entonces revisa el borrador y pide la estructura de clases inferida; no lanza peticiones con cada tecla y no guarda nada.",
+      "en": "While a person writes a grammar, the designer waits for a pause and then checks the draft and asks for the inferred class structure; it does not send requests on every key and saves nothing."
+    },
+    "rule": {
+      "es": "El análisis y la proyección de clases solo se piden cuando el borrador lleva un momento sin cambiar; el borrador sigue sin guardar.",
+      "en": "Analysis and class projection are only requested once the draft has stopped changing for a moment; the draft remains unsaved."
+    },
+    "scenario": {
+      "es": "Una gramática nueva recibe una regla con una referencia que no existe; luego se teclean unos caracteres seguidos al final del texto.",
+      "en": "A new grammar receives a rule with a reference that does not exist; then a few characters are typed in a row at the end of the text."
+    },
+    "result": {
+      "es": "Tras la pausa aparecen el problema y el recuento de clases con los mismos diagnósticos que da el servidor; durante el tecleo continuo no se envía nada.",
+      "en": "After the pause the problem and the class count appear with the same diagnostics the server gives; during continuous typing nothing is sent."
+    },
+    "expected": {
+      "es": "Una ejecución correcta muestra el problema señalado, pide la proyección con la revisión actual y no deja ningún fichero de gramática.",
+      "en": "A passing run shows the reported problem, requests the projection with the current revision and leaves no grammar file."
+    },
+    "guarantee": {
+      "es": "La pantalla dispara el análisis rápido y la petición de clases en el momento correcto y con el texto realmente escrito, contra el servidor real.",
+      "en": "The screen triggers the quick analysis and the class request at the right moment and with the text actually typed, against the real server."
+    },
+    "limits": {
+      "es": "La proyección se pide en cuanto existe un análisis vigente (también el rápido), no solo el normal; no se comprueba el contenido del diagrama ni el análisis completo más allá de esperarlo; no mide tiempos exactos de la pausa.",
+      "en": "The projection is requested as soon as a current analysis exists (the quick one too), not only the normal one; the diagram content and the full analysis are not checked beyond waiting for it; exact pause timings are not measured."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Teclado real en el navegador, servidor real, respuesta contrastada con una llamada directa independiente y comprobación de rechazo durante el tecleo.",
+      "en": "Real keyboard in the browser, real server, response compared with an independent direct call and a rejection check while typing."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "el análisis rápido y la proyección de clases se piden tras una pausa y no mientras se teclea",
+        "scenario": { "es": "Se escribe una referencia inexistente, se espera y se teclea de corrido.", "en": "A missing reference is typed, then the test waits and types continuously." },
+        "result": { "es": "Se piden análisis y proyección solo tras las pausas.", "en": "Analysis and projection are requested only after the pauses." }
+      }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/grammar/draft-analysis-typing.spec.ts", "line": 26 },
+      { "path": "frontend/e2e/real/grammar/draft-analysis-typing.spec.ts", "line": 31 },
+      { "path": "frontend/e2e/real/grammar/draft-analysis-typing.spec.ts", "line": 39 },
+      { "path": "frontend/e2e/real/grammar/draft-analysis-typing.spec.ts", "line": 42 },
+      { "path": "frontend/e2e/real/grammar/draft-analysis-typing.spec.ts", "line": 55 },
+      { "path": "frontend/e2e/real/grammar/draft-analysis-typing.spec.ts", "line": 64 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

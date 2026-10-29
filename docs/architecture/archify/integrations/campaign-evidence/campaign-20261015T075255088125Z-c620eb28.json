@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-15T07:52:55+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261015-094950",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "7f74443982890ea87f7f076d55d20eb0a07800aa429b685e698cbed4a853d2e9",
+  "reportCheckpointName": "0024-01792050773702883700-045ab0ef5c534a3699359f03683c2279.json",
+  "testResults": [
+    {
+      "id": "S285",
+      "title": "Vitest file: src/event-designer/flow/eventFlowSelection.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.65,
+      "logSha256": "f550422d611d6ba1577776f17b8081b18c27f6be2b34d78e5223092da2835c66",
+      "logRelativePath": "logs/S285.log"
+    },
+    {
+      "id": "S286",
+      "title": "Vitest file: src/event-designer/flow/eventFlowValidation.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.3,
+      "logSha256": "83dca6af6546348e5a2113daf7d7601ce75329a92be90487baf88f4fd880005c",
+      "logRelativePath": "logs/S286.log"
+    },
+    {
+      "id": "S287",
+      "title": "Vitest file: src/gamification-designer/GamificationDesigner.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 18.56,
+      "logSha256": "7ae8771aebc8665ab08642aa56ed04218e98c582ccf0cf43d30ee61de52e5ab8",
+      "logRelativePath": "logs/S287.log"
+    },
+    {
+      "id": "S288",
+      "title": "Vitest file: src/gamification-designer/GamificationStructureTree.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.55,
+      "logSha256": "53a1f30c5ea3c5747b1846a0618e0763baf9819ff35684d50ebe0e7d73bd0a0a",
+      "logRelativePath": "logs/S288.log"
+    },
+    {
+      "id": "S289",
+      "title": "Vitest file: src/gamification-designer/GamificationVisualLayoutContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.23,
+      "logSha256": "fb0f8058a533155efaac702572e0fe165b74e52fd4421438ccbce76f10ae8425",
+      "logRelativePath": "logs/S289.log"
+    },
+    {
+      "id": "S290",
+      "title": "Vitest file: src/gamification-designer/api.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 10.16,
+      "logSha256": "31899d313fef9b1e31de117eab8c9816e8b6f5487f5ed2df18f9a02a57197dbd",
+      "logRelativePath": "logs/S290.log"
+    },
+    {
+      "id": "S291",
+      "title": "Vitest file: src/gamification-designer/gamificationConnections.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.29,
+      "logSha256": "41fccd5cf198d53473463ffb6695b5352dd8f2ae41e13053766021aac5edf2b0",
+      "logRelativePath": "logs/S291.log"
+    },
+    {
+      "id": "S292",
+      "title": "Vitest file: src/gamification-designer/gamificationDiagram.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.02,
+      "logSha256": "66c7e6d6c7b4924c1db533248cd92b1a19e964deb4b39def24dd8241ff6bbc5c",
+      "logRelativePath": "logs/S292.log"
+    },
+    {
+      "id": "S293",
+      "title": "Vitest file: src/gamification-designer/gamificationFactory.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.22,
+      "logSha256": "77e1b6f625c038fb2fb623aa51e9c307601714cd9c753f1d27daa8a3b29231f2",
+      "logRelativePath": "logs/S293.log"
+    },
+    {
+      "id": "S294",
+      "title": "Vitest file: src/gamification-designer/gamificationPenaltyValidation.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.36,
+      "logSha256": "f8f531403b06e3b7dd329b7ca560446214eb7a49afa949eab7bbf4772beeb8de",
+      "logRelativePath": "logs/S294.log"
+    },
+    {
+      "id": "S295",
+      "title": "Vitest file: src/gamification-designer/gamificationSelection.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 9.44,
+      "logSha256": "ee015cb58992a10c3180cc6702f9da5dc7553cdb6350e7e9427bdf766f0161bd",
+      "logRelativePath": "logs/S295.log"
+    },
+    {
+      "id": "S296",
+      "title": "Vitest file: src/gamification-designer/gamificationValidation.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.22,
+      "logSha256": "fcd540b9a7b75ec44f4795592226bedec4ded87dce889d8b8df7d2f5895167eb",
+      "logRelativePath": "logs/S296.log"
+    },
+    {
+      "id": "S297",
+      "title": "Vitest file: src/generated-project-center/api.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.84,
+      "logSha256": "4e30232b1814410498ad6764d2195e5d899f29d3397b1fe24c774609ce030d61",
+      "logRelativePath": "logs/S297.log"
+    },
+    {
+      "id": "S298",
+      "title": "Vitest file: src/grammar-designer/GrammarDesignerUxContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.18,
+      "logSha256": "d77329ba10ad38c5d19dd64a7aa1f3e148da8973ff3c9373a8e6ad72655c0820",
+      "logRelativePath": "logs/S298.log"
+    },
+    {
+      "id": "S299",
+      "title": "Vitest file: src/grammar-designer/GrammarIdentityForm.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.19,
+      "logSha256": "3a43b7821f6269b022953a36bbd1d21739d1dc832c5aa6e799b380a1826ef36a",
+      "logRelativePath": "logs/S299.log"
+    },
+    {
+      "id": "S300",
+      "title": "Vitest file: src/grammar-designer/GrammarMetamodelField.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 9.6,
+      "logSha256": "cd32ef422bacc25091b8fbe12150bdb3bef14f97be33c797eb3168c916cd69d5",
+      "logRelativePath": "logs/S300.log"
+    },
+    {
+      "id": "S301",
+      "title": "Vitest file: src/grammar-designer/GrammarMonacoEditor.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.31,
+      "logSha256": "19a9cfeb37cfc7b5a7b265795feb5ad046db50fb012250397fb51968fbca6ee3",
+      "logRelativePath": "logs/S301.log"
+    },
+    {
+      "id": "S302",
+      "title": "Vitest file: src/grammar-designer/GrammarProblemsPanel.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.03,
+      "logSha256": "8309869bdc65bc2bdd8537dc76e27f3a5f2e7e8aa6acb01db250dc0212d216cb",
+      "logRelativePath": "logs/S302.log"
+    },
+    {
+      "id": "S303",
+      "title": "Vitest file: src/grammar-designer/GrammarStatusDockInformationContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 10.67,
+      "logSha256": "946801b70455cff481afafd4fa4521d4e68c14b30ff2443bf0c88f03986a2aa6",
+      "logRelativePath": "logs/S303.log"
+    },
+    {
+      "id": "S304",
+      "title": "Vitest file: src/grammar-designer/GrammarTextualCustomization.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 10.37,
+      "logSha256": "148b918ba6e336f3b5029f151553c0873d9c38cab5e4cfacad243e140634793f",
+      "logRelativePath": "logs/S304.log"
+    },
+    {
+      "id": "S305",
+      "title": "Vitest file: src/grammar-designer/generatedCodeLanguage.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.14,
+      "logSha256": "154a55b7fb178db0f80c8d93afaabcad0ebf84566698bf3bbb18114b04526715",
+      "logRelativePath": "logs/S305.log"
+    },
+    {
+      "id": "S306",
+      "title": "Vitest file: src/grammar-designer/grammarClassDiagramExport.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.74,
+      "logSha256": "6375b12812a10c53e697af25c138b7c9c50a7f373822d2ad4318afadc91bfeb7",
+      "logRelativePath": "logs/S306.log"
+    },
+    {
+      "id": "S307",
+      "title": "Vitest file: src/grammar-designer/grammarClassDiagramModel.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.44,
+      "logSha256": "13f70811be8e7cceaaf2098cab04ad1713b2e53cab32f862eb976e9d7776fbef",
+      "logRelativePath": "logs/S307.log"
+    },
+    {
+      "id": "S308",
+      "title": "Vitest file: src/grammar-designer/grammarLocalInspection.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.86,
+      "logSha256": "195c536c64582644f165eb55e9a6047634767776a6c3f57a9b3ca1adfafdede7",
+      "logRelativePath": "logs/S308.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

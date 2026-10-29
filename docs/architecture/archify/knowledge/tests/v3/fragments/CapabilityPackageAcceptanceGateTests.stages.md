@@ -1,0 +1,4 @@
+CapabilityPackageAcceptanceGateTests (grupo B3)
+- x_package_and_move_capabilities.d1: anAcceptablePackageIsAcceptedAndOneWithBlockingErrorsIsRejectedWithoutTouchingAnything (l.68-110): paquete con capa exigida ausente rechazado (l.79) y cache vacia; huella alterada (l.88); firma exigida (l.97); rama aceptable guarda en cache el mismo archivo (l.109).
+- x_package_and_move_capabilities.a1 (indirect): dependenciesAreOrderedAndVersionedButNeverAddedAutomatically (l.114-170): orden y version del paquete (l.141) pero una dependencia obligatoria no elegida bloquea (l.131); NO se anaden solas.
+- portability_author_export.b (indirect): mismo metodo; dependencia opcional no incorporada (l.151) y ciclo rechazado (l.163). La descripcion «se anaden las capas necesarias» no coincide con CapabilityPackageDependencyResolver.java:20-34 (solo ordena) ni con CapabilityPackageChecker.java:66-68.

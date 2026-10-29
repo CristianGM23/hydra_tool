@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-15T09:39:34+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261015-112151",
+  "campaignState": "COMPLETED_WITH_ISSUES",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "f8653bebcc8030ed7c53c35c89aa84732550289e5e5cbb1d0361b6542b08a92a",
+  "reportCheckpointName": "0024-01792057173687636400-2af383d1624e4fe3b268fac9efdebb48.json",
+  "testResults": [
+    {
+      "id": "S059",
+      "title": "Frontend accessibility",
+      "group": "a11y",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.48,
+      "logSha256": "72a9b445ffb457156289dccaa4130a1bca7acabb2abdb6596643a3b8ed3f7b1d",
+      "logRelativePath": "logs/S059.log"
+    },
+    {
+      "id": "S060",
+      "title": "CSS budgets",
+      "group": "a11y",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.2,
+      "logSha256": "a46760522da6e5a8a741b9b5ac3dd29b942f22232bb999bc1a5df05dd916d205",
+      "logRelativePath": "logs/S060.log"
+    },
+    {
+      "id": "S063",
+      "title": "External process security",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 51.19,
+      "logSha256": "561afa612a374ad4bea7b2e7b479c0e0ad7b8a30e993b0b16dc97f7a32ad404c",
+      "logRelativePath": "logs/S063.log"
+    },
+    {
+      "id": "S065",
+      "title": "Release metadata",
+      "group": "license",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.43,
+      "logSha256": "fd07f742d01d4f7a81c27546b765eecce299647c9a7e4d9fa03440cce2924c30",
+      "logRelativePath": "logs/S065.log"
+    },
+    {
+      "id": "S082",
+      "title": "Frontend TypeScript full compilation",
+      "group": "build",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 55.66,
+      "logSha256": "4423fce234fa8952b271a967c9b829afecc56b14fa707fb770a94ffdd7d3bed3",
+      "logRelativePath": "logs/S082.log"
+    },
+    {
+      "id": "S083",
+      "title": "Frontend ESLint full src tree",
+      "group": "lint",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 130.26,
+      "logSha256": "0393bf65d03f202198416c6352b11d3f4df25b261e6ceef0433dd3dd6105725f",
+      "logRelativePath": "logs/S083.log"
+    },
+    {
+      "id": "S084",
+      "title": "Frontend production build",
+      "group": "build",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 77.75,
+      "logSha256": "c63b6c8814d4b5bc0b60b3853aeeb5f0eb0086caed919a75120cb0e18fbf599b",
+      "logRelativePath": "logs/S084.log"
+    },
+    {
+      "id": "S086",
+      "title": "Frontend axe accessibility",
+      "group": "a11y",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 58.21,
+      "logSha256": "4b226e3e8d0eb9e89cf69a2fe325aa85f829787925577ff918b4d0f022ff329c",
+      "logRelativePath": "logs/S086.log"
+    },
+    {
+      "id": "S088",
+      "title": "Backend Maven complete verify",
+      "group": "backend",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 277.39,
+      "logSha256": "6f90a2a6ccef8cd760f86d578b3bbebf0e170c37cbd47e19c8d0ece2fed5b3f8",
+      "logRelativePath": "logs/S088.log"
+    },
+    {
+      "id": "S184",
+      "title": "Vitest file: src/accessibility/accessibilityAudit.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 9.96,
+      "logSha256": "c5ce41e58b4a90623cf32a031f9cef664750edb9e4d66305a8e17a360d72ee59",
+      "logRelativePath": "logs/S184.log"
+    },
+    {
+      "id": "S185",
+      "title": "Vitest file: src/accessibility/axeAccessibility.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 13.77,
+      "logSha256": "4bf9b81d01b33571038f53e7415b45e97423919e252b496ab6cffade2a9bcf17",
+      "logRelativePath": "logs/S185.log"
+    },
+    {
+      "id": "S186",
+      "title": "Vitest file: src/aggressive-testing/HydraAggressiveDeliveryArtifactContracts.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 14.43,
+      "logSha256": "a0454f457de77c6337254669541c6475a601102c472ede088538983dd706e27f",
+      "logRelativePath": "logs/S186.log"
+    },
+    {
+      "id": "S187",
+      "title": "Vitest file: src/aggressive-testing/HydraAggressiveProcessCoverage.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 9.79,
+      "logSha256": "7092d3324f3aaaf098a3b1710ec1ccd5512931ec04a6149648e5210fd0a590a1",
+      "logRelativePath": "logs/S187.log"
+    },
+    {
+      "id": "S190",
+      "title": "Vitest file: src/aggressive-testing/HydraAggressiveSemanticMutation.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 10.13,
+      "logSha256": "adfd4dd40a68a07ed748d89e7fcfa7472d859720c2b59df81a0a9ca5fa850f5d",
+      "logRelativePath": "logs/S190.log"
+    },
+    {
+      "id": "S196",
+      "title": "Vitest file: src/application-shell/HydraApplicationShell.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 13.11,
+      "logSha256": "473c7e275201921c82bdbbd746041fdbf9eab8a3f53311eb1da0fd33b69059b0",
+      "logRelativePath": "logs/S196.log"
+    },
+    {
+      "id": "S197",
+      "title": "Vitest file: src/application-shell/HydraHome.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 12.39,
+      "logSha256": "a93084a5c8ec7db88cfb294452925a61f1416318b41fc05dad12144e401896e7",
+      "logRelativePath": "logs/S197.log"
+    },
+    {
+      "id": "S198",
+      "title": "Vitest file: src/application-shell/HydraHomeLayoutContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.31,
+      "logSha256": "ab3e76bcd4e51fbccb5d1f080c06cb5b178af90ab86b117f52e3bf0503ff5776",
+      "logRelativePath": "logs/S198.log"
+    },
+    {
+      "id": "S199",
+      "title": "Vitest file: src/application-shell/HydraHomeModuleAlignmentContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.94,
+      "logSha256": "60c0b48bce985782d1f0e9c3cb8bf11b62e226cb70f3795421a82dadb292a269",
+      "logRelativePath": "logs/S199.log"
+    },
+    {
+      "id": "S437",
+      "title": "Vitest file: src/validation-designer/validationDesignerValidation.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.4,
+      "logSha256": "cb85645b0040b902c980fc6259a95a508621f8a794c021377f70478a031f9a94",
+      "logRelativePath": "logs/S437.log"
+    },
+    {
+      "id": "S438",
+      "title": "Vitest file: src/validation-designer/validationOverwriteIdentity.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 11.48,
+      "logSha256": "70926a893ed4dd203f9b9bd624ac1f765cd8a95568842e31ce08a50d89cb02cb",
+      "logRelativePath": "logs/S438.log"
+    },
+    {
+      "id": "S439",
+      "title": "Vitest file: src/validation-designer/validationVerification.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 12.82,
+      "logSha256": "720d642855c04dd76feeb5b31002d1051997ea79de7828479e009adf60fa72be",
+      "logRelativePath": "logs/S439.log"
+    },
+    {
+      "id": "S474",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/IntegrationContractResourcesTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 89.57,
+      "logSha256": "5c7b1f38399fc9c921cb07f93ebb604c1d8dd9c84eaa3032fa1ba947f2093cae",
+      "logRelativePath": "logs/S474.log"
+    },
+    {
+      "id": "S517",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/target/JsonTargetConfigurationRepositoryTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 91.05,
+      "logSha256": "87c7bcbadf8b0eb38faa547a6cf80b7fbce0a6a650705ba10c1c36dcf52ff7c2",
+      "logRelativePath": "logs/S517.log"
+    },
+    {
+      "id": "S519",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/web/CanonicalMetamodelControllerTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 101.34,
+      "logSha256": "aaac58e835816d455d1dbaccc6f95113001079c052a166b89d1f62bc2ad43ed8",
+      "logRelativePath": "logs/S519.log"
+    }
+  ],
+  "summary": {
+    "PASS": 23,
+    "FAIL": 1,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

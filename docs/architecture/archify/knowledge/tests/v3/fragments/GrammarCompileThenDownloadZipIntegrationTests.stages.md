@@ -1,0 +1,2 @@
+- grammar_author_download.dl: downloadedArchiveMatchesTheGeneratedProjectDeclaredByTheCompileResponse (line 135 zip content type, 137 file name, 141 entry order, 142 entry names and contents equal the project declared by the compile response).
+- grammar_author_download.dl: aFailedCompilationCannotBeDownloaded (lines 152-158: failed snapshot, 400 and no zip content).

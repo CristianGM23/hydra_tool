@@ -26,6 +26,13 @@ check('Windows cleanup knows isolated CLI output', 'build/hydra-maven' in clean)
 check('Surefire failure helper checks isolated reports', 'build/hydra-maven/surefire-reports' in runner)
 check('Windows validator performs Maven output preflight', 'verify_maven_output_isolation.py' in validator)
 check('final structural tree retains Maven output isolation gate', "('Maven/IDE output isolation', [sys.executable, 'scripts/validation/verify_maven_output_isolation.py']" in final_tree)
+# Hardened Windows (NoDefaultCurrentDirectoryInExePath=1) never resolves a bare 'mvnw.cmd' from the working directory.
+launchers = ['scripts/validation/verify_final_tree.py', 'scripts/release/qualify_release.py',
+             'scripts/benchmarks/run_rc1_scale.py', 'scripts/release/verify_installation_matrix.py']
+bare = [rel for rel in launchers if re.search(r"\[\s*'mvnw\.cmd'", (ROOT / rel).read_text(encoding='utf-8'))]
+check('release gates launch the Maven wrapper by absolute path', not bare)
+# The full backend suite takes over 20 minutes on supported hardware; it must not inherit the 1200 s default step timeout.
+check('final-tree Maven full verify has its own time budget', re.search(r"run\('Maven full verify',[^\n]*timeout=\d+", final_tree) is not None)
 
 # Every class reported by the 2026-09-18 disappearing-class incident must still be source-backed.
 incident = [

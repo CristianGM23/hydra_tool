@@ -1,0 +1,72 @@
+[
+  {
+    "id": "java:com.example.editor.portability.archive.CapabilityPackageArchiveHttpLayerSelectionIntegrationTests",
+    "name": {"es": "Exportación HTTP de un paquete con las capas elegidas", "en": "HTTP export of a package with the chosen layers"},
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "caps": ["portability"],
+    "procs": [
+      {"id": "portability_author_export", "stages": ["a"], "match": "direct"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/portability/archive/CapabilityPackageArchiveController.java",
+      "src/main/java/com/example/editor/portability/archive/CapabilityPackageArchiveService.java",
+      "src/main/java/com/example/editor/portability/archive/CapabilityPackageDependencyResolver.java",
+      "src/main/java/com/example/editor/portability/CapabilityPackageChecker.java"
+    ],
+    "pre": {"es": "Directorio temporal para la caché de paquetes.", "en": "Temporary directory for the package cache."},
+    "executes": {
+      "es": "Controlador y servicio de archivos de paquetes reales con comprobador y resolutor de dependencias reales y caché en disco temporal; el paquete se compone con las capas elegidas (metamodelo y validaciones, con y sin editor) y se envía por HTTP.",
+      "en": "Real package archive controller and service with real checker and dependency resolver and a cache on a temp disk; the package is composed with the chosen layers (metamodel and validations, with and without editor) and sent over HTTP."
+    },
+    "asserts": {
+      "es": "El ZIP descargado contiene exactamente los documentos de las capas elegidas con los bytes literales esperados, un manifiesto con esas capas en orden de dependencias y huellas correctas; la huella de contenido y el SHA-256 se recalculan en el test; la caché guarda los mismos bytes; importar restaura solo esas capas.",
+      "en": "The downloaded ZIP contains exactly the documents of the chosen layers with the expected literal bytes, a manifest with those layers in dependency order and correct fingerprints; the content hash and SHA-256 are recomputed in the test; the cache stores the same bytes; importing restores only those layers."
+    },
+    "behavior": {
+      "es": "Al exportar un paquete portable por HTTP, el archivo contiene solo las capas que el paquete selecciona, es reproducible y verificable, se guarda en caché por contenido y se puede importar de vuelta.",
+      "en": "When a portable package is exported over HTTP, the archive contains only the layers the package selects, is reproducible and verifiable, is cached by content and can be imported back."
+    },
+    "rule": {
+      "es": "Un paquete con una capa exigida sin documento o con una ruta de recurso insegura no genera archivo; un archivo manipulado no se importa.",
+      "en": "A package with a required layer without a document or with an unsafe resource path produces no archive; a tampered archive is not imported."
+    },
+    "scenario": {
+      "es": "Exportar metamodelo más validaciones, exportar además el editor, repetir la exportación, importar el archivo, importar una copia con un byte alterado y exportar paquetes inválidos.",
+      "en": "Export metamodel plus validations, also export with the editor, repeat the export, import the archive, import a copy with one altered byte and export invalid packages."
+    },
+    "result": {
+      "es": "Las entradas del ZIP, el manifiesto, la caché en disco y la importación demuestran que solo viajan las capas elegidas; los paquetes inválidos no dejan archivo en caché.",
+      "en": "The ZIP entries, the manifest, the cache on disk and the import show that only the chosen layers travel; invalid packages leave no cached archive."
+    },
+    "expected": {
+      "es": "Todos los casos pasan; la segunda exportación idéntica es un acierto de caché con los mismos bytes.",
+      "en": "All cases pass; the identical second export is a cache hit with the same bytes."
+    },
+    "guarantee": {
+      "es": "El archivo portable exportado por HTTP contiene exactamente lo seleccionado y se puede verificar de forma independiente.",
+      "en": "The portable archive exported over HTTP contains exactly what was selected and can be verified independently."
+    },
+    "limits": {
+      "es": "La selección de capas la hace quien llama al componer el paquete: el servicio no elige capas de documentos guardados. Los rechazos se exigen como solicitud incorrecta (400) con el código de error estable. No prueba firmas ni límites de tamaño por HTTP.",
+      "en": "The caller selects the layers when composing the package: the service does not pick layers from stored documents. Rejections are required to be a bad request (400) with the stable error code. Signatures and size limits over HTTP are not tested."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Controlador y servicio reales, oráculo independiente (ZIP abierto en el test, literales y huellas recalculadas) y rechazos con control positivo.",
+      "en": "Real controller and service, independent oracle (ZIP opened in the test, literals and recomputed hashes) and rejections with positive control."
+    },
+    "external": "none",
+    "src": [
+      {"path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveHttpLayerSelectionIntegrationTests.java", "line": 147},
+      {"path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveHttpLayerSelectionIntegrationTests.java", "line": 161},
+      {"path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveHttpLayerSelectionIntegrationTests.java", "line": 177},
+      {"path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveHttpLayerSelectionIntegrationTests.java", "line": 179},
+      {"path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveHttpLayerSelectionIntegrationTests.java", "line": 197},
+      {"path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveHttpLayerSelectionIntegrationTests.java", "line": 213},
+      {"path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveHttpLayerSelectionIntegrationTests.java", "line": 223},
+      {"path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveHttpLayerSelectionIntegrationTests.java", "line": 237}
+    ],
+    "confidence": "ANALYZED"
+  }
+]

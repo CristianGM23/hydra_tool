@@ -177,6 +177,26 @@ def build(allowed: Path, relative: str, execute: bool, web: bool, native: bool, 
         if not (editor / 'src-tauri' / 'Cargo.toml').is_file():
             raise ValueError('Native packaging requires generated src-tauri/Cargo.toml')
         if execute:
+            # Generic `cargo test` can exit 0 even when no tests were discovered.
+            # Require the generated production model store and its Rust test module.
+            store_source = editor / 'src-tauri' / 'src' / 'model_store.rs'
+            if (store_source.is_symlink() or not store_source.is_file()
+                    or store_source.stat().st_size > 256 * 1024):
+                steps['nativeModelTests'] = {'status': 'BLOCKED',
+                    'reason': 'Generated model_store.rs missing or unsafe: cannot qualify native model lifecycle'}
+                return {'version': version, 'steps': steps, 'qualified': False}
+            rust_source = store_source.read_text(encoding='utf-8')
+            if ('#[cfg(test)]' not in rust_source or '#[test]' not in rust_source
+                    or 'fn hydra_write_model' not in rust_source):
+                steps['nativeModelTests'] = {'status': 'BLOCKED',
+                    'reason': 'Generated Rust model-store tests/commands are missing'}
+                return {'version': version, 'steps': steps, 'qualified': False}
+            # Execute the real generated Rust model-store tests BEFORE packaging.
+            # A successful installer inventory must never hide broken persistence.
+            steps['nativeModelTests'] = bounded(
+                ['cargo', 'test', '--', '--test-threads=1'], editor / 'src-tauri', timeout)
+            if steps['nativeModelTests']['status'] != 'PASSED':
+                return {'version': version, 'steps': steps, 'qualified': False}
             # Only explicitly invoked locally or on trusted CI artifacts; never REST triggered.
             steps['nativeBuild'] = bounded(['cargo', 'tauri', 'build'], editor / 'src-tauri', timeout)
             if steps['nativeBuild']['status'] == 'PASSED':

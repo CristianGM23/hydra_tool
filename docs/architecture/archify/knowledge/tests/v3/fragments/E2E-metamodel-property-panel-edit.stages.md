@@ -1,0 +1,7 @@
+- metamodel_author_properties.d1: la prueba recorre las tres ramas (atributo, operación y relación) en el panel y todas acaban persistidas (líneas 95-125).
+- metamodel_author_properties.at: atributos 'age' (INTEGER, 1..*), 'status' (enumerado) y 'unit' (tipo de datos propio) en el fichero guardado (líneas 95-104).
+- metamodel_author_properties.opt: ordenado y único desmarcados y valor por defecto '0' del atributo, orden desmarcado de la relación (líneas 99-101 y 116).
+- metamodel_author_properties.op: operación 'isAdult' con retorno BOOLEAN, comportamiento QUERY y parámetro 'minAge' (líneas 107-110).
+- metamodel_author_properties.rl: 'Add reference' sin lienzo, cambio de tipo a AGGREGATION, extremos e inversas cruzadas (líneas 115-120).
+- metamodel_author_properties.art (rechazo): el guardado con dos clases del mismo nombre muestra el aviso y el fichero queda idéntico (líneas 131-135); lo válido lo devuelve la API (líneas 124-125).
+- metamodel_author_properties.bd: no demostrada; el tipo de implementación de la operación no está en este panel.

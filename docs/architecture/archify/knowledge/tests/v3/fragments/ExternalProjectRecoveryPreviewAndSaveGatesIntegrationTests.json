@@ -1,0 +1,116 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Recuperar un proyecto externo: la vista previa no guarda y la importación guarda metamodelo, editor y reglas",
+      "en": "Recovering an external project: the preview saves nothing and the import saves metamodel, editor and rules"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["recovery", "project"],
+    "procs": [
+      { "id": "x_recover_external_project", "stages": ["mat", "pers"], "match": "direct" },
+      { "id": "project_import_export", "stages": ["i3"], "match": "direct" },
+      { "id": "recovery_persist_rollback", "stages": ["a1"], "match": "direct" },
+      { "id": "x_recover_external_project", "stages": ["integ"], "match": "indirect" },
+      { "id": "x_project_lifecycle_overview", "stages": ["rc"], "match": "indirect" },
+      { "id": "recovery_lifecycle", "stages": ["d2", "a7"], "match": "indirect" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryController.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalValidationRecoveryService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryService.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportService.java",
+      "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java",
+      "src/main/java/com/example/editor/definition/importing/VisualDefinitionImportService.java"
+    ],
+    "pre": {
+      "es": "Directorios temporales para los almacenes y para los proyectos; fixture Sirius completo empaquetado como ZIP; sin red ni credenciales.",
+      "en": "Temporary directories for the stores and for the projects; complete Sirius fixture packaged as ZIP; no network or credentials."
+    },
+    "setup": {
+      "es": "Contexto real de HYDRA con MockMvc y todos los almacenes en un directorio temporal; el ZIP se construye con los ficheros del fixture.",
+      "en": "Real HYDRA context with MockMvc and all stores in a temporary directory; the ZIP is built from the fixture files."
+    },
+    "executes": {
+      "es": "POST /api/external-project-recovery/analyze e /import sobre el controlador, el servicio de importación, el materializador semántico y los servicios reales de metamodelos, validaciones, acciones y editores.",
+      "en": "POST /api/external-project-recovery/analyze and /import over the controller, import service, semantic materializer and real metamodel, validation, action and editor services."
+    },
+    "asserts": {
+      "es": "Almacenes vacíos tras analizar y sin proyecto; ambigüedad sin capas y original preservado; clases, reglas, representaciones y mapeos del fixture en los documentos del disco; ETag = SHA-256 de los bytes; anotación de lo creado; ningún perfil de integración.",
+      "en": "Stores empty after analysing and no project; ambiguity without layers and original preserved; the fixture's classes, rules, representations and mappings in the documents on disk; ETag = SHA-256 of the bytes; record of what was created; no integration profile."
+    },
+    "behavior": {
+      "es": "Analizar un proyecto externo es solo una vista previa y no guarda nada; si hay dos metamodelos igual de plausibles se conserva el original y no se adivina; al confirmar la importación se guardan el metamodelo, las reglas y las capas del editor con su marca de versión y se anota qué creó la ejecución.",
+      "en": "Analysing an external project is only a preview and saves nothing; with two equally plausible metamodels the original is kept and nothing is guessed; confirming the import saves the metamodel, rules and editor layers with their version mark and records what the run created."
+    },
+    "rule": {
+      "es": "Nada del lenguaje recuperado se guarda hasta confirmar, y nunca sobre un origen ambiguo; los documentos guardados llevan versión.",
+      "en": "Nothing of the recovered language is saved until confirmed, and never from an ambiguous source; saved documents carry a version."
+    },
+    "scenario": {
+      "es": "Fixture Sirius completo analizado sin guardar, dos copias del metamodelo importadas como origen ambiguo y el proyecto completo importado con confirmación.",
+      "en": "Complete Sirius fixture analysed without saving, two copies of the metamodel imported as an ambiguous source and the complete project imported with confirmation."
+    },
+    "result": {
+      "es": "Tras analizar no hay documentos ni proyecto; el origen ambiguo deja el proyecto con el original y sin capas; la importación completa deja el metamodelo con sus clases, las reglas del fichero de reglas, tres representaciones con sus mapeos y paleta, y versiones que coinciden con el contenido.",
+      "en": "After analysing there are no documents or project; the ambiguous source leaves the project with the original and no layers; the complete import leaves the metamodel with its classes, the rules file's rules, three representations with their mappings and palette, and versions that match the content."
+    },
+    "expected": {
+      "es": "Las aserciones sobre almacenes, documentos, versiones y anotación se cumplen en los tres casos ordenados.",
+      "en": "The assertions on stores, documents, versions and record hold in the three ordered cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la recuperación guarda las capas del lenguaje solo al confirmar y con su marca de versión, no inventa un metamodelo ambiguo y preserva el original.",
+      "en": "Real evidence that recovery saves the language layers only when confirmed and with their version mark, does not invent an ambiguous metamodel and preserves the original."
+    },
+    "limits": {
+      "es": "En esta vía no existe un indicador de «vista previa aplicable»: analizar es la vista previa e importar es la confirmación. La limpieza solo borra el proyecto creado, no las capas guardadas, y el perfil de integración solo se sugiere. La versión del editor no se recalcula.",
+      "en": "This path has no \"applicable preview\" flag: analysing is the preview and importing is the confirmation. Cleanup only deletes the created project, not the saved layers, and the integration profile is only suggested. The editor version is not recomputed."
+    },
+    "strengthWhy": {
+      "es": "Servicios y almacenes reales, oráculo independiente (fichero de expectativas, recuento sobre el texto de las reglas y SHA-256 propio) y casos negativos en el mismo flujo.",
+      "en": "Real services and stores, independent oracle (expectations file, count over the rules text and own SHA-256) and negative cases in the same flow."
+    },
+    "cases": [
+      {
+        "n": "analyzingIsOnlyAPreviewThatStoresNothing",
+        "scenario": { "es": "Analizar el fixture completo.", "en": "Analyse the complete fixture." },
+        "result": { "es": "Informe con sugerencias; ningún documento ni proyecto.", "en": "Report with suggestions; no document or project." }
+      },
+      {
+        "n": "twoEquallyPlausibleSourcesKeepTheOriginalAndStoreNoLanguageLayer",
+        "scenario": { "es": "Dos copias del metamodelo como origen.", "en": "Two copies of the metamodel as source." },
+        "result": { "es": "No se adivina; original preservado y sin capas.", "en": "Nothing guessed; original preserved and no layers." }
+      },
+      {
+        "n": "confirmingTheImportStoresMetamodelEditorLayersAndRulesWithVersionMarks",
+        "scenario": { "es": "Importar el proyecto completo.", "en": "Import the complete project." },
+        "result": { "es": "Metamodelo, reglas y editor guardados con versión.", "en": "Metamodel, rules and editor saved with version." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.project.recovery.ExternalProjectRecoveryEndToEndIntegrationTests",
+      "java:com.example.editor.project.recovery.ExternalProjectRecoveryReopenIntegrationTests",
+      "java:com.example.editor.project.recovery.ExternalProjectSemanticMaterializationServiceTests",
+      "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests"
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests.java", "line": 196 },
+      { "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests.java", "line": 203 },
+      { "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests.java", "line": 225 },
+      { "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests.java", "line": 253 },
+      { "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests.java", "line": 261 },
+      { "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests.java", "line": 285 },
+      { "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests.java", "line": 286 },
+      { "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests.java", "line": 296 },
+      { "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests.java", "line": 305 }
+    ]
+  }
+]

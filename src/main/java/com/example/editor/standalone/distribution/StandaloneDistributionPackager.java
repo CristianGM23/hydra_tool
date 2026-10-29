@@ -43,7 +43,7 @@ public class StandaloneDistributionPackager {
     /** Descripción: Ejecuta la operación «packageProject» correspondiente a la responsabilidad de StandaloneDistributionPackager. Entradas: editorRoot: dato de entrada necesario para la operación; archive: archivo o contenido que debe procesarse; validation: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public StandaloneDistributionPackageResult packageProject(Path editorRoot, Path archive,
             StandaloneDistributionValidationReport validation){
         Objects.requireNonNull(validation, "validation");
-        if(!validation.valid()){throw new IllegalStateException("Cannot package an invalid standalone distribution");}
+        if(!validation.valid()){throw new StandaloneDistributionRejectedException("Cannot package an invalid standalone distribution");}
         Path root = Objects.requireNonNull(editorRoot, "editorRoot").toAbsolutePath().normalize();
         Path output = Objects.requireNonNull(archive, "archive").toAbsolutePath().normalize();
         if(output.startsWith(root)){throw new IllegalArgumentException("Archive must be written outside the packaged editor root");}
@@ -93,9 +93,9 @@ public class StandaloneDistributionPackager {
             }
             /** Descripción: Añade un fichero regular portable al inventario acotado y rechaza enlaces simbólicos. Entradas: file: fichero visitado; attrs: atributos observados. Salida: continúa el recorrido o falla si se supera la cardinalidad. */
             /** Descripción: Ejecuta la operación «visitFile» correspondiente a la responsabilidad de StandaloneDistributionPackager. Entradas: file: archivo o contenido que debe procesarse; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                if(attrs.isSymbolicLink()) throw new IOException("Symbolic links are not portable in standalone distributions: " + normalized(root.relativize(file)));
+                if(attrs.isSymbolicLink()) throw new StandaloneDistributionRejectedException("Symbolic links are not portable in standalone distributions: " + normalized(root.relativize(file)));
                 if(!attrs.isRegularFile() || excluded(root.relativize(file))) return FileVisitResult.CONTINUE;
-                if(sensitive(root.relativize(file))) throw new IOException(
+                if(sensitive(root.relativize(file))) throw new StandaloneDistributionRejectedException(
                         "Sensitive file must not be packaged: " + normalized(root.relativize(file)));
                 if(files.size() >= maximumEntries) throw new IOException("Standalone distribution exceeds configured entry limit of " + maximumEntries);
                 files.add(file);

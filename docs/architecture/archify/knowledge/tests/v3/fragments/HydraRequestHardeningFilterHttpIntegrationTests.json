@@ -1,0 +1,127 @@
+[
+  {
+    "id": "java:com.example.editor.security.input.HydraRequestHardeningFilterHttpIntegrationTests",
+    "name": {
+      "es": "Filtro de endurecimiento de peticiones por HTTP real",
+      "en": "Request-hardening filter over real HTTP"
+    },
+    "type": "SECURITY",
+    "layer": "platform",
+    "caps": [
+      "security"
+    ],
+    "procs": [
+      {
+        "id": "security_filter_sandbox",
+        "stages": [
+          "a",
+          "d1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_package_and_move_capabilities",
+        "stages": [
+          "sec"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_remote_repository_exchange",
+        "stages": [
+          "sec",
+          "d2"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/security/input/HydraRequestHardeningFilter.java",
+      "src/main/java/com/example/editor/security/input/HydraInputPolicy.java",
+      "src/main/java/com/example/editor/security/input/HydraInputSecurityProperties.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionController.java",
+      "src/main/java/com/example/editor/portability/archive/CapabilityPackageArchiveController.java"
+    ],
+    "pre": {
+      "es": "Puerto local libre; límites reducidos por propiedades hydra.security.input.*.",
+      "en": "Free local port; limits reduced through hydra.security.input.* properties."
+    },
+    "executes": {
+      "es": "SpringBootTest con Tomcat en puerto aleatorio y java.net.http.HttpClient real contra /api/...; además el filtro real se ejecuta con MockHttpServletRequest para aislar las secuencias de ruta peligrosas.",
+      "en": "SpringBootTest with Tomcat on a random port and a real java.net.http.HttpClient against /api/...; the real filter is also run with MockHttpServletRequest to isolate dangerous path sequences."
+    },
+    "asserts": {
+      "es": "URI, query, cabecera y parámetro fuera de presupuesto: 400 problem+json con campo; %00/%0d/%0a/%2e%2e/../..\\: 400 y la cadena no se ejecuta; JSON y multipart mayores que el máximo: 413 y nada se escribe; una petición normal pasa y el mismo POST dentro de límite sí escribe.",
+      "en": "URI, query, header and parameter over budget: 400 problem+json with field; %00/%0d/%0a/%2e%2e/../..\\: 400 and the chain is not run; JSON and multipart over the maximum: 413 and nothing is written; a normal request passes and the same POST within limits does write."
+    },
+    "behavior": {
+      "es": "Antes de llegar a cualquier controlador, HYDRA rechaza peticiones con rutas inseguras, caracteres de control, cabeceras enormes o cuerpos que superan el límite.",
+      "en": "Before reaching any controller, HYDRA rejects requests with unsafe paths, control characters, huge headers or bodies above the limit."
+    },
+    "rule": {
+      "es": "Las peticiones /api/ deben respetar forma y tamaño; lo anómalo se rechaza con 400 o 413.",
+      "en": "/api/ requests must respect shape and size; anything anomalous is rejected with 400 or 413."
+    },
+    "scenario": {
+      "es": "Peticiones reales con URI larga, query larga, cabecera de 1500 caracteres, %01 en un parámetro, traversal codificado, JSON de 3 KB y multipart de 5 KB hacia la importación de paquetes de capacidades.",
+      "en": "Real requests with long URI, long query, a 1500-character header, %01 in a parameter, encoded traversal, 3 KB JSON and 5 KB multipart to the capability-package import."
+    },
+    "result": {
+      "es": "Códigos HTTP literales, cuerpo problem+json y ausencia del directorio que el POST habría creado demuestran el rechazo previo al controlador.",
+      "en": "Literal HTTP codes, problem+json body and absence of the directory the POST would have created show the rejection happens before the controller."
+    },
+    "expected": {
+      "es": "Todos los casos pasan con los límites reducidos configurados.",
+      "en": "All cases pass with the configured reduced limits."
+    },
+    "guarantee": {
+      "es": "El filtro de entrada está activo en la aplicación real y bloquea formas y tamaños anómalos sin efectos secundarios.",
+      "en": "The input filter is active in the real application and blocks anomalous shapes and sizes without side effects."
+    },
+    "limits": {
+      "es": "Un parámetro con <script> NO lo rechaza el filtro (solo longitud y control; el marcado lo trata el asesor del cuerpo). No verifica el aislamiento de procesos externos: x_remote_repository_exchange.sec queda indirecto. Tomcat puede cortar antes %00/%0d.",
+      "en": "A parameter with <script> is NOT rejected by the filter (length and control only; markup is handled by the body advice). Does not verify external-process isolation: x_remote_repository_exchange.sec stays indirect. Tomcat may cut %00/%0d earlier."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Servidor y filtro reales, oráculos independientes (códigos, cuerpo, disco) y rechazo con control positivo.",
+      "en": "Real server and filter, independent oracles (codes, body, disk) and rejection with a positive control."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/security/input/HydraRequestHardeningFilterHttpIntegrationTests.java",
+        "line": 86
+      },
+      {
+        "path": "src/test/java/com/example/editor/security/input/HydraRequestHardeningFilterHttpIntegrationTests.java",
+        "line": 96
+      },
+      {
+        "path": "src/test/java/com/example/editor/security/input/HydraRequestHardeningFilterHttpIntegrationTests.java",
+        "line": 133
+      },
+      {
+        "path": "src/test/java/com/example/editor/security/input/HydraRequestHardeningFilterHttpIntegrationTests.java",
+        "line": 134
+      },
+      {
+        "path": "src/test/java/com/example/editor/security/input/HydraRequestHardeningFilterHttpIntegrationTests.java",
+        "line": 149
+      },
+      {
+        "path": "src/test/java/com/example/editor/security/input/HydraRequestHardeningFilterHttpIntegrationTests.java",
+        "line": 151
+      },
+      {
+        "path": "src/test/java/com/example/editor/security/input/HydraRequestHardeningFilterHttpIntegrationTests.java",
+        "line": 175
+      },
+      {
+        "path": "src/test/java/com/example/editor/security/input/HydraRequestHardeningFilterHttpIntegrationTests.java",
+        "line": 153
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

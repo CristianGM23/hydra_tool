@@ -1,0 +1,32 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-13T10:07:28+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraAutopilotoGitHubV2\\runs\\20261013-111409-c0aedc\\reports\\20261013-120727",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "f80c2abeb5eedd9a96a81bec54e33d4ffab87079cd5478191ef6492e91c2bcf3",
+  "reportCheckpointName": "0001-01791886047914118300-2f2bbfbf8b94468686a82cb0334b1d39.json",
+  "testResults": [
+    {
+      "id": "S523",
+      "title": "Archify pendiente: script:scripts/api/verify_backward_compatibility.py",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.73,
+      "logSha256": "2c3b6b1b47dcce4eeae9139e4d73f51834f3942f4bcb3baa047aed53a0abe6c9",
+      "logRelativePath": "logs/S523.log"
+    }
+  ],
+  "summary": {
+    "PASS": 1,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

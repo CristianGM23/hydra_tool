@@ -1,0 +1,50 @@
+[
+  {
+    "id": "pw:e2e/real/project/home-entry.spec.ts",
+    "name": { "es": "Inicio: continuar, abrir un reciente (máximo 6), abrir por carpeta y crear proyecto", "en": "Home: continue, open a recent project (maximum 6), open by folder and create a project" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["project"],
+    "procs": [
+      { "id": "project_author_home", "stages": ["a", "b", "c", "d"], "match": "direct" }
+    ],
+    "pre": null,
+    "executes": { "es": "Navegador real sobre la aplicación compilada y el backend real, con proyectos sembrados: pulsa Continuar, abre un proyecto reciente, abre un proyecto por su carpeta y crea uno nuevo con el asistente.", "en": "Real browser on the built application and the real backend, with seeded projects: presses Continue, opens a recent project, opens a project by its folder and creates a new one with the wizard." },
+    "asserts": { "es": "Continuar abre el módulo del artefacto principal guardado; solo hay 6 tarjetas de recientes aunque haya más; un reciente sin carpeta aparece deshabilitado; abrir y crear dejan el proyecto activo y registrado en el backend.", "en": "Continue opens the module of the saved main component; only 6 recent cards appear even with more; a recent project without a folder is disabled; opening and creating leave the project active and registered in the backend." },
+    "behavior": { "es": "Desde Inicio el usuario entra por el artefacto principal del proyecto activo, abre uno de sus 6 proyectos recientes, abre un proyecto indicando su carpeta o crea uno nuevo.", "en": "From Home the user enters through the active project's main component, opens one of the 6 recent projects, opens a project by its folder or creates a new one." },
+    "rule": { "es": "Los recientes mostrados son como máximo 6 y no se ofrece abrir uno cuya carpeta ya no existe.", "en": "At most 6 recent projects are shown and a project whose folder no longer exists cannot be opened." },
+    "scenario": { "es": "Siete proyectos recientes, el último con artefacto principal de reglas de calidad y otro con la carpeta borrada; después se abre uno por carpeta (también una carpeta inexistente) y se crea uno nuevo.", "en": "Seven recent projects, the latest with a quality-rules main component and another with its folder deleted; then one is opened by folder (also a missing folder) and a new one is created." },
+    "result": { "es": "Continuar abre la capa de reglas de calidad, la tarjeta del proyecto sin carpeta queda bloqueada, y abrir o crear dejan el proyecto elegido como activo y primero de los recientes.", "en": "Continue opens the quality-rules layer, the card of the project without a folder is blocked, and opening or creating leaves the chosen project active and first in the recent list." },
+    "expected": { "es": "Navegación correcta, 6 tarjetas, tarjeta bloqueada, proyecto activo y registro coherentes con lo que muestra la pantalla, y sin cambios al intentar abrir una carpeta inexistente.", "en": "Correct navigation, 6 cards, a blocked card, and an active project and registry that agree with the screen, with no change when trying to open a missing folder." },
+    "guarantee": { "es": "Inicio ofrece entradas que realmente abren o crean el proyecto indicado y respeta el límite de recientes.", "en": "Home offers entries that really open or create the indicated project and respects the recent-projects limit." },
+    "limits": { "es": "Las cuatro acciones principales se pulsan: nuevo, abrir e importar (desde un ZIP real) terminan con el proyecto activo; conectar solo se prueba hasta su puerta (abre el diálogo de repositorio y exige perfil y ruta), su éxito con un repositorio real NO se prueba (servicio externo). No prueba el contenido de la pantalla a la que lleva Continuar. Interfaz en inglés.", "en": "All four main actions are pressed: new, open and import (from a real ZIP) end with the project active; connect is only tested up to its gate (it opens the repository dialog and requires a profile and path), its success with a real repository is NOT tested (external service). It does not test the content of the screen Continue leads to. English interface." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Acciones reales del usuario en navegador, backend real, registro y ficheros leídos de forma independiente y rechazos comprobados.", "en": "Real user actions in a browser, real backend, independently read registry and files and checked rejections." },
+    "external": "none",
+    "cases": [
+      { "n": "continuar y recientes", "scenario": { "es": "Pulsa Continuar y abre un reciente de 7 existentes.", "en": "Presses Continue and opens a recent project out of 7." }, "result": { "es": "Entra por reglas de calidad; 6 tarjetas; el abierto pasa a ser el activo.", "en": "Enters through quality rules; 6 cards; the opened one becomes the active one." } },
+      { "n": "abrir por carpeta y crear", "scenario": { "es": "Abre una carpeta válida, una inexistente y crea un proyecto.", "en": "Opens a valid folder, a missing one and creates a project." }, "result": { "es": "La inexistente se rechaza sin cambiar nada; abrir y crear dejan el proyecto activo.", "en": "The missing one is rejected without change; opening and creating leave the project active." } }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/project/home-entry.spec.ts", "line": 23 },
+      { "path": "frontend/e2e/real/project/home-entry.spec.ts", "line": 43 },
+      { "path": "frontend/e2e/real/project/home-entry.spec.ts", "line": 48 },
+      { "path": "frontend/e2e/real/project/home-entry.spec.ts", "line": 57 },
+      { "path": "frontend/e2e/real/project/home-entry.spec.ts", "line": 63 },
+      { "path": "frontend/e2e/real/project/home-entry.spec.ts", "line": 99 },
+      { "path": "frontend/e2e/real/project/home-entry.spec.ts", "line": 121 },
+      { "path": "frontend/e2e/real/project/home-entry.spec.ts", "line": 154 },
+      { "path": "frontend/e2e/real/project/home-entry.spec.ts", "line": 173 }
+    ],
+    "prod": [
+      "frontend/src/application-shell/HydraHome.tsx",
+      "frontend/src/project-explorer/ProjectExplorerWorkspace.tsx",
+      "frontend/src/project-explorer/ProjectManagerDialog.tsx",
+      "src/main/java/com/example/editor/project/web/ProjectController.java",
+      "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java",
+      "src/main/java/com/example/editor/project/storage/ProjectRegistryStore.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.web.GrammarCompileThenDownloadZipIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Compilar una gramática y descargar el ZIP del proyecto generado",
+      "en": "Compile a grammar and download the generated project ZIP"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "layers2": [
+      "definition"
+    ],
+    "caps": [
+      "grammar",
+      "generated_projects"
+    ],
+    "procs": [
+      {
+        "id": "grammar_author_download",
+        "stages": [
+          "dl",
+          "ok",
+          "bd",
+          "r"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/web/GrammarCompilationController.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarGeneratedProjectArchiveService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío; sin herramientas nativas (la comprobación nativa se difiere).",
+      "en": "Empty temporary directory; no native tools (the native check is deferred)."
+    },
+    "setup": {
+      "es": "Servicio de compilación real con repositorios JSON y proveedores reales, empaquetador real y controlador HTTP real servido de forma independiente; el oráculo descomprime el ZIP en el test.",
+      "en": "Real compilation service with JSON repositories and real providers, real archiver and a real HTTP controller served standalone; the oracle unzips the ZIP in the test."
+    },
+    "executes": {
+      "es": "POST /api/grammars/{id}/compile y GET /api/grammar-compilations/{snapshot}/generated-project.zip con una gramática Langium válida; segundo caso con una gramática rota.",
+      "en": "POST /api/grammars/{id}/compile and GET /api/grammar-compilations/{snapshot}/generated-project.zip with a valid Langium grammar; second case with a broken grammar."
+    },
+    "asserts": {
+      "es": "200 con tipo application/zip y Content-Disposition con el nombre esperado; las entradas del ZIP coinciden en nombre, orden y contenido con los ficheros del proyecto declarado por la respuesta de compilación; con la gramática rota, 400 con el motivo y sin ZIP.",
+      "en": "200 with application/zip type and Content-Disposition with the expected name; the ZIP entries match in name, order and content the files of the project declared by the compile response; with the broken grammar, 400 with the reason and no ZIP."
+    },
+    "behavior": {
+      "es": "Tras una compilación correcta se puede descargar un ZIP con exactamente los ficheros del proyecto generado; una compilación fallida no ofrece descarga.",
+      "en": "After a successful compilation a ZIP with exactly the files of the generated project can be downloaded; a failed compilation offers no download."
+    },
+    "rule": {
+      "es": "Solo un resultado de compilación correcto se puede exportar; el archivo se nombra con la gramática y el identificador del resultado.",
+      "en": "Only a successful compilation result can be exported; the archive is named after the grammar and the result identifier."
+    },
+    "scenario": {
+      "es": "Compilar una gramática válida por HTTP, descargar el ZIP y descomprimirlo; compilar una gramática rota e intentar descargarla.",
+      "en": "Compile a valid grammar over HTTP, download the ZIP and unzip it; compile a broken grammar and try to download it."
+    },
+    "result": {
+      "es": "El ZIP contiene los mismos ficheros y contenidos que el proyecto declarado; la descarga del resultado fallido se rechaza.",
+      "en": "The ZIP holds the same files and contents as the declared project; downloading the failed result is rejected."
+    },
+    "expected": {
+      "es": "Nombre, tipo, longitud, entradas y contenidos coinciden y la descarga fallida devuelve 400.",
+      "en": "Name, type, length, entries and contents match and the failed download returns 400."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que el ZIP entregado corresponde al proyecto generado y de que no se exporta una compilación fallida.",
+      "en": "Real evidence that the delivered ZIP corresponds to the generated project and that a failed compilation is not exported."
+    },
+    "limits": {
+      "es": "No se construye ni se ejecuta el proyecto descargado (sin Node ni Java externos); los endpoints asíncronos de trabajos no se ejercen.",
+      "en": "The downloaded project is not built or run (no external Node or Java); the asynchronous job endpoints are not exercised."
+    },
+    "strengthWhy": {
+      "es": "Cadena real de compilación y descarga, oráculo independiente que descomprime y compara, y un caso negativo.",
+      "en": "Real compile-and-download chain, independent oracle that unzips and compares, and a negative case."
+    },
+    "cases": [
+      {
+        "n": "downloadedArchiveMatchesTheGeneratedProjectDeclaredByTheCompileResponse",
+        "scenario": {
+          "es": "Descargar el ZIP de una compilación correcta.",
+          "en": "Download the ZIP of a successful compilation."
+        },
+        "result": {
+          "es": "Mismas entradas y contenidos que el proyecto declarado.",
+          "en": "Same entries and contents as the declared project."
+        }
+      },
+      {
+        "n": "aFailedCompilationCannotBeDownloaded",
+        "scenario": {
+          "es": "Descargar el ZIP de una compilación fallida.",
+          "en": "Download the ZIP of a failed compilation."
+        },
+        "result": {
+          "es": "400 con el motivo y sin ZIP.",
+          "en": "400 with the reason and no ZIP."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/grammar/web/GrammarCompileThenDownloadZipIntegrationTests.java",
+        "line": 135
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/web/GrammarCompileThenDownloadZipIntegrationTests.java",
+        "line": 137
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/web/GrammarCompileThenDownloadZipIntegrationTests.java",
+        "line": 141
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/web/GrammarCompileThenDownloadZipIntegrationTests.java",
+        "line": 142
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/web/GrammarCompileThenDownloadZipIntegrationTests.java",
+        "line": 158
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/web/GrammarCompileThenDownloadZipIntegrationTests.java",
+        "line": 128
+      }
+    ]
+  }
+]

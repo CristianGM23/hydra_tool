@@ -1,0 +1,71 @@
+[
+  {
+    "id": "java:com.example.editor.release.HydraReleaseGateRealCollaboratorsIntegrationTests",
+    "name": {"es": "Puerta de release con colaboradores reales y atestación", "en": "Release gate with real collaborators and attestation"},
+    "type": "INTEGRATION",
+    "layer": "quality",
+    "caps": ["publication", "portability"],
+    "procs": [
+      {"id": "publication_generate_publish", "stages": ["gt"], "match": "direct"},
+      {"id": "recovery_author_governance", "stages": ["b", "d", "r"], "match": "direct"},
+      {"id": "recovery_author_governance", "stages": ["a", "c"], "match": "indirect"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/release/HydraReleaseGateService.java",
+      "src/main/java/com/example/editor/release/HydraReleaseGateController.java",
+      "src/main/java/com/example/editor/portability/CapabilityPackageChecker.java",
+      "src/main/java/com/example/editor/performance/CapabilityPerformanceService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteP2MirrorService.java"
+    ],
+    "pre": {"es": "Directorios temporales para informes, espejo y rendimiento.", "en": "Temp directories for reports, mirror and performance."},
+    "executes": {
+      "es": "HydraReleaseGateController y HydraReleaseGateService reales (MockMvc independiente) con CapabilityPackageChecker, UpdateSiteP2MirrorService (espejo creado y persistido) y CapabilityPerformanceService (informes persistidos) reales. Solo la fuente de instantáneas del espejo y el banco de adaptadores usan Mockito.",
+      "en": "Real HydraReleaseGateController and HydraReleaseGateService (standalone MockMvc) with real CapabilityPackageChecker, UpdateSiteP2MirrorService (mirror created and persisted) and CapabilityPerformanceService (persisted reports). Only the mirror snapshot feed and the adapter bench use Mockito."
+    },
+    "asserts": {
+      "es": "Con todo exigido y superado: passed, PACKAGE/P2_MIRROR/PERFORMANCE en PASS, reportId derivado de la atestación y fichero idéntico en disco; con espejo desconocido, regresión de rendimiento o banco/fusión exigidos sin evidencia: FAIL y no passed; opcionales ausentes: WARNING; HTML con la atestación y manipulación del JSON detectada.",
+      "en": "With everything required and passing: passed, PACKAGE/P2_MIRROR/PERFORMANCE PASS, reportId derived from the attestation and identical file on disk; with unknown mirror, performance regression or bench/merge required without evidence: FAIL and not passed; absent optional checks: WARNING; HTML with the attestation and tampering with the JSON detected."
+    },
+    "behavior": {
+      "es": "La puerta de release evalúa paquete, fusión, espejo, banco y rendimiento, bloquea si falla un requisito exigido y emite una atestación SHA-256 inmutable y descargable en HTML.",
+      "en": "The release gate evaluates package, merge, mirror, bench and performance, blocks if a required check fails and issues an immutable SHA-256 attestation downloadable as HTML."
+    },
+    "rule": {
+      "es": "Un requisito exigido que falla bloquea el release; uno opcional ausente solo avisa.",
+      "en": "A required check that fails blocks the release; an absent optional one only warns."
+    },
+    "scenario": {
+      "es": "Tres variantes (todo exigido y superado, un fallo exigido, opcionales ausentes), consulta por id, HTML y alteración del JSON almacenado.",
+      "en": "Three variants (all required and passing, one required failure, absent optionals), lookup by id, HTML and alteration of the stored JSON."
+    },
+    "result": {
+      "es": "Estados de comprobación, identificador derivado de la atestación y fichero en disco demuestran la decisión.",
+      "en": "Check statuses, attestation-derived identifier and the file on disk show the decision."
+    },
+    "expected": {
+      "es": "Todos los casos pasan; cualquier lectura de un informe manipulado falla.",
+      "en": "All cases pass; any read of a tampered report fails."
+    },
+    "guarantee": {
+      "es": "La decisión de release es reproducible, está respaldada por evidencia real y no puede alterarse sin detección.",
+      "en": "The release decision is reproducible, backed by real evidence and cannot be altered undetected."
+    },
+    "limits": {
+      "es": "No ejercita fusión semántica real ni banco de adaptadores real (a y c quedan indirectos), ni la publicación final-verified con gate fallido; la fuente del espejo es un mock.",
+      "en": "Does not exercise a real semantic merge or a real adapter bench (a and c stay indirect), nor the final-verified publication with a failed gate; the mirror source is a mock."
+    },
+    "strength": "MEDIUM",
+    "external": "mocked",
+    "src": [
+      {"path": "src/test/java/com/example/editor/release/HydraReleaseGateRealCollaboratorsIntegrationTests.java", "line": 135},
+      {"path": "src/test/java/com/example/editor/release/HydraReleaseGateRealCollaboratorsIntegrationTests.java", "line": 142},
+      {"path": "src/test/java/com/example/editor/release/HydraReleaseGateRealCollaboratorsIntegrationTests.java", "line": 168},
+      {"path": "src/test/java/com/example/editor/release/HydraReleaseGateRealCollaboratorsIntegrationTests.java", "line": 175},
+      {"path": "src/test/java/com/example/editor/release/HydraReleaseGateRealCollaboratorsIntegrationTests.java", "line": 180},
+      {"path": "src/test/java/com/example/editor/release/HydraReleaseGateRealCollaboratorsIntegrationTests.java", "line": 195},
+      {"path": "src/test/java/com/example/editor/release/HydraReleaseGateRealCollaboratorsIntegrationTests.java", "line": 213},
+      {"path": "src/test/java/com/example/editor/release/HydraReleaseGateRealCollaboratorsIntegrationTests.java", "line": 218}
+    ],
+    "confidence": "ANALYZED"
+  }
+]

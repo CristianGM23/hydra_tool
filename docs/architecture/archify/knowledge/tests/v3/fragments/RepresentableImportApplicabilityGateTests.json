@@ -1,0 +1,103 @@
+[
+  {
+    "id": "java:com.example.editor.integration.representable.RepresentableImportApplicabilityGateTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Puerta de vista previa aplicable en la importación de cambios representables",
+      "en": "Applicable-preview gate in the representable changes import"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["recovery"],
+    "procs": [
+      { "id": "recovery_persist_rollback", "stages": ["d2"], "match": "direct" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/integration/representable/RepresentableImportService.java",
+      "src/main/java/com/example/editor/integration/representable/RepresentableImportStore.java",
+      "src/main/java/com/example/editor/integration/representable/RepresentableImportMapperRegistry.java",
+      "src/main/java/com/example/editor/integration/representable/AbstractCataloguedRepresentableMapper.java",
+      "src/main/java/com/example/editor/integration/representable/EcoreRepresentableImportMapper.java",
+      "src/main/java/com/example/editor/integration/representable/XtextRepresentableImportMapper.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío para los paquetes guardados; sin red ni credenciales.",
+      "en": "Empty temporary directory for the saved packages; no network or credentials."
+    },
+    "setup": {
+      "es": "Servicio real con adaptadores Ecore y Xtext y almacén en disco sobre @TempDir; cambios externos construidos con valores literales.",
+      "en": "Real service with Ecore and Xtext adapters and on-disk store over @TempDir; external changes built with literal values."
+    },
+    "executes": {
+      "es": "RepresentableImportService.preview y apply con RepresentableImportMapperRegistry, EcoreRepresentableImportMapper, XtextRepresentableImportMapper y RepresentableImportStore reales.",
+      "en": "RepresentableImportService.preview and apply with real RepresentableImportMapperRegistry, EcoreRepresentableImportMapper, XtextRepresentableImportMapper and RepresentableImportStore."
+    },
+    "asserts": {
+      "es": "IllegalStateException y directorio vacío si no es aplicable (elemento sin equivalente, destino sin indicar, estrategia estricta con representación parcial); un único fichero con el identificador de la vista previa y su JSON con operaciones y diagnósticos literales si lo es.",
+      "en": "IllegalStateException and empty directory when not applicable (element without equivalent, target not given, strict strategy with partial representation); a single file named after the preview id with literal operations and diagnostics JSON when it is."
+    },
+    "behavior": {
+      "es": "Aplicar vuelve a calcular la vista previa y se niega, sin guardar nada, si no es aplicable; si lo es, guarda un único paquete neutral con sus operaciones y diagnósticos; la estrategia estricta rechaza lo parcialmente representable que la segura acepta.",
+      "en": "Applying recomputes the preview and refuses, saving nothing, when it is not applicable; when it is, it saves a single neutral package with its operations and diagnostics; the strict strategy rejects what is partially representable that the safe one accepts."
+    },
+    "rule": {
+      "es": "Una vista previa no aplicable nunca se guarda; previsualizar no escribe; la estrategia estricta exige representación completa.",
+      "en": "A non-applicable preview is never saved; previewing writes nothing; the strict strategy requires full representation."
+    },
+    "scenario": {
+      "es": "Cambios de Ecore con un elemento sin equivalente neutral, con un destino existente sin indicar y cambios de Xtext parcialmente representables con ambas estrategias, frente a cambios completamente representables.",
+      "en": "Ecore changes with an element without a neutral equivalent, with an existing target not given and partially representable Xtext changes with both strategies, versus fully representable changes."
+    },
+    "result": {
+      "es": "Los tres casos no aplicables se rechazan con el directorio intacto; el aplicable deja un único paquete cuyo identificador coincide con el de la vista previa y cuyo contenido coincide con los literales esperados.",
+      "en": "The three non-applicable cases are rejected with the directory untouched; the applicable one leaves a single package whose id matches the preview's and whose content matches the expected literals."
+    },
+    "expected": {
+      "es": "Las aserciones sobre rechazos, directorio y contenido del paquete se cumplen en los tres casos.",
+      "en": "The assertions on rejections, directory and package content hold in the three cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la puerta de aplicabilidad impide guardar cambios que no se pueden representar y de que lo guardado coincide con la vista previa.",
+      "en": "Real evidence that the applicability gate prevents saving changes that cannot be represented and that what is saved matches the preview."
+    },
+    "limits": {
+      "es": "Solo la vía de cambios representables (adaptadores Ecore y Xtext, sin Langium); el paquete se guarda como fichero, sin aplicarse todavía al metamodelo. No cubre la importación de proyectos externos ni la de update sites, que no tienen esta puerta.",
+      "en": "Only the representable changes path (Ecore and Xtext adapters, no Langium); the package is saved as a file, not yet applied to the metamodel. It does not cover the external project or update site imports, which do not have this gate."
+    },
+    "strengthWhy": {
+      "es": "Servicio y disco reales, oráculo independiente (listado del directorio y JSON literal) y casos negativos y positivos en la misma puerta.",
+      "en": "Real service and disk, independent oracle (directory listing and literal JSON) and negative and positive cases on the same gate."
+    },
+    "cases": [
+      {
+        "n": "aPreviewThatIsNotApplicableIsRefusedWhenApplyingAndNothingIsWritten",
+        "scenario": { "es": "Elemento sin equivalente y destino sin indicar.", "en": "Element without equivalent and target not given." },
+        "result": { "es": "Rechazo y directorio vacío.", "en": "Rejection and empty directory." }
+      },
+      {
+        "n": "anApplicablePreviewIsRecomputedAndSavedAsOneNeutralPackage",
+        "scenario": { "es": "Dos cambios completamente representables.", "en": "Two fully representable changes." },
+        "result": { "es": "Un único paquete con las operaciones esperadas.", "en": "A single package with the expected operations." }
+      },
+      {
+        "n": "theStrictStrategyRefusesPartiallyRepresentableChangesThatTheSafeStrategyAccepts",
+        "scenario": { "es": "Una regla de gramática parcialmente representable.", "en": "A partially representable grammar rule." },
+        "result": { "es": "Estricta rechaza sin escribir; segura guarda y declara lo parcial.", "en": "Strict rejects without writing; safe saves and declares the partial part." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.integration.representable.RepresentableImportServiceTests"
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/integration/representable/RepresentableImportApplicabilityGateTests.java", "line": 52 },
+      { "path": "src/test/java/com/example/editor/integration/representable/RepresentableImportApplicabilityGateTests.java", "line": 62 },
+      { "path": "src/test/java/com/example/editor/integration/representable/RepresentableImportApplicabilityGateTests.java", "line": 84 },
+      { "path": "src/test/java/com/example/editor/integration/representable/RepresentableImportApplicabilityGateTests.java", "line": 99 },
+      { "path": "src/test/java/com/example/editor/integration/representable/RepresentableImportApplicabilityGateTests.java", "line": 120 },
+      { "path": "src/test/java/com/example/editor/integration/representable/RepresentableImportApplicabilityGateTests.java", "line": 129 }
+    ]
+  }
+]

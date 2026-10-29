@@ -1,0 +1,142 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.TransformationApplicationServiceSaveIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Guardado real de una definición de transformación modelo a modelo",
+      "en": "Real save of a model-to-model transformation definition"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "transformation_define",
+        "stages": [
+          "kind",
+          "ends",
+          "m2m",
+          "sv",
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "transformation_author_guided",
+        "stages": [
+          "ok",
+          "sv",
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "transformation_author_mapping",
+        "stages": [
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "transformation_author_guided",
+        "stages": [
+          "ck"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java",
+      "src/main/java/com/example/editor/transformation/persistence/JsonTransformationRepository.java",
+      "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+      "src/main/java/com/example/editor/artifact/transaction/HydraArtifactTransactionService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible y un metamodelo real ya guardado.",
+      "en": "Writable temp directory and a real, already-saved metamodel."
+    },
+    "executes": {
+      "es": "TransformationApplicationService.create real con sus siete colaboradores reales (repositorio JSON, servicio de metamodelos, comprobador, transacciones, casos de prueba y sesiones de sincronización), sin mocks ni capa web.",
+      "en": "Real TransformationApplicationService.create with its seven real collaborators (JSON repository, metamodel service, checker, transactions, test cases and synchronization sessions), with no mocks or web layer."
+    },
+    "asserts": {
+      "es": "Una definicion modelo-a-modelo completa, con tipo, metamodelos de origen/destino, una regla real y una asignacion real, se comprueba sin errores y se guarda de verdad en disco, releible desde un repositorio real distinto; una definicion que referencia un metamodelo inexistente nunca llega a persistirse.",
+      "en": "A complete model-to-model definition, with kind, source/target metamodels, a real rule and a real assignment, is checked with no errors and genuinely saved to disk, rereadable from a different real repository instance; a definition referencing a non-existent metamodel never gets persisted."
+    },
+    "behavior": {
+      "es": "Guardar una definicion de transformacion comprueba de verdad sus extremos y reglas antes de persistirla, y nunca escribe nada en disco cuando un extremo referencia un metamodelo que no existe.",
+      "en": "Saving a transformation definition genuinely checks its endpoints and rules before persisting it, and never writes anything to disk when an endpoint references a metamodel that does not exist."
+    },
+    "rule": {
+      "es": "Una definicion solo se guarda si su comprobacion real no produce errores bloqueantes; un extremo con un metamodelo desconocido la rechaza antes de llegar al repositorio.",
+      "en": "A definition is only saved if its real check produces no blocking errors; an endpoint with an unknown metamodel rejects it before it reaches the repository."
+    },
+    "scenario": {
+      "es": "Una definicion modelo-a-modelo completa y valida; una definicion cuyo extremo de origen referencia un metamodelo inexistente.",
+      "en": "A complete, valid model-to-model definition; a definition whose source endpoint references a non-existent metamodel."
+    },
+    "result": {
+      "es": "La definicion valida queda guardada de verdad con su regla y asignacion intactas; la definicion invalida nunca se persiste.",
+      "en": "The valid definition is genuinely saved with its rule and assignment intact; the invalid definition is never persisted."
+    },
+    "expected": {
+      "es": "Cada escenario produce exactamente el resultado de guardado y persistencia indicado.",
+      "en": "Each scenario produces exactly the stated save and persistence outcome."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que el guardado final de una definicion de transformacion modelo-a-modelo persiste de verdad en disco a traves del mismo servicio de aplicacion real que respalda el diseñador.",
+      "en": "Real evidence that the final save of a model-to-model transformation definition genuinely persists to disk through the same real application service backing the designer."
+    },
+    "limits": {
+      "es": "No ejecuta el diseñador de interfaz en si; cubre solo el tipo modelo-a-modelo, no modelo-a-texto ni texto-a-modelo.",
+      "en": "Does not run the UI designer itself; covers only the model-to-model kind, not model-to-text or text-to-model."
+    },
+    "strengthWhy": {
+      "es": "Prueba nueva de integracion real sin mocks (traits.mocks=false): no existia ninguna prueba dedicada de TransformationApplicationService en este codigo base; construye sus siete colaboradores reales y guarda de verdad una definicion completa en disco, cubriendo directamente kind/ends/m2m/sv/art.",
+      "en": "New real, mock-free integration test (traits.mocks=false): no dedicated TransformationApplicationService test existed in this codebase; it builds its seven real collaborators and genuinely saves a complete definition to disk, directly covering kind/ends/m2m/sv/art."
+    },
+    "cases": [
+      {
+        "n": "savesARealModelToModelDefinitionWithARuleAndAnAssignment",
+        "scenario": {
+          "es": "Definicion modelo-a-modelo completa y valida",
+          "en": "Complete, valid model-to-model definition"
+        },
+        "result": {
+          "es": "Guardada de verdad en disco con su regla y asignacion",
+          "en": "Genuinely saved to disk with its rule and assignment"
+        }
+      },
+      {
+        "n": "refusesToSaveADefinitionReferencingAnUnknownMetamodelAndPersistsNothing",
+        "scenario": {
+          "es": "Extremo de origen con un metamodelo inexistente",
+          "en": "Source endpoint with a non-existent metamodel"
+        },
+        "result": {
+          "es": "Rechazada antes de guardar; nada persistido",
+          "en": "Rejected before saving; nothing persisted"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.transformation.TransformationDefinitionCheckerTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationApplicationServiceSaveIntegrationTests.java",
+        "line": 53
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationApplicationServiceSaveIntegrationTests.java",
+        "line": 93
+      }
+    ]
+  }
+]

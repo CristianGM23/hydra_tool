@@ -1,0 +1,3 @@
+GamificationEventGateIntegrationTests - stage mapping
+- x_event_flow_to_reward.gate (does the event pass?): onlyAnEventWithMetamodelBelowTheDepthLimitAndNotSwitchedOffScores (l.99-111) shows no ledger after blank-metamodel, depth 16/17 and switched-off events and exactly one 2-point entry for depth 15; anOrdinaryEventScoresOnceAndTheLedgerCountIsLiteral (l.131) fixes the literal counts. The gate reads hydra.gamification.depth, not hydra.binding.depth.
+- x_event_flow_to_reward.disc (session switch): anEditorEventWithGamificationSwitchedOffDoesNotScore (l.147-150) and anEditorEventWithGamificationSwitchedOnScores (l.159-161) use the real editor event publisher (it now copies the switch to the metadata after the production fix) and read the ledger from disk.

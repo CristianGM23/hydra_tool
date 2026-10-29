@@ -1,0 +1,114 @@
+[
+  {
+    "id": "java:com.example.editor.gamification.GamificationCatalogPolicyLifecycleIntegrationTests",
+    "name": {
+      "es": "Ciclo de autoría del catálogo de gamificación con política de avisos",
+      "en": "Gamification catalog authoring cycle with notice policy"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "gamification",
+      "events"
+    ],
+    "procs": [
+      {
+        "id": "gamification_author_form",
+        "stages": [
+          "lv",
+          "ck"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "gamification_author_guided",
+        "stages": [
+          "c",
+          "sv"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "gamification_author_policy",
+        "stages": [
+          "sf",
+          "mx",
+          "dt",
+          "sv",
+          "art"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/gamification/GamificationChecker.java",
+      "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackPolicyResolver.java",
+      "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackProjector.java",
+      "src/main/java/com/example/editor/gamification/diagram/GamificationDiagramService.java",
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "Servicio de aplicación, repositorios JSON de catálogo, diagrama y runtime en @TempDir, metamodelo real persistido.",
+      "en": "Real application service, JSON catalog, diagram and runtime repositories in @TempDir, persisted real metamodel."
+    },
+    "executes": {
+      "es": "GamificationApplicationService.create/checkDraft, GamificationDiagramService.save y GamificationRuntimeService.process/feedback reales sobre ficheros JSON temporales.",
+      "en": "Real GamificationApplicationService.create/checkDraft, GamificationDiagramService.save and GamificationRuntimeService.process/feedback over temporary JSON files."
+    },
+    "asserts": {
+      "es": "Las anotaciones hydra.feedback.* y el diagrama están en los JSON de disco; niveles con tipo inexistente, ids duplicados y límite diario sin máximo se rechazan sin persistir; checkDraft separa errores y avisos; el aviso de una concesión real lleva la política guardada.",
+      "en": "hydra.feedback.* annotations and the diagram are in the JSON on disk; levels with unknown type, duplicate ids and daily limit without maximum are rejected without persisting; checkDraft separates errors and warnings; a real grant notice carries the saved policy."
+    },
+    "behavior": {
+      "es": "Un catálogo con política de avisos y diagrama se guarda y se relee; el diseñador rechaza lo inválido sin tocar disco y la política guardada gobierna los avisos siguientes.",
+      "en": "A catalog with notice policy and diagram is saved and read back; invalid input is refused without touching disk and the saved policy governs later notices."
+    },
+    "rule": {
+      "es": "Un nivel necesita un tipo de puntos existente; ids únicos; un límite diario exige máximo; los ajustes de aviso viajan con las definiciones.",
+      "en": "A level needs an existing point type; ids are unique; a daily limit requires a maximum; notice settings travel with the definitions."
+    },
+    "scenario": {
+      "es": "Crear catálogo con anotaciones y diagrama, releer de disco; intentar guardar tres variantes inválidas; comprobar borrador con avisos y con errores; conceder un premio y leer el aviso.",
+      "en": "Create a catalog with annotations and diagram, read it from disk; try three invalid variants; check drafts with warnings and with errors; grant a reward and read the notice."
+    },
+    "result": {
+      "es": "Los valores guardados coinciden con los literales esperados y lo inválido deja el disco sin ficheros de catálogo.",
+      "en": "Saved values match the expected literals and invalid input leaves no catalog files on disk."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan: ficheros con anotaciones, rechazos petición inválida, informes con códigos exactos y aviso con presentación guardada.",
+      "en": "All assertions pass: files with annotations, invalid request refusals, reports with exact codes and a notice with the saved presentation."
+    },
+    "guarantee": {
+      "es": "El servidor guarda y aplica la política de avisos y bloquea catálogos inválidos antes de persistir.",
+      "en": "The server stores and applies the notice policy and blocks invalid catalogs before persisting."
+    },
+    "limits": {
+      "es": "No ejercita la interfaz del diseñador (formulario, modo guiado, selectores); las etapas de usuario se acreditan solo por su efecto en servidor. Solo cubre showPoints de las opciones de detalle.",
+      "en": "Does not exercise the designer UI (form, guided mode, selectors); user stages are evidenced only by their server-side effect. Only showPoints of the detail options is covered."
+    },
+    "strength": "MEDIUM",
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCatalogPolicyLifecycleIntegrationTests.java",
+        "line": 92
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCatalogPolicyLifecycleIntegrationTests.java",
+        "line": 118
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCatalogPolicyLifecycleIntegrationTests.java",
+        "line": 134
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCatalogPolicyLifecycleIntegrationTests.java",
+        "line": 150
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

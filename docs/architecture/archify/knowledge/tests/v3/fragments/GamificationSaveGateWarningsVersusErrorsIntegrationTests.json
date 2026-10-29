@@ -1,0 +1,41 @@
+[
+  {
+    "id": "java:com.example.editor.gamification.GamificationSaveGateWarningsVersusErrorsIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": { "es": "Gamificación: solo los errores bloquean el guardado", "en": "Gamification: only errors block saving" },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["gamification"],
+    "procs": [{ "id": "gamification_define", "stages": ["ok"], "match": "direct" }],
+    "prod": [
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/gamification/GamificationChecker.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationDefinitionRepository.java"
+    ],
+    "pre": { "es": "Metamodelo guardado y directorio temporal vacío para la gamificación.", "en": "Saved metamodel and an empty temporary directory for gamification." },
+    "setup": { "es": "Servicio de aplicación, comprobador y repositorios JSON reales; los ficheros se leen aparte con Jackson.", "en": "Real application service, checker and JSON repositories; the files are read separately with Jackson." },
+    "executes": { "es": "Guardar un catálogo con una regla sin tope, con un nivel de tipo inexistente y reemplazar uno ya guardado con un error.", "en": "Save a catalogue with an unbounded rule, with a level of an unknown type, and replace a saved one with an error." },
+    "asserts": { "es": "El aviso se guarda y los dos ficheros existen con la regla; el error se rechaza sin crear ficheros; reemplazar con error deja ambos ficheros idénticos byte a byte.", "en": "The warning is saved and both files exist with the rule; the error is rejected with no files created; replacing with an error leaves both files byte-identical." },
+    "behavior": { "es": "Un catálogo de gamificación con solo avisos se guarda; con algún error no se guarda y lo anterior no cambia.", "en": "A gamification catalogue with warnings only is saved; with any error it is not saved and the previous one is unchanged." },
+    "rule": { "es": "Los avisos no impiden guardar; los errores sí y nunca dejan el disco a medias.", "en": "Warnings do not prevent saving; errors do, and never leave the disk half-written." },
+    "scenario": { "es": "Guardar una regla sin tope, guardar un nivel inválido y reemplazar un catálogo válido por uno con error.", "en": "Save an unbounded rule, save an invalid level and replace a valid catalogue with a faulty one." },
+    "result": { "es": "El aviso queda en disco; el error se rechaza y los ficheros previos permanecen intactos.", "en": "The warning ends up on disk; the error is rejected and the previous files stay intact." },
+    "expected": { "es": "Contenido de los ficheros y motivo de rechazo coinciden con lo descrito.", "en": "File contents and rejection reason match the description." },
+    "guarantee": { "es": "La puerta de guardado distingue avisos de errores con el almacenamiento real.", "en": "The save gate tells warnings from errors using the real storage." },
+    "limits": { "es": "Solo un tipo de aviso y un tipo de error; no cubre conflictos de versión ni el acceso HTTP.", "en": "Only one kind of warning and one kind of error; does not cover version conflicts or HTTP access." },
+    "strengthWhy": { "es": "Servicio y almacén reales con oráculo en disco independiente del comprobador.", "en": "Real service and store with an on-disk oracle independent of the checker." },
+    "cases": [
+      { "n": "aWarningOnlyRuleIsPersistedToDisk", "scenario": { "es": "Regla sin tope.", "en": "Unbounded rule." }, "result": { "es": "Se guarda con aviso.", "en": "Saved with a warning." } },
+      { "n": "anErrorIsRejectedAndNothingIsWritten", "scenario": { "es": "Nivel con tipo inexistente.", "en": "Level with unknown type." }, "result": { "es": "Rechazo sin ficheros.", "en": "Rejected, no files." } },
+      { "n": "replacingWithAnErrorLeavesThePreviousFilesUntouched", "scenario": { "es": "Reemplazo con error.", "en": "Replace with error." }, "result": { "es": "Ficheros idénticos.", "en": "Files identical." } }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/gamification/GamificationSaveGateWarningsVersusErrorsIntegrationTests.java", "line": 72 },
+      { "path": "src/test/java/com/example/editor/gamification/GamificationSaveGateWarningsVersusErrorsIntegrationTests.java", "line": 99 },
+      { "path": "src/test/java/com/example/editor/gamification/GamificationSaveGateWarningsVersusErrorsIntegrationTests.java", "line": 119 }
+    ]
+  }
+]

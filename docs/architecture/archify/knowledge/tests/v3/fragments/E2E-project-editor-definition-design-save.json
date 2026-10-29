@@ -1,0 +1,53 @@
+[
+  {
+    "id": "pw:e2e/real/project/editor-definition-design-save.spec.ts",
+    "name": { "es": "Diseñar y guardar una definición de editor: vistas, mapeos, herramientas, formulario y estilo", "en": "Design and save an editor definition: views, mappings, tools, form and style" },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "caps": ["model_editor", "persistence"],
+    "procs": [
+      { "id": "model_editor_author_design", "stages": ["rp", "nm", "em", "pt", "fm", "cs", "art"], "match": "direct" }
+    ],
+    "pre": null,
+    "executes": { "es": "Navegador real sobre la aplicación compilada y el backend real, con un metamodelo guardado: añade una vista, mapea una clase y una relación, añade una acción de validar al grupo, crea un formulario, añade un estilo condicional y guarda.", "en": "Real browser on the built application and the real backend, with a saved metamodel: adds a view, maps a class and a relation, adds a validate action to the group, creates a form, adds a conditional style and saves." },
+    "asserts": { "es": "La definición guardada, leída del backend, tiene las dos vistas, el mapeo de nodo y el de arista con sus herramientas en el grupo, la acción de validar, el formulario de la primera clase concreta y el estilo con su condición y preajuste; sin condición no se guarda nada.", "en": "The saved definition, read from the backend, holds both views, the node and edge mappings with their tools in the group, the validate action, the form for the first concrete class and the style with its condition and preset; without a condition nothing is saved." },
+    "behavior": { "es": "El usuario construye con el diseñador el editor de su metamodelo y lo guarda; lo guardado refleja cada paso del diseño.", "en": "The user builds the editor for their metamodel with the designer and saves it; what is saved reflects every design step." },
+    "rule": { "es": "Cada regla de estilo condicional necesita una condición, un formulario necesita al menos una clase concreta, y las acciones de operación o de acción configurada exigen que existan primero.", "en": "Every conditional style rule needs a condition, a form needs at least one concrete class, and operation or configured-action tools require those to exist first." },
+    "scenario": { "es": "Metamodelo con Persona, Equipo y la relación miembros: se añade vista, mapeo por clase y por relación, acción de validar, formulario y regla de estilo (primero sin condición, luego con ella). Otra prueba usa un metamodelo sin clases concretas.", "en": "A metamodel with Person, Team and the members relation: a view, class and relation mapping, a validate action, a form and a style rule are added (first without a condition, then with it). Another test uses a metamodel without concrete classes." },
+    "result": { "es": "Tras guardar, el backend contiene la definición completa y el modelo de condiciones; el intento sin condición y el formulario sin clases concretas muestran un error y no guardan nada.", "en": "After saving, the backend holds the complete definition and the conditions model; the attempt without a condition and the form without concrete classes show an error and save nothing." },
+    "expected": { "es": "Cada elemento diseñado aparece en la definición guardada con sus vínculos correctos y los dos rechazos son visibles.", "en": "Every designed element appears in the saved definition with correct links and both rejections are visible." },
+    "guarantee": { "es": "Lo que el usuario diseña en pantalla queda guardado tal cual en el backend y las reglas incompletas se detienen antes de guardar.", "en": "What the user designs on screen is saved as designed in the backend, and incomplete rules stop before saving." },
+    "limits": { "es": "Operación y acción configurada solo se comprueban como opciones bloqueadas (el metamodelo no tiene ninguna). «Sin grupo no ocurre nada» no puede ejercerse desde la interfaz. HALLAZGO: al guardar con una conexión la interfaz lanza un error de lectura de null y omite el mensaje de guardado, aunque el backend guarda. Interfaz en inglés.", "en": "Operation and configured-action tools are only checked as blocked options (the metamodel has none). \u0027With no group nothing happens\u0027 cannot be exercised from the interface. FINDING: saving with a connection makes the interface raise a null-reading error and omit the saved message, although the backend stores it. English interface." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Acciones reales del usuario en navegador, backend real y comprobación de la definición guardada, con dos rechazos verificados.", "en": "Real user actions in a browser, real backend and a check of the saved definition, with two verified rejections." },
+    "external": "none",
+    "cases": [
+      { "n": "diseño completo y guardado", "scenario": { "es": "Vista, mapeos, validar, formulario y estilo condicional.", "en": "View, mappings, validate, form and conditional style." }, "result": { "es": "Todo aparece en la definición guardada.", "en": "Everything appears in the saved definition." } },
+      { "n": "estilo sin condición", "scenario": { "es": "Guardar con una regla sin condición.", "en": "Save with a rule that has no condition." }, "result": { "es": "Error visible y nada guardado.", "en": "A visible error and nothing saved." } },
+      { "n": "formulario sin clases concretas", "scenario": { "es": "Pulsar + Form en un metamodelo solo abstracto.", "en": "Press + Form on an abstract-only metamodel." }, "result": { "es": "Error visible y sin definición guardada.", "en": "A visible error and no saved definition." } }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/project/editor-definition-design-save.spec.ts", "line": 39 },
+      { "path": "frontend/e2e/real/project/editor-definition-design-save.spec.ts", "line": 44 },
+      { "path": "frontend/e2e/real/project/editor-definition-design-save.spec.ts", "line": 54 },
+      { "path": "frontend/e2e/real/project/editor-definition-design-save.spec.ts", "line": 59 },
+      { "path": "frontend/e2e/real/project/editor-definition-design-save.spec.ts", "line": 70 },
+      { "path": "frontend/e2e/real/project/editor-definition-design-save.spec.ts", "line": 85 },
+      { "path": "frontend/e2e/real/project/editor-definition-design-save.spec.ts", "line": 105 },
+      { "path": "frontend/e2e/real/project/editor-definition-design-save.spec.ts", "line": 116 }
+    ],
+    "prod": [
+      "frontend/src/editor-definition/EditorDefinitionDesigner.tsx",
+      "frontend/src/editor-definition/EditorDefinitionTree.tsx",
+      "frontend/src/editor-definition/EditorDefinitionDesignerParts.tsx",
+      "frontend/src/editor-definition/EditorPaletteToolForm.tsx",
+      "frontend/src/editor-definition/ConditionalStyleEditor.tsx",
+      "frontend/src/editor-definition/editorDefinitionMappingMutations.ts",
+      "frontend/src/editor-definition/editorDefinitionValidation.ts",
+      "src/main/java/com/example/editor/definition/web/CanonicalEditorDefinitionController.java",
+      "src/main/java/com/example/editor/definition/persistence/JsonEditorDefinitionRepository.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

@@ -1,0 +1,175 @@
+[
+  {
+    "id": "pw:e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+    "name": {
+      "es": "Generar código desde el modelo de extremo a extremo: destino, espacio de nombres, vista previa, opción y descarga",
+      "en": "Generating code from the model end to end: target, namespace, preview, option and download"
+    },
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": [
+      "publication",
+      "model_editor"
+    ],
+    "procs": [
+      {
+        "id": "publication_author_codegen",
+        "stages": [
+          "ns",
+          "ok"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "publication_generate_publish",
+        "stages": [
+          "t"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "frontend/src/model-codegen/ModelCodeGenerationDialog.tsx",
+      "frontend/src/model-codegen/api.ts",
+      "frontend/src/model-editor/ModelEditorWorkspace.tsx",
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationController.java",
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationService.java",
+      "src/main/java/com/example/editor/codegen/SourceModelCodeGenerationRenderer.java",
+      "src/main/java/com/example/editor/codegen/ModelCodeGenerationTarget.java"
+    ],
+    "pre": {
+      "es": "Servidor real con almacenamiento temporal propio; un metamodelo mínimo se siembra por la API real como paso previo y el modelo se crea desde la interfaz.",
+      "en": "Real server with its own temporary storage; a minimal metamodel is seeded through the real API as a prior step and the model is created from the interface."
+    },
+    "setup": {
+      "es": "Navegador real, interfaz en inglés, sin simulaciones. Se lee la ruta de la petición de vista previa para repetir la generación directamente contra el servidor.",
+      "en": "Real browser, interface in English, no simulations. The preview request path is read to repeat the generation directly against the server."
+    },
+    "executes": {
+      "es": "Abre #/model, elige el metamodelo, pulsa 'New model' y 'Generate code', elige Java, escribe 'e2e.gen' y 'E2eModel', pulsa 'Preview code', activa 'Generate getters and setters', vuelve a previsualizar y pulsa 'Generate and download'. Una segunda jornada cambia de Java a Python.",
+      "en": "Opens #/model, picks the metamodel, presses 'New model' and 'Generate code', chooses Java, types 'e2e.gen' and 'E2eModel', presses 'Preview code', ticks 'Generate getters and setters', previews again and presses 'Generate and download'. A second journey switches from Java to Python."
+    },
+    "asserts": {
+      "es": "La vista previa contiene 'package e2e.gen;' y la clase E2eModel, no tiene accesores hasta activar la opción y después sí; coincide con la vista previa pedida directamente al servidor; el fichero descargado se llama E2eModel.java y es idéntico byte a byte a la generación directa. Con Python la extensión y el contenido cambian.",
+      "en": "The preview contains 'package e2e.gen;' and the E2eModel class, has no accessors until the option is ticked and then has them; it matches the preview requested directly from the server; the downloaded file is named E2eModel.java and is byte-for-byte identical to the direct generation. With Python the extension and content change."
+    },
+    "behavior": {
+      "es": "Una persona genera código Java de su modelo: escribe el espacio de nombres y el nombre, ve el resultado, cambia una opción para ajustarlo y descarga el fichero final.",
+      "en": "A person generates Java code from the model: types the namespace and the name, sees the result, changes an option to adjust it and downloads the final file."
+    },
+    "rule": {
+      "es": "Lo escrito en el diálogo y las opciones activadas son las que gobiernan el código generado y descargado.",
+      "en": "What is typed in the dialog and the options ticked are what govern the generated and downloaded code."
+    },
+    "scenario": {
+      "es": "Modelo nuevo de un metamodelo con una clase; diálogo de generación con destino Java, espacio de nombres y nombre propios, y una opción cambiada entre dos vistas previas.",
+      "en": "New model of a one-class metamodel; generation dialog with Java target, own namespace and name, and an option changed between two previews."
+    },
+    "result": {
+      "es": "El código mostrado y el fichero descargado reflejan el espacio de nombres, el nombre y la opción elegida, y coinciden con la generación directa del servidor.",
+      "en": "The code shown and the downloaded file reflect the namespace, the name and the chosen option, and match the server's direct generation."
+    },
+    "expected": {
+      "es": "Una ejecución correcta muestra el código esperado, cambia al activar la opción y descarga un fichero idéntico al generado por el servidor.",
+      "en": "A passing run shows the expected code, changes when the option is ticked and downloads a file identical to the server's generated one."
+    },
+    "guarantee": {
+      "es": "En el editor de modelos real, los datos del diálogo de generación llegan al servidor y determinan el código previsualizado y descargado.",
+      "en": "In the real model editor, the generation dialog data reaches the server and determines the previewed and downloaded code."
+    },
+    "limits": {
+      "es": "El destino solo se prueba con Java y Python. Sin modelo abierto la orden está deshabilitada; el metamodelo queda cubierto al abrir el modelo con él; el destino no es alcanzable desde la pantalla porque el selector siempre trae uno elegido. No se generan paquetes con pruebas ni sobre una selección de elementos. El modelo es mínimo.",
+      "en": "The target is only tested with Java and Python. With no model open the command is disabled; the metamodel is covered by opening the model with it; the target cannot be reached from the screen because the selector always has one chosen. Test packages and generation over a selection are not exercised. The model is minimal."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción real en el diálogo, servidor real y oráculo independiente (generación directa y bytes descargados) sobre el resultado del espacio de nombres y de la opción cambiada.",
+      "en": "Real action in the dialog, real server and an independent oracle (direct generation and downloaded bytes) on the namespace and changed-option outcome."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "elegir destino, escribir espacio de nombres y nombre, previsualizar, cambiar una opción y descargar",
+        "scenario": {
+          "es": "Java con e2e.gen y E2eModel, vista previa, opción de accesores y descarga.",
+          "en": "Java with e2e.gen and E2eModel, preview, accessors option and download."
+        },
+        "result": {
+          "es": "Vista previa y fichero coinciden con el servidor y cambian con la opción.",
+          "en": "Preview and file match the server and change with the option."
+        }
+      },
+      {
+        "n": "elegir otro destino cambia la extensión y el contenido generado",
+        "scenario": {
+          "es": "Se pasa de Java a Python y se previsualiza.",
+          "en": "Switching from Java to Python and previewing."
+        },
+        "result": {
+          "es": "La extensión es .py y el contenido difiere del de Java.",
+          "en": "The extension is .py and the content differs from Java's."
+        }
+      },
+      {
+        "n": "sin modelo abierto no se puede generar, y el destino elegido determina el fichero descargado",
+        "scenario": {
+          "es": "Con el metamodelo elegido y sin modelo se comprueba la orden; con un modelo nuevo se elige Python y se descarga.",
+          "en": "With the metamodel chosen and no model the command is checked; with a new model Python is chosen and downloaded."
+        },
+        "result": {
+          "es": "La orden está deshabilitada sin modelo y el fichero descargado es .py y coincide con la generación directa.",
+          "en": "The command is disabled without a model and the downloaded file is .py and matches the direct generation."
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 66
+      },
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 79
+      },
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 81
+      },
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 86
+      },
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 96
+      },
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 104
+      },
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 108
+      },
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 136
+      },
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 161
+      },
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 179
+      },
+      {
+        "path": "frontend/e2e/real/publication/model-codegen-dialog-generate.spec.ts",
+        "line": 185
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

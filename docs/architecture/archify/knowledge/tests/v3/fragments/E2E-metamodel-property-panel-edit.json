@@ -1,0 +1,100 @@
+[
+  {
+    "id": "pw:e2e/real/metamodel/property-panel-edit.spec.ts",
+    "name": {
+      "es": "Panel de propiedades del metamodelo de extremo a extremo: atributos, operaciones y relaciones guardados",
+      "en": "Metamodel property panel end to end: attributes, operations and relations saved"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["delivery"],
+    "caps": ["metamodel", "persistence"],
+    "procs": [
+      { "id": "metamodel_author_properties", "stages": ["d1", "at", "op", "rl", "opt", "art"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/metamodel-designer/MetamodelPropertyPanel.tsx",
+      "frontend/src/metamodel-designer/MetamodelDesigner.tsx",
+      "frontend/src/metamodel-designer/metaModelOperations.ts",
+      "frontend/src/metamodel-designer/referenceEndpoints.ts",
+      "src/main/java/com/example/editor/metamodel/web/CanonicalMetamodelController.java",
+      "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java",
+      "src/main/java/com/example/editor/metamodel/validation/MetamodelValidationApplicationService.java"
+    ],
+    "pre": {
+      "es": "Backend real con almacenamiento temporal propio; el metamodelo se crea en la propia prueba con nombre único.",
+      "en": "Real backend with its own temporary storage; the metamodel is created in the test itself with a unique name."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, ventana de 1700x1000, sin simulaciones. El oráculo lee el .metamodel.json del disco del backend, hace GET a la API real y compara el fichero antes y después de un guardado inválido.",
+      "en": "Playwright with Chromium, a 1700x1000 window, no simulations. The oracle reads the .metamodel.json from the backend disk, issues GET calls to the real API and compares the file before and after an invalid save."
+    },
+    "executes": {
+      "es": "En el editor visual añade clase, enumerado y tipo de datos; en el panel crea tres atributos (tipo básico, enumerado y propio), una operación con retorno, parámetro y comportamiento, una referencia cambiada a agregación y su inversa; guarda y después renombra una clase con un nombre repetido e intenta guardar.",
+      "en": "In the visual editor adds a class, an enumeration and a data type; in the panel creates three attributes (basic, enumeration and own type), an operation with return, parameter and behavior, a reference changed to aggregation and its opposite; saves and then renames a class to a repeated name and tries to save."
+    },
+    "asserts": {
+      "es": "El .metamodel.json y el GET traen los atributos con tipo, multiplicidad 1..*, ordenado/único desmarcados y valor por defecto; la operación con retorno BOOLEAN, parámetro y comportamiento QUERY; las relaciones con su tipo, extremos, orden e inversas cruzadas; el guardado con nombres de clase repetidos muestra el aviso y el fichero queda idéntico.",
+      "en": "The .metamodel.json and the GET hold the attributes with type, 1..* multiplicity, ordered/unique cleared and default value; the operation with BOOLEAN return, parameter and QUERY behavior; the relations with kind, endpoints, order and crossed opposites; saving with repeated class names shows the notice and the file stays identical."
+    },
+    "behavior": {
+      "es": "Una persona completa una clase en el panel de propiedades —atributos, operaciones y relaciones— y al guardar todos los valores quedan en el servidor; un guardado con datos inválidos se rechaza y no cambia lo guardado.",
+      "en": "A person completes a class in the property panel —attributes, operations and relations— and on saving all the values are on the server; a save with invalid data is rejected and leaves what was saved unchanged."
+    },
+    "rule": {
+      "es": "Dos clases no pueden compartir nombre: el guardado se rechaza con un aviso y el metamodelo guardado no cambia.",
+      "en": "Two classes cannot share a name: the save is rejected with a notice and the saved metamodel does not change."
+    },
+    "scenario": {
+      "es": "Se elige qué editar (atributo, operación o relación), se rellenan nombre, tipo, multiplicidad, orden, unicidad, valor por defecto, firma, comportamiento, tipo de relación e inversa, se guarda y se prueba un nombre de clase repetido.",
+      "en": "The person chooses what to edit (attribute, operation or relation), fills name, type, multiplicity, order, uniqueness, default value, signature, behavior, relation kind and opposite, saves, and tries a repeated class name."
+    },
+    "result": {
+      "es": "Todos los valores introducidos aparecen tal cual en el metamodelo guardado y el intento inválido no deja rastro.",
+      "en": "All the entered values appear as typed in the saved metamodel and the invalid attempt leaves no trace."
+    },
+    "expected": {
+      "es": "Una ejecución correcta guarda exactamente lo editado y, ante el nombre repetido, muestra el aviso sin modificar el fichero.",
+      "en": "A passing run saves exactly what was edited and, on the repeated name, shows the notice without modifying the file."
+    },
+    "guarantee": {
+      "es": "Editar atributos, operaciones y relaciones desde el panel funciona en un navegador real y el servidor conserva lo editado.",
+      "en": "Editing attributes, operations and relations from the panel works in a real browser and the server keeps what was edited."
+    },
+    "limits": {
+      "es": "No cubre el tipo de implementación de la operación (sin implementar, expresión, acción o externa), que se define en otra sección, ni atributos de tipo clase o externo, ni excepciones de operación ni el idioma español.",
+      "en": "It does not cover the implementation kind of an operation (none, expression, action or external), which is defined in another section, nor class or external attribute types, operation exceptions or the Spanish interface."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Edición real en navegador, backend real, lectura del fichero y comprobación de que el guardado inválido no lo modifica.",
+      "en": "Real editing in a browser, real backend, reading of the file and a check that the invalid save does not modify it."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "atributos, operaciones y relaciones editados en el panel se guardan con sus valores y un guardado inválido se rechaza sin tocar lo guardado",
+        "scenario": { "es": "Se editan atributos, una operación y dos relaciones enlazadas como inversas, se guarda y luego se repite un nombre de clase.", "en": "Attributes, an operation and two relations linked as opposites are edited, saved, and then a class name is repeated." },
+        "result": { "es": "Lo editado queda guardado y el nombre repetido se rechaza sin cambiar el fichero.", "en": "What was edited is saved and the repeated name is rejected without changing the file." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.metamodel.web.MetamodelAuthoringSaveGateHttpIntegrationTests",
+      "vitest:frontend/src/metamodel-designer/MetamodelPropertyPanel.operations.test.tsx",
+      "pw:e2e/real/metamodel/canvas-author-relations.spec.ts"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/metamodel/property-panel-edit.spec.ts", "line": 85 },
+      { "path": "frontend/e2e/real/metamodel/property-panel-edit.spec.ts", "line": 98 },
+      { "path": "frontend/e2e/real/metamodel/property-panel-edit.spec.ts", "line": 101 },
+      { "path": "frontend/e2e/real/metamodel/property-panel-edit.spec.ts", "line": 108 },
+      { "path": "frontend/e2e/real/metamodel/property-panel-edit.spec.ts", "line": 116 },
+      { "path": "frontend/e2e/real/metamodel/property-panel-edit.spec.ts", "line": 119 },
+      { "path": "frontend/e2e/real/metamodel/property-panel-edit.spec.ts", "line": 131 },
+      { "path": "frontend/e2e/real/metamodel/property-panel-edit.spec.ts", "line": 133 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

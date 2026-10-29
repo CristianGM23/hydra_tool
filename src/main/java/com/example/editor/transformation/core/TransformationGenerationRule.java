@@ -4,8 +4,10 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import com.example.editor.semantic.expression.ExpressionDefinition;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-/** Regla M2T neutral basada en contexto, condición, ruta y plantilla segura. */
+/** Regla M2T neutral basada en contexto, condición, ruta y plantilla segura. La condición ausente no se serializa, igual que en las demás reglas de transformación. */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record TransformationGenerationRule(
         String id,
         String name,

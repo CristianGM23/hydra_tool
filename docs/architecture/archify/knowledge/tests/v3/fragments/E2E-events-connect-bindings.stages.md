@@ -1,0 +1,7 @@
+- events_author_connect.a1: elegir el evento reservado (ficha de sistema, l.38) y que quede como origen del enlace guardado (l.47, l.59).
+- events_author_connect.a2: destino solo propio y rechazos: sin puerto de entrada en el reservado (l.71), bucle sin efecto (l.76), par repetido con aviso (l.80-82), arrastre/clics (l.40-44).
+- events_author_connect.d1: lo válido crea enlace (l.57) y lo inválido no cambia disco ni contador (l.85, l.94-95, l.107-108).
+- events_author_connect.a3: enlace guardado activo, política REPORT, sin condición ni copias (l.62-65).
+- events_author_connect.a4: copia de datos exacta y rechazos por campo obligatorio/condición inexistente (l.94, l.107, l.124-126); condición existente (modelo de expresiones sembrado) guardada y comprobada por el servidor sin errores (l.189, l.195-196); condición retirada desde el panel del lienzo (l.207-214).
+- events_author_form.a6: abrir un enlace guardado en el formulario, quitar su copia obligatoria (rechazo, disco intacto, l.171-172), reponerla con otra ruta y poner la condición (l.189-192).
+- Limitación: arrastre con respaldo de clics y selección del enlace en el lienzo con evento de clic (limits); por eso el registro sigue MEDIUM.

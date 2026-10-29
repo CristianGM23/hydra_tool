@@ -56,7 +56,7 @@ public class VsCodeExtensionTechnologyAdapter implements TechnologyAdapter {
             String commandPrefix = TechnologyAdapterSupport.slug(request.profile().target().settings().getOrDefault("commandPrefix", "hydra." + slug));
             String modelExtension = safeExtension(request.profile().target().settings().getOrDefault("modelExtension", "hydra"));
             String glspVersion = request.profile().target().settings().getOrDefault("glspVersion", "2.7.0");
-            String langiumVersion = request.profile().target().settings().getOrDefault("langiumVersion", "4.3.0");
+            String langiumVersion = request.profile().target().settings().getOrDefault("langiumVersion", "4.4.0");
             String vscodeEngine = request.profile().target().settings().getOrDefault("vscodeEngine", "^1.103.0");
             List<String> sourceIds = TechnologyAdapterGenerationSupport.sourceIds(request);
             List<TechnologyGeneratedFile> files = new ArrayList<>();
@@ -103,9 +103,10 @@ public class VsCodeExtensionTechnologyAdapter implements TechnologyAdapter {
                     dependency("npm", "langium", langiumVersion, "runtime"),
                     dependency("npm", "@types/vscode", vscodeEngine.replace("^", ""), "development"),
                     dependency("npm", "typescript", "5.9.2", "development"),
-                    dependency("npm", "vitest", "4.1.10", "development"),
+                    dependency("npm", "vitest", "5.0.5", "development"),
+                    dependency("npm", "vite", "8.3.5", "development"),
                     dependency("npm", "@vscode/vsce", "3.6.0", "development"),
-                    dependency("npm", "esbuild", "0.25.9", "development"));
+                    dependency("npm", "esbuild", "0.28.2", "development"));
             List<IntegrationVerificationStep> verification = List.of(
                     new IntegrationVerificationStep("install-vscode-extension-dependencies", "Install deterministic VS Code extension dependencies", root,
                             List.of("npm", "install", "--ignore-scripts"), 0, true),
@@ -173,9 +174,10 @@ public class VsCodeExtensionTechnologyAdapter implements TechnologyAdapter {
                     "@types/node": "22.15.0",
                     "@types/vscode": %s,
                     "@vscode/vsce": "3.6.0",
-                    "esbuild": "0.25.9",
+                    "esbuild": "0.28.2",
                     "typescript": "5.9.2",
-                    "vitest": "4.1.10"
+                    "vite": "8.3.5",
+                    "vitest": "5.0.5"
                   },
                   "contributes": {
                     "commands": [

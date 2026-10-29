@@ -28,6 +28,7 @@ import com.example.editor.integration.compiler.TechnologyAdapter;
 import com.example.editor.integration.compiler.TechnologyAdapterGenerationSupport;
 import com.example.editor.integration.compiler.TechnologyAdapterRuntimeLifecycleSupport;
 import com.example.editor.integration.compiler.TechnologyAdapterSupport;
+import com.example.editor.integration.compiler.TechnologyFidelityManifestSupport;
 import com.example.editor.integration.compiler.TechnologyAdapterTextualCustomizationSupport;
 import com.example.editor.integration.compiler.TechnologyAdapterSelfContainedDependencySupport;
 import com.example.editor.integration.compiler.TechnologyAdapterVisualFullStackSupport;
@@ -100,6 +101,8 @@ public class SiriusDesktopTechnologyAdapter implements TechnologyAdapter {
             List<String> p2Units = new ArrayList<>(List.of("org.eclipse.emf.ecore","org.eclipse.emf.ecore.change","org.eclipse.emf.edit","org.eclipse.emf.transaction","org.eclipse.sirius","org.eclipse.sirius.diagram"));
             if(TechnologyAdapterSelfContainedDependencySupport.grammarTechnology(request, mapper) == com.example.editor.grammar.core.GrammarTechnology.XTEXT) p2Units.addAll(List.of("org.eclipse.xtext","org.eclipse.xtext.ui"));
             files.addAll(TechnologyAdapterSelfContainedDependencySupport.eclipseP2VendorFiles(root, pluginId, eclipseRepository, p2Units, sourceIds));
+            files.add(TechnologyAdapterSupport.text(TechnologyAdapterSupport.join(root, "META-INF", "hydra-fidelity-obligations.json"),
+                    "application/json", TechnologyFidelityManifestSupport.json(mapper, request, editor, "SIRIUS_DESKTOP"), sourceIds));
             List<IntegrationDiagnostic> diagnostics = new ArrayList<>(TechnologyAdapterSupport.unsupportedDiagnostics(request, SUPPORTED, "Sirius Desktop"));
             for(RepresentationDefinition representation : editor.representations()){
                 if(representation.kind() != RepresentationKind.DIAGRAM){

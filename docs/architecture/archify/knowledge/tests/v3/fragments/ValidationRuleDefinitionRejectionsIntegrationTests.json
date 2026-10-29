@@ -1,0 +1,141 @@
+[
+  {
+    "id": "java:com.example.editor.validation.validation.ValidationRuleDefinitionRejectionsIntegrationTests",
+    "name": {
+      "es": "Rechazos al definir una regla de validacion y guardado de una regla valida",
+      "en": "Rejections when defining a validation rule and saving a valid one"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": [
+      "validation"
+    ],
+    "procs": [
+      {
+        "id": "validation_define_rule",
+        "stages": [
+          "ctx",
+          "trg",
+          "cnd",
+          "qf",
+          "sv",
+          "chk"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "validation_author_form",
+        "stages": [
+          "qf"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "validation_author_guided",
+        "stages": [
+          "tar",
+          "qf"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "validation_author_guided",
+        "stages": [
+          "dec"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/validation/validation/ValidationModelChecker.java",
+      "src/main/java/com/example/editor/validation/validation/ValidationModelApplicationService.java",
+      "src/main/java/com/example/editor/validation/validation/persistence/JsonValidationModelRepository.java",
+      "src/main/java/com/example/editor/validation/action/ActionModelApplicationService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible por caso, con metamodelo, expresiones y acciones guardados en repositorios JSON reales.",
+      "en": "Writable temp directory per case, with the metamodel, expressions and actions saved in real JSON repositories."
+    },
+    "setup": {
+      "es": "Sin mocks: servicios de aplicacion de metamodelo, expresiones, acciones y validaciones y repositorios JSON reales; un directorio nuevo por caso.",
+      "en": "No mocks: real metamodel, expression, action and validation application services and JSON repositories; a fresh directory per case."
+    },
+    "executes": {
+      "es": "ValidationModelApplicationService.create con reglas deliberadamente incorrectas y una valida; lectura del informe del comprobador real y del fichero JSON que queda en disco.",
+      "en": "ValidationModelApplicationService.create with deliberately wrong rules and a valid one; reading the real checker report and the JSON file left on disk."
+    },
+    "asserts": {
+      "es": "Codigos de error exactos: contexto sin clase o ajeno, disparadores incompatibles o ausentes, expresion inexistente o no booleana, Quick Fix duplicado o inexistente; guardar antes de expresiones o acciones lanza y no escribe nada; la regla valida pasa sin errores y se relee de disco.",
+      "en": "Exact error codes: context without class or foreign, incompatible or missing triggers, missing or non-boolean expression, duplicated or unknown quick fix; saving before expressions or actions throws and writes nothing; the valid rule passes without errors and is reread from disk."
+    },
+    "behavior": {
+      "es": "HYDRA senala con un codigo concreto cada error de definicion de una regla, exige guardar los documentos en orden y guarda de verdad la regla correcta.",
+      "en": "HYDRA flags each rule-definition mistake with a specific code, requires documents to be saved in order and really saves the correct rule."
+    },
+    "rule": {
+      "es": "El comprobador informa de los errores sin impedir el guardado, pero un documento de validaciones sin sus expresiones o acciones previas se rechaza.",
+      "en": "The checker reports errors without preventing the save, but a validation document without its prior expressions or actions is refused."
+    },
+    "scenario": {
+      "es": "Nueve reglas incorrectas, una por cada problema, cada una en su propio directorio, mas dos intentos de guardado en orden incorrecto y una regla valida con Quick Fix.",
+      "en": "Nine wrong rules, one per problem, each in its own directory, plus two out-of-order save attempts and a valid rule with a quick fix."
+    },
+    "result": {
+      "es": "Cada caso incorrecto produce su codigo esperado; los guardados fuera de orden no dejan fichero; la regla valida queda en disco con sus disparadores y su Quick Fix.",
+      "en": "Each wrong case yields its expected code; out-of-order saves leave no file; the valid rule is on disk with its triggers and quick fix."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan con repositorios reales.",
+      "en": "All assertions pass with real repositories."
+    },
+    "guarantee": {
+      "es": "El flujo de definicion de reglas detecta los errores de contexto, disparadores, condicion y Quick Fix y respeta el orden de guardado.",
+      "en": "The rule-definition flow detects context, trigger, condition and quick-fix errors and respects the save order."
+    },
+    "limits": {
+      "es": "No comprueba el mensaje de la regla ni la interfaz del disenador; no ejecuta las reglas; cada rechazo se prueba con una sola regla por documento.",
+      "en": "Does not check the rule message or the designer UI; does not execute the rules; each rejection is tested with a single rule per document."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Servicios y repositorios reales sin mocks, oraculo de codigos literales y fichero JSON en disco, casos negativos explicitos.",
+      "en": "Real services and repositories without mocks, a literal-code and on-disk JSON oracle, explicit negative cases."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleDefinitionRejectionsIntegrationTests.java",
+        "line": 74
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleDefinitionRejectionsIntegrationTests.java",
+        "line": 94
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleDefinitionRejectionsIntegrationTests.java",
+        "line": 108
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleDefinitionRejectionsIntegrationTests.java",
+        "line": 119
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleDefinitionRejectionsIntegrationTests.java",
+        "line": 131
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleDefinitionRejectionsIntegrationTests.java",
+        "line": 147
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleDefinitionRejectionsIntegrationTests.java",
+        "line": 162
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/validation/ValidationRuleDefinitionRejectionsIntegrationTests.java",
+        "line": 80
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

@@ -1,0 +1,705 @@
+[
+  {
+    "id": "vitest:src/event-designer/flow/api.test.ts",
+    "name": {
+      "es": "Cliente de flujos de eventos: lee la respuesta real del servidor",
+      "en": "Event flow client: reads the real server response"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "events"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "Ejecuta el cliente del diseñador de flujos con respuestas del formato que devuelve el servidor y comprueba lo que entrega a la pantalla.",
+      "en": "Runs the flow designer client with responses in the format the server returns and checks what it hands to the screen."
+    },
+    "asserts": {
+      "es": "El modelo del flujo se obtiene del campo real de la respuesta y la arista del diagrama se guarda con todos sus campos.",
+      "en": "The flow model is taken from the real response field and the diagram edge is saved with all its fields."
+    },
+    "behavior": {
+      "es": "Protege la corrección de un defecto: tras guardar un flujo la pantalla se rompía porque leía un campo que el servidor no envía.",
+      "en": "Protects the fix of a defect: after saving a flow the screen broke because it read a field the server does not send."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Carga, creación y reemplazo de un modelo de flujos.",
+      "en": "Loading, creating and replacing a flow model."
+    },
+    "result": {
+      "es": "La pantalla recibe el modelo del flujo en cada operación.",
+      "en": "The screen receives the flow model in every operation."
+    },
+    "expected": {
+      "es": "Modelo presente y arista completa.",
+      "en": "Model present and complete edge."
+    },
+    "guarantee": {
+      "es": "El cliente y el servidor coinciden en el formato de la respuesta.",
+      "en": "The client and the server agree on the response format."
+    },
+    "limits": {
+      "es": "La respuesta del servidor está escrita en la prueba; el recorrido con servidor real lo cubre la prueba de navegador del diseñador de flujos.",
+      "en": "The server response is written in the test; the walk with a real server is covered by the flow designer browser test."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Prueba unitaria con respuestas escritas a mano.",
+      "en": "Unit test with hand-written responses."
+    },
+    "external": "mocked",
+    "cases": [],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/src/event-designer/flow/api.test.ts",
+        "line": 1
+      }
+    ],
+    "prod": [
+      "frontend/src/event-designer/flow/api.ts"
+    ],
+    "confidence": "ANALYZED"
+  },
+  {
+    "id": "vitest:src/gamification-designer/GamificationLedgerView.test.tsx",
+    "name": {
+      "es": "Vista del libro de gamificación: personas con logros y premios",
+      "en": "Gamification ledger view: people with achievements and rewards"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "gamification"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "Pinta la vista del libro con una persona con puntos y con respuestas que omiten logros y premios.",
+      "en": "Renders the ledger view with a person with points and with responses that omit achievements and rewards."
+    },
+    "asserts": {
+      "es": "La vista se muestra sin romperse en ambos casos.",
+      "en": "The view displays without breaking in both cases."
+    },
+    "behavior": {
+      "es": "Protege la corrección de un defecto: la vista se caía al haber una persona con puntos por leer campos con otro nombre.",
+      "en": "Protects the fix of a defect: the view crashed when a person had points because it read fields under another name."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Libro con una persona con logros y premios, y libro con campos omitidos.",
+      "en": "Ledger with a person with achievements and rewards, and a ledger with omitted fields."
+    },
+    "result": {
+      "es": "La vista siempre se muestra.",
+      "en": "The view always displays."
+    },
+    "expected": {
+      "es": "Sin errores al pintar.",
+      "en": "No errors when rendering."
+    },
+    "guarantee": {
+      "es": "La vista tolera las respuestas reales del servidor.",
+      "en": "The view tolerates the real server responses."
+    },
+    "limits": {
+      "es": "Los datos están escritos en la prueba; no consulta el servidor real.",
+      "en": "The data is written in the test; it does not query the real server."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Prueba de componente con datos escritos a mano.",
+      "en": "Component test with hand-written data."
+    },
+    "external": "mocked",
+    "cases": [],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/src/gamification-designer/GamificationLedgerView.test.tsx",
+        "line": 1
+      }
+    ],
+    "prod": [
+      "frontend/src/gamification-designer/GamificationDesignerParts.tsx"
+    ],
+    "confidence": "ANALYZED"
+  },
+  {
+    "id": "vitest:src/gamification-designer/api.test.ts",
+    "name": {
+      "es": "API de gamificación: normalización de respuestas y geometría del diagrama",
+      "en": "Gamification API: response normalization and diagram geometry"
+    },
+    "type": "CONTRACT",
+    "typeNote": [
+      "Prueba de forma de la API HTTP (ruta, método, ETag) y de normalización de respuestas",
+      "HTTP API shape test (route, method, ETag) and response normalization"
+    ],
+    "layer": "behavior",
+    "caps": [
+      "gamification"
+    ],
+    "procs": [
+      {
+        "id": "gamification_author_canvas",
+        "stages": [
+          "sv"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "frontend/src/gamification-designer/api.ts",
+      "frontend/src/gamification-designer/gamificationFactory.ts",
+      "frontend/src/gamification-designer/gamificationDiagram.ts"
+    ],
+    "executes": {
+      "es": "Con fetch espiado que devuelve JSON, llama a createGamification y replaceGamification con una respuesta que omite las cadenas vacías de la regla, y a loadGamificationDiagram y saveGamificationDiagram con un diagrama vacío y con una arista nueva.",
+      "en": "With a spied fetch returning JSON, it calls createGamification and replaceGamification with a response that omits the rule's empty strings, and loadGamificationDiagram and saveGamificationDiagram with an empty diagram and with a new edge."
+    },
+    "asserts": {
+      "es": "create y replace normalizan la respuesta como la carga (cadenas, descripción y diagnósticos vacíos); la geometría usa /api/canonical-metamodels/people/gamification/diagram con PUT e If-Match del ETag anterior; una arista nueva envía todos sus campos numéricos.",
+      "en": "create and replace normalize the response like loading does (empty strings, description and diagnostics); geometry uses /api/canonical-metamodels/people/gamification/diagram with PUT and If-Match of the previous ETag; a new edge sends all its numeric fields."
+    },
+    "behavior": {
+      "es": "Las respuestas del servidor se normalizan antes de usarse en el diseñador, y la geometría del diagrama se carga y guarda por separado del modelo enviando el ETag anterior para evitar sobrescrituras concurrentes.",
+      "en": "Server responses are normalized before the designer uses them, and the diagram geometry is loaded and saved separately from the model, sending the previous ETag to avoid concurrent overwrites."
+    },
+    "rule": {
+      "es": "Guardar el diagrama exige enviar If-Match con el ETag cargado.",
+      "en": "Saving the diagram must send If-Match with the loaded ETag."
+    },
+    "scenario": {
+      "es": "Respuestas 200 simuladas: modelos de gamificación sin cadenas vacías, diagrama vacío y diagrama con una arista nueva.",
+      "en": "Simulated 200 responses: gamification models without empty strings, an empty diagram and a diagram with a new edge."
+    },
+    "result": {
+      "es": "Campos restaurados; misma ruta en carga y guardado; PUT con If-Match=old; campos numéricos de la arista presentes.",
+      "en": "Fields restored; same path for load and save; PUT with If-Match=old; numeric edge fields present."
+    },
+    "expected": {
+      "es": "fetch recibe la ruta, el método y la cabecera indicados y los resultados normalizados coinciden.",
+      "en": "fetch receives the stated path, method and header and the normalized results match."
+    },
+    "guarantee": {
+      "es": "Evidencia de la forma de las peticiones del cliente y de la normalización de sus respuestas.",
+      "en": "Evidence of the client's request shape and of the normalization of its responses."
+    },
+    "limits": {
+      "es": "Sin backend real: fetch está simulado; no prueba que el servidor acepte la petición, conflictos de ETag ni la deserialización real.",
+      "en": "No real backend: fetch is simulated; it does not prove server acceptance, ETag conflicts or real deserialization."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Pruebas unitarias del cliente con fetch simulado.",
+      "en": "Client unit tests with a simulated fetch."
+    },
+    "external": "mocked",
+    "cases": [
+      {
+        "n": "normaliza la respuesta de createGamification igual que la de carga",
+        "scenario": {
+          "es": "Respuesta de creación sin cadenas vacías.",
+          "en": "Creation response without empty strings."
+        },
+        "result": {
+          "es": "Cadenas vacías restauradas y legibles.",
+          "en": "Empty strings restored and readable."
+        }
+      },
+      {
+        "n": "normaliza la respuesta de replaceGamification igual que la de carga",
+        "scenario": {
+          "es": "Respuesta de sustitución sin cadenas vacías.",
+          "en": "Replacement response without empty strings."
+        },
+        "result": {
+          "es": "Campos, descripción y diagnósticos restaurados.",
+          "en": "Fields, description and diagnostics restored."
+        }
+      },
+      {
+        "n": "loads and saves the separate geometry with ETag",
+        "scenario": {
+          "es": "Diagrama vacío.",
+          "en": "Empty diagram."
+        },
+        "result": {
+          "es": "Ruta de geometría, PUT e If-Match=old.",
+          "en": "Geometry path, PUT and If-Match=old."
+        }
+      },
+      {
+        "n": "sends every numeric connection field for a newly created edge so the backend can deserialize it",
+        "scenario": {
+          "es": "Arista recién creada.",
+          "en": "Newly created edge."
+        },
+        "result": {
+          "es": "Siete campos numéricos con valores por defecto.",
+          "en": "Seven numeric fields with defaults."
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 12
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 19
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 29
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 32
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 45
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 58
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 61
+      },
+      {
+        "path": "frontend/src/gamification-designer/api.test.ts",
+        "line": 70
+      }
+    ],
+    "confidence": "ANALYZED"
+  },
+  {
+    "id": "vitest:src/event-designer/flow/flowPresentation.test.ts",
+    "name": {
+      "es": "Presentación y normalización de nodos de flujo con textos omitidos por el servidor",
+      "en": "Flow node presentation and normalization with server-omitted texts"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "events"
+    ],
+    "procs": [],
+    "prod": [
+      "frontend/src/event-designer/flow/flowPresentation.ts",
+      "frontend/src/event-designer/flow/eventFlowNormalization.ts",
+      "frontend/src/event-designer/flow/eventFlowFactory.ts"
+    ],
+    "executes": {
+      "es": "Crea nodos con createFlowNode, retira eventTypeId, referenceId y conditionExpressionId como hace el servidor al omitir cadenas vacías y llama a describeFlowNode; además normaliza con normalizeEventFlowModel un modelo de flujos crudo sin campos opcionales.",
+      "en": "Creates nodes with createFlowNode, drops eventTypeId, referenceId and conditionExpressionId as the server does when omitting empty strings, and calls describeFlowNode; it also normalizes a raw flow model without optional fields with normalizeEventFlowModel."
+    },
+    "asserts": {
+      "es": "Textos esperados para START y ACTION_STEP sin identificadores y para EMIT con tipo de evento; tras normalizar, cadenas vacías, configuración {}, políticas de reintento y de tiempo por defecto, enabled=true, etiqueta de transición vacía, listas vacías y descripción del nodo START.",
+      "en": "Expected texts for START and ACTION_STEP without identifiers and for EMIT with an event type; after normalization, empty strings, {} configuration, default retry and timeout policies, enabled=true, empty transition label, empty lists and the START node description."
+    },
+    "behavior": {
+      "es": "Protege la corrección de un defecto: la pantalla se rompía al dibujar un flujo guardado con campos vacíos omitidos; ahora el modelo se normaliza y los nodos se describen igual.",
+      "en": "Guards a defect fix: the screen broke when drawing a saved flow whose empty fields were omitted; the model is now normalized and nodes are described the same way."
+    },
+    "scenario": {
+      "es": "Nodo de inicio sin tipo de evento.",
+      "en": "Start node without an event type."
+    },
+    "result": {
+      "es": "La descripción se genera.",
+      "en": "The description is generated."
+    },
+    "expected": {
+      "es": "Sin errores al describir.",
+      "en": "No errors when describing."
+    },
+    "guarantee": {
+      "es": "La pantalla tolera las respuestas reales del servidor.",
+      "en": "The screen tolerates the real server responses."
+    },
+    "limits": {
+      "es": "Los datos están escritos en la prueba; no consulta el servidor real ni pinta componentes.",
+      "en": "The data is written in the test; it neither queries the real server nor renders components."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Prueba unitaria con datos escritos a mano.",
+      "en": "Unit test with hand-written data."
+    },
+    "external": "mocked",
+    "cases": [
+      {
+        "n": "describes a START node that has no eventTypeId or referenceId",
+        "scenario": {
+          "es": "Nodo START sin identificadores.",
+          "en": "START node without identifiers."
+        },
+        "result": {
+          "es": "«Entry point of the flow.»",
+          "en": "\"Entry point of the flow.\""
+        }
+      },
+      {
+        "n": "describes an action step without referenceId using the generic text",
+        "scenario": {
+          "es": "ACTION_STEP sin referencia.",
+          "en": "ACTION_STEP without reference."
+        },
+        "result": {
+          "es": "Texto genérico de acción reutilizable.",
+          "en": "Generic reusable-action text."
+        }
+      },
+      {
+        "n": "still describes nodes that do carry an event type",
+        "scenario": {
+          "es": "EMIT con core.model.saved.",
+          "en": "EMIT with core.model.saved."
+        },
+        "result": {
+          "es": "El texto empieza por «Publishes».",
+          "en": "The text starts with \"Publishes\"."
+        }
+      },
+      {
+        "n": "restores omitted strings, policies and collections so the designer can always read them",
+        "scenario": {
+          "es": "Modelo crudo sin campos opcionales.",
+          "en": "Raw model without optional fields."
+        },
+        "result": {
+          "es": "Valores por defecto restaurados y nodo descrito.",
+          "en": "Defaults restored and node described."
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 8
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 14
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 17
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 20
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 26
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 34
+      },
+      {
+        "path": "frontend/src/event-designer/flow/flowPresentation.test.ts",
+        "line": 40
+      }
+    ],
+    "confidence": "ANALYZED"
+  },
+  {
+    "id": "vitest:src/integration-designer/integrationProfileNormalization.test.ts",
+    "name": {
+      "es": "Normalización del perfil de integración: colecciones omitidas por el servidor",
+      "en": "Integration profile normalization: collections omitted by the server"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "integration"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "Normaliza perfiles de integración incompletos y con colecciones omitidas.",
+      "en": "Normalizes incomplete integration profiles and profiles with omitted collections."
+    },
+    "asserts": {
+      "es": "Un perfil sin colecciones vacías se acepta y uno con una colección que no es lista se rechaza.",
+      "en": "A profile without empty collections is accepted and one with a non-list collection is rejected."
+    },
+    "behavior": {
+      "es": "Protege la corrección de un defecto: el diseñador no podía guardar ni recargar un perfil sin capacidades requeridas.",
+      "en": "Protects the fix of a defect: the designer could not save or reload a profile without required capabilities."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Perfil con colecciones vacías omitidas.",
+      "en": "Profile with omitted empty collections."
+    },
+    "result": {
+      "es": "El perfil se acepta con colecciones vacías.",
+      "en": "The profile is accepted with empty collections."
+    },
+    "expected": {
+      "es": "Colecciones vacías y rechazo de una colección inválida.",
+      "en": "Empty collections and rejection of an invalid collection."
+    },
+    "guarantee": {
+      "es": "El diseñador acepta el formato real del servidor.",
+      "en": "The designer accepts the real server format."
+    },
+    "limits": {
+      "es": "Los datos están escritos en la prueba; no consulta el servidor real.",
+      "en": "The data is written in the test; it does not query the real server."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Prueba unitaria con datos escritos a mano.",
+      "en": "Unit test with hand-written data."
+    },
+    "external": "mocked",
+    "cases": [],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/src/integration-designer/integrationProfileNormalization.test.ts",
+        "line": 1
+      }
+    ],
+    "prod": [
+      "frontend/src/integration-designer/integrationProfileNormalization.ts"
+    ],
+    "confidence": "ANALYZED"
+  },
+  {
+    "id": "vitest:src/model-codegen/ModelCodeGenerationDialog.test.tsx",
+    "name": {
+      "es": "Diálogo de generación de código: conserva los destinos al repintar",
+      "en": "Code generation dialog: keeps the targets when re-rendering"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "publication"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "Pinta el diálogo y repinta al padre varias veces con funciones nuevas.",
+      "en": "Renders the dialog and re-renders the parent several times with new functions."
+    },
+    "asserts": {
+      "es": "La opción de destino aparece y el catálogo no se vuelve a pedir en cada repintado.",
+      "en": "The target option appears and the catalog is not requested again on every re-render."
+    },
+    "behavior": {
+      "es": "Protege la corrección de un defecto: el selector de destino quedaba vacío porque cada repintado reiniciaba la carga.",
+      "en": "Protects the fix of a defect: the target selector stayed empty because every re-render restarted the load."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Padre que repinta con funciones en línea.",
+      "en": "Parent re-rendering with inline functions."
+    },
+    "result": {
+      "es": "El destino Java está disponible.",
+      "en": "The Java target is available."
+    },
+    "expected": {
+      "es": "Opción Java visible y pocas cargas.",
+      "en": "Java option visible and few loads."
+    },
+    "guarantee": {
+      "es": "El diálogo es estable ante repintados del padre.",
+      "en": "The dialog is stable under parent re-renders."
+    },
+    "limits": {
+      "es": "El catálogo está escrito en la prueba; no consulta el servidor real.",
+      "en": "The catalog is written in the test; it does not query the real server."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Prueba unitaria con datos escritos a mano.",
+      "en": "Unit test with hand-written data."
+    },
+    "external": "mocked",
+    "cases": [],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/src/model-codegen/ModelCodeGenerationDialog.test.tsx",
+        "line": 1
+      }
+    ],
+    "prod": [
+      "frontend/src/model-codegen/ModelCodeGenerationDialog.tsx"
+    ],
+    "confidence": "ANALYZED"
+  },
+  {
+    "id": "vitest:src/editor-definition/editorDefinitionNormalization.test.ts",
+    "name": {
+      "es": "Normalización de definiciones de editor",
+      "en": "Editor definition normalization"
+    },
+    "type": "UNIT",
+    "layer": "definition",
+    "layers2": [],
+    "caps": [
+      "model_editor"
+    ],
+    "procs": [
+      {
+        "id": "model_editor_design_flow",
+        "stages": [
+          "rv"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "frontend/src/editor-definition/editorDefinitionNormalization.ts",
+      "frontend/src/editor-definition/editorDefinitionFactory.ts"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Llama a createEmptyEditorDefinition, createAdditionalEditorDefinition, normalizeEditorDefinition, normalizeEditorDefinitionShape y normalizeNodeMapping.",
+      "en": "Calls createEmptyEditorDefinition, createAdditionalEditorDefinition, normalizeEditorDefinition, normalizeEditorDefinitionShape and normalizeNodeMapping."
+    },
+    "asserts": {
+      "es": "rootClassIds con la raíz detectada, raíz manual preservada, valores por defecto de mapeos antiguos, colecciones vacías restauradas y configuración de imagen/contenedor intacta.",
+      "en": "rootClassIds with the detected root, manual root preserved, defaults for legacy mappings, empty collections restored and image/container configuration intact."
+    },
+    "behavior": {
+      "es": "Las definiciones nuevas o antiguas se completan con la raíz del metamodelo detectada y valores seguros por defecto, se restauran colecciones vacías omitidas por el servidor y se respetan raíces e imagen/contenedor configurados a mano.",
+      "en": "New or legacy definitions are completed with the detected metamodel root and safe defaults, empty collections omitted by the server are restored, and manually configured roots and image/container settings are respected."
+    },
+    "rule": {
+      "es": "Una raíz elegida manualmente no debe sobrescribirse; solo se rellena si está vacía.",
+      "en": "A manually chosen root must not be overwritten; it is filled only when empty."
+    },
+    "scenario": {
+      "es": "Definición antigua sin raíz, definición dispersa sin colecciones y mapeos heredados.",
+      "en": "Legacy definition without root, sparse definition without collections and legacy mappings."
+    },
+    "result": {
+      "es": "Valores normalizados exactos (raíz, colecciones vacías, imageFit CONTAIN, containerPadding 18).",
+      "en": "Exact normalised values (root, empty collections, imageFit CONTAIN, containerPadding 18)."
+    },
+    "expected": {
+      "es": "Los objetos normalizados coinciden.",
+      "en": "Normalised objects match."
+    },
+    "guarantee": {
+      "es": "Evidencia de compatibilidad hacia atrás para estos casos.",
+      "en": "Evidence of backward compatibility for these cases."
+    },
+    "limits": {
+      "es": "Solo funciones puras con datos sintéticos; no carga desde servidor.",
+      "en": "Pure functions with synthetic data only; no loading from a server."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": [
+      "Test unitario de funciones puras.",
+      "Unit test of pure functions."
+    ],
+    "external": "none",
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/src/editor-definition/editorDefinitionNormalization.test.ts",
+        "line": 24
+      },
+      {
+        "path": "frontend/src/editor-definition/editorDefinitionNormalization.test.ts",
+        "line": 39
+      },
+      {
+        "path": "frontend/src/editor-definition/editorDefinitionNormalization.test.ts",
+        "line": 43
+      },
+      {
+        "path": "frontend/src/editor-definition/editorDefinitionNormalization.test.ts",
+        "line": 50
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  },
+  {
+    "id": "vitest:src/designer-ui/DesignerDropdown.test.tsx",
+    "name": {
+      "es": "Desplegables de las barras de diseño: abrir, ejecutar, cerrar y mantenerse abiertos con un diálogo propio",
+      "en": "Designer toolbar dropdowns: open, run, close and stay open with their own dialog"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "metamodel"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "Pinta las barras de herramientas del diseñador con sus menús desplegables y simula clics y pulsaciones sobre ellos y sobre un diálogo que el menú abre fuera de su zona.",
+      "en": "Renders the designer toolbars with their dropdown menus and simulates clicks and presses on them and on a dialog the menu opens outside its area."
+    },
+    "asserts": {
+      "es": "Las órdenes quedan plegadas hasta abrir su categoría, ejecutar una orden cierra el menú, Escape lo cierra y trabajar dentro de un diálogo abierto desde el menú no lo cierra, mientras que una pulsación realmente fuera sí.",
+      "en": "Commands stay collapsed until their category is opened, running a command closes the menu, Escape closes it and working inside a dialog opened from the menu does not close it, while a press really outside does."
+    },
+    "behavior": {
+      "es": "Protege el comportamiento de los menús de las barras y la corrección de un defecto: pulsar dentro del diálogo de importación cerraba el menú que lo contenía y desmontaba el diálogo.",
+      "en": "Protects the behavior of toolbar menus and the fix of a defect: pressing inside the import dialog closed the menu that contained it and unmounted the dialog."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Abrir una categoría, ejecutar una orden, pulsar Escape y trabajar en un diálogo abierto desde el menú.",
+      "en": "Open a category, run a command, press Escape and work in a dialog opened from the menu."
+    },
+    "result": {
+      "es": "El menú se cierra solo cuando corresponde.",
+      "en": "The menu closes only when it should."
+    },
+    "expected": {
+      "es": "Todos los casos pasan.",
+      "en": "All cases pass."
+    },
+    "guarantee": {
+      "es": "Los menús de las barras no se cierran al usar un diálogo que abren.",
+      "en": "Toolbar menus do not close when the user works in a dialog they open."
+    },
+    "limits": {
+      "es": "Prueba unitaria sin navegador real ni servidor; el recorrido real de importación visual lo cubre la prueba de navegador correspondiente.",
+      "en": "Unit test without a real browser or server; the real visual-import walk is covered by its browser test."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Prueba unitaria de componentes en un entorno simulado de navegador.",
+      "en": "Component unit test in a simulated browser environment."
+    },
+    "external": "mocked",
+    "cases": [],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/src/designer-ui/DesignerDropdown.test.tsx",
+        "line": 53
+      }
+    ],
+    "prod": [
+      "frontend/src/designer-ui/DesignerDropdown.tsx"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

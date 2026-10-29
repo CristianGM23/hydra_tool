@@ -75,7 +75,9 @@ export function inferExpressionDependencies(expression: ExpressionDefinition): V
             case 'LITERAL':
             case 'SELF':
             case 'VARIABLE': return;
-            case 'MODEL': add('MODEL', ''); return;
+            // El backend exige un id estable en toda dependencia y representa la del modelo como 'model' (ValidationModelChecker);
+            // con '' rechazaba con 400 el guardado de cualquier regla que usara el nodo MODEL.
+            case 'MODEL': add('MODEL', 'model'); return;
             case 'CLASS_INSTANCES': add('CLASS', node.classId); return;
             case 'ATTRIBUTE_ACCESS': add('ATTRIBUTE', node.attributeId); visit(node.target); return;
             case 'RELATION_NAVIGATION': add('RELATION', node.relationId); visit(node.target); return;

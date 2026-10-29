@@ -1,0 +1,101 @@
+[
+  {
+    "id": "java:com.example.editor.portability.archive.CapabilityPackageAcceptanceGateTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Puerta de aceptación del paquete de capas y resolución de dependencias",
+      "en": "Layer package acceptance gate and dependency resolution"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": ["portability"],
+    "procs": [
+      { "id": "x_package_and_move_capabilities", "stages": ["d1"], "match": "direct" },
+      { "id": "x_package_and_move_capabilities", "stages": ["a1"], "match": "indirect" },
+      { "id": "portability_author_export", "stages": ["b"], "match": "indirect" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/portability/archive/CapabilityPackageArchiveService.java",
+      "src/main/java/com/example/editor/portability/archive/CapabilityPackageDependencyResolver.java",
+      "src/main/java/com/example/editor/portability/CapabilityPackageChecker.java",
+      "src/main/java/com/example/editor/portability/HydraCapabilityPackageManifest.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal para la caché de paquetes; sin red ni credenciales.",
+      "en": "Temporary directory for the package cache; no network or credentials."
+    },
+    "setup": {
+      "es": "Servicio, comprobador y resolvedor reales; los archivos de entrada se construyen a mano con java.util.zip, con descriptor y huellas calculadas en el test.",
+      "en": "Real service, checker and resolver; input archives are built by hand with java.util.zip, with descriptor and fingerprints computed in the test."
+    },
+    "executes": {
+      "es": "CapabilityPackageArchiveService.importPackage/exportPackage con CapabilityPackageChecker y CapabilityPackageDependencyResolver reales sobre archivos ZIP y la caché en disco.",
+      "en": "CapabilityPackageArchiveService.importPackage/exportPackage with real CapabilityPackageChecker and CapabilityPackageDependencyResolver over ZIP archives and the on-disk cache."
+    },
+    "asserts": {
+      "es": "Motivo y mensaje de cada rechazo; caché vacía tras rechazar; un único fichero en caché, idéntico byte a byte, tras aceptar; orden y versión del manifiesto leído del ZIP; nombre de fichero con versión; rechazo por dependencia no elegida y por ciclo.",
+      "en": "Reason and message of each rejection; empty cache after rejecting; a single cached file, byte-identical, after accepting; manifest order and version read from the ZIP; versioned file name; rejection for an unselected dependency and for a cycle."
+    },
+    "behavior": {
+      "es": "Un paquete con errores que impiden importarlo (capa exigida ausente, contenido alterado o firma exigida ausente) se rechaza sin guardar nada; uno correcto se acepta y se guarda; al exportar, las capas se ordenan con sus dependencias primero y el paquete lleva su versión.",
+      "en": "A package with errors that prevent importing it (missing required layer, altered content or missing required signature) is rejected without saving anything; a correct one is accepted and saved; on export, layers are ordered with their dependencies first and the package carries its version."
+    },
+    "rule": {
+      "es": "Un paquete con errores bloqueantes no se importa ni deja rastro; una dependencia obligatoria no elegida bloquea la exportación, no se añade sola.",
+      "en": "A package with blocking errors is neither imported nor leaves a trace; an unselected mandatory dependency blocks the export, it is not added on its own."
+    },
+    "scenario": {
+      "es": "Archivos coherentes con una capa exigida ausente, con una huella alterada y sin firma exigida, frente a uno válido; exportaciones con dependencia ausente, completas en desorden, con dependencia opcional y con ciclo.",
+      "en": "Consistent archives with a missing required layer, with an altered fingerprint and without a required signature, versus a valid one; exports with a missing dependency, complete but unordered, with an optional dependency and with a cycle."
+    },
+    "result": {
+      "es": "Los tres rechazos explican su causa y dejan la caché vacía; el válido se importa y queda en caché idéntico; la exportación completa ordena metamodelo, validaciones y correcciones; sin la dependencia o con ciclo se rechaza.",
+      "en": "The three rejections state their cause and leave the cache empty; the valid one is imported and cached identically; the complete export orders metamodel, validations and fixes; without the dependency or with a cycle it is rejected."
+    },
+    "expected": {
+      "es": "Las aserciones sobre motivos, caché, orden y versión se cumplen en los dos casos.",
+      "en": "The assertions on reasons, cache, order and version hold in both cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que un paquete inaceptable no toca nada y de que las dependencias solo se ordenan al exportar.",
+      "en": "Real evidence that an unacceptable package touches nothing and that dependencies are only ordered when exporting."
+    },
+    "limits": {
+      "es": "Hallazgo: las capas de las que depende otra no se añaden solas; hay que elegirlas o la exportación se rechaza (a1 y b solo indirectas). No hay aplicación a un proyecto ni selección en pantalla: se ejerce el servicio de archivos.",
+      "en": "Finding: layers another one depends on are not added on their own; they must be selected or the export is rejected (a1 and b only indirect). No application to a project and no on-screen selection: the archive service is exercised."
+    },
+    "strengthWhy": {
+      "es": "Servicios y ficheros reales, archivos construidos y huellas recalculadas de forma independiente, casos negativos y aceptación en el mismo escenario.",
+      "en": "Real services and files, independently built archives and recomputed fingerprints, negative cases and acceptance in the same scenario."
+    },
+    "cases": [
+      {
+        "n": "anAcceptablePackageIsAcceptedAndOneWithBlockingErrorsIsRejectedWithoutTouchingAnything",
+        "scenario": { "es": "Capa ausente, huella alterada, firma exigida y paquete válido.", "en": "Missing layer, altered fingerprint, required signature and valid package." },
+        "result": { "es": "Tres rechazos con caché vacía y una aceptación guardada.", "en": "Three rejections with an empty cache and one saved acceptance." }
+      },
+      {
+        "n": "dependenciesAreOrderedAndVersionedButNeverAddedAutomatically",
+        "scenario": { "es": "Dependencia no elegida, orden, dependencia opcional y ciclo.", "en": "Unselected dependency, order, optional dependency and cycle." },
+        "result": { "es": "Se ordena y versiona, pero nunca se añade; ausencia y ciclo se rechazan.", "en": "Ordered and versioned, never added; absence and cycle are rejected." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.portability.archive.CapabilityPackageArchiveServiceTests",
+      "java:com.example.editor.portability.archive.CapabilityPackageArchiveHttpLayerSelectionIntegrationTests"
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageAcceptanceGateTests.java", "line": 79 },
+      { "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageAcceptanceGateTests.java", "line": 88 },
+      { "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageAcceptanceGateTests.java", "line": 97 },
+      { "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageAcceptanceGateTests.java", "line": 109 },
+      { "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageAcceptanceGateTests.java", "line": 131 },
+      { "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageAcceptanceGateTests.java", "line": 141 },
+      { "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageAcceptanceGateTests.java", "line": 151 },
+      { "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageAcceptanceGateTests.java", "line": 163 }
+    ]
+  }
+]

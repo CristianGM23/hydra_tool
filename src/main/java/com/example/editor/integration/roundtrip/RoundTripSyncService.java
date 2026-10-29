@@ -105,9 +105,7 @@ public class RoundTripSyncService {
     }
 
     /** Descripción: Ejecuta la operación «safeResolve» correspondiente a la responsabilidad de RoundTripSyncService. Entradas: root: ruta o ubicación utilizada por la operación; value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ private Path safeResolve(Path root, String value){
-        String normalized = value.replace('\\', '/');
-        if(normalized.startsWith("/") || normalized.contains("../") || normalized.equals("..")){throw new TechnologyCompilationException("Unsafe round-trip path: " + value);}
-        Path result = root.resolve(normalized).normalize(); if(!result.startsWith(root)){throw new TechnologyCompilationException("Round-trip path escapes target root: " + value);} return result;
+        return com.example.editor.integration.roundtrip.RoundTripSafePaths.resolve(root, value);
     }
     /** Descripción: Calcula SHA-256 de un fichero nativo en streaming y detiene la lectura si supera el presupuesto round-trip. Entradas: path: fichero que debe compararse. Salida: devuelve el hash hexadecimal sin materializar el fichero completo en memoria. */ private String hashFile(Path path){
         try(InputStream input=Files.newInputStream(path)){

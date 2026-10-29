@@ -1,0 +1,5 @@
+- metamodel_author_import.src: formatsEndpointListsTheSupportedSources (line 143) and the FILE_RECEIVED stage of each upload (line 88).
+- metamodel_author_import.an: analysed job COMPLETED with proposal (line 154) in the ecore, json and plantuml tests; FAILED branch in strictModeBlocksLossyReconstruction (line 214).
+- metamodel_author_import.d1: nothing persisted before confirming (metamodelFile(...) isNull checks, lines 156, 171, 177) and file present after (lines 157-162, 173, 180).
+- metamodel_author_import.str: overwrite conflict/replace (lines 196-204) and strict rejection (line 214).
+- metamodel_author_import.art / metamodel_define_save.imp: persisted JSON read from disk (lines 173, 180-183).

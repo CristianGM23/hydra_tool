@@ -1,0 +1,88 @@
+[
+  {
+    "id": "pw:e2e/real/gamification/guided-authoring.spec.ts",
+    "name": {
+      "es": "Modo guiado de gamificación: crear, comprobar, bloquear errores y guardar con backend real",
+      "en": "Guided gamification: create, check, block errors and save with a real backend"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["gamification", "events"],
+    "procs": [
+      { "id": "gamification_author_guided", "stages": ["p", "r", "ru", "c", "d", "sv"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/gamification-designer/GamificationDesigner.tsx",
+      "frontend/src/gamification-designer/GamificationDesignerParts.tsx",
+      "frontend/src/gamification-designer/gamificationValidation.ts",
+      "frontend/src/design-system/HydraGuidedWorkflow.tsx",
+      "src/main/java/com/example/editor/gamification/web/CanonicalGamificationController.java",
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/gamification/GamificationChecker.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationDefinitionRepository.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationBindingRepository.java"
+    ],
+    "pre": {
+      "es": "Metamodelo mínimo sembrado por la API real; navegador real contra la aplicación compilada y el backend real con almacenamiento temporal propio.",
+      "en": "Minimal metamodel seeded through the real API; real browser against the built application and the real backend with its own temporary storage."
+    },
+    "setup": {
+      "es": "Sin simulaciones de la API. Solo se siembra el metamodelo; el usuario recorre la guía y los formularios.",
+      "en": "No API simulation. Only the metamodel is seeded; the user walks through the guide and the forms."
+    },
+    "executes": {
+      "es": "En modo guiado crea tipo de puntos, recompensa, logro, reto y una regla sobre un evento no verificado; pulsa Comprobar y Guardar con error; corrige el evento, comprueba de nuevo y guarda desde el último paso de la guía.",
+      "en": "In guided mode it creates a point type, reward, achievement, challenge and a rule on an unverified event; presses Check and Save with the error; fixes the event, checks again and saves from the last guide step."
+    },
+    "asserts": {
+      "es": "Con el error la guía no avanza y no sale ninguna petición de comprobación ni de guardado ni se crean ficheros; la comprobación válida muestra los mismos avisos que una segunda consulta al servidor; tras guardar, los ficheros tienen el catálogo y la regla.",
+      "en": "With the error the guide does not advance and no check or save request is sent and no files are created; the valid check shows the same warnings as a second server query; after saving the files hold the catalog and the rule."
+    },
+    "behavior": {
+      "es": "El usuario crea el catálogo paso a paso; los errores impiden guardar, la comprobación muestra los avisos del servidor y, corregido el error, la guía guarda definiciones y reglas.",
+      "en": "The user builds the catalog step by step; errors prevent saving, the check shows the server warnings and, once fixed, the guide saves definitions and rules."
+    },
+    "rule": {
+      "es": "Sin puntos no hay niveles ni reglas de puntos; un error impide avanzar y guardar; las reglas deben basarse en resultados verificados, no en pulsar un botón.",
+      "en": "Without points there are no levels or point rules; an error prevents advancing and saving; rules must rely on verified outcomes, not on pressing a button."
+    },
+    "scenario": {
+      "es": "Un metamodelo sin gamificación; regla ilimitada sin tope que produce un aviso; primero con un evento no verificado (error) y después con el resultado verificado.",
+      "en": "A metamodel without gamification; an unbounded rule that raises a warning; first with an unverified event (error) and then with the verified outcome."
+    },
+    "result": {
+      "es": "Nada se escribe mientras hay error; después se guarda un catálogo con un tipo de puntos, una recompensa, un logro, un reto y una regla que concede puntos y recompensa.",
+      "en": "Nothing is written while the error exists; afterwards a catalog is saved with one point type, one reward, one achievement, one challenge and a rule granting points and reward."
+    },
+    "expected": {
+      "es": "Rechazo sin rastro con error, informe de comprobación coherente con el servidor y ficheros finales con los datos creados.",
+      "en": "A refusal without trace on error, a check report consistent with the server and final files with the created data."
+    },
+    "guarantee": {
+      "es": "La guía de gamificación no guarda catálogos con errores bloqueantes y guarda en el backend lo que el usuario creó.",
+      "en": "The gamification guide does not save catalogs with blocking errors and stores in the backend what the user created."
+    },
+    "limits": {
+      "es": "Solo un metamodelo vacío, un error local y un aviso del servidor; sin niveles. Del diagrama solo comprueba que se guarda con la conexión de la regla a sus puntos. Al salir de la guía se pierden las confirmaciones de pasos y se rehacen.",
+      "en": "Only an empty metamodel, one local error and one server warning; no levels. Of the diagram it only checks that it is saved with the rule-to-points connection. Leaving the guide loses step confirmations and they are redone."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones de usuario reales, backend real, contraste con una consulta independiente al servidor y lectura de los ficheros escritos.",
+      "en": "Real user actions, real backend, comparison with an independent server query and reading of the written files."
+    },
+    "external": "none",
+    "cases": [],
+    "related": ["java:com.example.editor.gamification.GamificationCatalogPolicyLifecycleIntegrationTests"],
+    "src": [
+      { "path": "frontend/e2e/real/gamification/guided-authoring.spec.ts", "line": 57 },
+      { "path": "frontend/e2e/real/gamification/guided-authoring.spec.ts", "line": 60 },
+      { "path": "frontend/e2e/real/gamification/guided-authoring.spec.ts", "line": 63 },
+      { "path": "frontend/e2e/real/gamification/guided-authoring.spec.ts", "line": 79 },
+      { "path": "frontend/e2e/real/gamification/guided-authoring.spec.ts", "line": 83 },
+      { "path": "frontend/e2e/real/gamification/guided-authoring.spec.ts", "line": 93 },
+      { "path": "frontend/e2e/real/gamification/guided-authoring.spec.ts", "line": 98 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

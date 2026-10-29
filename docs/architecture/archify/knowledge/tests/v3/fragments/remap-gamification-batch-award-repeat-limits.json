@@ -1,0 +1,216 @@
+[
+  {
+    "id": "java:com.example.editor.gamification.GamificationPenaltyRuntimeTests",
+    "name": {
+      "es": "Penalizaciones de gamificación: saldo mínimo, límites de repetición, persistencia y avisos",
+      "en": "Gamification penalties: minimum balance, repeat limits, persistence and feedback"
+    },
+    "type": "BEHAVIOR",
+    "layer": "behavior",
+    "caps": [
+      "gamification",
+      "events"
+    ],
+    "procs": [
+      {
+        "id": "gamification_award",
+        "stages": [
+          "idem",
+          "min",
+          "rej",
+          "act",
+          "fb",
+          "pub",
+          "reb",
+          "lim"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_event_flow_to_reward",
+        "stages": [
+          "lim"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_language_to_published_editor",
+        "stages": [
+          "gm"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "events_publish_session",
+        "stages": [
+          "a7"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "gamification_award",
+        "stages": [
+          "per"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+      "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java",
+      "src/main/java/com/example/editor/gamification/persistence/GamificationRuntimeRepository.java",
+      "src/main/java/com/example/editor/gamification/runtime/GamificationProcessingResult.java",
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/gamification/GamificationLedgerEntry.java",
+      "src/main/java/com/example/editor/gamification/feedback/UserFeedbackEnvelope.java",
+      "src/main/java/com/example/editor/gamification/GamificationRule.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "Repositorio en memoria con contador de revisión; saldo mínimo -20 o -5 según el caso; dos nuevos casos usan reglas reales con política ONCE o con un máximo por actor.",
+      "en": "In-memory repository with revision counter; minimum balance -20 or -5 depending on the case; two new cases use real rules with an ONCE policy or a per-actor maximum."
+    },
+    "executes": {
+      "es": "GamificationRuntimeService real con bus en memoria real, un repositorio en memoria propio y un servicio de aplicación con configuración fija; procesa eventos custom.award y custom.penalty, incluyendo dos eventos distintos para la misma regla con límites de repetición reales.",
+      "en": "Real GamificationRuntimeService with a real in-memory bus, a custom in-memory repository and fixed-configuration application service; processes custom.award and custom.penalty events, including two distinct events against the same rule with real repeat limits."
+    },
+    "asserts": {
+      "es": "Saldo tras restar, recorte al mínimo, rechazo por mínimo, rechazo real 'Rule can only be applied once' para una regla ONCE en un segundo evento distinto, rechazo real 'Maximum applications per actor reached' al superar el máximo por actor, evento de penalización, entrada de libro negativa, aviso, e idempotencia sin reescribir documentos.",
+      "en": "Balance after subtraction, clamping to the minimum, rejection for the floor, a real 'Rule can only be applied once' rejection for an ONCE rule on a second distinct event, a real 'Maximum applications per actor reached' rejection once the per-actor cap is exceeded, penalty event, negative ledger entry, feedback, and idempotence without rewriting documents."
+    },
+    "behavior": {
+      "es": "Una penalización resta puntos sin bajar del mínimo, se rechaza si ya se alcanzó, y una regla con política de repetición ONCE o con un máximo por actor rechaza de verdad los eventos siguientes una vez agotado el límite, dejando entrada negativa, publicando su evento y un aviso; un evento repetido no produce nada nuevo.",
+      "en": "A penalty subtracts points without going below the minimum, is rejected once at the floor, and a rule with an ONCE repeat policy or a per-actor maximum genuinely rejects later events once its limit is spent, leaving a negative ledger entry, publishing its event and a notice; a repeated event produces nothing new."
+    },
+    "rule": {
+      "es": "El saldo nunca baja del mínimo de su tipo de punto; una regla ONCE solo concede una vez por actor y un máximo por actor rechaza una vez alcanzado; un mismo evento y regla se procesan una sola vez.",
+      "en": "The balance never drops below its point type minimum; an ONCE rule grants only once per actor and a per-actor maximum rejects once reached; the same event and rule are processed only once."
+    },
+    "scenario": {
+      "es": "Concesión y penalización, penalización mayor que el margen, penalización en el suelo, una regla ONCE disparada por dos eventos distintos, una regla con máximo de una aplicación por actor disparada por dos eventos distintos, y eventos repetidos.",
+      "en": "Award then penalty, penalty larger than the margin, penalty at the floor, an ONCE rule triggered by two distinct events, a rule with a one-application-per-actor maximum triggered by two distinct events, and repeated events."
+    },
+    "result": {
+      "es": "Saldos 7 y -5, entradas rechazadas con motivos reales de mínimo, política ONCE y máximo por actor, un evento y un aviso por penalización, y ninguna escritura en el duplicado.",
+      "en": "Balances 7 and -5, entries rejected with real minimum, ONCE-policy and per-actor-maximum reasons, one event and one notice per penalty, and no write on the duplicate."
+    },
+    "expected": {
+      "es": "Cada caso deja los saldos, entradas, motivos de rechazo y publicaciones indicados.",
+      "en": "Each case leaves the stated balances, entries, rejection reasons and publications."
+    },
+    "guarantee": {
+      "es": "Evidencia de la lógica de penalización, límites de repetición e idempotencia en el runtime con persistencia en memoria.",
+      "en": "Evidence of penalty logic, repeat limits and idempotence in the runtime with in-memory persistence."
+    },
+    "limits": {
+      "es": "Sin disco real, concurrencia ni varios actores; no cubre límites diarios, cooldown ni la proyección de avisos en UI.",
+      "en": "No real disk, concurrency or multiple actors; daily limits, cooldown and UI rendering of notices are not covered."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Integración real sin mocks de GamificationRuntimeService real con InMemoryCanonicalEventBus real, ejercitando penalizaciones reales, límites de repetición reales (política ONCE y máximo por actor) e idempotencia real.",
+      "en": "Real, mock-free integration of a real GamificationRuntimeService with a real InMemoryCanonicalEventBus, exercising real penalties, real repeat limits (ONCE policy and per-actor maximum) and real idempotence."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "subtractsPointsFromAnExistingBalance",
+        "scenario": {
+          "es": "Concesión de 10 y penalización de 3",
+          "en": "Award of 10 then penalty of 3"
+        },
+        "result": {
+          "es": "Saldo 7 y delta -3",
+          "en": "Balance 7 and delta -3"
+        }
+      },
+      {
+        "n": "clampsPenaltyAtConfiguredMinimumBalance",
+        "scenario": {
+          "es": "Penalización de 12 con mínimo -5",
+          "en": "Penalty of 12 with minimum -5"
+        },
+        "result": {
+          "es": "Saldo -5 y delta -5",
+          "en": "Balance -5 and delta -5"
+        }
+      },
+      {
+        "n": "rejectsPenaltyWhenActorAlreadyReachedTheFloor",
+        "scenario": {
+          "es": "Segunda penalización en el suelo",
+          "en": "Second penalty at the floor"
+        },
+        "result": {
+          "es": "Rechazada con delta 0 y motivo de mínimo",
+          "en": "Rejected with delta 0 and minimum reason"
+        }
+      },
+      {
+        "n": "ruleWithOncePolicyRejectsASecondDistinctEventAfterTheFirstGrant",
+        "scenario": {
+          "es": "Regla ONCE disparada por dos eventos distintos",
+          "en": "ONCE rule triggered by two distinct events"
+        },
+        "result": {
+          "es": "Segundo evento rechazado: 'Rule can only be applied once'",
+          "en": "Second event rejected: 'Rule can only be applied once'"
+        }
+      },
+      {
+        "n": "ruleWithAPerActorMaximumRejectsOnceTheLimitIsReached",
+        "scenario": {
+          "es": "Máximo de una aplicación por actor, dos eventos distintos",
+          "en": "Maximum of one application per actor, two distinct events"
+        },
+        "result": {
+          "es": "Segundo evento rechazado: 'Maximum applications per actor reached'",
+          "en": "Second event rejected: 'Maximum applications per actor reached'"
+        }
+      },
+      {
+        "n": "duplicateEventDoesNotRewriteRuntimeDocumentsOrRepublishSideEffects",
+        "scenario": {
+          "es": "Mismo evento repetido",
+          "en": "Same event repeated"
+        },
+        "result": {
+          "es": "Revisión y publicaciones sin cambios y resultados vacíos",
+          "en": "Revision and publications unchanged and empty results"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.gamification.AggressiveEventGamificationSynergyTests",
+      "java:com.example.editor.gamification.GamificationPenaltyTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationPenaltyRuntimeTests.java",
+        "line": 27
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationPenaltyRuntimeTests.java",
+        "line": 37
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationPenaltyRuntimeTests.java",
+        "line": 48
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationPenaltyRuntimeTests.java",
+        "line": 59
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationPenaltyRuntimeTests.java",
+        "line": 71
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationPenaltyRuntimeTests.java",
+        "line": 128
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

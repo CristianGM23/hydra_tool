@@ -1,0 +1,3 @@
+- gamification_award.match: onlyActiveRulesWhoseEventTypeAndConditionMatchScoreExactPoints (L90), reglas por evento; total 38 (L109) y libro de disco (8 apuntes, sin reglas inactivas/otro tipo).
+- gamification_define.pol: savedFeedbackPolicyShowsHidesAndBoundsTheNotices (L127), política global y por regla resuelta en cada aviso.
+- gamification_define.pol (rechazos): L162 el rechazo por máximo se muestra con includeRejected global; L167 al guardar sin política se oculta y vuelve el valor por defecto.

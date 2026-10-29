@@ -1,0 +1,44 @@
+[
+  {
+    "id": "pw:e2e/real/validation/quickfix-designer-wizard.spec.ts",
+    "name": { "es": "Diseñador de correcciones rápidas en el navegador real: parámetros y revisión del asistente", "en": "Quick-fix designer in a real browser: parameters and wizard review" },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "caps": ["validation", "persistence"],
+    "procs": [
+      { "id": "validation_author_quickfix", "stages": ["pr", "rv"], "match": "direct" }
+    ],
+    "pre": { "es": "Un metamodelo guardado con Person (edad y nombre), sembrado con la API real.", "en": "A saved metamodel with Person (age and name), seeded through the real API." },
+    "executes": { "es": "Un navegador real crea una corrección rápida, añade parámetros con «+ Parámetro», renombra uno y le cambia el tipo, añade una operación, guarda y recarga. Otra prueba recorre el asistente de corrección rápida hasta la revisión y guarda.", "en": "A real browser creates a quick fix, adds parameters with '+ Parameter', renames one and changes its type, adds an operation, saves and reloads. Another test walks through the quick-fix wizard to the review and saves." },
+    "asserts": { "es": "El parámetro nuevo aparece como texto obligatorio; tras renombrar y cambiar el tipo el servidor y el disco lo guardan así, y el segundo parámetro conserva los valores por defecto; el resumen de revisión (precondición, transacción, deshacer, operaciones) coincide con la acción guardada.", "en": "The new parameter appears as required text; after renaming and changing the type the server and disk store it that way, and the second parameter keeps the defaults; the review summary (precondition, transaction, undo, operations) matches the saved action." },
+    "behavior": { "es": "Lo que la persona configura en los parámetros de una corrección rápida y lo que ve en la revisión es lo que HYDRA guarda.", "en": "What the designer sets in a quick-fix parameters and sees in the review is what HYDRA saves." },
+    "rule": { "es": "Un parámetro nuevo es de texto y obligatorio hasta que se cambie.", "en": "A new parameter is required text until changed." },
+    "scenario": { "es": "Corrección «restablecer edad» con dos parámetros; otra con política de transacción y deshacer elegidas.", "en": "'Reset age' fix with two parameters; another with chosen transaction and undo policies." },
+    "result": { "es": "Acciones guardadas con los parámetros y políticas esperados.", "en": "Actions saved with the expected parameters and policies." },
+    "expected": { "es": "Valores por defecto y editados en el servidor; resumen igual a lo guardado.", "en": "Default and edited values on the server; summary equal to what is saved." },
+    "guarantee": { "es": "Parámetros y revisión del diseñador de correcciones rápidas reflejan lo que se persiste.", "en": "Parameters and review of the quick-fix designer reflect what is persisted." },
+    "limits": { "es": "Usa solo la operación de borrar atributo; no aplica la corrección sobre un modelo ni la asocia a una regla.", "en": "It uses only the clear-attribute operation; it does not apply the fix on a model nor link it to a rule." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Acción real de usuario, servidor real y comprobación independiente en API y disco de los valores por defecto y editados.", "en": "Real user action, real server and independent API and disk checks of default and edited values." },
+    "external": "none",
+    "cases": [
+      { "n": "parámetros", "scenario": { "es": "«+ Parámetro» dos veces, renombrar y cambiar tipo del primero.", "en": "'+ Parameter' twice, rename and retype the first." }, "result": { "es": "Primero entero renombrado; segundo texto obligatorio.", "en": "First renamed integer; second required text." } },
+      { "n": "revisión", "scenario": { "es": "Asistente completo con políticas elegidas.", "en": "Full wizard with chosen policies." }, "result": { "es": "Resumen igual a la acción guardada.", "en": "Summary equal to the saved action." } }
+    ],
+    "related": ["pw:e2e/real/validation/guided-rule-wizard.spec.ts"],
+    "src": [
+      { "path": "frontend/e2e/real/validation/quickfix-designer-wizard.spec.ts", "line": 19 },
+      { "path": "frontend/e2e/real/validation/quickfix-designer-wizard.spec.ts", "line": 35 },
+      { "path": "frontend/e2e/real/validation/quickfix-designer-wizard.spec.ts", "line": 39 },
+      { "path": "frontend/e2e/real/validation/quickfix-designer-wizard.spec.ts", "line": 71 },
+      { "path": "frontend/e2e/real/validation/quickfix-designer-wizard.spec.ts", "line": 78 }
+    ],
+    "prod": [
+      "frontend/src/validation-designer/QuickFixDesigner.tsx",
+      "frontend/src/validation-designer/ValidationDesigner.tsx",
+      "frontend/src/design-system/HydraGuidedWorkflow.tsx",
+      "frontend/src/validation/actionApi.ts"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

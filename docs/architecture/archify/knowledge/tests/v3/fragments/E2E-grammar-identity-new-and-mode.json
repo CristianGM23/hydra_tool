@@ -1,0 +1,90 @@
+[
+  {
+    "id": "pw:e2e/real/grammar/identity-new-and-mode.spec.ts",
+    "name": {
+      "es": "Identidad de una gramática nueva: gramática por defecto, tecnología, modo de trabajo y recuperación de la lista",
+      "en": "New grammar identity: default grammar, technology, working mode and recovery from the list"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["delivery"],
+    "caps": ["grammar", "persistence"],
+    "procs": [
+      { "id": "grammar_author_identity", "stages": ["n", "t"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/grammar-designer/GrammarIdentityForm.tsx",
+      "frontend/src/grammar-designer/GrammarDesigner.tsx",
+      "frontend/src/grammar-designer/grammarDesignerModel.ts",
+      "frontend/src/grammar-designer/GrammarPlatformConversionDialog.tsx",
+      "src/main/java/com/example/editor/grammar/web/GrammarController.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarRepository.java"
+    ],
+    "pre": {
+      "es": "Un metamodelo mínimo se siembra por la API real como paso previo.",
+      "en": "A minimal metamodel is seeded through the real API as a prior step."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, sin simulaciones. El oráculo lee la API real de gramáticas y el fichero que escribe el servidor.",
+      "en": "Playwright with Chromium, no simulations. The oracle reads the real grammar API and the file the server writes."
+    },
+    "executes": {
+      "es": "Abre #/grammars, pulsa 'New grammar', pone id y nombre, elige Xtext en el selector de tecnología y aplica la conversión del diálogo, elige el modo 'LINKED' con un metamodelo, guarda, vuelve a pulsar 'New grammar' y elige la gramática guardada del selector 'Saved grammars'.",
+      "en": "Opens #/grammars, presses 'New grammar', sets id and name, picks Xtext in the technology selector and applies the conversion in the dialog, picks the 'LINKED' mode with a metamodel, saves, presses 'New grammar' again and picks the saved grammar from the 'Saved grammars' selector."
+    },
+    "asserts": {
+      "es": "Una gramática nueva parte de Langium con texto por defecto y no existe en el servidor; aplicar la conversión no guarda; tras guardar, la API y el fichero dan tecnología Xtext, modo vinculado, metamodelo, nombre y el texto convertido; al elegirla de la lista se restauran todos esos valores.",
+      "en": "A new grammar starts as Langium with default text and does not exist on the server; applying the conversion does not save; after saving, the API and the file give Xtext technology, linked mode, metamodel, name and the converted text; choosing it from the list restores all those values."
+    },
+    "behavior": {
+      "es": "La persona empieza una gramática desde la de ejemplo, le da nombre, cambia de tecnología con la vista previa de conversión, la vincula a un metamodelo, la guarda y más tarde la recupera de la lista de guardadas tal como la dejó.",
+      "en": "A person starts a grammar from the sample one, names it, changes technology with the conversion preview, links it to a metamodel, saves it and later recovers it from the saved list as it was left."
+    },
+    "rule": {
+      "es": "Nada se guarda hasta pulsar Guardar; lo guardado refleja la tecnología y el modo elegidos.",
+      "en": "Nothing is saved until Save is pressed; what is stored reflects the chosen technology and mode."
+    },
+    "scenario": {
+      "es": "Una gramática nueva pasa de Langium a Xtext, se vincula a un metamodelo, se guarda y se vuelve a abrir desde la lista.",
+      "en": "A new grammar goes from Langium to Xtext, is linked to a metamodel, saved and reopened from the list."
+    },
+    "result": {
+      "es": "El servidor guarda la gramática con la tecnología, el modo y el metamodelo elegidos y la lista la devuelve idéntica.",
+      "en": "The server stores the grammar with the chosen technology, mode and metamodel and the list returns it identical."
+    },
+    "expected": {
+      "es": "Una ejecución correcta termina con la gramática guardada en Xtext y vinculada, y recuperada con los mismos valores.",
+      "en": "A passing run ends with the grammar stored as Xtext and linked, and recovered with the same values."
+    },
+    "guarantee": {
+      "es": "Empezar una gramática, elegir su tecnología y modo y recuperarla de la lista funciona de punta a punta en un navegador real.",
+      "en": "Starting a grammar, choosing its technology and mode and recovering it from the list works end to end in a real browser."
+    },
+    "limits": {
+      "es": "La conversión se comprueba solo como paso del flujo (su detalle está en otra prueba). No se prueba un modo con requisitos sin cumplir ni el aviso correspondiente, porque no se ha podido confirmar qué muestra la pantalla; no cubre ANTLR.",
+      "en": "The conversion is only checked as a step of the flow (its detail is in another test). A mode with unmet requirements and its warning are not tested because what the screen shows could not be confirmed; ANTLR is not covered."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Formulario y diálogo reales en navegador, servidor real y lectura independiente de la API y del fichero guardado.",
+      "en": "Real form and dialog in a browser, real server and independent reading of the API and the stored file."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.grammar.application.GrammarIdentitySaveGateIntegrationTests",
+      "vitest:frontend/src/grammar-designer/GrammarIdentityForm.test.tsx"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/grammar/identity-new-and-mode.spec.ts", "line": 17 },
+      { "path": "frontend/e2e/real/grammar/identity-new-and-mode.spec.ts", "line": 22 },
+      { "path": "frontend/e2e/real/grammar/identity-new-and-mode.spec.ts", "line": 33 },
+      { "path": "frontend/e2e/real/grammar/identity-new-and-mode.spec.ts", "line": 39 },
+      { "path": "frontend/e2e/real/grammar/identity-new-and-mode.spec.ts", "line": 45 },
+      { "path": "frontend/e2e/real/grammar/identity-new-and-mode.spec.ts", "line": 55 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

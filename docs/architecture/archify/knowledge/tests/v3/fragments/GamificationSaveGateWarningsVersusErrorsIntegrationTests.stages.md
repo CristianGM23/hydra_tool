@@ -1,0 +1,2 @@
+GamificationSaveGateWarningsVersusErrorsIntegrationTests - stage mapping
+- gamification_define.ok (can it be saved?): aWarningOnlyRuleIsPersistedToDisk (l.72-74 and files read with Jackson) proves warnings do not block; anErrorIsRejectedAndNothingIsWritten (l.99-100) proves errors block without writing; replacingWithAnErrorLeavesThePreviousFilesUntouched (l.119) proves the previous JSON is byte-identical.

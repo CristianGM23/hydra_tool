@@ -85,12 +85,28 @@ public class RoundTripResolutionWorkflowService {
         Path backupRoot = safeResolve(plan.targetRoot(), BACKUP_ROOT + "/" + plan.operationId());
         Path filesRoot = backupRoot.resolve("files"); Path journalPath = backupRoot.resolve(JOURNAL);
         List<RoundTripBackupEntry> entries = new ArrayList<>(); List<String> affected = new ArrayList<>();
+        Map<String, String> beforeHashes = new LinkedHashMap<>();
+        Map<String, String> afterHashes = new LinkedHashMap<>();
         boolean writesStarted = false;
         try{
+            // Do not overwrite a newer native edit since prepare() created its preview.
+            for(RoundTripResolutionAction action : plan.actions()) {
+                var preview = plan.preview().changes().stream()
+                        .filter(change -> change.path().equals(action.path())).findFirst()
+                        .orElseThrow(() -> new TechnologyCompilationException("Unknown preview action: " + action.path()));
+                Path target = safeResolve(plan.targetRoot(), action.path());
+                String observed = Files.exists(target) ? digestFile(target) : "";
+                if(!observed.equals(preview.currentSha256())) {
+                    throw new TechnologyCompilationException("Native model changed since round-trip preview: " + action.path());
+                }
+            }
+            Files.createDirectories(backupRoot.getParent());
+            Files.createDirectory(backupRoot); // refuse replay / concurrent use of the same operation ID
             Files.createDirectories(filesRoot);
             for(RoundTripResolutionAction action : plan.actions()){
                 Path target = safeResolve(plan.targetRoot(), action.path()); boolean existed = Files.exists(target);
                 entries.add(new RoundTripBackupEntry(action.path(), existed));
+                beforeHashes.put(action.path(), existed ? digestFile(target) : "ABSENT");
                 if(existed){
                     Path backup=safeResolve(filesRoot,action.path());
                     AtomicFiles.copyReplacingBounded(target,backup,properties.getMaximumFileBytes());
@@ -98,7 +114,8 @@ public class RoundTripResolutionWorkflowService {
             }
             Files.createDirectories(journalPath.getParent());
             mapper.writerWithDefaultPrettyPrinter().writeValue(journalPath.toFile(),
-                    new RoundTripBackupJournal(plan.operationId(), entries.stream().sorted(Comparator.comparing(RoundTripBackupEntry::path)).toList()));
+                    new RoundTripBackupJournal(plan.operationId(), entries.stream().sorted(Comparator.comparing(RoundTripBackupEntry::path)).toList(),
+                            beforeHashes, Map.of()));
             writesStarted = true;
             for(RoundTripResolutionAction action : plan.actions()){
                 Path target = safeResolve(plan.targetRoot(), action.path()); boolean existed = Files.exists(target);
@@ -107,13 +124,19 @@ public class RoundTripResolutionWorkflowService {
                     content = manualRegions.merge(com.example.editor.io.BoundedIo.read(target,properties.getMaximumFileBytes()), content);
                 }
                 atomicWrite(target, content); affected.add(action.path());
+                afterHashes.put(action.path(), digestFile(target));
             }
+            // A committed journal is the authorization to restore these exact post-apply bytes.
+            mapper.writerWithDefaultPrettyPrinter().writeValue(journalPath.toFile(),
+                    new RoundTripBackupJournal(plan.operationId(), entries.stream().sorted(Comparator.comparing(RoundTripBackupEntry::path)).toList(),
+                            beforeHashes, afterHashes));
             return new RoundTripApplyResult(plan.operationId(), true, false, affected, journalPath,
                     Map.of("backupRoot", backupRoot.toString()));
         }catch(IOException | RuntimeException exception){
             if(writesStarted){
                 try{restoreEntries(plan.targetRoot(), filesRoot, entries);}catch(IOException | RuntimeException rollbackFailure){exception.addSuppressed(rollbackFailure);}
             }
+            if(exception instanceof TechnologyCompilationException compilationException){throw compilationException;}
             throw new TechnologyCompilationException("Could not apply round-trip resolution plan", exception);
         }
     }
@@ -125,6 +148,24 @@ public class RoundTripResolutionWorkflowService {
         if(!Files.exists(journalPath)){throw new TechnologyCompilationException("Round-trip rollback journal does not exist: " + operationId);}
         try{
             RoundTripBackupJournal journal=mapper.readValue(com.example.editor.io.BoundedIo.read(journalPath,properties.getMaximumFileBytes()),RoundTripBackupJournal.class);
+            if(!journal.operationId().equals(operationId)
+                    || journal.afterSha256().size() != journal.entries().size()
+                    || journal.beforeSha256().size() != journal.entries().size()) {
+                throw new TechnologyCompilationException("Uncommitted or incomplete round-trip journal cannot be rolled back automatically");
+            }
+            // Validate ALL targets and backups before replacing or deleting ANY model file.
+            for(RoundTripBackupEntry entry : journal.entries()) {
+                Path target = safeResolve(root, entry.path());
+                String observed = Files.exists(target) ? digestFile(target) : "ABSENT";
+                if(!observed.equals(journal.afterSha256().get(entry.path()))) {
+                    throw new TechnologyCompilationException("Model changed after round-trip apply; rollback blocked: " + entry.path());
+                }
+                Path backup = safeResolve(filesRoot, entry.path());
+                String original = entry.existedBefore() ? digestFile(backup) : "ABSENT";
+                if(!original.equals(journal.beforeSha256().get(entry.path()))) {
+                    throw new TechnologyCompilationException("Round-trip backup altered; rollback blocked: " + entry.path());
+                }
+            }
             List<String> affected = restoreEntries(root, filesRoot, journal.entries());
             return new RoundTripApplyResult(operationId, true, true, affected, journalPath, Map.of("backupRoot", backupRoot.toString()));
         }catch(IOException | RuntimeException exception){
@@ -170,15 +211,17 @@ public class RoundTripResolutionWorkflowService {
         }
         return affected;
     }
+    /** Descripción: Calcula la huella SHA-256 de un archivo nativo regular dentro del límite de tamaño configurado, para detectar ediciones posteriores a la previsualización o al guardado. Entradas: path del archivo que debe inspeccionarse. Salida: digest hexadecimal SHA-256 o error si el fichero no es válido o accesible. */
+    private String digestFile(Path path) throws IOException {
+        if(!Files.isRegularFile(path, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {
+            throw new TechnologyCompilationException("Round-trip source is not a regular file: " + path);
+        }
+        return hash(com.example.editor.io.BoundedIo.read(path, properties.getMaximumFileBytes()));
+    }
+
     /** Descripción: Publica contenido round-trip mediante la utilidad atómica compartida y rechaza salidas que superen el presupuesto por fichero. Entradas: target: destino; content: bytes resueltos. Salida: no devuelve valor; evita escrituras parciales y ficheros fuera de presupuesto. */ private void atomicWrite(Path target,byte[] content) throws IOException{if(content.length>properties.getMaximumFileBytes())throw new TechnologyCompilationException("Round-trip output exceeds the configured file limit of "+properties.getMaximumFileBytes()+" bytes: "+target);AtomicFiles.writeReplacing(target,content);}
     /** Descripción: Ejecuta la operación «safeResolve» correspondiente a la responsabilidad de RoundTripResolutionWorkflowService. Entradas: root: ruta o ubicación utilizada por la operación; value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ private Path safeResolve(Path root, String value){
-        String normalized = requireText(value, "path").replace('\\', '/');
-        if(normalized.startsWith("/") || normalized.contains("../") || normalized.equals("..")){
-            throw new TechnologyCompilationException("Unsafe round-trip path: " + value);
-        }
-        Path result = root.resolve(normalized).normalize();
-        if(!result.startsWith(root)){throw new TechnologyCompilationException("Round-trip path escapes target root: " + value);}
-        return result;
+        return com.example.editor.integration.roundtrip.RoundTripSafePaths.resolve(root, value);
     }
     /** Descripción: Evalúa la condición «isText» sin modificar el estado externo. Entradas: mediaType: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean isText(String mediaType){return mediaType != null && (mediaType.startsWith("text/") || mediaType.contains("json") || mediaType.contains("xml") || mediaType.contains("javascript"));}
     /** Descripción: Ejecuta la operación «value» correspondiente a la responsabilidad de RoundTripResolutionWorkflowService. Entradas: hash: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String value(String hash){return hash == null || hash.isBlank() ? "absent" : hash;}

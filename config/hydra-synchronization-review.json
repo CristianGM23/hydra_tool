@@ -224,6 +224,24 @@
       "review": "accepted-local-mode; migrate behind storage SPI before multi-node deployment"
     },
     {
+      "path": "src/main/java/com/example/editor/project/recovery/ExternalImportCompensationService.java",
+      "scope": "PER_JOB_STATE",
+      "occurrences": 10,
+      "review": "accepted; synchronization is confined to the Ledger of one in-flight external import (imports are already exclusive through the journal Hold) and serializes each journal update with its durable save; no dynamic lock growth"
+    },
+    {
+      "path": "src/main/java/com/example/editor/project/recovery/ExternalImportJournalStore.java",
+      "scope": "PROCESS_WIDE_FILE_LOCK",
+      "occurrences": 1,
+      "review": "accepted; synchronization makes the release of the single import-journal FileLock and channel idempotent and contains no dynamic lock growth"
+    },
+    {
+      "path": "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+      "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
+      "occurrences": 1,
+      "review": "accepted-local-mode; one private lock serializes user-initiated external project imports; migrate behind storage SPI before multi-node deployment"
+    },
+    {
       "path": "src/main/java/com/example/editor/project/storage/ProjectChangeTracker.java",
       "scope": "LOW_FREQUENCY_SERVICE_SERIALIZATION",
       "occurrences": 2,

@@ -1,0 +1,4 @@
+- transformation_author_generation.ed: rendersPathAndContentTokensForEachMatchingElement (lines 73-78) establishes that {{id}}, {{classId}} and {{attr:...}} are interpreted in path and content with exact literals.
+- transformation_author_generation.ed: unsafePathsAreBlockedBothStaticallyAndAtRenderTime (lines 126-137) and definitionWithBlockingErrorsIsRejectedAndNeverPersisted (lines 147-155) establish rejection of unsafe or invalid templates.
+- transformation_author_generation.en: disabledRuleDoesNotGenerate (lines 91-93) establishes that a disabled rule generates nothing.
+- transformation_author_generation.en: pathCollisionFailsOrReplacesAccordingToTheOverwritePolicy (lines 107-111) and savedRulesAreReloadedFromDiskAndGenerateTheSameArtifacts (lines 174-181) establish the rule-level policies and that saved rules are reloaded.

@@ -1,0 +1,4 @@
+- toolchains_check_install.a3: catalogListsValidPackagesAndFlagsATamperedChecksum (lines 52-66) and the catalog assertions in installUpdateRejectUninstallAndReinstall (line 90) establish that only trusted-catalog packages are listed, with installable/installed flags.
+- toolchains_engine_lifecycle.c: installUpdateRejectUninstallAndReinstall (lines 95-108) establishes UPDATED with the expected current version, the on-disk package version and the rejection of a wrong expectation.
+- toolchains_engine_lifecycle.d: same method (lines 112-120) and administratorManagedBundleIsNeverOverwrittenNorRemoved (lines 138-139) establish removal of the managed engine, reinstall and protection of an administrator bundle.
+- toolchains_check_install.a2/.d2 and transformation_export_native.rd: diagnoseRunsTheFixtureBridgeAndReportsAMissingCommandAsNotReady (lines 160-170) establishes the real self-description run (READY) and a not-ready state for a missing command.

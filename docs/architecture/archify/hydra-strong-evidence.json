@@ -1,0 +1,27 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_EVIDENCE_CAMPAIGN_V1",
+  "latestReceipt": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra\\docs\\architecture\\archify\\integrations\\strong-evidence\\campaign-20261014-103039-040afc-868-9fceac98.json",
+  "generatedUtc": "2026-10-15T10:52:26+00:00",
+  "summary": {
+    "recordedGroups": 868,
+    "counts": {
+      "PASS": 867,
+      "FAIL": 1
+    },
+    "weakStagesBefore": 980
+  },
+  "strongStatus": "UNVERIFIED_PER_STAGE",
+  "warning": "Archify canonical stage statuses are not overwritten by this campaign",
+  "followUps": [
+    {
+      "date": "2026-10-15",
+      "subject": "S088",
+      "title": "Backend Maven complete verify",
+      "historicalResult": "FAIL (groupObservations.S088 in campaign-20261014-103039-040afc-868-9fceac98.json; reportDir reports/20261015-112151; case com.example.editor.project.LocalDirectoryProjectStorageTests.exportsAndImportsProjectArchive failed with ERROR \"Could not import the project archive\")",
+      "newEvidence": "C:\\Users\\cristian.gomez\\Downloads\\HYDRA_S088_VERIFICACION_FINAL.txt (full `mvnw.cmd -B clean verify`, local run 2026-10-15 ~16:27 CEST): Tests run: 1864, Failures: 0, Errors: 0, Skipped: 12, BUILD SUCCESS; com.example.editor.project.LocalDirectoryProjectStorageTests 20/20 PASS. Cross-checked against local build/hydra-maven/surefire-reports/TEST-com.example.editor.project.LocalDirectoryProjectStorageTests.xml (tests=20 errors=0 failures=0 time=9.03, same mtime/run).",
+      "scopeOfResolution": "Resolves the single FAIL case directly: java:com.example.editor.project.LocalDirectoryProjectStorageTests is now recorded as PASS in docs/architecture/archify/knowledge/tests/test-execution-state.json (and reflected in test-evidence-matrix.json / hydra-tests-data.js for stages project_open_organize.a4/a6 and project_import_export.i4/x3). Does NOT certify a new STRONG status for any Archify stage or process on its own (no independent per-stage oracle was added) and does NOT re-validate the other 867 campaign groups or the 369 other NOT_EXECUTED java tests still pending a fresh local surefire regeneration.",
+      "historicalRecordPreserved": true,
+      "note": "The original FAIL in groupObservations.S088 and in recordedGroups/counts above is kept as-is (historical); this entry documents the later manual re-verification without rewriting campaign history."
+    }
+  ]
+}

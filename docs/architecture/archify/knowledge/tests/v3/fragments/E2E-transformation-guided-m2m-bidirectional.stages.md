@@ -1,0 +1,6 @@
+- transformation_author_guided.nm: line 70 (name read from backend and disk equals the one typed) after the fill at line 20.
+- transformation_author_guided.ty + isM: lines 24-28 (directionality hidden for M2T, visible again for M2M) and line 71 (persisted kind).
+- transformation_author_guided.di + isB: lines 32-34 (sync options absent until bidirectional is chosen) and lines 72-73 (persisted BIDIRECTIONAL, trace enabled).
+- transformation_author_guided.cn: line 74 (persisted conflict policy and both checkboxes, set to non-default values) and lines 94-96 (UI reloaded from backend).
+- transformation_author_guided.mm: lines 75-76 (persisted endpoint metamodel ids).
+- transformation_author_guided.wk: lines 77-85 (forward and backward rules created in the mapping space, paired by the same correspondence) and line 120 (half-defined bidirectional rejected, nothing stored).

@@ -42,6 +42,30 @@ class GeneratedProjectLifecycleServiceTests {
     }
 
     @Test
+    void genuinelyExecutesGenerateValidateAndLaunchThroughTheRealRunnerWhenNotADryRun() throws Exception{
+        Path projects = temporary.resolve("projects2");
+        Path registry = temporary.resolve("registry2");
+        Files.createDirectories(projects.resolve("sample2"));
+        var runner = (com.example.editor.integration.compatibility.ToolchainCommandRunner)
+                (id, description, workingDirectory, command, expectedExitCode, timeoutSeconds, environment) ->
+                        new TechnologyValidationStepResult(id, description, TechnologyValidationStepStatus.PASSED,
+                                command, 0, 1, "", "", List.of());
+        var service = new GeneratedProjectLifecycleService(new GeneratedProjectRuntimeProfileCatalog(),
+                new GeneratedProjectRegistryStore(JsonMapper.builder().findAndAddModules().build()), runner,
+                projects.toString(), registry.toString());
+        service.register(new GeneratedProjectDefinition("sample2", "Sample2", "standalone-web",
+                "sample2", Instant.EPOCH, Map.of()));
+
+        GeneratedProjectExecutionReport report = service.execute(new GeneratedProjectExecutionRequest(
+                "sample2", List.of(GeneratedProjectStage.GENERATE, GeneratedProjectStage.VALIDATE,
+                GeneratedProjectStage.OPEN, GeneratedProjectStage.LAUNCH), false, true, false));
+
+        assertThat(report.successful()).isTrue();
+        assertThat(report.steps()).extracting(GeneratedProjectStepResult::status)
+                .allMatch(status -> status == GeneratedProjectStepStatus.PASSED);
+    }
+
+    @Test
     void rejectsDirectoriesOutsideTheConfiguredRoot(){
         var service = new GeneratedProjectLifecycleService(new GeneratedProjectRuntimeProfileCatalog(),
                 new GeneratedProjectRegistryStore(JsonMapper.builder().build()),

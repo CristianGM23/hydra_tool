@@ -1,0 +1,148 @@
+{
+ "schemaVersion": 2,
+ "purpose": "Incremental architecture-analysis cache. Accelerates future HYDRA architecture work by recording the exact repository state (commit + working-tree changes) the cache was last synchronized against, so a future pass can diff from HERE instead of re-reading the whole repository or trusting a SHA hard-coded in old conversation history. The cache is NOT an authoritative specification -- the portal content files (hydra-model-*.js, hydra-architecture-data.js) and the HYDRA source tree remain the source of truth.",
+ "howToUseThisFile": "Always resolve the CURRENT state dynamically (git rev-parse HEAD, git status) before trusting anything below. Compare it against analyzedState.head.sha and analyzedState.workingTree here. If they match exactly, the cache is current as-is. If HEAD advanced, diff analyzedState.head.sha..HEAD for the aggregate changed-file set (don't walk intermediate commits one by one unless needed). If the working tree is dirty, also fold in staged/unstaged/untracked relevant paths. Never assume an older SHA quoted elsewhere (chat history, a stale README) is still current -- this file is the only source of truth for 'what was last checked'.",
+ "repository": {
+  "url": "https://github.com/CristianGM23/hydra_tool",
+  "branch": "main"
+ },
+ "analyzedState": {
+  "resolvedAt": "2026-10-09",
+  "resolvedDynamicallyVia": "git rev-parse HEAD / --abbrev-ref HEAD; git diff --cached --name-only; git diff --name-only; git ls-files --others --exclude-standard",
+  "head": {
+   "sha": "4e4455a63c02fa89fdd60bbf00035b28c34a68a3",
+   "message": "HYDRA R6C4 Fix172 - GitHub Actions cross-platform qualification hardening",
+   "matchesOriginMainAtLastCheck": true
+  },
+  "representsCommittedStateOnly": false,
+  "representsCommitPlusLocalChanges": true,
+  "workingTree": {
+   "clean": false,
+   "staged": {
+    "note": "Pre-existing, uncommitted 'Fix173' release-qualification pass (not written by any Archify/Claude session). Release/CI/packaging tooling only.",
+    "relevantPaths": [
+     ".github/workflows/hydra-ci.yml",
+     "HYDRA_V4.32.107_RELEASE_NOTES.md",
+     "MANIFEST_SHA256.txt",
+     "scripts/release/package_source.py",
+     "scripts/release/qualify_rc1.py",
+     "scripts/release/qualify_rc2.py",
+     "scripts/release/qualify_release.py",
+     "scripts/validation/validate_full_tree_fix173.ps1 (new)",
+     "scripts/validation/verify_manifest.py",
+     "scripts/validation/verify_r6c4_fix173_release_boundary.py (new)"
+    ],
+    "classification": "NON_ARCHITECTURAL (release/CI/packaging tooling)"
+   },
+   "unstaged": {
+    "productSourceChangesFoundThisPass": {
+     "note": "Uncommitted PRODUCT changes that the previous sync (same HEAD) had NOT recorded. They were reclassified as ARCHITECTURAL for 'publication' (standalone distribution) and 'integration' (native parity endpoint) and were re-investigated with scoped lookups this pass (see gaps.json gap-006, gap-007).",
+     "paths": [
+      "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+      "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionApplicationService.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionController.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPackager.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPlanner.java",
+      "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionPipelineTests.java",
+      "frontend/src/distribution-center/StandaloneDistributionCenter.tsx",
+      "frontend/src/distribution-center/api.ts",
+      "frontend/src/distribution-center/api.test.ts"
+     ],
+     "generatedOrCatalog": [
+      "frontend/src/api/generated/hydraApiClient.ts",
+      "config/api-contract.json",
+      "docs/api/hydra-openapi.yaml",
+      "frontend/src/i18n/currentSpanishCatalogPart19.ts"
+     ]
+    },
+    "portalWork": {
+     "note": "This task's own portal/knowledge work (presentation layer): docs/architecture/archify/hydra-architecture.html, hydra-architecture-data.js (gap-003 citation fix only), README.md, hydra-architecture-changes.json and the internal/** Archify artifacts left as previously generated.",
+     "classification": "NON_ARCHITECTURAL (documentation/presentation layer)"
+    },
+    "ignoredAsGenerated": [
+     "scripts/**/__pycache__/*.pyc"
+    ]
+   },
+   "untracked": {
+    "productSourceNewFiles": [
+     "src/main/java/com/example/editor/integration/parity/NativeParity*.java (7 files: Capability, CapabilityResult, CertificationReport, CertificationRequest, EvidenceAssessor, EvidenceStatus, ProofCatalog)",
+     "src/main/java/com/example/editor/standalone/distribution/StandaloneProductionReadinessService.java",
+     "src/main/java/com/example/editor/standalone/distribution/StandaloneWebDeploymentPackager.java (appeared during this pass; read once, documented)",
+     "src/test/java/com/example/editor/integration/parity/NativeParityEvidenceAssessorTests.java",
+     "src/test/java/com/example/editor/integration/parity/NativeParityProofCatalogTests.java",
+     "src/test/java/com/example/editor/standalone/distribution/StandaloneProductionReadinessTests.java"
+    ],
+    "nonArchitectural": [
+     ".claude/ (project Claude Code config)",
+     "CLAUDE.md",
+     "docs/validation/HYDRA_BD_BLOCK1_PLAN_AND_EVIDENCE.md",
+     "scripts/testing/bd-block1/BD1Harness.java",
+     "scripts/validation/validate_bd_block1.ps1",
+     "scripts/validation/verify_bd_block1.py",
+     "scripts/testing/bd-block2/, scripts/validation/{run_native_e2e_matrix.py,validate_bd_block2.ps1,verify_bd_block2.py}, scripts/distribution/{build_generated_editor.py,verify_web_package.py} (appeared during this pass; tooling, not read)"
+    ],
+    "portalAndCache": [
+     "docs/architecture/archify/knowledge/ (this cache + current-task.md + portal-check.js + portal-browser-check.js)",
+     "docs/architecture/archify/hydra-portal-graph.js, hydra-portal-model.js, hydra-portal-app.js, hydra-components-data.js, hydra-model-*.js (portal engine + verified content)"
+    ]
+   }
+  }
+ },
+ "previouslyAnalyzedState": {
+  "head": {
+   "sha": "4e4455a63c02fa89fdd60bbf00035b28c34a68a3",
+   "label": "HYDRA R6C4 Fix172 - GitHub Actions cross-platform qualification hardening"
+  },
+  "note": "Same HEAD as analyzedState.head.sha. The previous cache sync of the same date recorded the working tree as containing NO src/ or frontend/src changes; this pass found the uncommitted product changes listed under analyzedState.workingTree.unstaged.productSourceChangesFoundThisPass and untracked.productSourceNewFiles. The commit-history baseline before that (864ed521e8d4e5fde8a0ed087c37bc3e5b89de36, 'Initial import of HYDRA') is historical provenance only (gaps.json.comparedCommits)."
+ },
+ "changedArchitecturallyRelevantPathsSincePreviousAnalysis": [
+  "src/main/java/com/example/editor/integration/parity/** (new)",
+  "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+  "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java",
+  "src/main/java/com/example/editor/standalone/distribution/** (modified + new StandaloneProductionReadinessService)",
+  "frontend/src/distribution-center/**"
+ ],
+ "capabilityRevalidationTriggeredBy": "Uncommitted working-tree changes under integration/parity, integration/{compiler,web} and standalone/distribution (+ frontend distribution-center). 'integration' and 'publication' were re-read this pass (scoped lookups). Every other capability was deepened (not re-validated) with scoped enumeration lookups against unchanged evidence roots.",
+ "nextIncrementalDiffInstructions": "Resolve current HEAD dynamically first. If it still equals analyzedState.head.sha, only re-check working-tree status (git status --porcelain), re-diff the paths in changedArchitecturallyRelevantPathsSincePreviousAnalysis against what capabilities-cache.json says was verified, and reclassify anything new. If HEAD has advanced, run: git diff --name-status 4e4455a63c02fa89fdd60bbf00035b28c34a68a3..HEAD -- . ':!docs/architecture/archify' ':!.claude' ':!CLAUDE.md', then fold in current staged/unstaged/untracked state the same way this file does, and update analyzedState/previouslyAnalyzedState accordingly. Never hard-code the resulting SHA into a prompt or conversation as a future assumption -- always re-resolve dynamically.",
+ "testEvidence": {
+  "generatedAt": "2026-10-29T07:43:40.221Z",
+  "store": "knowledge/tests/",
+  "repositoryState": {
+   "head": "826c7a7c21fd1fd3447b2f2c86ac8a11efeacc06",
+   "branch": "archify-v3-cierre-20261022",
+   "unstaged": 9,
+   "untracked": 0
+  },
+  "executionEvidence": {
+   "surefire": {
+    "store": {
+     "index": "target/archify-v3/evidence/evidence-index.json",
+     "classes": 509
+    },
+    "dir": null,
+    "citedFromBuild": 0,
+    "sample": "target/archify-v3/evidence/surefire/suite-maven-completa-20261028T114910Z/TEST-com.example.editor.EditorApplicationTests.xml",
+    "suites": 509,
+    "newest": "2026-10-28T12:42:01.434Z",
+    "start": null
+   },
+   "gates": {
+    "readiness": 73,
+    "release": 5,
+    "rc1": 2,
+    "rc2": 6
+   }
+  },
+  "counts": {
+   "records": 1057,
+   "byStatus": {
+    "PASS": 917,
+    "DISCOVERED": 134,
+    "SKIPPED": 2,
+    "FAIL": 4
+   }
+  },
+  "note": "Test evidence is tracked incrementally: run knowledge/tests/discover-tests.js --changed, analyse new/modified tests, then build-test-evidence.js."
+ }
+}

@@ -1,0 +1,4 @@
+- metamodel_export_generate.in (metamodelo): 'Export' deshabilitado con un borrador (línea 40, dentro del desplegable «Interchange»), habilitado tras abrir el metamodelo guardado (línea 49) y el diálogo nombra el metamodelo elegido y el destino local (líneas 54-55).
+- metamodel_export_generate.in (formato): sin formato marcado la descarga múltiple queda deshabilitada (línea 67); el JSON descargado contiene el id y los elementos del metamodelo (líneas 75-78).
+- metamodel_export_generate.in (paquete): el ZIP descargado es válido y trae una entrada por formato marcado (líneas 88-92); lo guardado no cambia (línea 96).
+- Fuera de alcance: el destino remoto necesita credenciales; no se reclama.

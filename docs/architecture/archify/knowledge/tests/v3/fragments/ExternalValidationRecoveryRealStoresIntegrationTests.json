@@ -1,0 +1,97 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalValidationRecoveryRealStoresIntegrationTests",
+    "name": {
+      "es": "Reglas y correcciones recuperadas de un proyecto externo, guardadas en almacenes reales",
+      "en": "Rules and fixes recovered from an external project, saved in real stores"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["recovery", "validation"],
+    "procs": [
+      {"id": "recovery_lifecycle", "stages": ["a4", "v"], "match": "direct"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/recovery/ExternalValidationRecoveryService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalValidationRecoveryResult.java",
+      "src/main/java/com/example/editor/validation/importing/SafeExternalConstraintTranslator.java",
+      "src/main/java/com/example/editor/validation/validation/ValidationModelApplicationService.java",
+      "src/main/java/com/example/editor/validation/action/ActionModelApplicationService.java",
+      "src/main/java/com/example/editor/validation/expression/ExpressionModelApplicationService.java"
+    ],
+    "pre": {
+      "es": "Fixture src/test/resources/fixtures/sirius-complete (.odesign y .evl); directorio temporal vacío para todos los almacenes y metamodelo del fixture guardado antes de recuperar.",
+      "en": "Fixture src/test/resources/fixtures/sirius-complete (.odesign and .evl); empty temporary directory for every store and the fixture metamodel saved before recovering."
+    },
+    "setup": {
+      "es": "Contexto Spring real: servicio de recuperación y servicios de aplicación de expresiones, acciones y validaciones reales sobre almacenes en disco. Sustituye al test con dobles, que solo capturaba lo que se pedía guardar.",
+      "en": "Real Spring context: recovery service and real expression, action and validation application services over on-disk stores. It replaces the test with doubles, which only captured what was asked to be saved."
+    },
+    "executes": {
+      "es": "ExternalValidationRecoveryService.recover con las entradas del .odesign y del .evl del fixture y, antes, con una fuente enorme y otra binaria, contra los servicios de aplicación reales; después se leen con Jackson los documentos .validations.json, .actions.json y .expressions.json.",
+      "en": "ExternalValidationRecoveryService.recover with the fixture .odesign and .evl entries and, before, with an oversized and a binary source, against the real application services; the .validations.json, .actions.json and .expressions.json documents are then read with Jackson."
+    },
+    "asserts": {
+      "es": "Reglas guardadas = las once del .evl contadas por el test; activa implica traducción segura y desactivada implica modo externo y revisión; ProgressRange y PositiveDuration activas, NoSelfLoop (con guarda) desactivada; seis acciones con operaciones solo si están activas; regla enlazada a su corrección; fuente enorme o binaria sin documentos.",
+      "en": "Stored rules = the eleven of the .evl counted by the test; enabled implies safe translation and disabled implies external mode and review; ProgressRange and PositiveDuration enabled, guarded NoSelfLoop disabled; six actions with operations only when enabled; rule linked to its fix; oversized or binary source leaves no documents."
+    },
+    "behavior": {
+      "es": "Al recuperar las validaciones de un proyecto externo, solo las reglas y correcciones traducidas de forma segura quedan activas; el resto se conserva desactivado y marcado para revisión.",
+      "en": "When recovering the validations of an external project, only safely translated rules and fixes are enabled; the rest is kept disabled and flagged for review."
+    },
+    "rule": {
+      "es": "Nada se activa por conjetura: una regla con guarda o una corrección sin traducción inequívoca se guarda desactivada y en revisión; una fuente enorme o binaria no se descodifica ni genera documentos.",
+      "en": "Nothing is enabled by guesswork: a rule with a guard or a fix without an unambiguous translation is saved disabled and in review; an oversized or binary source is not decoded and produces no documents."
+    },
+    "scenario": {
+      "es": "Recuperar las reglas y correcciones del .evl y del .odesign del fixture Sirius con almacenes reales, y antes probar una fuente enorme y una binaria.",
+      "en": "Recover the rules and fixes of the Sirius fixture .evl and .odesign with real stores, and first try an oversized and a binary source."
+    },
+    "result": {
+      "es": "Los documentos leídos del disco contienen las once reglas y seis correcciones esperadas con la activación coherente con su traducción; con las fuentes enorme y binaria no se escribe nada.",
+      "en": "The documents read from disk contain the eleven expected rules and six fixes with enablement consistent with their translation; with the oversized and binary sources nothing is written."
+    },
+    "expected": {
+      "es": "Las aserciones sobre nombres, activación, enlaces y recuentos se cumplen en los dos casos.",
+      "en": "Assertions on names, enablement, links and counts hold in both cases."
+    },
+    "guarantee": {
+      "es": "Lo que se persiste al recuperar validaciones externas separa lo ejecutable de lo que queda en revisión, verificado sobre los documentos reales guardados.",
+      "en": "What is persisted when recovering external validations separates what is executable from what stays in review, verified on the real saved documents."
+    },
+    "limits": {
+      "es": "Solo cubre las tecnologías del fixture (EVL y Sirius); no prueba reglas Xtext, Langium ni BESSER, ni la reutilización de reglas visuales ya guardadas, ni que el motor ejecute después las reglas activas.",
+      "en": "Covers only the fixture technologies (EVL and Sirius); it does not test Xtext, Langium or BESSER rules, reuse of already saved visual rules, or the engine later running the enabled rules."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Servicios y almacenes reales, oráculo en disco con recuentos hechos por el propio test y un caso negativo real.",
+      "en": "Real services and stores, on-disk oracle with counts made by the test itself and a real negative case."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "anOversizedOrBinarySourceProducesNoRulesAndNoDocuments",
+        "scenario": {"es": "Una fuente de validación enorme y otra binaria.", "en": "An oversized and a binary validation source."},
+        "result": {"es": "Cero reglas, un aviso y ningún documento en disco.", "en": "Zero rules, a warning and no document on disk."}
+      },
+      {
+        "n": "onlySafelyTranslatedRulesAndFixesAreEnabledOnDisk",
+        "scenario": {"es": "Recuperar el .evl y el .odesign completos del fixture.", "en": "Recover the complete fixture .evl and .odesign."},
+        "result": {"es": "Once reglas y seis correcciones, activas solo las de traducción segura.", "en": "Eleven rules and six fixes, enabled only when safely translated."}
+      }
+    ],
+    "src": [
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalValidationRecoveryRealStoresIntegrationTests.java", "line": 123},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalValidationRecoveryRealStoresIntegrationTests.java", "line": 126},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalValidationRecoveryRealStoresIntegrationTests.java", "line": 152},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalValidationRecoveryRealStoresIntegrationTests.java", "line": 157},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalValidationRecoveryRealStoresIntegrationTests.java", "line": 170},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalValidationRecoveryRealStoresIntegrationTests.java", "line": 177},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalValidationRecoveryRealStoresIntegrationTests.java", "line": 182},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalValidationRecoveryRealStoresIntegrationTests.java", "line": 198}
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

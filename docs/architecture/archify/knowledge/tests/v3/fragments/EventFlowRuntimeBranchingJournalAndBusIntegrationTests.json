@@ -1,0 +1,54 @@
+[
+  {
+    "id": "java:com.example.editor.event.flow.runtime.EventFlowRuntimeBranchingJournalAndBusIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": { "es": "Flujos de eventos: elegir salida, guardar estado, volver al bus y detener", "en": "Event flows: choosing an exit, saving state, returning to the bus and stopping" },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["events"],
+    "procs": [
+      { "id": "events_execute_flow", "stages": ["a7", "a8", "a9"], "match": "direct" },
+      { "id": "events_author_run", "stages": ["a5"], "match": "direct" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeService.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeSupport.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeNodeExecutor.java",
+      "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeJournalService.java",
+      "src/main/java/com/example/editor/event/flow/runtime/persistence/JsonEventFlowRuntimeSnapshotRepository.java",
+      "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java"
+    ],
+    "pre": { "es": "Metamodelo y flujos guardados con los servicios reales en un directorio temporal vacío.", "en": "Metamodel and flows saved with the real services in an empty temporary directory." },
+    "setup": { "es": "Motor de flujos con diario en disco y bus en memoria reales; un segundo motor nuevo comparte el mismo disco.", "en": "Flow engine with an on-disk journal and real in-memory bus; a second new engine shares the same disk." },
+    "executes": { "es": "Procesar eventos por decisión, paso fallido con y sin salida de error, paso correcto, emisión de eventos derivados, deduplicación con reinicio del motor, detener, arrancar y borrar el estado.", "en": "Process events through a decision, a failing step with and without an error exit, a successful step, derived-event emission, deduplication with engine restart, stop, start and clear state." },
+    "asserts": { "es": "Listas literales de pasos recorridos y estados por caso; eventos derivados en el bus con su causa y profundidad; JSON del diario leído del disco con trazas y estado; el motor nuevo descarta el evento ya visto; sin diario tras borrar.", "en": "Literal lists of visited steps and statuses per case; derived events on the bus with their cause and depth; journal JSON read from disk with traces and state; the new engine discards the already seen event; no journal after clearing." },
+    "behavior": { "es": "El flujo sigue la salida que corresponde al resultado y al tipo de paso y acaba si no hay salida; guarda trazas y estado y los recupera; los eventos emitidos vuelven al bus y disparan otro flujo; detener impide reactivarse solo.", "en": "The flow follows the exit matching the result and step type and ends when there is none; it saves traces and state and recovers them; emitted events return to the bus and trigger another flow; stopping prevents self-reactivation." },
+    "rule": { "es": "Una decisión elige la salida cierta o falsa; un paso fallido sigue la salida de error o acaba en fallo; un evento ya visto se descarta aunque se reinicie el motor.", "en": "A decision picks the true or false exit; a failing step follows the error exit or ends as failed; an already seen event is discarded even after an engine restart." },
+    "scenario": { "es": "Cuatro flujos con decisión y pasos fallidos o correctos, dos flujos encadenados por un evento emitido y un flujo con deduplicación persistida.", "en": "Four flows with a decision and failing or successful steps, two flows chained by an emitted event and one flow with persisted deduplication." },
+    "result": { "es": "Cada caso recorre exactamente los pasos esperados; el diario en disco refleja trazas y estado; tras detener no se procesa nada hasta arrancar y tras borrar el diario desaparece.", "en": "Each case visits exactly the expected steps; the on-disk journal reflects traces and state; after stopping nothing is processed until started and after clearing the journal disappears." },
+    "expected": { "es": "Las listas de pasos, los conteos de trazas y el contenido del diario coinciden con los literales.", "en": "The step lists, trace counts and journal content match the literals." },
+    "guarantee": { "es": "La elección de salidas, la persistencia del estado del motor, el retorno de eventos al bus y la parada explícita funcionan con el motor, el bus y el disco reales.", "en": "Exit selection, engine-state persistence, event return to the bus and explicit stop work with the real engine, bus and disk." },
+    "limits": { "es": "No prueba las salidas de plazo agotado ni las condiciones con expresiones; los enlaces de eventos como disparadores no se ejercen, solo otros flujos; el panel de la pantalla no se recorre.", "en": "It does not test timeout exits or expression conditions; event bindings as triggers are not exercised, only other flows; the screen panel is not walked." },
+    "strengthWhy": { "es": "Motor, bus y diario reales con oráculo en disco y listas literales de pasos.", "en": "Real engine, bus and journal with an on-disk oracle and literal step lists." },
+    "cases": [
+      { "n": "theExitIsChosenByTheDecisionResultTheStepOutcomeAndABranchWithoutExitEnds", "scenario": { "es": "Decisión cierta y falsa, paso fallido y correcto, rama sin salida.", "en": "True and false decision, failing and successful step, branch without exit." }, "result": { "es": "Cada caso recorre sus pasos exactos.", "en": "Each case visits its exact steps." } },
+      { "n": "anEmittedEventReturnsToTheBusAndTriggersAnotherFlow", "scenario": { "es": "Un flujo emite un evento que dispara otro.", "en": "One flow emits an event that triggers another." }, "result": { "es": "Dos trazas; con flujos apagados no hay más.", "en": "Two traces; with flows switched off there are no more." } },
+      { "n": "theTraceAndTheEngineStateAreSavedToTheJournalAndRestoredByANewEngine", "scenario": { "es": "Deduplicar, reiniciar el motor y repetir el evento.", "en": "Deduplicate, restart the engine and repeat the event." }, "result": { "es": "El evento repetido se descarta.", "en": "The repeated event is discarded." } },
+      { "n": "stoppingPreventsAutomaticReactivationAndClearingTheStateRemovesTheJournal", "scenario": { "es": "Detener, publicar, arrancar y borrar.", "en": "Stop, publish, start and clear." }, "result": { "es": "No se procesa parado; el diario se elimina.", "en": "Nothing processed while stopped; the journal is removed." } }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeBranchingJournalAndBusIntegrationTests.java", "line": 156 },
+      { "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeBranchingJournalAndBusIntegrationTests.java", "line": 172 },
+      { "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeBranchingJournalAndBusIntegrationTests.java", "line": 188 },
+      { "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeBranchingJournalAndBusIntegrationTests.java", "line": 225 },
+      { "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeBranchingJournalAndBusIntegrationTests.java", "line": 231 },
+      { "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeBranchingJournalAndBusIntegrationTests.java", "line": 255 },
+      { "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeBranchingJournalAndBusIntegrationTests.java", "line": 269 },
+      { "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeBranchingJournalAndBusIntegrationTests.java", "line": 296 },
+      { "path": "src/test/java/com/example/editor/event/flow/runtime/EventFlowRuntimeBranchingJournalAndBusIntegrationTests.java", "line": 305 }
+    ]
+  }
+]

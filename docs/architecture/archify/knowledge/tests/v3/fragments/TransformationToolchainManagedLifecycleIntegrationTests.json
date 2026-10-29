@@ -1,0 +1,199 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.nativeexec.TransformationToolchainManagedLifecycleIntegrationTests",
+    "external": "real",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Ciclo de vida de un motor gestionado: catálogo, instalar, actualizar, eliminar",
+      "en": "Managed engine lifecycle: catalog, install, update, remove"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "toolchains",
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "toolchains_check_install",
+        "stages": [
+          "a2",
+          "d2",
+          "a3"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "toolchains_engine_lifecycle",
+        "stages": [
+          "c",
+          "d",
+          "a"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "transformation_export_native",
+        "stages": [
+          "rd",
+          "dg"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningService.java",
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeExecutor.java",
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeCommandResolver.java"
+    ],
+    "pre": {
+      "es": "JVM hija lanzable desde java.home y classpath de pruebas; directorio temporal escribible; sin toolchain nativa real ni red.",
+      "en": "Child JVM launchable from java.home and the test classpath; writable temporary directory; no real native toolchain or network."
+    },
+    "setup": {
+      "es": "Servicio de aprovisionamiento, ejecutor y política de procesos reales; paquetes de confianza con SHA-256 real en @TempDir; el puente es el proceso fixture que ya usan las pruebas del ejecutor y se autodescribe.",
+      "en": "Real provisioning service, executor and process policy; trusted packages with real SHA-256 in @TempDir; the bridge is the fixture process already used by the executor tests and it describes itself."
+    },
+    "executes": {
+      "es": "catalog con v1, v2 y un paquete de hash manipulado; install v1, install v2 con versión actual esperada, install con expectativa errónea, uninstall y reinstall; bundle de administrador; diagnose con comando explícito del puente y con comando inexistente.",
+      "en": "catalog with v1, v2 and a tampered-hash package; install v1, install v2 with the expected current version, install with a wrong expectation, uninstall and reinstall; administrator bundle; diagnose with an explicit bridge command and with a missing command."
+    },
+    "asserts": {
+      "es": "El catálogo lista v1 y v2 instalables y el manipulado no instalable; INSTALLED, UPDATED, REMOVED con metadatos leídos del disco; la expectativa errónea rechaza y deja v2; el bundle de administrador queda BLOCKED e intacto; READY con el puente fixture y estado no listo con el comando inexistente.",
+      "en": "The catalog lists v1 and v2 installable and the tampered one not installable; INSTALLED, UPDATED, REMOVED with metadata read from disk; the wrong expectation rejects and leaves v2; the administrator bundle is BLOCKED and untouched; READY with the fixture bridge and a not-ready state with the missing command."
+    },
+    "behavior": {
+      "es": "HYDRA solo instala paquetes del catálogo de confianza con su huella comprobada, sustituye o elimina solo lo que él instaló y diagnostica el motor ejecutando de verdad el puente en un espacio aislado.",
+      "en": "HYDRA only installs packages from the trusted catalog with a verified fingerprint, replaces or removes only what it installed and diagnoses the engine by really running the bridge in an isolated workspace."
+    },
+    "rule": {
+      "es": "Un paquete con hash manipulado no es instalable; una expectativa de versión actual errónea rechaza; un bundle de administrador no se pisa ni se elimina.",
+      "en": "A package with a tampered hash is not installable; a wrong current-version expectation rejects; an administrator bundle is neither overwritten nor removed."
+    },
+    "scenario": {
+      "es": "Publicar tres paquetes, instalar, actualizar, intentar una instalación con expectativa errónea, desinstalar, reinstalar, proteger un bundle ajeno y diagnosticar dos motores.",
+      "en": "Publish three packages, install, update, try an install with a wrong expectation, uninstall, reinstall, protect a foreign bundle and diagnose two engines."
+    },
+    "result": {
+      "es": "Estados y ficheros en disco coinciden con lo esperado en cada paso; el motor con el puente fixture queda READY y el inexistente no.",
+      "en": "States and files on disk match the expectation at each step; the engine with the fixture bridge is READY and the missing one is not."
+    },
+    "expected": {
+      "es": "Estados de aprovisionamiento, versiones leídas de .hydra-package.json, ficheros intactos y salud del diagnóstico coinciden.",
+      "en": "Provisioning states, versions read from .hydra-package.json, untouched files and diagnostic health match."
+    },
+    "guarantee": {
+      "es": "Evidencia real del catálogo de confianza y del ciclo instalar-actualizar-eliminar con un puente que se ejecuta como proceso real.",
+      "en": "Real evidence of the trusted catalog and the install-update-remove cycle with a bridge that runs as a real process."
+    },
+    "limits": {
+      "es": "El puente es un fixture, no ATL/Java reales, y se declara ATL; no cubre la reversión por incompatibilidad (ver la prueba de aprovisionamiento) ni descargas de red.",
+      "en": "The bridge is a fixture, not real ATL/Java, and declares itself ATL; does not cover rollback on incompatibility (see the provisioning test) nor network downloads."
+    },
+    "strengthWhy": {
+      "es": "Servicio, ficheros y proceso reales, oráculo en disco independiente y casos negativos de cada puerta.",
+      "en": "Real service, files and process, independent on-disk oracle and negative cases for each gate."
+    },
+    "cases": [
+      {
+        "n": "catalogListsValidPackagesAndFlagsATamperedChecksum",
+        "scenario": {
+          "es": "Tres paquetes, uno con SHA-256 manipulado.",
+          "en": "Three packages, one with a tampered SHA-256."
+        },
+        "result": {
+          "es": "Instalables true, true, false.",
+          "en": "Installable true, true, false."
+        }
+      },
+      {
+        "n": "installUpdateRejectUninstallAndReinstall",
+        "scenario": {
+          "es": "v1, v2, expectativa errónea, eliminar y reinstalar.",
+          "en": "v1, v2, wrong expectation, remove and reinstall."
+        },
+        "result": {
+          "es": "INSTALLED, UPDATED, rechazo, REMOVED, INSTALLED.",
+          "en": "INSTALLED, UPDATED, rejection, REMOVED, INSTALLED."
+        }
+      },
+      {
+        "n": "administratorManagedBundleIsNeverOverwrittenNorRemoved",
+        "scenario": {
+          "es": "Bundle sin metadatos de HYDRA.",
+          "en": "Bundle without HYDRA metadata."
+        },
+        "result": {
+          "es": "BLOCKED en install y uninstall, intacto.",
+          "en": "BLOCKED on install and uninstall, untouched."
+        }
+      },
+      {
+        "n": "diagnoseRunsTheFixtureBridgeAndReportsAMissingCommandAsNotReady",
+        "scenario": {
+          "es": "Comando del puente y comando inexistente.",
+          "en": "Bridge command and missing command."
+        },
+        "result": {
+          "es": "READY / no listo.",
+          "en": "READY / not ready."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 57
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 58
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 83
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 95
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 104
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 112
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 120
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 138
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 139
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 160
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 167
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationToolchainManagedLifecycleIntegrationTests.java",
+        "line": 84
+      }
+    ],
+    "layers2": [
+      "external"
+    ]
+  }
+]

@@ -1,6 +1,7 @@
 package com.example.editor.standalone.publication;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -54,5 +55,23 @@ class DistributionPublicationServiceTests {
 
         assertThat(report.valid()).isFalse();
         assertThat(report.diagnostics()).extracting(PublicationDiagnostic::code).contains("SIGNATURE_MISSING");
+    }
+
+    @Test
+    void refusesToPublishAnInvalidRequestAndLeavesNoPublicationOnDisk() throws Exception {
+        Path distributions = temporary.resolve("distributions");
+        Path publications = temporary.resolve("publications");
+        Files.createDirectories(distributions.resolve("sample"));
+        Files.writeString(distributions.resolve("sample/editor.zip"), "archive");
+        var service = new DistributionPublicationService(new DistributionPublicationValidator(),
+                JsonMapper.builder().findAndAddModules().build(), distributions.toString(), publications.toString());
+        PublicationRequest invalid = new PublicationRequest("sample", "1.0.0", PublicationChannel.INTERNAL,
+                PublicationSigningMode.EXTERNAL_SIGNATURE, "sample", "", List.of(new PublicationArtifactRequest(
+                "windows-x64", "editor.zip", "application/zip")), Map.of());
+
+        // "ok": con fallos reales (firma externa exigida sin fichero de firma) no se puede
+        // publicar -- publish() se niega de verdad, no solo validate().
+        assertThatThrownBy(() -> service.publish(invalid)).isInstanceOf(IllegalStateException.class);
+        assertThat(Files.exists(publications)).isFalse();
     }
 }

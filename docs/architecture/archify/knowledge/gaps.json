@@ -1,0 +1,297 @@
+{
+ "schemaVersion": 2,
+ "purpose": "Concrete, actionable knowledge gaps (portal documentation vs source) and verified source observations. Gaps 001-005 come from the comparison of 864ed52..4e4455a and were resolved in the 2026-10-09 portal-deepening pass; gaps 006-007 were found in that pass (uncommitted working-tree product changes). sourceObservations record verified oddities of the CODE itself (not documentation gaps) so they are reported honestly in the portal instead of being smoothed over.",
+ "comparedCommits": {
+  "from": "864ed521e8d4e5fde8a0ed087c37bc3e5b89de36",
+  "to": "4e4455a63c02fa89fdd60bbf00035b28c34a68a3"
+ },
+ "lastSyncCheck": {
+  "date": "2026-10-09",
+  "resolvedHead": "4e4455a63c02fa89fdd60bbf00035b28c34a68a3",
+  "result": "HEAD unchanged. Gaps 001-005 resolved or reduced (see status), gaps 006-007 opened and resolved by scoped lookups of the current working tree. Remaining open items are listed under remainingUnverified. Full working-tree detail: baseline.json."
+ },
+ "gaps": [
+  {
+   "id": "gap-001",
+   "kind": "NEW_UNINVESTIGATED_SURFACE",
+   "severity": "medium",
+   "title": "Textual language-feature service (src/main/java/com/example/editor/textual/interaction/)",
+   "resolution": "Investigated. A HYDRA_NEUTRAL-only language service (completion, hover, definition, references, rename PREVIEW, format, symbols, folding, semantic tokens, incremental invalidation, snapshot compatibility) exposed under /api/textual-model-sessions/{id}/interactions/*. Every query requires a valid, parsed draft. PROVIDER_NATIVE_EXTERNAL and UNAVAILABLE execution modes are declared but never assigned. No frontend consumer: grammar-designer registers its own Monaco providers. Documented in hydra-model-grammar.js (elements, process grammar_language_service).",
+   "status": "RESOLVED",
+   "resolvedOn": "2026-10-09",
+   "residual": "Only one backend test (TextualLanguageFeatureServiceTests); no facade/controller HTTP tests."
+  },
+  {
+   "id": "gap-002",
+   "kind": "NEW_UNINVESTIGATED_SURFACE",
+   "severity": "medium",
+   "title": "Semantic round-trip / provider parity packages (metamodel/roundtrip, textual/roundtrip)",
+   "resolution": "Investigated. Metamodel-level and instance-level round-trip and provider-parity checks (fidelity EXACT/HIGH/APPROXIMATE/LOSSY/UNAVAILABLE) are Spring services referenced ONLY inside their own packages and tests: no controller, no frontend caller => test/CI quality mechanism, not user-triggered. Distinct from integration/roundtrip (RoundTripManifest). Documented in hydra-model-grammar.js with that honest limit.",
+   "status": "RESOLVED",
+   "resolvedOn": "2026-10-09"
+  },
+  {
+   "id": "gap-003",
+   "kind": "EVIDENCE_PATH_ERROR",
+   "severity": "high",
+   "title": "Wrong evidence path for RoundTripManifest in hydra-architecture-data.js (4 citations)",
+   "resolution": "Fixed: all 4 citations now point to src/main/java/com/example/editor/integration/roundtrip/RoundTripManifest.java (file confirmed to exist).",
+   "status": "RESOLVED",
+   "resolvedOn": "2026-10-09"
+  },
+  {
+   "id": "gap-004",
+   "kind": "UNVERIFIED_CITATION",
+   "severity": "low",
+   "title": "TechnologyDeliveryReadiness.java citation for TechnologyWorkflowStage",
+   "resolution": "Corrected: TechnologyDeliveryReadiness has NO reference to TechnologyWorkflowStage. The stage link is TechnologyDeliveryActionDescriptor.stage (TechnologyDeliveryActionDescriptor.java:8) populated one-per-stage by TechnologyDeliveryReadinessService (lines 67-70). TechnologyDeliveryAction* (5 action states, previewRequired only for APPLY) documented in hydra-model-delivery.js.",
+   "status": "RESOLVED",
+   "resolvedOn": "2026-10-09",
+   "residual": "The legacy level6 citation in hydra-architecture-data.js still carries the old label; the portal's current content cites the corrected relation."
+  },
+  {
+   "id": "gap-005",
+   "kind": "MODIFIED_FILES_NOT_REDIFFED",
+   "severity": "low",
+   "title": "Integration-designer frontend changes between baseline and HEAD",
+   "resolution": "Re-read: default view GUIDED (alternatives FORM, STRUCTURE), 6 guided steps (identity, target, capabilities, mappings, verify, delivery), embedded 9-stage journey consuming the delivery readiness (optional prop). Fields of steps 2-6 were not read in detail.",
+   "status": "PARTIALLY_RESOLVED",
+   "resolvedOn": "2026-10-09",
+   "residual": "Wizard step 2-6 field lists, delivery-mode values and target/injection restrictions remain inherited from the validated legacy cache."
+  },
+  {
+   "id": "gap-006",
+   "kind": "NEW_UNINVESTIGATED_SURFACE",
+   "severity": "medium",
+   "title": "Native parity certification (src/main/java/com/example/editor/integration/parity/, UNCOMMITTED)",
+   "resolution": "Investigated from the working tree. Fail-closed check that compiler-generated native proofs passed in NATIVE_REQUIRED mode: 15 capabilities, 3 evidence statuses (PROVEN/FAILED/UNVERIFIED), fixed technology->capability->proof catalog, POST .../technology/native-parity/certify. No frontend consumer outside the generated client. Documented in hydra-model-delivery.js (integration_native_parity).",
+   "status": "RESOLVED",
+   "resolvedOn": "2026-10-09",
+   "residual": "Files are untracked: re-check when they are committed. No tests for request layer or controller."
+  },
+  {
+   "id": "gap-007",
+   "kind": "MODIFIED_FILES_NOT_REDIFFED",
+   "severity": "medium",
+   "title": "Standalone distribution (src/main/java/com/example/editor/standalone/distribution/ + frontend distribution-center, UNCOMMITTED changes)",
+   "resolution": "Investigated from the working tree: 4 targets (PWA, TAURI_WINDOWS/MACOS/LINUX), planner artifacts, materialize, validation codes, StandaloneProductionReadinessService (STATIC_DEPLOYMENT_READINESS, nativeInstallerCertified=false), deterministic ZIP with SHA-256 (not a native installer). Documented in hydra-model-delivery.js.",
+   "status": "RESOLVED",
+   "resolvedOn": "2026-10-09",
+   "residual": "StandaloneDistributionValidationService internals beyond codes and the Materializer were not read. No component test for StandaloneDistributionCenter.tsx. A further UNTRACKED file appeared in the working tree DURING this pass (StandaloneWebDeploymentPackager.java, POST /package-deployable-web, DEPLOYABLE_WEB_ASSETS ZIP; no tests found) plus untracked scripts/distribution/{build_generated_editor.py,verify_web_package.py}, scripts/testing/bd-block2, scripts/validation/{run_native_e2e_matrix.py,validate_bd_block2.ps1,verify_bd_block2.py}: the packager is documented, the scripts are classified non-architectural tooling. The working tree is still moving: re-run the baseline comparison before trusting this."
+  },
+  {
+   "id": "gap-t001",
+   "kind": "TEST_EVIDENCE",
+   "severity": "high",
+   "status": "OPEN",
+   "title": "Failing tests in the latest recorded execution",
+   "detail": "Failing: gate:readiness:72:maven-full-verify, gate:release:04:primary-full-tree, gate:rc1:01:fix100-release-qualification, gate:rc2:05:rc1-qualification. Recorded in test-execution-state.json; the behaviour affected is described in each record (limits/behavior).",
+   "ref": "knowledge/tests/test-gaps.json"
+  },
+  {
+   "id": "gap-t002",
+   "kind": "TEST_EVIDENCE",
+   "severity": "medium",
+   "status": "OPEN",
+   "title": "0 capabilities have no end-to-end / integration-level evidence mapped",
+   "detail": ". Their evidence is component/unit level (see evidence strength per capability).",
+   "ref": "knowledge/tests/test-gaps.json"
+  },
+  {
+   "id": "gap-t003",
+   "kind": "TEST_EVIDENCE",
+   "severity": "medium",
+   "status": "OPEN",
+   "title": "0 functional processes have no mapped automated evidence",
+   "detail": "Mostly cross-capability workflows and authoring micro-processes; absence of mapped evidence does not imply incorrect behaviour.",
+   "ref": "knowledge/tests/test-gaps.json"
+  },
+  {
+   "id": "gap-t004",
+   "kind": "TEST_EVIDENCE",
+   "severity": "medium",
+   "status": "OPEN",
+   "title": "0 qualification gates carry stale or carry-forward evidence",
+   "detail": "Release/RC1/RC2 qualification reports predate recent product changes (or reuse historical PASS); re-run the qualification to refresh them.",
+   "ref": "knowledge/tests/test-gaps.json"
+  },
+  {
+   "id": "gap-t005",
+   "kind": "TEST_EVIDENCE",
+   "severity": "low",
+   "status": "OPEN",
+   "title": "Frontend per-file results are recorded only at suite level",
+   "detail": "The full Vitest run is recorded as a single gate step; per-file/per-case frontend results are not stored by the local tooling.",
+   "ref": "knowledge/tests/test-gaps.json"
+  },
+  {
+   "id": "gap-t006",
+   "kind": "TEST_EVIDENCE",
+   "severity": "low",
+   "status": "OPEN",
+   "title": "134 verification scripts have no execution evidence in the local artifacts",
+   "detail": "Historical per-fix verifiers, native/e2e scripts and PowerShell wrappers are not part of the latest recorded run; native installer/OS evidence is opt-in (generated-editor workflow).",
+   "ref": "knowledge/tests/test-gaps.json"
+  },
+  {
+   "id": "gap-t007",
+   "kind": "TEST_EVIDENCE",
+   "severity": "low",
+   "status": "OPEN",
+   "title": "5 tests whose meaning still needs review",
+   "detail": "java:com.example.editor.integration.roundtrip.resolution.RoundTripResolutionWorkflowServiceTests, java:com.example.editor.integration.verification.GeneratedTechnologyProjectAcceptanceTests, java:com.example.editor.metamodel.target.JsonTargetConfigurationRepositoryTests, java:com.example.editor.metamodel.target.TargetConfigurationDocumentTests, script:scripts/testing/run_rc1_product_e2e.py",
+   "ref": "knowledge/tests/test-gaps.json"
+  }
+ ],
+ "sourceObservations": [
+  {
+   "id": "obs-validation-triggers",
+   "capability": "validation",
+   "text": "ValidationTrigger declares 10 values but ON_CREATE, ON_ATTRIBUTE_CHANGE, ON_RELATION_CHANGE, ON_DELETE and BACKGROUND have no reader; FULL and INCREMENTAL runs ignore triggers (the mode decides). The designer offers all 10. AuthoritativeRepresentation JAVASCRIPT/BLOCKLY are missing from the designer options. relationInstanceId is never filled.",
+   "evidence": "validation/validation/ValidationTrigger.java:5; validation/runtime/ValidationEngine.java:203-204; validation-designer/ValidationRuleEditor.tsx:29-42"
+  },
+  {
+   "id": "obs-validation-session-bypass",
+   "capability": "validation",
+   "text": "The editor session calls ValidationRuntimeApplicationService.validate directly, not the orchestrator, so no consolidation and no SAVE blocking decision in that flow. Save blocking on rule definitions exists only in the frontend.",
+   "evidence": "definition/runtime/session/EditorModelSessionService.java:727; validation/validation/ValidationModelApplicationService.java:39-50"
+  },
+  {
+   "id": "obs-quickfix-textual",
+   "capability": "validation",
+   "text": "Textual quick fix runtime (preview/apply) has endpoints but no frontend caller, no dedicated tests and no undo/redo. Grammar code actions are a separate subsystem with no bridge to the model quick fix runtime. No test instantiates QuickFixRuntimeService.",
+   "evidence": "textual/runtime/TextualQuickFixRuntimeService.java:65-93; grammar/diagnostic/GrammarCodeAction.java:7-15"
+  },
+  {
+   "id": "obs-gating-flags",
+   "capability": "events",
+   "text": "Per-session gating flags (hydra.eventsEnabled/eventFlowsEnabled/gamificationEnabled) are written into the event PAYLOAD but consumers read them from event METADATA and the publisher never copies them: per-session disables never reach consumers (static reading; runtime not executed).",
+   "evidence": "EditorModelSessionService.java:742-744; EditorSessionEventPublisher.java:46; EventFlowRuntimeService.java:493; GamificationRuntimeService.java:84; EventBindingRuntimeService.java:67"
+  },
+  {
+   "id": "obs-reserved-reparented",
+   "capability": "events",
+   "text": "core.model.element-reparented is published by the session but is absent from ReservedEventCatalog (32 ids), so a flow trigger on it fails UNKNOWN_TRIGGER_EVENT. Several reserved ids have no literal producer (literal search only). Flow trace status is overwritten, not aggregated; ERROR_END is pass-through; COMPENSATES transition and EventPersistencePolicy have no consumer.",
+   "evidence": "event/ReservedEventCatalog.java:7-13; EventFlowChecker.java:117; EventFlowRuntimeService.java:251-314; EventFlowRuntimeNodeExecutor.java:37-38"
+  },
+  {
+   "id": "obs-gamification-designer-not-exists",
+   "capability": "gamification",
+   "text": "Operator NOT_EXISTS is supported by the backend matcher but absent from the designer operator list. Only a global feedback policy editor exists (no per-rule keys UI). Surfaces STATUS/PROGRESS/DIALOG have no consumer. No test for GamificationFeedbackCenter or the HTTP /runtime/events path.",
+   "evidence": "GamificationEventMatcher.java:46,89; GamificationDesignerParts.tsx:30-36; GamificationFeedbackPolicyEditor.tsx:6-19"
+  },
+  {
+   "id": "obs-transformation-incremental-mode",
+   "capability": "transformation",
+   "text": "TransformationExecutionPolicy.mode (BATCH/INCREMENTAL) is never read at runtime; incremental is chosen per synchronization request; the frontend type is BATCH only. Batch BOTH with FAIL_ON_CONFLICT throws while incremental returns a blocked result. No end-to-end tests of the incremental engine or session service.",
+   "evidence": "transformation/core/TransformationExecutionPolicy.java:9,13; transformation/runtime/TransformationRuntimeService.java:85-99"
+  },
+  {
+   "id": "obs-textual-interaction-no-ui",
+   "capability": "grammar",
+   "text": "The textual language service has no UI consumer; capabilities() is not provider-aware and reports all 11 capabilities available for any grammar (ANTLR does not declare them).",
+   "evidence": "textual/interaction/TextualLanguageFeatureService.java:16"
+  },
+  {
+   "id": "obs-roundtrip-test-only",
+   "capability": "grammar",
+   "text": "metamodel/roundtrip and textual/roundtrip services are only reachable from tests.",
+   "evidence": "metamodel/roundtrip/*; textual/roundtrip/*"
+  },
+  {
+   "id": "obs-ui-elements-view",
+   "capability": "model_editor",
+   "text": "EditorDefinitionDesigner declares an ELEMENTS view with no render branch; which representation kinds the runtime renders is unverified.",
+   "evidence": "frontend/src/editor-definition/EditorDefinitionDesigner.tsx:79"
+  },
+  {
+   "id": "obs-integration-inherited",
+   "capability": "integration",
+   "text": "Wizard step 2-6 fields, delivery-mode values, target/injection restrictions and the integration<->publication/recovery relations are inherited from the validated legacy cache, not re-read.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "obs-publication-inherited",
+   "capability": "publication",
+   "text": "Release gate (5 checks), code generation dialog, publication wizard (5 steps), generated-project stages and execution profiles are inherited from the validated legacy cache, not re-read.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "obs-recovery-methods",
+   "capability": "recovery",
+   "text": "Legacy cache lists 6 discovery methods by decreasing confidence; the UI shows 5 levels and source inference occupies level 5; the sixth is not reconciled.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "obs-project-capability-count",
+   "capability": "project",
+   "text": "ProjectCapability has 25 values in current source (legacy cache said 24).",
+   "evidence": "project/ProjectCapability.java"
+  },
+  {
+   "id": "obs-portability-enums",
+   "capability": "portability",
+   "text": "Layer-kind list is partial (enum truncated in the lookup); no transaction-state enum or merge-conflict-kind enum was found.",
+   "evidence": "portability/*"
+  },
+  {
+   "id": "obs-security-limits",
+   "capability": "security",
+   "text": "Numeric request-size and process-time limits were not verified.",
+   "evidence": "security/*"
+  }
+ ],
+ "remainingUnverified": [
+  "frontend/src/model-editor (runtime workspace) was not inspected; which of the 6 representation kinds render at runtime is unverified.",
+  "Platform capabilities (project, recovery, external_repositories, toolchains, portability) UI screen steps are described from the validated legacy cache; not re-read this pass.",
+  "Integration wizard steps 2-6 fields; publication release gate / code generation dialog / wizard; generated project execution profiles.",
+  "Visual-definition import dialog step sequence (editor-definition).",
+  "Expression kernel built-in function catalogue (semantic.expression) is out of the validation lookup scope."
+ ],
+ "nonArchitecturallyRelevantChanges": {
+  "note": "Classified and intentionally NOT investigated further, per the instruction not to trigger re-analysis for these categories.",
+  "ciAndGitConfig": [
+   ".gitattributes",
+   ".gitignore",
+   ".github/workflows/hydra-ci.yml",
+   "mvnw"
+  ],
+  "docsAndReleasePackaging": [
+   "HELP.md",
+   "HYDRA_V4.32.107_RELEASE_NOTES.md",
+   "MANIFEST_SHA256.txt",
+   "docs/grammar/R6C3_FIX146_TARGETED_RESUME.md",
+   "docs/grammar/R6C3_INSTANCE_SEMANTIC_ROUNDTRIP.md",
+   "docs/grammar/R6C3_RUNTIME_RESILIENCE.md",
+   "docs/grammar/R6C3_XTEXT_LANGIUM_SEMANTIC_ROUNDTRIP.md",
+   "docs/grammar/R6C4_TEXTUAL_INTERACTION_PARITY.md",
+   "docs/integration/TECHNOLOGY_DELIVERY_READINESS.md",
+   "docs/validation/HYDRA_BD_BLOCK1_PLAN_AND_EVIDENCE.md"
+  ],
+  "generatedOrContractArtifacts": [
+   "frontend/src/api/generated/hydraApiClient.ts",
+   "config/api-contract.json",
+   "docs/api/hydra-openapi.yaml",
+   "scripts/**/__pycache__/*.pyc"
+  ],
+  "releaseQualificationTooling": "scripts/validation/*.ps1 and *.py (incl. the untracked bd-block1 scripts), scripts/release/*, scripts/api/generate_openapi.py -- developer/release-gate tooling, not product capability implementation.",
+  "stagedFix173ReleasePassNotYetCommitted": "Staged workspace/source-package boundary integrity gate (see baseline.json analyzedState.workingTree.staged).",
+  "i18nCatalogs": [
+   "frontend/src/i18n/currentSpanishCatalog.ts",
+   "frontend/src/i18n/currentSpanishCatalogPart19.ts"
+  ],
+  "testFixtures": [
+   "src/test/resources/fixtures/sirius-complete/**/.project"
+  ]
+ },
+ "testEvidenceSummary": {
+  "generatedAt": "2026-10-29T07:43:40.221Z",
+  "byStatus": {
+   "PASS": 917,
+   "DISCOVERED": 134,
+   "SKIPPED": 2,
+   "FAIL": 4
+  },
+  "store": "knowledge/tests/"
+ }
+}

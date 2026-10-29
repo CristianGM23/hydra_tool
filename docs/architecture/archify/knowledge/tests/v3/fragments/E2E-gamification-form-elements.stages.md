@@ -1,0 +1,5 @@
+- gamification_author_form.k: cada tipo se crea con el botón del formulario; el logro sin tocar persiste sus valores por defecto (l.116-118) y el nivel nace con el primer tipo de puntos (l.41).
+- gamification_author_form.m: nombre, identificador y obligatorios de puntos, recompensa, reto, nivel y regla en el JSON del backend (l.113-123).
+- gamification_author_form.cn: operador y valor aparecen solo con ruta y el valor se oculta con «existe» (l.53-58); conditionPath/operator/expectedValue persistidos (l.123).
+- gamification_author_form.ef: al elegir penalización desaparecen logro, reto y recompensa (l.81-83) y el JSON tiene PENALTY, puntos negativos y sin referencias (l.125-129).
+- gamification_author_form.rp: espera y máximo diario condicionados (l.65-69, 90-91); límite diario sin máximo rechazado por el servidor sin ficheros (l.99-102); valores finales (l.123, 131).

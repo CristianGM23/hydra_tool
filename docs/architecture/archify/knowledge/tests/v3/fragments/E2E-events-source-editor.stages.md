@@ -1,0 +1,5 @@
+- events_author_source.a1: edición del texto: inválidos rechazados con disco intacto (l.39-48), edición válida aplicada (l.55-56) y guardada (l.79-91).
+- events_author_source.a2: formulario muestra 2 eventos y 1 enlace (l.98-99); arquitectura dibuja el enlace nuevo (l.103-105).
+- events_author_source.a3: reglas comprobadas al aplicar (l.39-44) y al guardar en el servidor (l.63-65); modelo guardado con valores por defecto (l.82-91).
+- events_author_source.a3 (normalización previa al envío, 2.º test): el texto mostrado ya trae los valores por defecto (l.139, l.141) sin escrituras ni cambios en disco (l.144-146); lo guardado coincide (l.154-160).
+- Strength STRONG: la normalización de pantalla queda separada de la del servidor por el 2.º test.

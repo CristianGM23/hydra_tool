@@ -1,2 +1,2 @@
 # Optional only for trusted release signing and verification. Never install in HYDRA's web runtime.
-cryptography==46.0.4
+cryptography==50.0.2
