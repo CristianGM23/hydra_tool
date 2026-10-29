@@ -39,14 +39,21 @@ public record EcoreProjectionConfiguration(boolean enabled, EcoreGenerationMode 
         if (metamodel != null) {
             for (MetaClass metaClass : metamodel.classes()) {
                 for (MetaAttribute attribute : metaClass.attributes()) {
-                    attributes.put(attribute.id(), new EcoreAttributeConfiguration(EcoreImportMetadata.bool(attribute.annotations(), EcoreImportMetadata.CHANGEABLE, true), false, false, false, false, false));
+                    // the EMF flags of an imported Ecore travel as import metadata (absent = false, the previous default)
+                    Map<String, String> a = attribute.annotations();
+                    attributes.put(attribute.id(), new EcoreAttributeConfiguration(EcoreImportMetadata.bool(a, EcoreImportMetadata.CHANGEABLE, true), EcoreImportMetadata.bool(a, EcoreImportMetadata.TRANSIENT, false),
+                            EcoreImportMetadata.bool(a, EcoreImportMetadata.VOLATILE, false), EcoreImportMetadata.bool(a, EcoreImportMetadata.DERIVED, false),
+                            EcoreImportMetadata.bool(a, EcoreImportMetadata.UNSETTABLE, false), EcoreImportMetadata.bool(a, EcoreImportMetadata.ID, false)));
                 }
             }
 
             for (MetaRelation relation : metamodel.relations()) {
                 if (isEcoreStructuralRelation(relation)) {
-                    boolean containment = relation.kind() == MetaRelationKind.CONTAINMENT;
-                    relations.put(relation.id(), new EcoreRelationConfiguration(EcoreImportMetadata.bool(relation.annotations(), EcoreImportMetadata.CHANGEABLE, true), containment ? false : EcoreImportMetadata.bool(relation.annotations(), EcoreImportMetadata.RESOLVE_PROXIES, false), false, false, false, false));
+                    // without imported metadata a reference (containment or not) does not resolve proxies; an imported Ecore keeps its own value
+                    Map<String, String> r = relation.annotations();
+                    relations.put(relation.id(), new EcoreRelationConfiguration(EcoreImportMetadata.bool(r, EcoreImportMetadata.CHANGEABLE, true), EcoreImportMetadata.bool(r, EcoreImportMetadata.RESOLVE_PROXIES, false),
+                            EcoreImportMetadata.bool(r, EcoreImportMetadata.TRANSIENT, false), EcoreImportMetadata.bool(r, EcoreImportMetadata.VOLATILE, false),
+                            EcoreImportMetadata.bool(r, EcoreImportMetadata.DERIVED, false), EcoreImportMetadata.bool(r, EcoreImportMetadata.UNSETTABLE, false)));
                 }
             }
 

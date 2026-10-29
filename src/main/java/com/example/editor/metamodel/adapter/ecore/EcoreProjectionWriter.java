@@ -121,7 +121,9 @@ final class EcoreProjectionWriter {
             EClass eClass = factory.createEClass();
             eClass.setName(design.name());
             eClass.setAbstract(design.kind() == MetaClassKind.ABSTRACT_CLASS);
-            eClass.setInterface(design.kind() == MetaClassKind.INTERFACE);
+            // an Ecore interface adapted on import (EcoreProjectionReader.adaptStructuralInterfaces) is written back as an interface
+            eClass.setInterface(design.kind() == MetaClassKind.INTERFACE
+                    || design.kind() == MetaClassKind.ABSTRACT_CLASS && "true".equals(design.annotations().get(EcoreProjectionReader.DECLARED_INTERFACE)));
             EcoreDesignIdSupport.writeId(eClass, design.id());
             writeAnnotations(eClass, design.annotations());
             ePackage.getEClassifiers().add(eClass);
@@ -252,7 +254,7 @@ final class EcoreProjectionWriter {
             boolean containment = relation.kind() == MetaRelationKind.CONTAINMENT;
             EcoreRelationConfiguration relationConfiguration = configuration.relation(relation.id(), containment);
             reference.setContainment(containment);
-            reference.setResolveProxies(containment ? false : relationConfiguration.resolveProxies());
+            reference.setResolveProxies(relationConfiguration.resolveProxies());
             reference.setOrdered(relation.ordered());
             reference.setUnique(relation.unique());
             reference.setChangeable(relationConfiguration.changeable());
