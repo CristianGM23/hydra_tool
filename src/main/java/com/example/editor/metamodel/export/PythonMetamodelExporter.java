@@ -32,6 +32,8 @@ import com.example.editor.metamodel.design.MetamodelDesignException.Reason;
  */
 @Component
 public class PythonMetamodelExporter implements MetamodelBinaryExporter {
+    /** Palabras reservadas de Python (keyword.kwlist): como identificador producen código que no compila; se escapan con «_» final (PEP 8). */
+    private static final java.util.Set<String> PYTHON_KEYWORDS = java.util.Set.of("False", "None", "True", "and", "as", "assert", "async", "await", "break", "class", "continue", "def", "del", "elif", "else", "except", "finally", "for", "from", "global", "if", "import", "in", "is", "lambda", "nonlocal", "not", "or", "pass", "raise", "return", "try", "while", "with", "yield");
 
     @Override
     /** Descripción: Ejecuta la operación «format» correspondiente a la responsabilidad de PythonMember. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public MetamodelExportFormat format() {
@@ -65,13 +67,13 @@ public class PythonMetamodelExporter implements MetamodelBinaryExporter {
         result.append("from typing import Optional\n\n");
 
         context.neutralMetamodel().enums().forEach(item -> {
-            result.append("class ").append(MetamodelExportSupport.pascal(item.name(), "GeneratedEnum")).append("(Enum):\n");
+            result.append("class ").append(notKeyword(MetamodelExportSupport.pascal(item.name(), "GeneratedEnum"))).append("(Enum):\n");
             result.append("    \"\"\"Generated enumeration for ").append(pythonDoc(item.name())).append(".\"\"\"\n");
 
             if(item.literals().isEmpty()) {
                 result.append("    pass\n");
             } else {
-                item.literals().forEach(literal -> result.append("    ").append(literal.name()).append(" = ").append(literal.value()).append("\n"));
+                item.literals().forEach(literal -> result.append("    ").append(notKeyword(literal.name())).append(" = ").append(literal.value()).append("\n"));
             }
 
             result.append("\n");
@@ -89,7 +91,7 @@ public class PythonMetamodelExporter implements MetamodelBinaryExporter {
     }
 
     /** Descripción: Ejecuta la operación «appendDataType» correspondiente a la responsabilidad de PythonMember. Entradas: result: dato de entrada necesario para la operación; dataType: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void appendDataType(StringBuilder result, MetaDataType dataType) {
-        String name = MetamodelExportSupport.pascal(dataType.name(), "GeneratedType");
+        String name = notKeyword(MetamodelExportSupport.pascal(dataType.name(), "GeneratedType"));
         result.append("@dataclass(eq=False, repr=False)\n");
         result.append("class ").append(name).append(":\n");
         result.append("    \"\"\"Generated value object for the metamodel data type ").append(pythonDoc(dataType.name())).append(".\n\n");
@@ -101,7 +103,7 @@ public class PythonMetamodelExporter implements MetamodelBinaryExporter {
     }
 
     /** Descripción: Ejecuta la operación «appendClass» correspondiente a la responsabilidad de PythonMember. Entradas: result: dato de entrada necesario para la operación; context: dato de entrada necesario para la operación; metaClass: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void appendClass(StringBuilder result, NeutralMetamodelExportContext context, MetaClass metaClass) {
-        String name = MetamodelExportSupport.pascal(metaClass.name(), "GeneratedClass");
+        String name = notKeyword(MetamodelExportSupport.pascal(metaClass.name(), "GeneratedClass"));
         List<PythonMember> members = members(context, metaClass);
         List<String> bases = baseClassNames(context, metaClass);
 
@@ -253,7 +255,11 @@ public class PythonMetamodelExporter implements MetamodelBinaryExporter {
     /** Descripción: Ejecuta la operación «pythonName» correspondiente a la responsabilidad de PythonMember. Entradas: value: valor de entrada que debe procesarse; fallback: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String pythonName(String value, String fallback) {
         String base = MetamodelExportSupport.camel(value, fallback);
         String snake = base.replaceAll("([a-z0-9])([A-Z])", "$1_$2").replaceAll("[^A-Za-z0-9_]+", "_").toLowerCase(java.util.Locale.ROOT);
-        return snake.isBlank() ? fallback : snake;
+        return snake.isBlank() ? fallback : notKeyword(snake);
+    }
+
+    /** Descripción: Escapa un identificador que coincide con una palabra reservada de Python añadiendo «_» final. Entradas: name: identificador generado. Salida: devuelve un identificador Python válido. */ private static String notKeyword(String name) {
+        return PYTHON_KEYWORDS.contains(name) ? name + "_" : name;
     }
 
     /** Descripción: Ejecuta la operación «pythonOperationType» correspondiente a la responsabilidad de PythonMember. Entradas: context: dato de entrada necesario para la operación; type: dato de entrada necesario para la operación; multiplicity: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String pythonOperationType(NeutralMetamodelExportContext context, MetaTypeReference type, Multiplicity multiplicity) {
@@ -266,7 +272,7 @@ public class PythonMetamodelExporter implements MetamodelBinaryExporter {
                 case "BINARY" -> "bytes";
                 default -> "object";
             };
-            default -> MetamodelExportSupport.pascal(MetamodelExportSupport.resolveTypeName(context, type), "object");
+            default -> notKeyword(MetamodelExportSupport.pascal(MetamodelExportSupport.resolveTypeName(context, type), "object"));
         };
         return wrap(base, multiplicity);
     }
@@ -328,7 +334,7 @@ public class PythonMetamodelExporter implements MetamodelBinaryExporter {
         }
 
         for(MetaRelation relation : MetamodelExportSupport.structuralRelationsFrom(context, metaClass.id())) {
-            String target = MetamodelExportSupport.pascal(MetamodelExportSupport.relationTargetName(context, relation), "object");
+            String target = notKeyword(MetamodelExportSupport.pascal(MetamodelExportSupport.relationTargetName(context, relation), "object"));
             String name = pythonName(MetamodelExportSupport.text(relation.name(), "reference"), "reference");
             String documentation = "structural relation " + MetamodelExportSupport.text(relation.name(), "reference") + " targeting " + target + " with multiplicity " + printableMultiplicity(relation.targetMultiplicity()) + ".";
             result.putIfAbsent(name, new PythonMember(name, wrap(target, relation.targetMultiplicity()), defaultValue(relation.targetMultiplicity()), documentation));
@@ -375,7 +381,7 @@ public class PythonMetamodelExporter implements MetamodelBinaryExporter {
         List<String> result = new ArrayList<>();
 
         for(MetaRelation relation : MetamodelExportSupport.superTypeRelationsFrom(context, metaClass.id())) {
-            String target = MetamodelExportSupport.pascal(MetamodelExportSupport.relationTargetName(context, relation), "GeneratedClass");
+            String target = notKeyword(MetamodelExportSupport.pascal(MetamodelExportSupport.relationTargetName(context, relation), "GeneratedClass"));
 
             if(!result.contains(target)) {
                 result.add(target);
@@ -399,7 +405,7 @@ public class PythonMetamodelExporter implements MetamodelBinaryExporter {
                 case "BINARY" -> "bytes";
                 default -> "object";
             };
-            default -> MetamodelExportSupport.pascal(MetamodelExportSupport.resolveTypeName(context, attribute.type()), "object");
+            default -> notKeyword(MetamodelExportSupport.pascal(MetamodelExportSupport.resolveTypeName(context, attribute.type()), "object"));
         };
 
         return wrap(base, attribute.multiplicity());
