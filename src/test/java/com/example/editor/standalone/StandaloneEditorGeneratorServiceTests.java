@@ -226,6 +226,27 @@ class StandaloneEditorGeneratorServiceTests {
                 .hasMessageContaining("Unsafe archive entry path");
     }
 
+    @Test void acceptsTheCompiledPlanOfTheRequestedEditorDefinition() {
+        // The editor UI packages the executable plan compiled from the definition: id "<definition>:compiled", sourceEditorDefinitionId "<definition>".
+        HydraCapabilityPackage value = packageValue(Map.of("editor.json", compiledPlan("people-editor")), Map.of());
+        assertThat(service.generate(request(true, value, true)).descriptor()).isNotNull();
+    }
+
+    @Test void rejectsTheCompiledPlanOfAnotherEditorDefinition() {
+        HydraCapabilityPackage value = packageValue(Map.of("editor.json", compiledPlan("other-editor")), Map.of());
+        assertThatThrownBy(() -> service.generate(request(true, value, true)))
+                .hasMessageContaining("matching visual or textual editor definition: people-editor");
+    }
+
+    private ObjectNode compiledPlan(String definitionId) {
+        ObjectNode plan = JsonNodeFactory.instance.objectNode();
+        plan.put("schemaVersion", "1.0");
+        plan.put("id", definitionId + ":compiled");
+        plan.put("sourceEditorDefinitionId", definitionId);
+        plan.putObject("representationsById");
+        return plan;
+    }
+
     @Test void sanitizesApplicationIdentifier() {
         var request = new StandaloneEditorGenerationRequest("People editor / demo", "People", "people", "people-editor", 4173, "EMBEDDED_LOCAL", "", true, true, 10L * 1024L * 1024L, List.of(), List.of(), Map.of(), packageValue(), Set.of(StandaloneDeploymentTarget.SOURCE));
         assertThat(service.generate(request).descriptor().applicationId()).isEqualTo("People-editor-demo");

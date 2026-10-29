@@ -419,6 +419,8 @@ public class StandaloneEditorGeneratorService {
             if(candidate.documentId().equals(requestedId)) return candidate;
             JsonNode document = value.canonicalDocuments().get(candidate.documentId());
             if(document != null && requestedId.equals(document.path("id").asText(""))) return candidate;
+            // the executable plan compiled from the requested definition (what the editor UI packages) also matches
+            if(document != null && requestedId.equals(document.path("sourceEditorDefinitionId").asText(""))) return candidate;
         }
         return candidates.size() == 1 && requestedId.isBlank() ? candidates.get(0) : null;
     }
