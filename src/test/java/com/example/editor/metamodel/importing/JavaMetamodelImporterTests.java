@@ -25,6 +25,14 @@ class JavaMetamodelImporterTests {
         var model = importJava("package demo; class A{} interface B{} record C(String value){} enum D{ONE,TWO}").metamodel();
         assertThat(model.classes()).extracting(item -> item.name()).containsExactly("A", "B", "C");
         assertThat(model.enums()).extracting(item -> item.name()).containsExactly("D");
+        assertThat(model.enums().getFirst().literals()).extracting(item -> item.name()).containsExactly("ONE", "TWO");
+    }
+
+    @Test void importsEnumConstantsWithArgumentsAndBodiesLikeTheHydraJavaExport() {
+        var model = importJava("public enum Status { ACTIVE(0), INACTIVE(1) { public String toString(){ return \"off\"; } }; "
+                + "private final int value; private static final Status DEFAULT = ACTIVE; Status(int value){ this.value = value; } }").metamodel();
+        assertThat(model.enums()).singleElement().satisfies(item ->
+                assertThat(item.literals()).extracting(literal -> literal.name()).containsExactly("ACTIVE", "INACTIVE"));
     }
 
     @Test void preservesPackagesAndSourceProvenance() {
