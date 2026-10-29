@@ -758,18 +758,13 @@ def classify(task: dict, state: dict, force: set, retry_failed: bool, strict: bo
     rec = state["tasks"].get(task["id"], {})
     if task["id"] in force or "*" in force:
         return "RUN", "forced"
-    if rec.get("verdict") == "PASS" and rec.get("fingerprint") == fp["sha256"] and evidence_intact(rec):
-        return "REUSE", "same fingerprint, immutable evidence intact"
-    if not strict and rec.get("verdict") == "PASS" and rec.get("fingerprintCanonical") == fingerprint(task, canonical=True)["sha256"] and evidence_intact(rec):
-        return "REUSE", "same content up to CRLF/LF line endings of source files (eol-canonical), immutable evidence intact"
+    scheme, why = content_currency(task, rec, strict)
+    if scheme:
+        return "REUSE", why
     closure_note = ""
     if not strict and rec.get("verdict") == "PASS" and rec.get("fingerprintV2"):
         fp2 = fingerprint_v2(task)
         if fp2["bounded"]:
-            if rec["fingerprintV2"] == fp2["sha256"] and not fp2["missing"] and evidence_intact(rec):
-                return "REUSE", "closure unchanged (closure-v2): only inputs the test cannot reach changed since " + rec.get("finishedAt", "?")
-            if rec.get("fingerprintV2Canonical") and rec["fingerprintV2Canonical"] == fingerprint_v2(task, canonical=True)["sha256"] and not fp2["missing"] and evidence_intact(rec):
-                return "REUSE", "closure unchanged (closure-v2, eol-canonical): only line endings or inputs the test cannot reach changed since " + rec.get("finishedAt", "?")
             old = rec.get("closureHashes") or {}
             changed = sorted([f for f, h in fp2["hashes"].items() if old.get(f) != h] + [f for f in old if f not in fp2["hashes"]])
             if changed:
@@ -781,6 +776,40 @@ def classify(task: dict, state: dict, force: set, retry_failed: bool, strict: bo
     if rec.get("fingerprint") and rec.get("fingerprint") != fp["sha256"] and rec.get("verdict"):
         return "RUN", "inputs changed since " + rec.get("finishedAt", "?") + closure_note
     return "RUN", "no previous evidence"
+
+
+def content_currency(task: dict, rec: dict, strict: bool = False) -> tuple[str | None, str]:
+    """Is the PASS evidence of `task` current BY CONTENT? -> (scheme, reason) or (None, reason). The single criterion shared by `plan` (REUSE) and
+    `audit-evidence`; it never looks at file timestamps, which carry no meaning across checkouts.
+
+    Current when the immutable evidence is intact AND one of the approved fingerprint schemes of the record equals the fingerprint of the current
+    tree: v1 (every declared input, the test source of each selector, EXTRA_INPUTS, JAVA_HOME and the declared environment), its eol-canonical twin
+    (CRLF folded into LF only for EOL_NEUTRAL_SUFFIXES), or the bounded closure-v2 and its eol-canonical twin. A record without a content fingerprint
+    (historical evidence) is never current. `strict` keeps only v1."""
+    if rec.get("verdict") != "PASS":
+        return None, "verdict is not PASS"
+    if not rec.get("fingerprint"):
+        return None, "record has no content fingerprint: historical evidence without sufficient fingerprints is never accepted"
+    fp = fingerprint(task)
+    if fp["missing"]:
+        return None, "input files missing: " + ", ".join(fp["missing"][:3])
+    if not evidence_intact(rec):
+        return None, "immutable evidence is missing or was modified"
+    if rec["fingerprint"] == fp["sha256"]:
+        return "fingerprint-v1", "same fingerprint, immutable evidence intact"
+    if strict:
+        return None, "fingerprint changed (strict: only v1)"
+    if rec.get("fingerprintCanonical") == fingerprint(task, canonical=True)["sha256"]:
+        return "fingerprint-v1+eol-canonical", "same content up to CRLF/LF line endings of source files (eol-canonical), immutable evidence intact"
+    if rec.get("fingerprintV2"):
+        fp2 = fingerprint_v2(task)
+        if fp2["bounded"] and not fp2["missing"]:
+            if rec["fingerprintV2"] == fp2["sha256"]:
+                return "closure-v2", "closure unchanged (closure-v2): only inputs the test cannot reach changed since " + rec.get("finishedAt", "?")
+            if rec.get("fingerprintV2Canonical") and rec["fingerprintV2Canonical"] == fingerprint_v2(task, canonical=True)["sha256"]:
+                return "closure-v2+eol-canonical", ("closure unchanged (closure-v2, eol-canonical): only line endings or inputs the test cannot reach changed since "
+                                                    + rec.get("finishedAt", "?"))
+    return None, "inputs changed since " + rec.get("finishedAt", "?") + " (no approved fingerprint scheme matches the current tree)"
 
 
 def missing_requirements(task: dict) -> list[str]:
@@ -1551,6 +1580,13 @@ def audit_evidence() -> dict:
         v = rec.get("verdict", "NOT_RUN")
         verdicts[v] = verdicts.get(v, 0) + 1
         row = {"task": t["id"], "origin": "v2" if t.get("importedFromV2") else "v3", "verdict": v, "classes": []}
+        if v == "PASS":
+            # Freshness BY CONTENT (DEF-ARCH-001): the same criterion as `plan`, for every kind of task. It replaces a comparison of the test source's
+            # file timestamp with the evidence start, which flagged every clean checkout and missed same-timestamp edits and changed dependencies.
+            scheme, why = content_currency(t, rec)
+            row["currency"] = scheme or "NOT_CURRENT"
+            if scheme is None:
+                problems.append(f"{t['id']}: evidence is not current by content ({why})")
         for sel in (t.get("selectors", []) if t.get("kind") == "maven" else []):
             outer = selector_class(sel)
             info = (rec.get("evidence") or {}).get(outer)
@@ -1589,9 +1625,6 @@ def audit_evidence() -> dict:
                             warnings.append(f"{t['id']}: evidence of {outer} superseded by a newer all-PASS run ({newest['runId']}); verdict keeps its own intact evidence ({info['runId']})")
                         else:
                             problems.append(f"{t['id']}: index points to a different run ({newest and newest['runId']}) than the verdict ({info['runId']}) and the newer evidence is not intact/all-PASS")
-                    srcf = ROOT / fqn_to_path(outer)
-                    if srcf.exists() and Date_ms(info["startedAt"]) < srcf.stat().st_mtime * 1000 - 1000:
-                        problems.append(f"{t['id']}: test source modified after evidence started (stale)")
                     crec, st = cat.get(f"java:{outer}"), ex.get(f"java:{outer}", {}).get("s")
                     cls["catalogStatus"] = st
                     if st != "PASS":
