@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.example.editor.project.ArtifactKind;
 import com.example.editor.project.LocalProjectProperties;
@@ -22,6 +23,7 @@ import com.example.editor.project.ProjectSyncRequest;
 import com.example.editor.project.ProjectSynchronizationPlan;
 import com.example.editor.project.ProjectSynchronizationResult;
 import com.example.editor.project.ProjectWorkspaceContribution;
+import com.example.editor.project.ProjectWorkspaceReloadListener;
 import com.example.editor.project.WorkspaceTransferDirection;
 import com.example.editor.project.WorkspaceTransferMode;
 
@@ -36,13 +38,20 @@ public class ProjectWorkspaceBridge {
     private final ProjectArtifactClassifier classifier;
     private final ProjectFileOperations files;
     private final LocalProjectProperties properties;
+    private final List<ProjectWorkspaceReloadListener> reloadListeners;
 
     /** Descripción: Inicializa el puente con el registro de contribuciones, clasificador, operaciones de ficheros y límites portables compartidos. Entradas: registry: contribuciones disponibles; classifier: clasificador de artefactos; files: operaciones seguras de fichero; properties: presupuestos configurables del proyecto. Salida: deja la instancia lista para sincronizar. */
     /** Descripción: Inicializa una instancia de ProjectWorkspaceBridge con sus dependencias y datos de entrada. Entradas: registry: dato de entrada necesario para la operación; classifier: dato de entrada necesario para la operación; files: archivo o contenido que debe procesarse; properties: configuración que gobierna el comportamiento. Salida: deja la instancia inicializada y lista para su uso. */ public ProjectWorkspaceBridge(ProjectWorkspaceContributionRegistry registry,ProjectArtifactClassifier classifier,ProjectFileOperations files,LocalProjectProperties properties) {
+        this(registry,classifier,files,properties,List.of());
+    }
+
+    /** Descripción: Inicializa el puente con los módulos que deben recargarse tras traer un proyecto al espacio de trabajo. Entradas: las dependencias del constructor anterior y reloadListeners: módulos con estado en memoria derivado de los repositorios. Salida: deja la instancia lista para sincronizar. */
+    @Autowired public ProjectWorkspaceBridge(ProjectWorkspaceContributionRegistry registry,ProjectArtifactClassifier classifier,ProjectFileOperations files,LocalProjectProperties properties,List<ProjectWorkspaceReloadListener> reloadListeners) {
         this.registry=registry;
         this.classifier=classifier;
         this.files=files;
         this.properties=properties;
+        this.reloadListeners=reloadListeners==null?List.of():List.copyOf(reloadListeners);
     }
 
     /** Descripción: Calcula una sincronización sin escribir, aplicando los mismos límites y controles de seguridad que la ejecución real. Entradas: projectRoot: raíz del proyecto; descriptor: descriptor portable; request: dirección y modo. Salida: devuelve el plan determinista de cambios. */
@@ -62,7 +71,14 @@ public class ProjectWorkspaceBridge {
         List<ProjectSyncFileChange> changes=request.direction()==WorkspaceTransferDirection.WORKSPACE_TO_PROJECT
                 ? workspaceToProject(projectRoot,descriptor,true,request.mode())
                 : projectToWorkspace(projectRoot,descriptor,true,request.mode());
-        return new ProjectSynchronizationResult(request.direction(),request.mode(),Instant.now(),changes,List.of());
+        List<String> warnings=new ArrayList<>();
+        if(request.direction()==WorkspaceTransferDirection.PROJECT_TO_WORKSPACE) {
+            for(ProjectWorkspaceReloadListener listener:reloadListeners) {
+                try { warnings.addAll(listener.reloadAfterProjectToWorkspace()); }
+                catch(RuntimeException exception) { warnings.add("Could not reload "+listener.getClass().getSimpleName()+" after the transfer: "+exception.getMessage()); }
+            }
+        }
+        return new ProjectSynchronizationResult(request.direction(),request.mode(),Instant.now(),changes,List.copyOf(warnings));
     }
 
     /** Descripción: Sincroniza repositorios configurados hacia el proyecto sin materializar previamente todos sus paths y respetando límites de cantidad, profundidad y bytes. Entradas: projectRoot: raíz destino; descriptor: layout; apply: indica si escribe; mode: estrategia de conflicto. Salida: devuelve cambios ordenados de forma determinista. */
