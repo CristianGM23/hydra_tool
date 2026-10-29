@@ -208,7 +208,9 @@ public class CanonicalTransformationRuntime {
             String current = pending.removeFirst();
             if(!visited.add(current)) continue;
             for(var relation : model.relations()) {
-                if(relation.kind() != MetaRelationKind.INHERITANCE || !relation.sourceTypeId().equals(current)) continue;
+                // Interfaces are supertypes too, as in validations and the Ecore projection (CanonicalMetamodelIndex).
+                boolean supertype = relation.kind() == MetaRelationKind.INHERITANCE || relation.kind() == MetaRelationKind.IMPLEMENTATION;
+                if(!supertype || !relation.sourceTypeId().equals(current)) continue;
                 if(relation.targetTypeId().equals(expectedClassId)) return true;
                 pending.add(relation.targetTypeId());
             }

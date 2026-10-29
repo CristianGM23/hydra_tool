@@ -7,7 +7,17 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.example.editor.metamodel.core.MetaAttribute;
+import com.example.editor.metamodel.core.MetaClass;
+import com.example.editor.metamodel.core.MetaClassKind;
 import com.example.editor.metamodel.core.MetaModel;
+import com.example.editor.metamodel.core.MetaPrimitiveType;
+import com.example.editor.metamodel.core.MetaRelation;
+import com.example.editor.metamodel.core.MetaRelationKind;
+import com.example.editor.metamodel.core.MetaTypeReference;
+import com.example.editor.metamodel.core.Multiplicity;
+import com.example.editor.validation.model.CanonicalModelDocument;
+import com.example.editor.validation.model.CanonicalModelElement;
 import com.example.editor.transformation.TransformationDefinitionChecker;
 import com.example.editor.transformation.core.TransformationBinding;
 import com.example.editor.transformation.core.TransformationBindingKind;
@@ -72,6 +82,42 @@ class CanonicalTransformationRuntimeTests {
         assertThat(result.targetModel().relations()).hasSize(2);
         assertThat(result.targetModel().relations()).allSatisfy(relation -> assertThat(relation.relationId()).isEqualTo(ExpressionTestFixtures.EMPLOYEES));
         assertThat(result.targetModel().rootElementIds()).hasSize(1);
+    }
+
+    @Test
+    void bindsAttributesInheritedFromTheSourceSuperclass() {
+        MetaModel metamodel = ExpressionTestFixtures.metamodel();
+        // Employee inherits name from Person: the binding is as valid as for Person itself (validations and expressions already accept it)
+        TransformationRule employee = new TransformationRule("rule:employee", "Employee to Person", true, "source", ExpressionTestFixtures.EMPLOYEE, "employeeSource", null,
+                List.of(new TransformationTargetPattern("target:person", "target", ExpressionTestFixtures.PERSON, "person", Map.of())),
+                List.of(new TransformationBinding("binding:name", "person", ExpressionTestFixtures.NAME, TransformationBindingKind.DIRECT,
+                        ExpressionTestFixtures.NAME, null, null, null, Map.of())), Map.of());
+
+        TransformationExecutionResult result = runtime.execute(compiler.compile(document(List.of(employee)), metamodel, metamodel),
+                metamodel, metamodel, ExpressionTestFixtures.model());
+
+        assertThat(result.targetModel().elements()).singleElement().satisfies(element ->
+                assertThat(element.attributes().get(ExpressionTestFixtures.NAME)).isEqualTo("Bob"));
+    }
+
+    @Test
+    void ruleOnAnInterfaceMatchesTheClassesThatImplementIt() {
+        MetaAttribute label = new MetaAttribute("attr:label", "label", MetaTypeReference.primitive(MetaPrimitiveType.STRING), Multiplicity.optional(), true, true, "", Map.of());
+        MetaClass named = new MetaClass("class:Named", "Named", MetaClassKind.INTERFACE, List.of(label), List.of(), Map.of());
+        MetaClass item = new MetaClass("class:Item", "Item", MetaClassKind.CLASS, List.of(), List.of(), Map.of());
+        MetaRelation implementation = new MetaRelation("relation:Item:Named", "implements", "class:Item", "class:Named", MetaRelationKind.IMPLEMENTATION, null, null, "", true, true, Map.of());
+        MetaModel metamodel = new MetaModel(MetaModel.CURRENT_SCHEMA_VERSION, ExpressionTestFixtures.METAMODEL_ID, "Interfaces", List.of(named, item), List.of(), List.of(),
+                List.of(implementation), Map.of());
+        CanonicalModelDocument model = new CanonicalModelDocument("1.0", "interface-model", ExpressionTestFixtures.METAMODEL_ID, "etag-1", "Interface model",
+                List.of("object:a"), List.of(new CanonicalModelElement("object:a", "class:Item", Map.of("attr:label", "A"), Map.of()),
+                        new CanonicalModelElement("object:b", "class:Item", Map.of("attr:label", "B"), Map.of())), List.of(), Map.of());
+        TransformationRule rule = new TransformationRule("rule:named", "Named to Item", true, "source", "class:Named", "namedSource", null,
+                List.of(new TransformationTargetPattern("target:item", "target", "class:Item", "item", Map.of())),
+                List.of(new TransformationBinding("binding:label", "item", "attr:label", TransformationBindingKind.DIRECT, "attr:label", null, null, null, Map.of())), Map.of());
+
+        TransformationExecutionResult result = runtime.execute(compiler.compile(document(List.of(rule)), metamodel, metamodel), metamodel, metamodel, model);
+
+        assertThat(result.targetModel().elements()).extracting(element -> element.attributes().get("attr:label")).containsExactly("A", "B");
     }
 
     private TransformationRule personRule() {
