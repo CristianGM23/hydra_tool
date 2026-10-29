@@ -15,6 +15,14 @@ const args = process.argv.slice(2), outFile = args.includes("--out") ? args[args
 const rel = (p) => path.relative(ROOT, p).split(path.sep).join("/");
 const read = (p) => fs.readFileSync(p, "utf8");
 const sha = (s) => crypto.createHash("sha256").update(s).digest("hex").slice(0, 16);
+const sha256File = (p) => crypto.createHash("sha256").update(fs.readFileSync(p)).digest("hex");
+// Absolute host paths copied from recorded reports (commands, output tails) are rewritten to machine-independent anchors, so the published
+// knowledge never names a local user, checkout or toolchain directory; the untouched report stays verifiable through its sha256. The working copy a
+// report was written in (recorded in the provenance file) and the current one become <repo>, wherever they are (not only under a home directory).
+const rootPattern = (r) => new RegExp(String(r).replace(/\\/g, "/").replace(/\/+$/, "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?=/|$|[\\s\"'|<>])", "gi");
+const portablePath = (s, roots = []) => [...roots, ROOT].filter(Boolean).reduce((v, r) => v.replace(rootPattern(r), "<repo>"), String(s).replace(/\\/g, "/"))
+  .replace(/[A-Za-z]:\/(?:[^\s"'|<>]*?\/)?hydra-runtimes\//g, "<hydra-runtimes>/")
+  .replace(/[A-Za-z]:\/Users\/[^/\s"'|<>]+\//gi, "<home>/").replace(/\/(?:home|Users)\/[^/\s"'|<>]+\//g, "<home>/");
 const exists = fs.existsSync;
 function walk(dir, filt, out = []) { if (!exists(dir)) return out; for (const e of fs.readdirSync(dir, { withFileTypes: true })) { const p = path.join(dir, e.name); if (e.isDirectory()) { if (e.name === "node_modules" || e.name === "dist" || e.name === ".git") continue; if (e.name === "target" && path.relative(ROOT, p) === "target") continue; walk(p, filt, out); } else if (filt(p)) out.push(p); } return out; }
 const git = (a) => { try { return cp.execFileSync("git", a, { cwd: ROOT, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }).trim(); } catch (e) { return ""; } };
@@ -33,28 +41,34 @@ const testJava = walk(path.join(ROOT, "src/test/java"), (p) => p.endsWith(".java
 const surefireDir = path.join(ROOT, "build/hydra-maven/surefire-reports");
 // Immutable evidence store (archify V3 runner): the latest captured XML per test class survives later Maven runs (the pom cleans
 // build/hydra-maven at "initialize"). Per class the NEWEST evidence wins (store vs volatile build dir); the store also records when that run started.
+// A build-dir copy byte-identical to the store copy is the SAME evidence: the store copy is cited, because it is immutable and travels with the
+// evidence package, whereas the build dir is local and volatile (its timestamps are not compared then).
 const storeIndexFile = path.join(ROOT, "target/archify-v3/evidence/evidence-index.json");
 let storeIndex = null; try { if (exists(storeIndexFile)) storeIndex = JSON.parse(read(storeIndexFile)); } catch (e) { storeIndex = null; }
 const sure = {}; // outer FQN -> { cases:[], ts, time, mtime, start, from }
-let surefireNewest = 0, surefireOldest = 0, storeClasses = 0;
-const cand = {}; // outer FQN -> best candidate { files:[abs], mtime, start, from, run }
-const offer = (outer, c) => { if (!cand[outer] || c.mtime > cand[outer].mtime || (c.mtime === cand[outer].mtime && c.from === "store")) cand[outer] = c; };
+let storeClasses = 0;
+const cand = {}; // outer FQN -> best candidate { files:[abs], hashes:{name:sha256}, mtime, start, from, run }
+const sameContent = (a, b) => Object.keys(a.hashes).length === Object.keys(b.hashes).length && Object.entries(a.hashes).every(([n, h]) => b.hashes[n] === h);
+const offer = (outer, c) => { const p = cand[outer]; if (!p || (sameContent(p, c) ? c.from === "store" : c.mtime > p.mtime || (c.mtime === p.mtime && c.from === "store"))) cand[outer] = c; };
+const hashesOf = (files) => Object.fromEntries(files.map((f) => [path.basename(f), sha256File(f)]));
 if (exists(surefireDir)) {
   const byOuter = {};
   for (const f of fs.readdirSync(surefireDir).filter((n) => /^TEST-.*\.xml$/.test(n))) {
     const full = path.join(surefireDir, f), st = fs.statSync(full), outer = f.replace(/^TEST-/, "").replace(/\.xml$/, "").split("$")[0];
-    surefireNewest = Math.max(surefireNewest, st.mtimeMs); surefireOldest = surefireOldest ? Math.min(surefireOldest, st.mtimeMs) : st.mtimeMs;
-    const o = byOuter[outer] = byOuter[outer] || { files: [], mtime: 0 }; o.files.push(full); o.mtime = Math.max(o.mtime, st.mtimeMs);
+    const o = byOuter[outer] = byOuter[outer] || { files: [], mtime: 0, oldest: 0 }; o.files.push(full); o.mtime = Math.max(o.mtime, st.mtimeMs); o.oldest = o.oldest ? Math.min(o.oldest, st.mtimeMs) : st.mtimeMs;
   }
-  Object.entries(byOuter).forEach(([outer, o]) => offer(outer, { files: o.files, mtime: o.mtime, start: null, from: "build" }));
+  Object.entries(byOuter).forEach(([outer, o]) => offer(outer, { files: o.files, hashes: hashesOf(o.files), mtime: o.mtime, oldest: o.oldest, start: null, from: "build" }));
 }
 if (storeIndex && storeIndex.classes) {
   for (const [outer, e] of Object.entries(storeIndex.classes)) {
     const files = (e.files || []).map((n) => path.join(ROOT, e.dir || "target/archify-v3/evidence/surefire", n)).filter(exists); if (!files.length) continue;
-    offer(outer, { files, mtime: Date.parse(e.finishedAt) || 0, start: e.startedAt || null, from: "store", run: e.runId }); storeClasses++;
-    surefireNewest = Math.max(surefireNewest, Date.parse(e.finishedAt) || 0);
+    offer(outer, { files, hashes: hashesOf(files), mtime: Date.parse(e.finishedAt) || 0, start: e.startedAt || null, from: "store", run: e.runId }); storeClasses++;
   }
 }
+// Summary of the evidence actually cited: the build dir (and its timestamps) only when at least one class is cited from it.
+const chosen = Object.values(cand), fromBuild = chosen.filter((c) => c.from === "build");
+const surefireNewest = chosen.reduce((a, c) => Math.max(a, c.mtime), 0), surefireOldest = fromBuild.reduce((a, c) => (a ? Math.min(a, c.oldest) : c.oldest), 0);
+const sampleOuter = Object.keys(cand).sort()[0], surefireSample = sampleOuter ? rel(cand[sampleOuter].files.slice().sort()[0]) : null;
 for (const [outer, c] of Object.entries(cand)) {
   const rec = sure[outer] = { cases: [], ts: null, files: c.files.length, mtime: c.mtime, start: c.start, from: c.from, run: c.run };
   for (const full of c.files) {
@@ -115,10 +129,17 @@ const scriptSuites = scriptCandidates.map((p) => {
 
 // ---------------------------------------------------------------- gates (qualification / readiness) with real recorded outcomes
 const gates = [];
+// The reports record no time of their own. A file timestamp is not evidence (a copy, a checkout or an unzip rewrites it), so the time a report was
+// written is taken from target/release/evidence-provenance.json when that file records it for these exact bytes (same sha256); only without such a
+// record does the file timestamp remain, and the gate then says so (evidenceTimeSource "file-mtime").
+const provenanceFile = path.join(ROOT, "target/release/evidence-provenance.json");
+let provenance = {}; try { if (exists(provenanceFile)) provenance = JSON.parse(read(provenanceFile)).reports || {}; } catch (e) { provenance = {}; }
 function gateFile(name, relPath, kind) {
   const p = path.join(ROOT, relPath); if (!exists(p)) return;
-  const j = JSON.parse(read(p)), mt = fs.statSync(p).mtime.toISOString(), carry = JSON.stringify(j).includes("CARRY_FORWARD");
-  (j.steps || []).forEach((s, i) => gates.push({ id: "gate:" + kind + ":" + String(i).padStart(2, "0") + ":" + String(s.name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70), kind: "gate", framework: "qualification-stage", source: relPath, name: s.name, facet: s.facet || null, passed: !!s.passed, required: s.required !== false, seconds: s.seconds, reused: !!s.reused, skipped: !!s.skipped, carryForward: !!(s.reused || /CARRY_FORWARD/.test(String(s.outputTail || ""))), command: Array.isArray(s.command) ? s.command.slice(-3).join(" ").replace(/\\/g, "/").slice(0, 200) : null, outputTail: String(s.outputTail || "").replace(/\x1b\[[0-9;]*m/g, "").slice(-700), evidenceTime: mt, evidenceMode: j.evidenceMode || null, reportStatus: j.status, reportFingerprint: (j.fingerprint || "").slice(0, 16) }));
+  const j = JSON.parse(read(p)), reportSha256 = sha256File(p), pv = provenance[relPath], attested = !!(pv && pv.sha256 === reportSha256 && Date.parse(pv.recordedAt));
+  const mt = attested ? new Date(Date.parse(pv.recordedAt)).toISOString() : fs.statSync(p).mtime.toISOString(), carry = JSON.stringify(j).includes("CARRY_FORWARD");
+  const roots = attested && pv.workingCopyRoot ? [pv.workingCopyRoot] : [], portable = (s) => portablePath(s, roots);
+  (j.steps || []).forEach((s, i) => gates.push({ id: "gate:" + kind + ":" + String(i).padStart(2, "0") + ":" + String(s.name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70), kind: "gate", framework: "qualification-stage", source: relPath, name: s.name, facet: s.facet || null, passed: !!s.passed, required: s.required !== false, seconds: s.seconds, reused: !!s.reused, skipped: !!s.skipped, carryForward: !!(s.reused || /CARRY_FORWARD/.test(String(s.outputTail || ""))), command: Array.isArray(s.command) ? portable(s.command.slice(-3).join(" ")).slice(0, 200) : null, outputTail: portable(String(s.outputTail || "").replace(/\x1b\[[0-9;]*m/g, "")).slice(-700), evidenceTime: mt, evidenceTimeSource: attested ? "provenance" : "file-mtime", evidenceMode: j.evidenceMode || null, reportStatus: j.status, reportFingerprint: (j.fingerprint || "").slice(0, 16), reportSha256 }));
 }
 gateFile("readiness", "target/release/release-readiness.json", "readiness"); gateFile("release", "target/release/release-qualification.json", "release"); gateFile("rc1", "target/release/rc1-qualification.json", "rc1"); gateFile("rc2", "target/release/rc2-qualification.json", "rc2");
 
@@ -128,13 +149,17 @@ try { const vf = read(path.join(ROOT, "scripts/validation/verify_final_tree.py")
 gates.forEach((g) => { if (g.kind === "gate" && stepScripts[g.name]) g.script = stepScripts[g.name]; });
 
 // ---------------------------------------------------------------- freshness: newest change under production roots vs evidence time
-function newestMtime(files) { let n = 0; for (const f of files) { try { n = Math.max(n, fs.statSync(path.join(ROOT, f)).mtimeMs); } catch (e) {} } return n; }
+// Change time of a file = its last commit (Git history), or its timestamp only while it has uncommitted changes (the rule of build-test-evidence.js).
+const changeTime = {};
+git(["log", "--name-only", "--pretty=format:@%ct"]).split("\n").reduce((ct, l) => { if (l.startsWith("@")) return +l.slice(1) * 1000; if (l && !changeTime[l]) changeTime[l] = ct; return ct; }, 0);
+git(["status", "--porcelain", "-uall"]).split("\n").filter(Boolean).forEach((l) => { const f = l.slice(3).replace(/^"|"$/g, "").split(" -> ").pop(); try { changeTime[f] = Math.max(changeTime[f] || 0, fs.statSync(path.join(ROOT, f)).mtimeMs); } catch (e) {} });
+function newestChange(files) { let n = 0; for (const f of files) n = Math.max(n, changeTime[f] || 0); return n; }
 const out = { schemaVersion: 1, generatedAt: new Date().toISOString(), state,
-  evidence: { surefire: { store: storeIndex ? { index: rel(storeIndexFile), classes: storeClasses } : null, dir: exists(surefireDir) ? rel(surefireDir) : null, suites: Object.keys(sure).length, newest: surefireNewest ? new Date(surefireNewest).toISOString() : null, start: (() => { let m = surefireOldest || 0; for (const d of ["generated-sources", "maven-status"]) { try { const s = fs.statSync(path.join(ROOT, "build/hydra-maven", d)).mtimeMs; if (s && (!m || s < m)) m = s; } catch (e) {} } return m ? new Date(m).toISOString() : null; })() },
+  evidence: { surefire: { store: storeIndex ? { index: rel(storeIndexFile), classes: storeClasses } : null, dir: fromBuild.length ? rel(surefireDir) : null, citedFromBuild: fromBuild.length, sample: surefireSample, suites: Object.keys(sure).length, newest: surefireNewest ? new Date(surefireNewest).toISOString() : null, start: (() => { if (!fromBuild.length) return null; let m = surefireOldest || 0; for (const d of ["generated-sources", "maven-status"]) { try { const s = fs.statSync(path.join(ROOT, "build/hydra-maven", d)).mtimeMs; if (s && (!m || s < m)) m = s; } catch (e) {} } return m ? new Date(m).toISOString() : null; })() },
     gates: { readiness: gates.filter((g) => g.id.startsWith("gate:readiness")).length, release: gates.filter((g) => g.id.startsWith("gate:release")).length, rc1: gates.filter((g) => g.id.startsWith("gate:rc1")).length, rc2: gates.filter((g) => g.id.startsWith("gate:rc2")).length } },
   counts: { java: javaSuites.length, frontend: frontendSuites.length, scripts: scriptSuites.length, gates: gates.length, javaCases: javaSuites.reduce((a, s) => a + s.cases, 0), frontendCases: frontendSuites.reduce((a, s) => a + s.cases, 0) },
   suites: [...javaSuites, ...frontendSuites, ...scriptSuites], gates, surefireCases: Object.fromEntries(Object.entries(sure).map(([k, v]) => [k, v.cases])) };
-out.suites.forEach((s) => { if (s.prodRefs && s.prodRefs.length) s.prodNewest = new Date(newestMtime(s.prodRefs.concat([s.path]))).toISOString(); });
+out.suites.forEach((s) => { if (s.prodRefs && s.prodRefs.length) s.prodNewest = new Date(newestChange(s.prodRefs.concat([s.path]))).toISOString(); });
 
 if (changedOnly) {
   const cat = path.join(__dirname, "test-catalog.json");

@@ -71,7 +71,8 @@ frags.forEach((f, id) => { if (id.startsWith("family:")) compose({ id, kind: "fa
 // ------------------------------------------------------------------ execution state
 const dsuite = new Map(disc.suites.map((s) => [s.id, s])), dgate = new Map(disc.gates.map((g) => [g.id, g]));
 const exec = {}, iso = (ms) => new Date(ms).toISOString();
-const ctxJava = (() => { try { const x = fs.readFileSync(path.join(ROOT, disc.evidence.surefire.dir, fs.readdirSync(path.join(ROOT, disc.evidence.surefire.dir)).find((n) => /^TEST-.*\.xml$/.test(n))), "utf8"); const p = (k) => (x.match(new RegExp('name="' + k + '" value="([^"]*)"')) || [])[1]; return { os: p("os.name"), osVersion: p("os.version"), java: p("java.version"), javaVendor: p("java.vendor"), surefire: (x.match(/ version="([^"]+)"/) || [])[1] }; } catch (e) { return {}; } })();
+const sf = disc.evidence.surefire, mavenRecorded = !!(sf.dir || sf.store); // a recorded Maven execution: the build dir or the immutable store
+const ctxJava = (() => { try { const x = fs.readFileSync(path.join(ROOT, sf.sample || path.join(sf.dir, fs.readdirSync(path.join(ROOT, sf.dir)).find((n) => /^TEST-.*\.xml$/.test(n)))), "utf8"); const p = (k) => (x.match(new RegExp('name="' + k + '" value="([^"]*)"')) || [])[1]; return { os: p("os.name"), osVersion: p("os.version"), java: p("java.version"), javaVendor: p("java.vendor"), surefire: (x.match(/ version="([^"]+)"/) || [])[1] }; } catch (e) { return {}; } })();
 const changedAfter = (files, ms) => files.filter((f) => fileChanged(f) > ms);
 // Content-based currency written by the V3 runner (hydra_archify_v3.py sync): ids whose evidence it verified by hash (identical inputs or an unchanged
 // bounded dependency closure). A later timestamp on a file the test cannot reach (e.g. a commit made after the run) must not make that evidence stale.
@@ -95,7 +96,7 @@ function execFor(rec) {
   }
   if (rec.framework === "junit5") {
     if (d && !d.cases && !d.executed) return { s: "DISCOVERED", note: "Support class (fixtures/helpers) without test cases: it cannot be executed on its own." };
-    const e = d && d.executed; if (!e) return disc.evidence.surefire.dir ? { s: "NOT_EXECUTED", note: "Present in src/test but absent from the latest Maven surefire reports (outside the executed suite)." } : { s: "DISCOVERED" };
+    const e = d && d.executed; if (!e) return mavenRecorded ? { s: "NOT_EXECUTED", note: "Present in src/test but absent from the latest Maven surefire reports (outside the executed suite)." } : { s: "DISCOVERED" };
     const start = e.start ? Date.parse(e.start) : disc.evidence.surefire.start ? Date.parse(disc.evidence.surefire.start) : (gMaven ? gMaven.startMs : Date.parse(e.ts) - 300000), st = e.fail > 0 ? "FAIL" : e.pass === 0 && e.skipped > 0 ? "SKIPPED" : "PASS";
     const base = { src: e.from === "store" ? "surefire-store:" + (e.run || "archify-v3") : "surefire:" + disc.evidence.surefire.dir, granularity: "case", ts: e.ts, durMs: Math.round(e.time * 1000), cases: { n: e.cases, pass: e.pass, fail: e.fail, skipped: e.skipped }, problems: e.problems && e.problems.length ? e.problems.map((p) => ({ n: p.n, s: p.s, ...(p.m ? { m: p.m } : {}) })) : undefined };
     const ch = changedAfter(files, start);
@@ -173,7 +174,7 @@ gaps.gatesNotExecutedParts = records.filter((r) => r.kind === "gate" && r.notExe
 // ------------------------------------------------------------------ write
 const stateInfo = disc.state;
 const execution = { schemaVersion: 1, generatedAt: matrix.generatedAt, validatedState: { head: stateInfo.head, branch: stateInfo.branch, headCommitTime: stateInfo.headCommitTime, workingTree: { staged: stateInfo.staged, unstaged: stateInfo.unstaged, untracked: stateInfo.untracked }, basis: "Execution evidence carries its own timestamps; repository state is inferred from them (the reports record no commit)." },
-  sources: [{ id: "surefire", path: disc.evidence.surefire.dir, newest: disc.evidence.surefire.newest, granularity: "per test case" }, { id: "release-readiness", path: "target/release/release-readiness.json", granularity: "per gate step", steps: disc.evidence.gates.readiness }, { id: "release/rc1/rc2 qualification", path: "target/release/{release,rc1,rc2}-qualification.json", granularity: "per qualification stage", steps: disc.evidence.gates.release + disc.evidence.gates.rc1 + disc.evidence.gates.rc2 }],
+  sources: [{ id: "surefire", path: sf.dir || (sf.store && sf.store.index) || null, newest: disc.evidence.surefire.newest, granularity: "per test case" }, { id: "release-readiness", path: "target/release/release-readiness.json", granularity: "per gate step", steps: disc.evidence.gates.readiness }, { id: "release/rc1/rc2 qualification", path: "target/release/{release,rc1,rc2}-qualification.json", granularity: "per qualification stage", steps: disc.evidence.gates.release + disc.evidence.gates.rc1 + disc.evidence.gates.rc2 }],
   context: { ...ctxJava, os: ctxJava.os || "Windows", note: "Toolchain versions are taken from the surefire report; frontend Node/Vitest versions are not recorded in the reports (Vitest 4.1.10 appears in the step log)." }, tests: exec };
 const catalog = { schemaVersion: 1, generatedAt: matrix.generatedAt, purpose: "Normalized semantic records of every catalogued test/suite/gate. Execution status lives in test-execution-state.json; aggregations in test-evidence-matrix.json.", state: { head: stateInfo.head, branch: stateInfo.branch }, layers, counts: { suites: records.length }, tests: records };
 const vr = validate(records.filter((r) => !r.analysis), disc);
