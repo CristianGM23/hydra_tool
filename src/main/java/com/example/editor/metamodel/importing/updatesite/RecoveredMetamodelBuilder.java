@@ -43,13 +43,78 @@ final class RecoveredMetamodelBuilder {
     }
 
     /** Descripción: Ejecuta la operación «addRelation» correspondiente a la responsabilidad de MutableClass. Entradas: className: dato de entrada necesario para la operación; name: dato de entrada necesario para la operación; targetClassName: dato de entrada necesario para la operación; multiplicity: dato de entrada necesario para la operación; containment: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void addRelation(String className, String name, String targetClassName, Multiplicity multiplicity, boolean containment) {
+        addRelation(className, name, targetClassName, multiplicity, containment ? MetaRelationKind.CONTAINMENT : MetaRelationKind.REFERENCE);
+    }
+
+    /** Descripción: Añade una relación estructural de tipo «kind» (REFERENCE, CONTAINMENT o AGGREGATION) entre dos clases. */
+    void addRelation(String className, String name, String targetClassName, Multiplicity multiplicity, MetaRelationKind kind) {
         MutableClass source = addClass(className, MetaClassKind.CLASS);
         MutableClass target = addClass(targetClassName, MetaClassKind.CLASS);
         String relationId = id("relation", source.name, name);
         relations.putIfAbsent(relationId, new MetaRelation(relationId, visibleName(name, target.name),
-                source.id(), target.id(), containment ? MetaRelationKind.CONTAINMENT : MetaRelationKind.REFERENCE,
+                source.id(), target.id(), kind == null ? MetaRelationKind.REFERENCE : kind,
                 Multiplicity.one(), multiplicity == null ? Multiplicity.optional() : multiplicity,
                 "", true, true, Map.of()));
+    }
+
+    /** Descripción: Añade una relación de implementación (clase que implementa una interfaz). */
+    void addImplementation(String className, String interfaceName) {
+        MutableClass source = addClass(className, MetaClassKind.CLASS);
+        MutableClass target = addClass(interfaceName, MetaClassKind.INTERFACE);
+        String relationId = id("implementation", source.name, target.name);
+        relations.putIfAbsent(relationId, new MetaRelation(relationId, "implements", source.id(), target.id(),
+                MetaRelationKind.IMPLEMENTATION, Multiplicity.one(), Multiplicity.one(), "", true, true, Map.of()));
+    }
+
+    /** Descripción: Indica si ya se ha declarado una enumeración con ese nombre. */
+    boolean hasEnum(String name) {
+        return enums.containsKey(visibleName(name, "RecoveredEnum"));
+    }
+
+    /** Descripción: Representa como clase abstracta toda interfaz que es destino de una relación estructural (el núcleo neutral no lo permite),
+     *  con las anotaciones y el aviso que ya usan los importadores Java, Python y GLSP, y recalcula herencia/implementación con los tipos
+     *  efectivos (hasta un punto fijo: una interfaz que hereda de una clase también pasa a clase abstracta). Entradas: language: prefijo de las
+     *  anotaciones (typescript, go). Salida: nombres de las interfaces adaptadas, en orden. */
+    List<String> adaptStructuralInterfaces(String language) {
+        Map<String, MutableClass> byId = new LinkedHashMap<>();
+        classes.values().forEach(value -> byId.put(value.id(), value));
+        List<String> adapted = new ArrayList<>();
+        for(MetaRelation relation : relations.values()) {
+            MutableClass target = byId.get(relation.targetTypeId());
+            boolean structural = relation.kind() == MetaRelationKind.REFERENCE || relation.kind() == MetaRelationKind.CONTAINMENT || relation.kind() == MetaRelationKind.AGGREGATION;
+            if(structural && target != null && target.kind == MetaClassKind.INTERFACE) adapt(target, language, adapted);
+        }
+        boolean changed = true;
+        while(changed) {
+            changed = false;
+            for(Map.Entry<String, MetaRelation> entry : new ArrayList<>(relations.entrySet())) {
+                MetaRelation relation = entry.getValue();
+                if(relation.kind() != MetaRelationKind.INHERITANCE && relation.kind() != MetaRelationKind.IMPLEMENTATION) continue;
+                MutableClass source = byId.get(relation.sourceTypeId());
+                MutableClass target = byId.get(relation.targetTypeId());
+                if(source == null || target == null) continue;
+                if(source.kind == MetaClassKind.INTERFACE && target.kind != MetaClassKind.INTERFACE) {
+                    adapt(source, language, adapted);
+                    changed = true;
+                }
+                MetaRelationKind kind = target.kind == MetaClassKind.INTERFACE && source.kind != MetaClassKind.INTERFACE ? MetaRelationKind.IMPLEMENTATION : MetaRelationKind.INHERITANCE;
+                if(kind != relation.kind()) {
+                    entry.setValue(new MetaRelation(relation.id(), relation.name(), relation.sourceTypeId(), relation.targetTypeId(), kind, relation.sourceMultiplicity(),
+                            relation.targetMultiplicity(), relation.oppositeRelationId(), relation.ordered(), relation.unique(), relation.annotations()));
+                    changed = true;
+                }
+            }
+        }
+        return List.copyOf(adapted);
+    }
+
+    /** Descripción: Marca una interfaz como clase abstracta adaptada. */
+    private void adapt(MutableClass value, String language, List<String> adapted) {
+        if(value.kind != MetaClassKind.INTERFACE) return;
+        value.kind = MetaClassKind.ABSTRACT_CLASS;
+        value.annotations.put(language + ":declaredInterface", "true");
+        value.annotations.put("hydra:semanticAdaptation", "STRUCTURAL_INTERFACE_TO_ABSTRACT_CLASS");
+        adapted.add(value.name);
     }
 
     /** Descripción: Ejecuta la operación «addInheritance» correspondiente a la responsabilidad de MutableClass. Entradas: className: dato de entrada necesario para la operación; superClassName: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void addInheritance(String className, String superClassName) {
@@ -96,6 +161,8 @@ final class RecoveredMetamodelBuilder {
         String type = value == null ? "" : value.trim();
         String lower = type.toLowerCase(Locale.ROOT).replace("java.lang.", "");
         if(lower.endsWith("[]")) lower = lower.substring(0, lower.length() - 2);
+        MetaEnum declaredEnum = enums.get(visibleName(type, "RecoveredEnum"));
+        if(declaredEnum != null && !type.isBlank()) return MetaTypeReference.enumType(declaredEnum.id());
         return switch(lower) {
             case "string", "charsequence", "char", "character" -> MetaTypeReference.primitive(MetaPrimitiveType.STRING);
             case "boolean", "bool" -> MetaTypeReference.primitive(MetaPrimitiveType.BOOLEAN);
@@ -146,6 +213,7 @@ final class RecoveredMetamodelBuilder {
         private MetaClassKind kind;
         private final Map<String, MetaAttribute> attributes = new LinkedHashMap<>();
         private final Map<String, MetaOperation> operations = new LinkedHashMap<>();
+        private final Map<String, String> annotations = new LinkedHashMap<>();
 
         /** Descripción: Inicializa una instancia de MutableClass con sus dependencias y datos de entrada. Entradas: name: dato de entrada necesario para la operación; kind: dato de entrada necesario para la operación. Salida: deja la instancia inicializada y lista para su uso. */ private MutableClass(String name, MetaClassKind kind) {
             this.name = name;
@@ -161,7 +229,7 @@ final class RecoveredMetamodelBuilder {
         /** Descripción: Ejecuta la operación «freeze» correspondiente a la responsabilidad de MutableClass. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ MetaClass freeze() {
             return new MetaClass(id(), name, kind,
                     attributes.values().stream().sorted(Comparator.comparing(MetaAttribute::id)).toList(),
-                    operations.values().stream().sorted(Comparator.comparing(MetaOperation::id)).toList(), Map.of());
+                    operations.values().stream().sorted(Comparator.comparing(MetaOperation::id)).toList(), Map.copyOf(annotations));
         }
     }
 }

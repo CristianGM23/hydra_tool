@@ -9,10 +9,12 @@ import java.util.zip.ZipOutputStream;
 import org.springframework.stereotype.Component;
 import com.example.editor.metamodel.core.MetaAttribute;
 import com.example.editor.metamodel.core.MetaClass;
+import com.example.editor.metamodel.core.MetaClassKind;
 import com.example.editor.metamodel.core.MetaDataType;
 import com.example.editor.metamodel.core.MetaOperation;
 import com.example.editor.metamodel.core.MetaParameter;
 import com.example.editor.metamodel.core.MetaRelation;
+import com.example.editor.metamodel.core.MetaRelationKind;
 import com.example.editor.metamodel.core.MetaTypeReference;
 import com.example.editor.metamodel.core.MetaTypeReferenceKind;
 import com.example.editor.metamodel.core.Multiplicity;
@@ -40,44 +42,143 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         context.neutralMetamodel().enums().forEach(value->{
             String name=MetamodelExportSupport.pascal(value.name(),"GeneratedEnum");
             out.append("export enum ").append(name).append(" {\n");
-            value.literals().forEach(literal->out.append("  ").append(MetamodelExportSupport.pascal(literal.name(),"VALUE")).append(" = ").append(literal.value()).append(",\n"));
+            value.literals().forEach(literal->{
+                String member=MetamodelExportSupport.pascal(literal.name(),"VALUE");
+                if(!member.equals(literal.name()))out.append("  /** @hydra literal ").append(literal.name()).append(" */\n");
+                out.append("  ").append(member).append(" = ").append(literal.value()).append(",\n");
+            });
             out.append("}\n\n");
         });
         for(MetaDataType value:context.neutralMetamodel().dataTypes()){
             out.append("export type ").append(MetamodelExportSupport.pascal(value.name(),"GeneratedType")).append(" = string;\n\n");
         }
-        for(MetaClass value:context.neutralMetamodel().classes()) appendClass(out,context,value);
+        for(MetaClass value:declarationOrder(context)) appendClass(out,context,value);
+        StringBuilder aliases=new StringBuilder();
+        for(String alias:List.of("Byte","Short","Integer","Long","Float","Decimal","BigInteger"))
+            if(java.util.regex.Pattern.compile(":\\s*(?:ReadonlyArray<)?"+alias+"\\b").matcher(out).find()) aliases.append("export type ").append(alias).append(" = number;\n");
+        if(aliases.length()>0) out.insert(out.indexOf("\n\n")+2,aliases.append('\n'));
         return out.toString();
     }
 
-    /** Descripción: Ejecuta la operación «appendClass» correspondiente a la responsabilidad de TypeScriptMetamodelExporter. Entradas: out: dato de entrada necesario para la operación; context: dato de entrada necesario para la operación; value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void appendClass(StringBuilder out,NeutralMetamodelExportContext context,MetaClass value){
+    /** Descripción: Orden de declaración: una clase base antes que sus subclases (TypeScript no permite extender una clase declarada después); por lo demás, el orden del metamodelo. */
+    private List<MetaClass> declarationOrder(NeutralMetamodelExportContext context){
+        List<MetaClass> all=context.neutralMetamodel().classes();
+        java.util.Map<String,MetaClass> byId=new java.util.LinkedHashMap<>();all.forEach(value->byId.put(value.id(),value));
+        java.util.LinkedHashSet<String> done=new java.util.LinkedHashSet<>();List<MetaClass> out=new java.util.ArrayList<>();
+        for(MetaClass value:all)visit(context,value,byId,done,new java.util.HashSet<>(),out);
+        return out;
+    }
+    /** Descripción: Recorrido en profundidad por las clases base (herencia entre clases), tolerante a ciclos. */
+    private void visit(NeutralMetamodelExportContext context,MetaClass value,java.util.Map<String,MetaClass> byId,java.util.Set<String> done,java.util.Set<String> visiting,List<MetaClass> out){
+        if(done.contains(value.id())||!visiting.add(value.id()))return;
+        for(MetaRelation base:MetamodelExportSupport.superTypeRelationsFrom(context,value.id())){
+            MetaClass parent=byId.get(base.targetTypeId());
+            if(base.kind()==MetaRelationKind.INHERITANCE&&parent!=null)visit(context,parent,byId,done,visiting,out);
+        }
+        if(done.add(value.id()))out.add(value);
+    }
+
+    /** Descripción: Declara la clase con la construcción TypeScript de su tipo neutral: interfaz («extends» de sus superinterfaces), clase o clase abstracta («extends» de su clase base, «implements» de sus interfaces). Una clase redeclara con «declare» los miembros de las interfaces que implementa (TypeScript lo exige y el importador sabe que pertenecen a la interfaz); una segunda clase base, que TypeScript no expresa, se anota con «@hydra extends». Entradas: out: salida; context: metamodelo; value: clase. */ private void appendClass(StringBuilder out,NeutralMetamodelExportContext context,MetaClass value){
         String name=MetamodelExportSupport.pascal(value.name(),"GeneratedClass");
-        List<String> bases=MetamodelExportSupport.superTypeRelationsFrom(context,value.id()).stream()
-                .map(item->MetamodelExportSupport.pascal(MetamodelExportSupport.relationTargetName(context,item),"GeneratedClass")).distinct().toList();
-        out.append("export interface ").append(name);
-        if(!bases.isEmpty()) out.append(" extends ").append(String.join(", ",bases));
+        List<MetaRelation> supers=MetamodelExportSupport.superTypeRelationsFrom(context,value.id());
+        List<String> inherited=supers.stream().filter(item->item.kind()==MetaRelationKind.INHERITANCE).map(item->typeName(context,item)).distinct().toList();
+        List<String> implemented=supers.stream().filter(item->item.kind()==MetaRelationKind.IMPLEMENTATION).map(item->typeName(context,item)).distinct().toList();
+        if(value.kind()==MetaClassKind.INTERFACE){
+            out.append("export interface ").append(name);
+            List<String> bases=java.util.stream.Stream.concat(inherited.stream(),implemented.stream()).distinct().toList();
+            if(!bases.isEmpty()) out.append(" extends ").append(String.join(", ",bases));
+            out.append(" {\n");
+            appendMembers(out,context,value,false);
+            for(MetaOperation operation:value.operations()) out.append("  ").append(signature(context,operation)).append(";\n");
+            out.append("}\n\n");
+            return;
+        }
+        if(inherited.size()>1) out.append("/** @hydra extends ").append(String.join(", ",inherited.subList(1,inherited.size()))).append(" */\n");
+        out.append("export ").append(value.kind()==MetaClassKind.ABSTRACT_CLASS?"abstract class ":"class ").append(name);
+        if(!inherited.isEmpty()) out.append(" extends ").append(inherited.get(0));
+        if(!implemented.isEmpty()) out.append(" implements ").append(String.join(", ",implemented));
         out.append(" {\n");
-        for(MetaAttribute attribute:value.attributes()){
-            out.append("  ").append(MetamodelExportSupport.camel(attribute.name(),"value"));
-            if(optional(attribute.multiplicity())) out.append('?');
-            out.append(": ").append(cardinality(type(context,attribute.type()),attribute.multiplicity())).append(";\n");
-        }
-        for(MetaRelation relation:MetamodelExportSupport.structuralRelationsFrom(context,value.id())){
-            out.append("  ").append(MetamodelExportSupport.camel(relation.name(),"reference"));
-            if(optional(relation.targetMultiplicity())) out.append('?');
-            String target=MetamodelExportSupport.pascal(MetamodelExportSupport.relationTargetName(context,relation),"GeneratedClass");
-            out.append(": ").append(cardinality(target,relation.targetMultiplicity())).append(";\n");
-        }
-        for(MetaOperation operation:value.operations()) {
-            out.append("  ").append(MetamodelExportSupport.camel(operation.name(),"operation")).append('(');
-            for(int index=0;index<operation.parameters().size();index++) {
-                MetaParameter parameter=operation.parameters().get(index);
-                if(index>0) out.append(", ");
-                out.append(MetamodelExportSupport.camel(parameter.name(),"arg")).append(": ").append(cardinality(type(context,parameter.type()),parameter.multiplicity()));
+        java.util.Set<String> own=new java.util.HashSet<>();
+        value.attributes().forEach(attribute->own.add(MetamodelExportSupport.camel(attribute.name(),"value")));
+        MetamodelExportSupport.structuralRelationsFrom(context,value.id()).forEach(relation->own.add(MetamodelExportSupport.camel(relation.name(),"reference")));
+        java.util.Set<String> declared=new java.util.HashSet<>();
+        for(MetaClass contract:interfaceClosure(context,value)){
+            for(MetaAttribute attribute:contract.attributes()){
+                String member=MetamodelExportSupport.camel(attribute.name(),"value");
+                if(own.contains(member)||!declared.add(member))continue;
+                out.append("  declare ").append(member).append(optional(attribute.multiplicity())?"?":"").append(": ").append(cardinality(type(context,attribute.type()),attribute.multiplicity())).append(";\n");
             }
-            out.append("): ").append(operation.returnsVoid()?"void":cardinality(type(context,operation.returnType()),operation.returnMultiplicity())).append(";\n");
+            for(MetaRelation relation:MetamodelExportSupport.structuralRelationsFrom(context,contract.id())){
+                String member=MetamodelExportSupport.camel(relation.name(),"reference");
+                if(own.contains(member)||!declared.add(member))continue;
+                out.append("  declare ").append(member).append(optional(relation.targetMultiplicity())?"?":"").append(": ").append(cardinality(MetamodelExportSupport.pascal(MetamodelExportSupport.relationTargetName(context,relation),"GeneratedClass"),relation.targetMultiplicity())).append(";\n");
+            }
+        }
+        appendMembers(out,context,value,true);
+        for(MetaOperation operation:value.operations()) {
+            if(value.kind()==MetaClassKind.ABSTRACT_CLASS) out.append("  abstract ").append(signature(context,operation)).append(";\n");
+            else out.append("  ").append(signature(context,operation)).append(" { throw new Error('Not implemented: ").append(MetamodelExportSupport.camel(operation.name(),"operation")).append("'); }\n");
         }
         out.append("}\n\n");
+    }
+
+    /** Descripción: Propiedades propias: «?» si son opcionales, «!» (asignación definida) si son obligatorias en una clase, arrays para las múltiples y etiquetas «@hydra» para el tipo de relación y para las multiplicidades que TypeScript no expresa. */
+    private void appendMembers(StringBuilder out,NeutralMetamodelExportContext context,MetaClass value,boolean classBody){
+        for(MetaAttribute attribute:value.attributes()){
+            appendTags(out,null,attribute.multiplicity());
+            out.append("  ").append(MetamodelExportSupport.camel(attribute.name(),"value")).append(optional(attribute.multiplicity())?"?":classBody?"!":"")
+                    .append(": ").append(cardinality(type(context,attribute.type()),attribute.multiplicity())).append(";\n");
+        }
+        for(MetaRelation relation:MetamodelExportSupport.structuralRelationsFrom(context,value.id())){
+            appendTags(out,relation.kind(),relation.targetMultiplicity());
+            String target=MetamodelExportSupport.pascal(MetamodelExportSupport.relationTargetName(context,relation),"GeneratedClass");
+            out.append("  ").append(MetamodelExportSupport.camel(relation.name(),"reference")).append(optional(relation.targetMultiplicity())?"?":classBody?"!":"")
+                    .append(": ").append(cardinality(target,relation.targetMultiplicity())).append(";\n");
+        }
+    }
+
+    /** Descripción: Comentario JSDoc «@hydra» con lo que la sintaxis no expresa: contención/agregación y multiplicidades distintas de 0..1, 1..1, 0..* y 1..*. */
+    private void appendTags(StringBuilder out,MetaRelationKind kind,Multiplicity multiplicity){
+        StringBuilder tags=new StringBuilder();
+        if(kind==MetaRelationKind.CONTAINMENT) tags.append(" @hydra containment");
+        if(kind==MetaRelationKind.AGGREGATION) tags.append(" @hydra aggregation");
+        if(!representable(multiplicity)) tags.append(" @hydra multiplicity ").append(multiplicity.lowerBound()).append("..").append(multiplicity.unbounded()?"*":String.valueOf(multiplicity.upperBound()));
+        if(tags.length()>0) out.append("  /**").append(tags).append(" */\n");
+    }
+
+    /** Descripción: Indica si «?» y los arrays bastan para expresar la multiplicidad (0..1, 1..1, 0..*, 1..*). */
+    private boolean representable(Multiplicity multiplicity){
+        if(multiplicity==null)return true;
+        boolean many=multiplicity.unbounded()||multiplicity.upperBound()>1;
+        return multiplicity.lowerBound()<=1&&(!many||multiplicity.unbounded());
+    }
+
+    /** Descripción: Interfaces implementadas por la clase y todas sus superinterfaces, sin repetir. */
+    private List<MetaClass> interfaceClosure(NeutralMetamodelExportContext context,MetaClass value){
+        java.util.Map<String,MetaClass> byId=new java.util.LinkedHashMap<>();context.neutralMetamodel().classes().forEach(item->byId.put(item.id(),item));
+        java.util.LinkedHashMap<String,MetaClass> out=new java.util.LinkedHashMap<>();java.util.ArrayDeque<String> pending=new java.util.ArrayDeque<>();
+        MetamodelExportSupport.superTypeRelationsFrom(context,value.id()).stream().filter(item->item.kind()==MetaRelationKind.IMPLEMENTATION).forEach(item->pending.add(item.targetTypeId()));
+        while(!pending.isEmpty()){
+            MetaClass next=byId.get(pending.poll());
+            if(next==null||next.kind()!=MetaClassKind.INTERFACE||out.containsKey(next.id()))continue;
+            out.put(next.id(),next);
+            MetamodelExportSupport.superTypeRelationsFrom(context,next.id()).forEach(item->pending.add(item.targetTypeId()));
+        }
+        return List.copyOf(out.values());
+    }
+
+    /** Descripción: Nombre TypeScript del tipo destino de una relación de herencia o implementación. */
+    private String typeName(NeutralMetamodelExportContext context,MetaRelation relation){return MetamodelExportSupport.pascal(MetamodelExportSupport.relationTargetName(context,relation),"GeneratedClass");}
+
+    /** Descripción: Firma TypeScript de una operación. */
+    private String signature(NeutralMetamodelExportContext context,MetaOperation operation){
+        StringBuilder out=new StringBuilder(MetamodelExportSupport.camel(operation.name(),"operation")).append('(');
+        for(int index=0;index<operation.parameters().size();index++) {
+            MetaParameter parameter=operation.parameters().get(index);
+            if(index>0) out.append(", ");
+            out.append(MetamodelExportSupport.camel(parameter.name(),"arg")).append(": ").append(cardinality(type(context,parameter.type()),parameter.multiplicity()));
+        }
+        return out.append("): ").append(operation.returnsVoid()?"void":cardinality(type(context,operation.returnType()),operation.returnMultiplicity())).toString();
     }
 
     /** Descripción: Ejecuta la operación «type» correspondiente a la responsabilidad de TypeScriptMetamodelExporter. Entradas: context: dato de entrada necesario para la operación; reference: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String type(NeutralMetamodelExportContext context,MetaTypeReference reference){
@@ -88,7 +189,15 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         }
         return switch(reference.targetId()){
             case "BOOLEAN"->"boolean";
-            case "BYTE","SHORT","INTEGER","LONG","FLOAT","DOUBLE","DECIMAL","BIG_INTEGER"->"number";
+            // TypeScript has a single `number`: a type alias keeps the neutral numeric type (still `number` for every consumer)
+            case "BYTE"->"Byte";
+            case "SHORT"->"Short";
+            case "INTEGER"->"Integer";
+            case "LONG"->"Long";
+            case "FLOAT"->"Float";
+            case "DECIMAL"->"Decimal";
+            case "BIG_INTEGER"->"BigInteger";
+            case "DOUBLE"->"number";
             case "BINARY"->"Uint8Array";
             case "DATE"->"Date";
             case "OBJECT"->"unknown";
