@@ -307,6 +307,19 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
     }
 
+    /** Convierte los errores del almacén JSON compartido cuando llegan sin una capa de aplicación que los traduzca (p. ej. sesiones textuales): un conflicto optimista entre peticiones concurrentes es 412/409, no un 500. */
+    @ExceptionHandler(com.example.editor.validation.persistence.CanonicalDocumentStoreException.class)
+    /** Descripción: Traduce el motivo estable de CanonicalDocumentStoreException a su código HTTP. Entradas: exception: error del almacén. Salida: respuesta con el motivo y el mensaje. */ public ResponseEntity<ApiError> handleCanonicalDocumentStoreException(com.example.editor.validation.persistence.CanonicalDocumentStoreException exception) {
+        HttpStatus status = switch(exception.getReason()) {
+            case INVALID_REQUEST -> HttpStatus.BAD_REQUEST;
+            case NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case CONFLICT -> HttpStatus.CONFLICT;
+            case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
+            case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
+        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+    }
+
     /** Convierte los errores de definiciones y bindings de eventos. */
     @ExceptionHandler(EventModelApplicationException.class)
     /** Descripción: Procesa la operación «handleEventModelApplicationException» coordinando las responsabilidades de ApiExceptionHandler. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public ResponseEntity<ApiError> handleEventModelApplicationException(EventModelApplicationException exception) {
@@ -430,6 +443,18 @@ public class ApiExceptionHandler {
     }
 
 
+    /** Una petición de generación standalone inválida o desactivada es un error del cliente o de configuración, no un fallo interno. */
+    @ExceptionHandler(com.example.editor.standalone.StandaloneEditorGenerationException.class)
+    /** Descripción: Procesa la operación «handleStandaloneEditorGenerationException» coordinando las responsabilidades de ApiExceptionHandler. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public ResponseEntity<ApiError> handleStandaloneEditorGenerationException(com.example.editor.standalone.StandaloneEditorGenerationException exception) {
+        HttpStatus status = switch(exception.getReason()) {
+            case DISABLED -> HttpStatus.SERVICE_UNAVAILABLE;
+            case INVALID_REQUEST -> HttpStatus.BAD_REQUEST;
+            case LIMIT_EXCEEDED -> HttpStatus.PAYLOAD_TOO_LARGE;
+            case GENERATION_FAILED -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
+        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(),exception.getMessage()));
+    }
+
     /** Convierte fallos de proveedores remotos sin exponer tokens ni respuestas completas. */
     @ExceptionHandler(RemoteStorageException.class)
     /** Descripción: Procesa la operación «handleRemoteStorageException» coordinando las responsabilidades de ApiExceptionHandler. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public ResponseEntity<ApiError> handleRemoteStorageException(RemoteStorageException exception) {
@@ -509,6 +534,18 @@ public class ApiExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     /** Descripción: Procesa la operación «handleNoSuchElementException» coordinando las responsabilidades de ApiExceptionHandler. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public ResponseEntity<ApiError> handleNoSuchElementException(NoSuchElementException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiError("NOT_FOUND", exception.getMessage()));
+    }
+
+    /** A textual editor whose grammar has no active successful compilation is a resource state the user can resolve (compile), not a server fault. */
+    @ExceptionHandler(com.example.editor.textual.definition.TextualGrammarSnapshotUnavailableException.class)
+    /** Descripción: Procesa la operación «handleTextualGrammarSnapshotUnavailable» coordinando las responsabilidades de ApiExceptionHandler. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public ResponseEntity<ApiError> handleTextualGrammarSnapshotUnavailable(com.example.editor.textual.definition.TextualGrammarSnapshotUnavailableException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError("CONFLICT", exception.getMessage()));
+    }
+
+    /** Every textual parse permit is busy: a temporary unavailability the client retries, not a server fault (CONC part D found it as a 500). */
+    @ExceptionHandler(com.example.editor.textual.runtime.TextualParseCapacityExceededException.class)
+    /** Descripción: Traduce la saturación de permisos de análisis textual a 503 con Retry-After. Entradas: exception: rechazo temporal. Salida: devuelve la respuesta 503. */ public ResponseEntity<ApiError> handleTextualParseCapacityExceeded(com.example.editor.textual.runtime.TextualParseCapacityExceededException exception) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).header(org.springframework.http.HttpHeaders.RETRY_AFTER, "1").body(new ApiError("CAPACITY_EXCEEDED", exception.getMessage()));
     }
 
     /** Converts invalid allowlisted technical/configuration values into a stable client error. */
