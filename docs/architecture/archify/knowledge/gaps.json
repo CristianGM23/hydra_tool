@@ -85,7 +85,7 @@
    "severity": "high",
    "status": "OPEN",
    "title": "Failing tests in the latest recorded execution",
-   "detail": "Failing: gate:readiness:51:backend-spanish-method-documentation. Recorded in test-execution-state.json; the behaviour affected is described in each record (limits/behavior).",
+   "detail": "Failing: gate:readiness:72:maven-full-verify, gate:release:04:primary-full-tree, gate:rc1:01:fix100-release-qualification, gate:rc2:05:rc1-qualification. Recorded in test-execution-state.json; the behaviour affected is described in each record (limits/behavior).",
    "ref": "knowledge/tests/test-gaps.json"
   },
   {
@@ -111,7 +111,7 @@
    "kind": "TEST_EVIDENCE",
    "severity": "medium",
    "status": "OPEN",
-   "title": "58 qualification gates carry stale or carry-forward evidence",
+   "title": "0 qualification gates carry stale or carry-forward evidence",
    "detail": "Release/RC1/RC2 qualification reports predate recent product changes (or reuse historical PASS); re-run the qualification to refresh them.",
    "ref": "knowledge/tests/test-gaps.json"
   },
@@ -129,7 +129,7 @@
    "kind": "TEST_EVIDENCE",
    "severity": "low",
    "status": "OPEN",
-   "title": "133 verification scripts have no execution evidence in the local artifacts",
+   "title": "134 verification scripts have no execution evidence in the local artifacts",
    "detail": "Historical per-fix verifiers, native/e2e scripts and PowerShell wrappers are not part of the latest recorded run; native installer/OS evidence is opt-in (generated-editor workflow).",
    "ref": "knowledge/tests/test-gaps.json"
   },
@@ -285,13 +285,12 @@
   ]
  },
  "testEvidenceSummary": {
-  "generatedAt": "2026-10-25T17:59:24.135Z",
+  "generatedAt": "2026-10-29T07:43:40.221Z",
   "byStatus": {
-   "PASS": 893,
-   "DISCOVERED": 133,
-   "STALE_EVIDENCE": 58,
+   "PASS": 917,
+   "DISCOVERED": 134,
    "SKIPPED": 2,
-   "FAIL": 1
+   "FAIL": 4
   },
   "store": "knowledge/tests/"
  }

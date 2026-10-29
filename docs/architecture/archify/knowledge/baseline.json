@@ -106,40 +106,41 @@
  "capabilityRevalidationTriggeredBy": "Uncommitted working-tree changes under integration/parity, integration/{compiler,web} and standalone/distribution (+ frontend distribution-center). 'integration' and 'publication' were re-read this pass (scoped lookups). Every other capability was deepened (not re-validated) with scoped enumeration lookups against unchanged evidence roots.",
  "nextIncrementalDiffInstructions": "Resolve current HEAD dynamically first. If it still equals analyzedState.head.sha, only re-check working-tree status (git status --porcelain), re-diff the paths in changedArchitecturallyRelevantPathsSincePreviousAnalysis against what capabilities-cache.json says was verified, and reclassify anything new. If HEAD has advanced, run: git diff --name-status 4e4455a63c02fa89fdd60bbf00035b28c34a68a3..HEAD -- . ':!docs/architecture/archify' ':!.claude' ':!CLAUDE.md', then fold in current staged/unstaged/untracked state the same way this file does, and update analyzedState/previouslyAnalyzedState accordingly. Never hard-code the resulting SHA into a prompt or conversation as a future assumption -- always re-resolve dynamically.",
  "testEvidence": {
-  "generatedAt": "2026-10-25T17:59:24.135Z",
+  "generatedAt": "2026-10-29T07:43:40.221Z",
   "store": "knowledge/tests/",
   "repositoryState": {
-   "head": "037910f89321f7f55e78354b625674a3b1fb5fe3",
+   "head": "826c7a7c21fd1fd3447b2f2c86ac8a11efeacc06",
    "branch": "archify-v3-cierre-20261022",
-   "unstaged": 103,
-   "untracked": 49
+   "unstaged": 9,
+   "untracked": 0
   },
   "executionEvidence": {
    "surefire": {
     "store": {
      "index": "target/archify-v3/evidence/evidence-index.json",
-     "classes": 506
+     "classes": 509
     },
-    "dir": "build/hydra-maven/surefire-reports",
-    "suites": 506,
-    "newest": "2026-10-24T18:11:00.863Z",
-    "start": "2026-10-22T20:43:14.361Z"
+    "dir": null,
+    "citedFromBuild": 0,
+    "sample": "target/archify-v3/evidence/surefire/suite-maven-completa-20261028T114910Z/TEST-com.example.editor.EditorApplicationTests.xml",
+    "suites": 509,
+    "newest": "2026-10-28T12:42:01.434Z",
+    "start": null
    },
    "gates": {
     "readiness": 73,
-    "release": 9,
-    "rc1": 13,
-    "rc2": 26
+    "release": 5,
+    "rc1": 2,
+    "rc2": 6
    }
   },
   "counts": {
-   "records": 1087,
+   "records": 1057,
    "byStatus": {
-    "PASS": 893,
-    "DISCOVERED": 133,
-    "STALE_EVIDENCE": 58,
+    "PASS": 917,
+    "DISCOVERED": 134,
     "SKIPPED": 2,
-    "FAIL": 1
+    "FAIL": 4
    }
   },
   "note": "Test evidence is tracked incrementally: run knowledge/tests/discover-tests.js --changed, analyse new/modified tests, then build-test-evidence.js."

@@ -180,15 +180,14 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 194,
+     "tests": 189,
      "byStatus": {
       "PASS": 181,
-      "DISCOVERED": 8,
-      "STALE_EVIDENCE": 5
+      "DISCOVERED": 8
      },
      "byStrength": {
-      "LIMITED": 94,
-      "STRONG": 17,
+      "LIMITED": 90,
+      "STRONG": 16,
       "MEDIUM": 83
      },
      "byType": {
@@ -199,11 +198,10 @@
       "OTHER": 7,
       "CONTRACT": 8,
       "SECURITY": 5,
-      "STATIC_VERIFICATION": 8,
+      "STATIC_VERIFICATION": 5,
       "END_TO_END": 7,
       "UI": 18,
-      "RUNTIME": 2,
-      "QUALIFICATION": 2
+      "RUNTIME": 2
      },
      "endToEnd": true,
      "stagesTotal": 52,
@@ -775,22 +773,21 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 110,
+     "tests": 112,
      "byStatus": {
-      "PASS": 81,
-      "STALE_EVIDENCE": 7,
-      "DISCOVERED": 21,
+      "PASS": 89,
+      "DISCOVERED": 22,
       "SKIPPED": 1
      },
      "byStrength": {
-      "STRONG": 21,
-      "LIMITED": 43,
-      "MEDIUM": 46
+      "STRONG": 17,
+      "MEDIUM": 51,
+      "LIMITED": 44
      },
      "byType": {
-      "BEHAVIOR": 36,
+      "BEHAVIOR": 37,
       "INTEGRATION": 18,
-      "UNIT": 24,
+      "UNIT": 25,
       "OTHER": 4,
       "SECURITY": 2,
       "CONTRACT": 2,
@@ -808,17 +805,17 @@
     },
     "evidenceIds": [
      "java:com.example.editor.integration.adapter.besser.BesserSdkTechnologyAdapterTests",
-     "java:com.example.editor.integration.adapter.besser.BesserWebModelingEditorTechnologyAdapterTests",
      "java:com.example.editor.integration.adapter.eclipse.EclipseModelingDistributionTechnologyAdapterTests",
      "java:com.example.editor.integration.adapter.emf.EmfTechnologyAdapterTests",
-     "java:com.example.editor.integration.adapter.glsp.EclipseGlspTechnologyAdapterTests",
-     "java:com.example.editor.integration.adapter.langium.LangiumTechnologyAdapterTests",
      "java:com.example.editor.integration.adapter.mxgraph.MxGraphDrawioTechnologyAdapterTests",
      "java:com.example.editor.integration.adapter.sirius.SiriusDesktopTechnologyAdapterTests",
-     "java:com.example.editor.integration.adapter.vscode.VsCodeExtensionTechnologyAdapterTests",
      "java:com.example.editor.integration.adapter.xtext.XtextTechnologyAdapterTests",
      "java:com.example.editor.integration.compatibility.NativeToolchainProbeExecutorRealProcessIntegrationTests",
-     "java:com.example.editor.integration.IntegrationProfileApplicationServiceSaveIntegrationTests"
+     "java:com.example.editor.integration.IntegrationProfileApplicationServiceSaveIntegrationTests",
+     "java:com.example.editor.integration.parity.NativeParityRequestAndReportHttpIntegrationTests",
+     "java:com.example.editor.integration.verification.NativeGeneratedProjectAcceptanceTests",
+     "java:com.example.editor.integration.verification.TechnologyProjectValidationServiceNativeRoutingTests",
+     "java:com.example.editor.integration.web.IntegrationProfileDeliveryHttpIntegrationTests"
     ],
     "failingIds": [],
     "store": "knowledge/tests/"
@@ -1070,16 +1067,15 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 95,
+     "tests": 82,
      "byStatus": {
       "PASS": 57,
-      "DISCOVERED": 24,
-      "STALE_EVIDENCE": 14
+      "DISCOVERED": 25
      },
      "byStrength": {
-      "LIMITED": 38,
+      "LIMITED": 28,
       "STRONG": 13,
-      "MEDIUM": 44
+      "MEDIUM": 41
      },
      "byType": {
       "BEHAVIOR": 32,
@@ -1093,8 +1089,8 @@
       "STATIC_VERIFICATION": 3,
       "SECURITY": 3,
       "RUNTIME": 1,
-      "SOURCE_INTEGRITY": 14,
-      "QUALIFICATION": 3
+      "SOURCE_INTEGRITY": 2,
+      "QUALIFICATION": 2
      },
      "endToEnd": true,
      "stagesTotal": 43,
@@ -1267,8 +1263,7 @@
     "evidenceSummary": {
      "tests": 29,
      "byStatus": {
-      "PASS": 13,
-      "STALE_EVIDENCE": 2,
+      "PASS": 15,
       "DISCOVERED": 14
      },
      "byStrength": {
@@ -2430,25 +2425,24 @@
     "evidenceSummary": {
      "tests": 82,
      "byStatus": {
-      "PASS": 71,
-      "DISCOVERED": 8,
-      "STALE_EVIDENCE": 3
+      "PASS": 74,
+      "DISCOVERED": 8
      },
      "byStrength": {
-      "LIMITED": 28,
-      "STRONG": 21,
+      "LIMITED": 29,
+      "STRONG": 20,
       "MEDIUM": 33
      },
      "byType": {
-      "UNIT": 9,
+      "UNIT": 11,
       "INTEGRATION": 16,
       "BEHAVIOR": 28,
       "SECURITY": 1,
+      "CONTRACT": 1,
       "END_TO_END": 9,
       "UI": 7,
-      "STATIC_VERIFICATION": 9,
-      "RUNTIME": 1,
-      "QUALIFICATION": 2
+      "STATIC_VERIFICATION": 8,
+      "RUNTIME": 1
      },
      "endToEnd": true,
      "stagesTotal": 100,
@@ -2730,15 +2724,14 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 66,
+     "tests": 64,
      "byStatus": {
       "PASS": 57,
-      "DISCOVERED": 7,
-      "STALE_EVIDENCE": 2
+      "DISCOVERED": 7
      },
      "byStrength": {
       "MEDIUM": 16,
-      "LIMITED": 33,
+      "LIMITED": 31,
       "STRONG": 17
      },
      "byType": {
@@ -2746,7 +2739,7 @@
       "UNIT": 7,
       "SECURITY": 5,
       "BEHAVIOR": 5,
-      "STATIC_VERIFICATION": 15,
+      "STATIC_VERIFICATION": 13,
       "OTHER": 3,
       "END_TO_END": 10,
       "UI": 7
@@ -2975,16 +2968,15 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 72,
+     "tests": 71,
      "byStatus": {
       "PASS": 66,
-      "DISCOVERED": 5,
-      "STALE_EVIDENCE": 1
+      "DISCOVERED": 5
      },
      "byStrength": {
       "STRONG": 16,
       "MEDIUM": 21,
-      "LIMITED": 35
+      "LIMITED": 34
      },
      "byType": {
       "INTEGRATION": 16,
@@ -2995,7 +2987,7 @@
       "END_TO_END": 6,
       "UI": 7,
       "RUNTIME": 1,
-      "STATIC_VERIFICATION": 3
+      "STATIC_VERIFICATION": 2
      },
      "endToEnd": true,
      "stagesTotal": 36,
@@ -3166,22 +3158,22 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 43,
+     "tests": 44,
      "byStatus": {
-      "PASS": 25,
+      "PASS": 32,
       "SKIPPED": 1,
-      "DISCOVERED": 11,
-      "STALE_EVIDENCE": 6
+      "DISCOVERED": 11
      },
      "byStrength": {
-      "MEDIUM": 24,
+      "MEDIUM": 23,
       "STRONG": 9,
-      "LIMITED": 10
+      "LIMITED": 12
      },
      "byType": {
       "INTEGRATION": 12,
       "BEHAVIOR": 4,
       "UNIT": 5,
+      "CONTRACT": 1,
       "RUNTIME": 4,
       "END_TO_END": 3,
       "OTHER": 1,
@@ -3616,15 +3608,14 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 25,
+     "tests": 23,
      "byStatus": {
       "PASS": 21,
-      "DISCOVERED": 2,
-      "STALE_EVIDENCE": 2
+      "DISCOVERED": 2
      },
      "byStrength": {
-      "LIMITED": 12,
-      "MEDIUM": 5,
+      "LIMITED": 11,
+      "MEDIUM": 4,
       "STRONG": 8
      },
      "byType": {
@@ -3633,8 +3624,7 @@
       "BEHAVIOR": 4,
       "UNIT": 8,
       "END_TO_END": 1,
-      "STATIC_VERIFICATION": 2,
-      "RELEASE_GATE": 1
+      "STATIC_VERIFICATION": 1
      },
      "endToEnd": true,
      "stagesTotal": 23,
@@ -3751,25 +3741,23 @@
      "tests": 91,
      "byStatus": {
       "PASS": 78,
-      "DISCOVERED": 12,
-      "STALE_EVIDENCE": 1
+      "DISCOVERED": 13
      },
      "byStrength": {
-      "LIMITED": 21,
-      "MEDIUM": 31,
+      "LIMITED": 22,
+      "MEDIUM": 30,
       "STRONG": 39
      },
      "byType": {
       "ARCHITECTURE": 4,
       "BEHAVIOR": 15,
-      "UNIT": 12,
+      "UNIT": 13,
       "INTEGRATION": 29,
       "OTHER": 2,
       "END_TO_END": 24,
       "UI": 1,
       "STATIC_VERIFICATION": 2,
-      "RUNTIME": 1,
-      "RELEASE_GATE": 1
+      "RUNTIME": 1
      },
      "endToEnd": true,
      "stagesTotal": 6,
@@ -3866,22 +3854,21 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 15,
+     "tests": 14,
      "byStatus": {
       "PASS": 13,
-      "DISCOVERED": 1,
-      "STALE_EVIDENCE": 1
+      "DISCOVERED": 1
      },
      "byStrength": {
       "MEDIUM": 3,
-      "LIMITED": 8,
+      "LIMITED": 7,
       "STRONG": 4
      },
      "byType": {
       "BEHAVIOR": 2,
       "UNIT": 3,
       "INTEGRATION": 4,
-      "STATIC_VERIFICATION": 5,
+      "STATIC_VERIFICATION": 4,
       "RUNTIME": 1
      },
      "endToEnd": true,
@@ -3970,14 +3957,13 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 46,
+     "tests": 45,
      "byStatus": {
-      "PASS": 36,
-      "STALE_EVIDENCE": 2,
+      "PASS": 37,
       "DISCOVERED": 8
      },
      "byStrength": {
-      "LIMITED": 21,
+      "LIMITED": 20,
       "MEDIUM": 17,
       "STRONG": 8
      },
@@ -3988,7 +3974,7 @@
       "BEHAVIOR": 5,
       "RUNTIME": 2,
       "UI": 1,
-      "STATIC_VERIFICATION": 5,
+      "STATIC_VERIFICATION": 4,
       "END_TO_END": 3
      },
      "endToEnd": true,
@@ -4436,20 +4422,19 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 59,
+     "tests": 52,
      "byStatus": {
       "PASS": 46,
-      "DISCOVERED": 6,
-      "STALE_EVIDENCE": 7
+      "DISCOVERED": 6
      },
      "byStrength": {
-      "LIMITED": 17,
-      "MEDIUM": 21,
-      "STRONG": 21
+      "LIMITED": 12,
+      "MEDIUM": 20,
+      "STRONG": 20
      },
      "byType": {
-      "STATIC_VERIFICATION": 7,
-      "QUALIFICATION": 5,
+      "STATIC_VERIFICATION": 4,
+      "QUALIFICATION": 1,
       "BEHAVIOR": 15,
       "UNIT": 4,
       "INTEGRATION": 20,
@@ -5051,15 +5036,14 @@
    },
    "testEvidence": {
     "evidenceSummary": {
-     "tests": 95,
+     "tests": 93,
      "byStatus": {
       "PASS": 84,
-      "DISCOVERED": 9,
-      "STALE_EVIDENCE": 2
+      "DISCOVERED": 9
      },
      "byStrength": {
-      "STRONG": 19,
-      "LIMITED": 48,
+      "STRONG": 18,
+      "LIMITED": 47,
       "MEDIUM": 28
      },
      "byType": {
@@ -5071,8 +5055,7 @@
       "STATIC_VERIFICATION": 13,
       "END_TO_END": 5,
       "UI": 10,
-      "RUNTIME": 1,
-      "QUALIFICATION": 2
+      "RUNTIME": 1
      },
      "endToEnd": true,
      "stagesTotal": 79,
@@ -5195,7 +5178,7 @@
  },
  "capabilitiesNotYetModeled": [],
  "testEvidence": {
-  "generatedAt": "2026-10-25T17:59:24.135Z",
+  "generatedAt": "2026-10-29T07:43:40.221Z",
   "store": "knowledge/tests/",
   "note": "Per-capability testEvidence / processStageEvidence are compact references into knowledge/tests/*; regenerate with build-test-evidence.js after regenerating this cache."
  }
