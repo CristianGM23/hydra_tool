@@ -28,7 +28,8 @@ final class TextualGrammarSyntaxEngine {
         Matcher matcher = ASSIGNMENT_START.matcher(maskQuotedText(body));
 
         while(matcher.find()) {
-            int expressionStart = matcher.end();
+            // the operator's end, not the match end: the trailing \s* runs over the masked text and would swallow a quoted keyword value ('many')
+            int expressionStart = matcher.end(2);
             Expression expression = readExpression(body, expressionStart);
 
             if(expression == null) {
@@ -243,7 +244,8 @@ final class TextualGrammarSyntaxEngine {
     }
 
     /** Descripción: Evalúa la condición «containsObjectAction» sin modificar el estado externo. Entradas: body: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ static boolean containsObjectAction(String body) {
-        return Pattern.compile("\\{\\s*[A-Za-z_][A-Za-z0-9_:]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)?\\s*\\}").matcher(maskQuotedText(body)).find();
+        // {Type} (declared type) and {infer Type} (Langium inferred type) both instantiate an object
+        return Pattern.compile("\\{\\s*(?:infer\\s+)?[A-Za-z_][A-Za-z0-9_:]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)?\\s*\\}").matcher(maskQuotedText(body)).find();
     }
 
     /** Descripción: Evalúa la condición «hasAssignment» sin modificar el estado externo. Entradas: body: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ static boolean hasAssignment(String body) {

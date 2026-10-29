@@ -43,6 +43,8 @@ final class TextualGrammarImportParser {
     private static final Pattern TYPE_ALIAS_HEADER = Pattern.compile("(?m)^\\s*type\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*=");
     private static final Pattern INTERFACE_HEADER = Pattern.compile("(?m)^\\s*interface\\s+([A-Za-z_][A-Za-z0-9_]*)(?:\\s+extends\\s+([^\\{]+))?\\s*\\{");
     private static final Pattern PARSER_RULE_HEADER = Pattern.compile("(?m)^\\s*(entry\\s+)?([A-Za-z_][A-Za-z0-9_]*)(?:\\s+returns\\s+([^:]+))?\\s*:");
+    // a rule header made of two or more words before its colon (never "::" of a qualified name): "X infers Y:", "infix X on Y:", "fragment X:"
+    private static final Pattern UNRECOGNIZED_RULE_HEADER = Pattern.compile("(?m)^[ \\t]*([A-Za-z_][A-Za-z0-9_]*(?:[ \\t]+[A-Za-z_][A-Za-z0-9_.]*)+)[ \\t]*:(?!:)");
     static final Pattern ASSIGNMENT_START = Pattern.compile("([A-Za-z_][A-Za-z0-9_]*)\\s*(\\+=|\\?=|=)\\s*");
     static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*(?:(?:::|\\.)[A-Za-z_][A-Za-z0-9_]*)*");
     static final Pattern EXPLICIT_ENUM_LITERAL = Pattern.compile("(?m)([^\\s,|={}]+)\\s*=\\s*('(?:\\\\.|[^'])*'|\"(?:\\\\.|[^\"])*\")");
@@ -163,6 +165,7 @@ final class TextualGrammarImportParser {
         readTypeAliases(content, occupied, rules);
         readInterfaces(content, occupied, rules);
         readParserRules(content, occupied, rules);
+        reportUnrecognizedRules(content, occupied, warnings);
         rules.sort(java.util.Comparator.comparingInt(GrammarRule::start));
         Map<String, GrammarRule> unique = new LinkedHashMap<>();
 
@@ -175,6 +178,23 @@ final class TextualGrammarImportParser {
         }
 
         return new GrammarDeclarations(List.copyOf(unique.values()));
+    }
+
+    /**
+     * Descripción: Avisa de toda declaración de regla con una cabecera de varias palabras que ningún lector ha consumido (Langium
+     * «X infers Y:», «infix X on Y:», «fragment X:»…): antes se descartaba sin rastro. Los terminales y las cabeceras de la gramática no son
+     * reglas del metamodelo y no se avisan. Entradas: contenido sin comentarios, posiciones consumidas y avisos. Salida: añade un aviso por regla.
+     */
+    private static void reportUnrecognizedRules(String content, boolean[] occupied, List<TransformationWarning> warnings) {
+        Matcher matcher = UNRECOGNIZED_RULE_HEADER.matcher(content);
+        while(matcher.find()) {
+            if(isOccupied(occupied, matcher.start(1))) continue;
+            String header = matcher.group(1).trim().replaceAll("\\s+", " ");
+            String first = header.split(" ")[0].toLowerCase(Locale.ROOT);
+            if(Set.of("terminal", "hidden", "grammar", "import", "generate", "with", "entry").contains(first)) continue;
+            warnings.add(new TransformationWarning("IMPORT_GRAMMAR_RULE_NOT_IMPORTED", "$.rules[" + header + "]@line" + line(content, matcher.start(1)),
+                    "Rule declaration '" + header + "' uses syntax this importer does not support (for example Langium infers, infix or fragment rules); the rule was not imported"));
+        }
     }
 
     /** Descripción: Obtiene la información correspondiente a «readBraceEnums» dentro de Assignment. Entradas: content: valor de entrada que debe procesarse; occupied: dato de entrada necesario para la operación; result: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private static void readBraceEnums(String content, boolean[] occupied, List<GrammarRule> result) {

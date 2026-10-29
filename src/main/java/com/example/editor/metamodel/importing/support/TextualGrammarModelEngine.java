@@ -223,6 +223,7 @@ final class TextualGrammarModelEngine {
         final String sourceFormat;
         final Map<String, String> annotations = new LinkedHashMap<>();
         final List<Assignment> assignments = new ArrayList<>();
+        final Map<Assignment, Multiplicity> multiplicityOverrides = new LinkedHashMap<>();
         final List<MetaAttribute> attributes = new ArrayList<>();
         final Set<String> identifierFeatures = new LinkedHashSet<>();
         final Set<String> usedFeatureNames = new LinkedHashSet<>();
@@ -245,7 +246,19 @@ final class TextualGrammarModelEngine {
         }
 
         /** Descripción: Obtiene la información correspondiente a «readFeatureSpecs» dentro de EnumRegistry. Entradas: enums: dato de entrada necesario para la operación; dataTypes: dato de entrada necesario para la operación; classes: dato de entrada necesario para la operación; warnings: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void readFeatureSpecs(EnumRegistry enums, Map<String, MetaDataType> dataTypes, Map<String, ClassBuilder> classes, List<TransformationWarning> warnings) {
-            assignments.addAll(readAssignments(body));
+            // a feature assigned in several places of one rule with the same operator and expression is ONE feature (Xtext/Langium semantics,
+            // e.g. params+=P (',' params+=P)*); its multiplicity is the union of the occurrences. Same name with another operator or type
+            // stays a conflict (renamed and warned by uniqueFeatureName).
+            Map<String, Assignment> firstByName = new LinkedHashMap<>();
+            for(Assignment assignment : readAssignments(body)) {
+                Assignment first = firstByName.get(assignment.featureName());
+                if(first != null && first.operator().equals(assignment.operator()) && first.expression().equals(assignment.expression())) {
+                    multiplicityOverrides.put(first, union(multiplicityOverrides.getOrDefault(first, multiplicity(first)), multiplicity(assignment)));
+                    continue;
+                }
+                firstByName.putIfAbsent(assignment.featureName(), assignment);
+                assignments.add(assignment);
+            }
 
             for(Assignment assignment : assignments) {
                 String expression = assignment.expression();
@@ -257,11 +270,17 @@ final class TextualGrammarModelEngine {
             }
         }
 
+        /** Descripción: Multiplicidad que cubre las dos dadas (mínimo de las cotas inferiores; sin cota superior si alguna no la tiene). */
+        static Multiplicity union(Multiplicity first, Multiplicity second) {
+            Integer upper = first.upperBound() == null || second.upperBound() == null ? null : Math.max(first.upperBound(), second.upperBound());
+            return new Multiplicity(Math.min(first.lowerBound(), second.lowerBound()), upper);
+        }
+
         /** Descripción: Ejecuta la operación «materializeFeatures» correspondiente a la responsabilidad de EnumRegistry. Entradas: enums: dato de entrada necesario para la operación; dataTypes: dato de entrada necesario para la operación; classes: dato de entrada necesario para la operación; relations: dato de entrada necesario para la operación; warnings: dato de entrada necesario para la operación; forwardingRules: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void materializeFeatures(EnumRegistry enums, Map<String, MetaDataType> dataTypes, Map<String, ClassBuilder> classes, List<MetaRelation> relations, List<TransformationWarning> warnings, Map<String, String> forwardingRules) {
             for(Assignment assignment : assignments) {
                 String featurePath = "$.rules[" + ruleName + "].features[" + assignment.featureName() + "]@line" + line;
                 String featureName = uniqueFeatureName(assignment.featureName(), usedFeatureNames, featurePath, warnings);
-                Multiplicity featureMultiplicity = multiplicity(assignment);
+                Multiplicity featureMultiplicity = multiplicityOverrides.getOrDefault(assignment, multiplicity(assignment));
                 String expression = assignment.expression();
 
                 if(expression.startsWith("[")) {

@@ -85,7 +85,15 @@ public class LangiumMetamodelExporter implements MetamodelTextExporter {
 
     /** Descripción: Ejecuta la operación «appendClassRule» correspondiente a la responsabilidad de LangiumMetamodelExporter. Entradas: result: dato de entrada necesario para la operación; context: dato de entrada necesario para la operación; metaClass: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void appendClassRule(StringBuilder result, NeutralMetamodelExportContext context, MetaClass metaClass) {
         MetaAttribute nameAttribute = MetamodelExportSupport.findNameAttribute(metaClass);
-        result.append(ruleName(metaClass)).append(":\n    ").append(GrammarGenerationSupport.quotedKeyword(GrammarGenerationSupport.toKeyword(metaClass.name()))).append(" ");
+        List<MetaRelation> structuralRelations = MetamodelExportSupport.structuralRelationsFrom(context, metaClass.id());
+        result.append(ruleName(metaClass)).append(":\n    ");
+
+        if(metaClass.attributes().isEmpty() && structuralRelations.isEmpty()) {
+            // A parser rule without assignments creates no object and Langium cannot infer its type; the action instantiates it.
+            result.append("{infer ").append(ruleName(metaClass)).append("} ");
+        }
+
+        result.append(GrammarGenerationSupport.quotedKeyword(GrammarGenerationSupport.toKeyword(metaClass.name()))).append(" ");
 
         if(nameAttribute != null) {
             result.append("name=ID ");
@@ -101,7 +109,7 @@ public class LangiumMetamodelExporter implements MetamodelTextExporter {
             result.append("    ").append(GrammarGenerationSupport.quotedKeyword(GrammarGenerationSupport.toKeyword(attribute.name()))).append(" ").append(attribute.name()).append(assignmentOperator(attribute.multiplicity())).append(typeRule(context, attribute)).append(multiplicityQuantifier(attribute.multiplicity())).append("\n");
         }
 
-        for(MetaRelation relation : MetamodelExportSupport.structuralRelationsFrom(context, metaClass.id())) {
+        for(MetaRelation relation : structuralRelations) {
             MetaClass target = MetamodelExportSupport.indexClasses(context).get(relation.targetTypeId());
             result.append("    ").append(GrammarGenerationSupport.quotedKeyword(GrammarGenerationSupport.toKeyword(MetamodelExportSupport.text(relation.name(), "reference")))).append(" ");
 
