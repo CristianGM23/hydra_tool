@@ -54,8 +54,8 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         }
         for(MetaClass value:declarationOrder(context)) appendClass(out,context,value);
         StringBuilder aliases=new StringBuilder();
-        for(String alias:List.of("Byte","Short","Integer","Long","Float","Decimal","BigInteger"))
-            if(java.util.regex.Pattern.compile(":\\s*(?:ReadonlyArray<)?"+alias+"\\b").matcher(out).find()) aliases.append("export type ").append(alias).append(" = number;\n");
+        for(String alias:NUMERIC_ALIASES)
+            if(!declaresType(context,alias)&&java.util.regex.Pattern.compile(":\\s*(?:ReadonlyArray<)?"+alias+"\\b").matcher(out).find()) aliases.append("export type ").append(alias).append(" = number;\n");
         if(aliases.length()>0) out.insert(out.indexOf("\n\n")+2,aliases.append('\n'));
         return out.toString();
     }
@@ -187,7 +187,7 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
             if(reference.kind()==MetaTypeReferenceKind.EXTERNAL) return "unknown";
             return MetamodelExportSupport.pascal(MetamodelExportSupport.resolveTypeName(context,reference),"GeneratedType");
         }
-        return switch(reference.targetId()){
+        String mapped = switch(reference.targetId()){
             case "BOOLEAN"->"boolean";
             // TypeScript has a single `number`: a type alias keeps the neutral numeric type (still `number` for every consumer)
             case "BYTE"->"Byte";
@@ -203,6 +203,14 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
             case "OBJECT"->"unknown";
             default->"string";
         };
+        // DEF-EXP-PRIMITIVE-ALIAS-COLLISION: when a classifier of the metamodel already has the alias's name, the primitive stays a plain number
+        return NUMERIC_ALIASES.contains(mapped) && declaresType(context,mapped) ? "number" : mapped;
+    }
+    private static final List<String> NUMERIC_ALIASES=List.of("Byte","Short","Integer","Long","Float","Decimal","BigInteger");
+    private static boolean declaresType(NeutralMetamodelExportContext context,String name){
+        com.example.editor.metamodel.core.MetaModel model=context.neutralMetamodel();
+        return java.util.stream.Stream.of(model.classes().stream().map(MetaClass::name),model.enums().stream().map(com.example.editor.metamodel.core.MetaEnum::name),model.dataTypes().stream().map(MetaDataType::name))
+                .flatMap(names->names).anyMatch(value->MetamodelExportSupport.pascal(value,"GeneratedType").equals(name));
     }
     /** Descripción: Ejecuta la operación «cardinality» correspondiente a la responsabilidad de TypeScriptMetamodelExporter. Entradas: type: dato de entrada necesario para la operación; multiplicity: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String cardinality(String type,Multiplicity multiplicity){return multiplicity!=null&&(multiplicity.unbounded()||multiplicity.upperBound()>1)?"ReadonlyArray<"+type+">":type;}
     /** Descripción: Ejecuta la operación «optional» correspondiente a la responsabilidad de TypeScriptMetamodelExporter. Entradas: multiplicity: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean optional(Multiplicity multiplicity){return multiplicity==null||multiplicity.lowerBound()==0;}
