@@ -174,7 +174,7 @@ public class ProjectController {
                 if(!entries.add(path))throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"The selected project folder contains duplicate paths: "+path);
                 long size=file.getSize();if(size>properties.getMaxUploadFileSizeBytes())throw new ProjectException(ProjectException.Reason.FILE_TOO_LARGE,"Project file exceeds the configured upload limit: "+path);
                 total+=size;if(total>properties.getMaxArchiveSizeBytes())throw new ProjectException(ProjectException.Reason.FILE_TOO_LARGE,"The selected project folder exceeds the configured import-size limit");
-                zip.putNextEntry(new ZipEntry(path));file.getInputStream().transferTo(zip);zip.closeEntry();
+                ZipEntry entry=new ZipEntry(path);entry.setTime(0L);zip.putNextEntry(entry);file.getInputStream().transferTo(zip);zip.closeEntry();
                 if(output.size()>properties.getMaxArchiveSizeBytes())throw new ProjectException(ProjectException.Reason.FILE_TOO_LARGE,"The selected project folder exceeds the configured archive-size limit");
             }
             zip.finish();return output.toByteArray();
@@ -205,14 +205,14 @@ public class ProjectController {
         try(ByteArrayOutputStream output=new ByteArrayOutputStream(); ZipOutputStream zip=new ZipOutputStream(output,StandardCharsets.UTF_8)) {
             for(String directory:directoryEntries) {
                 ZipEntry entry=new ZipEntry(directory.endsWith("/")?directory:directory+"/");
-                zip.putNextEntry(entry); zip.closeEntry();
+                entry.setTime(0L); zip.putNextEntry(entry); zip.closeEntry();
             }
             long uncompressed=0;
             for(String path:fileEntries) {
                 byte[] bytes=service.download(path);
                 uncompressed+=bytes.length;
                 if(uncompressed>properties.getMaxArchiveSizeBytes()) throw new ProjectException(ProjectException.Reason.FILE_TOO_LARGE,"The selected project entries exceed the configured archive-size limit");
-                zip.putNextEntry(new ZipEntry(path)); zip.write(bytes); zip.closeEntry();
+                ZipEntry entry=new ZipEntry(path); entry.setTime(0L); zip.putNextEntry(entry); zip.write(bytes); zip.closeEntry();
                 if(output.size()>properties.getMaxArchiveSizeBytes()) throw new ProjectException(ProjectException.Reason.FILE_TOO_LARGE,"The selected project archive exceeds the configured archive-size limit");
             }
             zip.finish();

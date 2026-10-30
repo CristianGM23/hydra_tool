@@ -26,7 +26,7 @@ public class ProjectPortablePackageService {
     /** Descripción: Exporta el proyecto activo con manifiesto y SHA-256. Entradas: ninguna. Salida: bytes del contenedor portable. */ public byte[] exportPortable(){
         faults.check(HydraFaultInjectionService.Point.PROJECT_PORTABLE_EXPORT); byte[] archive=projects.exportArchive(); verifyNoSecretEntries(archive);
         ProjectPortableManifest manifest=new ProjectPortableManifest(ProjectPortableManifest.CURRENT_SCHEMA_VERSION,HydraReleaseVersion.VERSION,sha256(archive),archive.length,false,Instant.now());
-        try(ByteArrayOutputStream out=new ByteArrayOutputStream();ZipOutputStream zip=new ZipOutputStream(out)){zip.putNextEntry(new ZipEntry(MANIFEST));zip.write(mapper.writeValueAsBytes(manifest));zip.closeEntry();zip.putNextEntry(new ZipEntry(ARCHIVE));zip.write(archive);zip.closeEntry();zip.finish();return out.toByteArray();}
+        try(ByteArrayOutputStream out=new ByteArrayOutputStream();ZipOutputStream zip=new ZipOutputStream(out)){zip.putNextEntry(reproducible(MANIFEST));zip.write(mapper.writeValueAsBytes(manifest));zip.closeEntry();zip.putNextEntry(reproducible(ARCHIVE));zip.write(archive);zip.closeEntry();zip.finish();return out.toByteArray();}
         catch(IOException exception){throw new ProjectException(ProjectException.Reason.STORAGE_ERROR,"Could not create portable project package",exception);}
     }
     /** Descripción: Verifica e importa un contenedor portable sin confiar en su contenido interno. Entradas: parent, name, content. Salida: sesión del proyecto importado. */ public ProjectSession importPortable(String parent,String name,byte[] content){
@@ -43,6 +43,7 @@ public class ProjectPortablePackageService {
         catch(IOException exception){throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Could not verify portable project entries",exception);}
     }
 
+    /** Descripción: Crea una entrada con hora fija para que dos exportaciones del mismo proyecto solo difieran en el createdAt declarado del manifiesto. Entradas: name: ruta de la entrada. Salida: entrada ZIP. */ private static ZipEntry reproducible(String name){ZipEntry entry=new ZipEntry(name);entry.setTime(0L);return entry;}
     /** Descripción: Calcula SHA-256 del contenido. Entradas: bytes: contenido. Salida: hash hexadecimal. */ private static String sha256(byte[] bytes){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes));}catch(NoSuchAlgorithmException e){throw new IllegalStateException(e);}}
     /** Descripción: Crea una excepción de solicitud portable inválida. Entradas: message: detalle. Salida: excepción tipada. */ private static ProjectException invalid(String message){return new ProjectException(ProjectException.Reason.INVALID_REQUEST,message);}
 }

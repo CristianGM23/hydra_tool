@@ -522,7 +522,9 @@ public class JavaMetamodelExporter implements MetamodelBinaryExporter {
     }
 
     /** Descripción: Ejecuta la operación «add» correspondiente a la responsabilidad de JavaMetamodelExporter. Entradas: zip: dato de entrada necesario para la operación; name: dato de entrada necesario para la operación; content: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void add(ZipOutputStream zip, String name, String content) throws IOException {
-        zip.putNextEntry(new ZipEntry(name));
+        ZipEntry entry = new ZipEntry(name);
+        entry.setTime(0L);
+        zip.putNextEntry(entry);
         zip.write(content.getBytes(StandardCharsets.UTF_8));
         zip.closeEntry();
     }

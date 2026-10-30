@@ -45,7 +45,9 @@ public class PythonMetamodelExporter implements MetamodelBinaryExporter {
         String moduleName = MetamodelExportSupport.camel(context.neutralMetamodel().name(), "metamodel").toLowerCase(java.util.Locale.ROOT) + ".py";
 
         try(ByteArrayOutputStream output = new ByteArrayOutputStream(); ZipOutputStream zip = new ZipOutputStream(output, StandardCharsets.UTF_8)) {
-            zip.putNextEntry(new ZipEntry(moduleName));
+            ZipEntry entry = new ZipEntry(moduleName);
+            entry.setTime(0L);
+            zip.putNextEntry(entry);
             zip.write(buildModule(context).getBytes(StandardCharsets.UTF_8));
             zip.closeEntry();
             zip.finish();
