@@ -37,6 +37,36 @@ import com.example.editor.metamodel.core.TransformationWarning;
  * Analiza gramáticas textuales Xtext y Langium sin depender del runtime de esos lenguajes.
  */
 final class TextualGrammarImportParser {
+    // an object action «{X}», «{infer X}» or a rewrite action «{X.feature=current}» (keywords are blanked out first, so '{' never matches)
+    private static final Pattern OBJECT_ACTION = Pattern.compile("\\{\\s*(?:infer\\s+)?([A-Za-z_][\\w:]*)\\s*(\\.|\\})");
+    private static final Pattern QUOTED = Pattern.compile("'(?:\\\\.|[^'\\\\])*'|\"(?:\\\\.|[^\"\\\\])*\"");
+
+    /**
+     * FIND-GR-IMPORT-SILENT-RETURNS-TYPE / FIND-GR-IMPORT-SILENT-ALTERNATIVE-ACTIONS: an object rule whose «returns T» names another type, or with
+     * actions after its start, is imported as one class named after the rule that merges every alternative. That loss is reported instead of
+     * being silent; the imported classes do not change (recovering T or the alternative subtypes is proposal D-2/D-3).
+     */
+    private static void reportUnrepresentedConstructs(GrammarRule rule, List<TransformationWarning> warnings) {
+        String returnsType = trim(rule.returnsType());
+        // PARSER_RULE_HEADER stops at the first ':' of a qualified «returns model::T»: the rest of the type opens the body («:T:»)
+        if(!returnsType.isBlank() && rule.body().startsWith(":") && rule.body().indexOf(':', 1) > 0) returnsType = returnsType + ":" + rule.body().substring(0, rule.body().indexOf(':', 1));
+        if(!returnsType.isBlank() && !simpleTypeName(returnsType).equals(rule.name())) {
+            warnings.add(new TransformationWarning("IMPORT_GRAMMAR_RETURN_TYPE_NOT_IMPORTED", path(rule), "Rule " + rule.name() + " returns " + returnsType
+                    + ", but it was imported as class " + rule.name() + " and no class " + simpleTypeName(returnsType) + " was created"));
+        }
+        String body = QUOTED.matcher(rule.body().startsWith(":") ? rule.body().substring(Math.max(0, rule.body().indexOf(':', 1) + 1)) : rule.body()).replaceAll(" ");
+        int start = body.length() - body.stripLeading().length();
+        List<String> merged = new ArrayList<>();
+        Matcher action = OBJECT_ACTION.matcher(body);
+        while(action.find()) {
+            boolean leadingObjectAction = action.start() == start && action.group(2).equals("}");
+            if(!leadingObjectAction) merged.add(action.group(1));
+        }
+        if(!merged.isEmpty()) {
+            warnings.add(new TransformationWarning("IMPORT_GRAMMAR_ALTERNATIVE_ACTIONS_MERGED", path(rule), "Rule " + rule.name() + " creates " + String.join(", ", merged)
+                    + " in its alternatives or groups; they were merged into class " + rule.name() + " with every feature the rule assigns"));
+        }
+    }
     private static final Class<?>[] FOCUSED_COMPONENTS = { TextualGrammarScanner.class, TextualGrammarSyntaxSupport.class, TextualGrammarModelSupport.class };
     private static final Pattern ENUM_BRACE_HEADER = Pattern.compile("(?m)^\\s*enum\\s+([A-Za-z_][A-Za-z0-9_]*)(?:\\s+returns\\s+([^\\{]+))?\\s*\\{");
     private static final Pattern ENUM_COLON_HEADER = Pattern.compile("(?m)^\\s*enum\\s+([A-Za-z_][A-Za-z0-9_]*)(?:\\s+returns\\s+([^:]+))?\\s*:");
@@ -110,6 +140,7 @@ final class TextualGrammarImportParser {
                 String classifierName = classifierNames.allocate(desired, "Class", path(rule), "class");
                 ClassBuilder builder = new ClassBuilder(rule.name(), classifierId(classifierName), classifierName, MetaClassKind.CLASS, rule.body(), rule.line(), rule.entry(), sourceFormat);
                 classesByRule.put(rule.name(), builder);
+                reportUnrepresentedConstructs(rule, warnings);
             }
         }
 
