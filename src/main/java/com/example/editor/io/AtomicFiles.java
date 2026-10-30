@@ -74,12 +74,22 @@ public final class AtomicFiles {
      * intenta ATOMIC_MOVE y, si el proveedor rechaza la modalidad atómica mediante una
      * IOException genérica, repite sin ATOMIC_MOVE. El fallback nunca usa
      * REPLACE_EXISTING y por tanto conserva la semántica create-only.
+     * Como en moveReplacing, el ATOMIC_MOVE se repite de forma acotada (TransientFileAccessRetry)
+     * cuando Windows lo rechaza con AccessDeniedException porque otro proceso tiene abierto el
+     * origen o, al publicar un directorio, uno de sus ficheros (FIND-REC-PROJECT-IMPORT-500). Cada
+     * intento vuelve a exigir que el destino no exista, porque en Windows ATOMIC_MOVE sustituiría
+     * un fichero existente.
      */
     /** Descripción: Ejecuta la operación «moveNew» correspondiente a la responsabilidad de AtomicFiles. Entradas: source: dato de entrada necesario para la operación; target: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public static void moveNew(Path source, Path target) throws IOException {
         if(existsNoFollow(target)) throw new FileAlreadyExistsException(target.toString());
         boolean sourceExisted=existsNoFollow(source);
         try {
-            Files.move(source,target,StandardCopyOption.ATOMIC_MOVE);
+            TransientFileAccessRetry.publishing(() -> {
+                if(existsNoFollow(target)) throw new FileAlreadyExistsException(target.toString());
+                Files.move(source,target,StandardCopyOption.ATOMIC_MOVE);
+            });
+        } catch(FileAlreadyExistsException taken) {
+            throw taken;
         } catch(AtomicMoveNotSupportedException atomicFailure) {
             moveNewFallback(source,target,atomicFailure);
         } catch(IOException atomicFailure) {
