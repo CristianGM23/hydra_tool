@@ -16,6 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.example.editor.runtime.StripedKeyLockRegistry;
 import com.example.editor.io.AtomicFiles;
+import com.example.editor.io.TransientFileAccessRetry;
 import com.example.editor.persistence.evolution.HydraSchemaEvolutionService;
 import java.util.function.Function;
 
@@ -262,6 +263,11 @@ public final class AtomicJsonDocumentStore<T> implements CanonicalDocumentStore<
     }
     /** Descripción: Ejecuta la operación «temporary» correspondiente a la responsabilidad de AtomicJsonDocumentStore. Entradas: destination: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private Path temporary(Path destination) { return destination.resolveSibling(destination.getFileName() + ".tmp"); }
     /** Descripción: Ejecuta la operación «move» correspondiente a la responsabilidad de AtomicJsonDocumentStore. Entradas: source: dato de entrada necesario para la operación; destination: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void move(Path source, Path destination) throws IOException {
+        // Windows rechaza el reemplazo con AccessDeniedException mientras otro proceso (antivirus, indexador) tiene abierto el destino;
+        // se reintenta solo ese error y de forma acotada. Si persiste, la escritura falla como antes (STORAGE_ERROR).
+        TransientFileAccessRetry.publishing(() -> moveOnce(source, destination));
+    }
+    /** Descripción: Publica el temporal sobre el destino con ATOMIC_MOVE y, si el proveedor no lo admite, con un reemplazo convencional. Entradas: source: temporal; destination: destino. Salida: no devuelve valor. */ private void moveOnce(Path source, Path destination) throws IOException {
         try { Files.move(source, destination, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING); }
         catch(AtomicMoveNotSupportedException exception) { Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING); }
     }

@@ -53,11 +53,14 @@ public final class AtomicFiles {
      * IOException/FileSystemException en vez de AtomicMoveNotSupportedException. En ese
      * caso se intenta una única publicación convencional con REPLACE_EXISTING. Si esta
      * también falla se propaga su excepción conservando como suppressed el fallo atómico.
+     * Si Windows rechaza el ATOMIC_MOVE con AccessDeniedException porque otro proceso tiene
+     * abierto el destino, ese intento se repite de forma acotada (TransientFileAccessRetry)
+     * antes de recurrir al mismo fallback de siempre.
      */
     /** Descripción: Ejecuta la operación «moveReplacing» correspondiente a la responsabilidad de AtomicFiles. Entradas: source: dato de entrada necesario para la operación; target: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public static void moveReplacing(Path source, Path target) throws IOException {
         boolean sourceExisted=existsNoFollow(source);
         try {
-            Files.move(source,target,StandardCopyOption.ATOMIC_MOVE,StandardCopyOption.REPLACE_EXISTING);
+            TransientFileAccessRetry.publishing(() -> Files.move(source,target,StandardCopyOption.ATOMIC_MOVE,StandardCopyOption.REPLACE_EXISTING));
         } catch(AtomicMoveNotSupportedException atomicFailure) {
             moveReplacingFallback(source,target,atomicFailure);
         } catch(IOException atomicFailure) {
