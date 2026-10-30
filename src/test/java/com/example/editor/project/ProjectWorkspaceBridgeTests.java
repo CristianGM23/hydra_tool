@@ -97,7 +97,8 @@ class ProjectWorkspaceBridgeTests {
         assertThat(reloads).as("only bringing a project into the workspace changes what the modules cache").hasSize(1);
     }
 
-    @Test void projectToWorkspacePreservesNestedArtifactPaths() throws Exception {        Path nested=project.resolve("generated/java/com/example"); Files.createDirectories(nested); Files.writeString(nested.resolve("Person.java"),"class Person {}");
+    @Test void projectToWorkspacePreservesNestedArtifactPaths() throws Exception {
+        Path nested=project.resolve("generated/java/com/example"); Files.createDirectories(nested); Files.writeString(nested.resolve("Person.java"),"class Person {}");
         bridge.apply(project,descriptor,new ProjectSyncRequest(WorkspaceTransferDirection.PROJECT_TO_WORKSPACE,WorkspaceTransferMode.REPLACE));
         assertThat(temporary.resolve("configured/exports/java/com/example/Person.java")).hasContent("class Person {}");
     }
