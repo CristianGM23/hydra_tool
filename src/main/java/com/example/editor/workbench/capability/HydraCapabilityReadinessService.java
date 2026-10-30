@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.editor.definition.EditorDefinitionApplicationService;
@@ -29,6 +31,7 @@ import com.example.editor.validation.validation.ValidationModelSummary;
 /** Aggregates independently portable capability layers for metamodel and grammar semantic contexts. */
 @Service
 public class HydraCapabilityReadinessService {
+    private static final Logger LOG = LoggerFactory.getLogger(HydraCapabilityReadinessService.class);
     private final CanonicalMetamodelApplicationService metamodels;
     private final GrammarApplicationService grammars;
     private final GrammarClassDiagramProjectionService grammarProjection;
@@ -95,7 +98,9 @@ public class HydraCapabilityReadinessService {
             gamificationCatalog = gamification.listWithDiagnostics();
             if(gamificationCatalog == null) gamificationCatalog = GamificationCatalogResult.empty("Gamification catalog returned no result");
         } catch(RuntimeException exception) {
-            gamificationCatalog = GamificationCatalogResult.empty("Gamification readiness could not be inspected: " + safeMessage(exception));
+            // Home shows this warning to the user: the exception message may name server paths, so it goes only to the server log
+            LOG.warn("hydra.capability_readiness_gamification_unavailable correlationId={}", com.example.editor.audit.AuditRequestContext.correlationId(), exception);
+            gamificationCatalog = GamificationCatalogResult.empty("Gamification readiness could not be inspected; the details were recorded in the server log.");
         }
         warnings.addAll(gamificationCatalog.diagnostics());
         GamificationSummary game = gamificationCatalog.summaries().stream()
@@ -140,12 +145,6 @@ public class HydraCapabilityReadinessService {
     /** Descripción: Ejecuta la operación «layer» correspondiente a la responsabilidad de HydraCapabilityReadinessService. Entradas: id: identificador que delimita el recurso objetivo; name: dato de entrada necesario para la operación; configured: configuración que gobierna el comportamiento; count: dato de entrada necesario para la operación; metrics: dato de entrada necesario para la operación; module: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private HydraCapabilityLayerSummary layer(String id, String name, boolean configured, int count,
             Map<String, Integer> metrics, String module){
         return new HydraCapabilityLayerSummary(id, name, configured, count, metrics, module);
-    }
-
-    /** Descripción: Obtiene un mensaje seguro para un fallo de inspección sin propagar valores nulos. Entradas: exception: error capturado. Salida: devuelve un texto utilizable en diagnósticos. */
-    /** Descripción: Ejecuta la operación «safeMessage» correspondiente a la responsabilidad de HydraCapabilityReadinessService. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String safeMessage(Throwable exception) {
-        if(exception == null || exception.getMessage() == null || exception.getMessage().isBlank()) return "Unknown error";
-        return exception.getMessage();
     }
 
     /** Descripción: Construye un mapa ordenado de métricas a partir de pares nombre-valor. Entradas: values: secuencia alterna de claves y enteros. Salida: devuelve las métricas normalizadas. */

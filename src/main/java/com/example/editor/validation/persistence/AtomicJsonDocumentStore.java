@@ -185,12 +185,13 @@ public final class AtomicJsonDocumentStore<T> implements CanonicalDocumentStore<
             // sin migraciones para el namespace la evolución no cambia nada: se evita un árbol JSON completo por lectura
             if(schemaEvolution.hasEvolutions(namespace)) content = evolvePersistedDocument(path, content, true);
             T document = objectMapper.readValue(content, type);
-            if(!expectedId.equals(idExtractor.apply(document))) throw new CanonicalDocumentStoreException(Reason.STORAGE_ERROR, "Document id does not match its file name: " + expectedId);
+            if(!expectedId.equals(idExtractor.apply(document))) throw new CanonicalDocumentStoreException(Reason.STORAGE_ERROR, "Document id does not match its file name: " + expectedId, null, true);
             return new StoredCanonicalDocument<>(document, etag(content), path);
         } catch(CanonicalDocumentStoreException exception) {
             throw exception;
         } catch(JacksonException | IllegalArgumentException exception) {
-            throw new CanonicalDocumentStoreException(Reason.STORAGE_ERROR, "Could not parse document: " + path, exception);
+            // the stored bytes do not form the document: a corrupt document, flagged so that callers never have to match the message
+            throw new CanonicalDocumentStoreException(Reason.STORAGE_ERROR, "Could not parse document: " + path, exception, true);
         } catch(IOException exception) {
             throw new CanonicalDocumentStoreException(Reason.STORAGE_ERROR, "Could not read document: " + path, exception);
         }

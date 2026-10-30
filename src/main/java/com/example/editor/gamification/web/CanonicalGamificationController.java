@@ -16,7 +16,8 @@ import com.example.editor.gamification.GamificationApplicationService;
 import com.example.editor.gamification.GamificationApplicationException;
 import com.example.editor.gamification.GamificationCheckReport;
 import com.example.editor.gamification.GamificationLoadResult;
-import com.example.editor.gamification.GamificationQuarantinedException;
+import com.example.editor.gamification.GamificationQuarantineResult;
+import com.example.editor.gamification.GamificationRecoveryReport;
 import com.example.editor.gamification.GamificationSaveResponse;
 import com.example.editor.gamification.GamificationSummary;
 
@@ -32,7 +33,21 @@ public class CanonicalGamificationController {
         return ResponseEntity.created(URI.create("/api/canonical-metamodels/" + metamodelId + "/gamification"))
                 .header("X-Gamification-Definitions-ETag", result.definitionEtag()).header("X-Gamification-Bindings-ETag", result.bindingEtag()).body(result);
     }
-    @GetMapping("/{metamodelId}/gamification") public ResponseEntity<GamificationLoadResult> find(@PathVariable String metamodelId) { try{return ResponseEntity.ok(service.find(metamodelId));}catch(GamificationApplicationException exception){if(exception.getReason()==GamificationApplicationException.Reason.NOT_FOUND&&!(exception instanceof GamificationQuarantinedException))return ResponseEntity.notFound().build();throw exception;} }
+    @GetMapping("/{metamodelId}/gamification") public ResponseEntity<GamificationLoadResult> find(@PathVariable String metamodelId) { try{return ResponseEntity.ok(service.find(metamodelId));}catch(GamificationApplicationException exception){if(exception.getReason()==GamificationApplicationException.Reason.NOT_FOUND)return ResponseEntity.notFound().build();throw exception;} }
+    /** Descripción: Estado de recuperación del par almacenado, sin modificar ningún fichero; las cabeceras llevan los ETag que espera la cuarentena. Entradas: metamodelId. Salida: 200 con el informe. */
+    @GetMapping("/{metamodelId}/gamification/recovery") public ResponseEntity<GamificationRecoveryReport> recovery(@PathVariable String metamodelId) {
+        GamificationRecoveryReport report = service.inspectRecovery(metamodelId);
+        ResponseEntity.BodyBuilder response = ResponseEntity.ok();
+        if(!report.definitions().etag().isEmpty()) response.header("X-Gamification-Definitions-ETag", report.definitions().etag());
+        if(!report.bindings().etag().isEmpty()) response.header("X-Gamification-Bindings-ETag", report.bindings().etag());
+        return response.body(report);
+    }
+    /** Descripción: Cuarentena explícita de un par corrupto o incompleto con las huellas inspeccionadas (If-Match-Definitions, If-Match-Bindings). Entradas: metamodelId y cabeceras. Salida: 200 con el manifiesto y los documentos legibles; 412 si el estado ha cambiado, 409 si el par está sano. */
+    @PostMapping("/{metamodelId}/gamification/recovery/quarantine") public GamificationQuarantineResult quarantine(@PathVariable String metamodelId,
+            @RequestHeader(value = "If-Match-Definitions", required = false) String definitionEtag,
+            @RequestHeader(value = "If-Match-Bindings", required = false) String bindingEtag) {
+        return service.quarantine(metamodelId, definitionEtag, bindingEtag);
+    }
     @PutMapping("/{metamodelId}/gamification") public ResponseEntity<GamificationSaveResponse> replace(@PathVariable String metamodelId,
             @RequestHeader(value = "If-Match-Definitions", required = false) String definitionEtag,
             @RequestHeader(value = "If-Match-Bindings", required = false) String bindingEtag,

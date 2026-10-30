@@ -87,24 +87,30 @@ class GamificationApplicationServiceSaveIntegrationTests {
     }
 
     /**
-     * SEC-ERR (ronda 37c): cuando la lectura pone en cuarentena una configuración malformada, la respuesta 404 debe decirlo (código y mensaje
-     * públicos); antes llegaba vacía, indistinguible de «nunca hubo configuración». La ausencia normal sigue siendo un 404 sin cuerpo.
+     * SEC-ERR (ronda 37c) y decisión del usuario del 30/10 (D-GAMIF-QUARANTINE-GET): una configuración malformada se responde con 409
+     * CORRUPT_CONFIGURATION, con código y mensaje públicos, y la lectura no mueve nada. La versión anterior de esta prueba (tanda 11) exigía
+     * un 404 «quarantined» porque la lectura movía el par a cuarentena; el usuario ha revocado ese comportamiento, así que una lectura
+     * repetida da el mismo 409. Solo la ausencia real sigue siendo un 404 sin cuerpo.
      */
     @Test
-    void aQuarantinedConfigurationIsAnsweredWithAnExplicitNotFoundAndAPlainAbsenceKeepsItsEmptyNotFound(@TempDir Path temporary) throws Exception {
+    void aMalformedConfigurationIsACorruptConfigurationOnEveryReadAndAPlainAbsenceKeepsItsEmptyNotFound(@TempDir Path temporary) throws Exception {
         GamificationApplicationService service = service(temporary);
         service.create(ExpressionTestFixtures.METAMODEL_ID, validDefinitions(), validBindings());
-        Files.writeString(temporary.resolve("gamification").resolve(ExpressionTestFixtures.METAMODEL_ID + ".gamification-bindings.json"),
-                "{ unreadable bindings");
+        Path bindings = temporary.resolve("gamification").resolve(ExpressionTestFixtures.METAMODEL_ID + ".gamification-bindings.json");
+        Files.writeString(bindings, "{ unreadable bindings");
         MockMvc mvc = MockMvcBuilders.standaloneSetup(new CanonicalGamificationController(service))
                 .setControllerAdvice(new ApiExceptionHandler()).build();
         String path = "/api/canonical-metamodels/" + ExpressionTestFixtures.METAMODEL_ID + "/gamification";
 
-        mvc.perform(get(path)).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value("NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value(Matchers.containsString("quarantined")));
-        String second = mvc.perform(get(path)).andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
-        assertThat(second).isEmpty();
+        for(int read = 0; read < 2; read++)
+            mvc.perform(get(path)).andExpect(status().isConflict())
+                    .andExpect(jsonPath("$.code").value("CORRUPT_CONFIGURATION"))
+                    .andExpect(jsonPath("$.message").value(Matchers.containsString("bindings are malformed")));
+        assertThat(bindings).hasContent("{ unreadable bindings");
+        Files.delete(bindings);
+        Files.delete(temporary.resolve("gamification").resolve(ExpressionTestFixtures.METAMODEL_ID + ".gamification-definitions.json"));
+        String absent = mvc.perform(get(path)).andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
+        assertThat(absent).isEmpty();
     }
 
     private static GamificationDefinitionModel validDefinitions() {

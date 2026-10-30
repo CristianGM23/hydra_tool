@@ -21,8 +21,9 @@ class GamificationApplicationServiceCatalogTests {
         GamificationDefinitionRepository definitions = mock(GamificationDefinitionRepository.class);
         GamificationBindingRepository bindings = mock(GamificationBindingRepository.class);
         when(definitions.listIds()).thenReturn(List.of("broken", "healthy"));
+        // exactly what AtomicJsonDocumentStore throws for unparseable bytes: the message names the server path and the error is flagged malformed
         when(definitions.find("broken")).thenThrow(new CanonicalDocumentStoreException(Reason.STORAGE_ERROR,
-                "Could not parse document: C:\\workspace\\data\\gamification\\broken.gamification-definitions.json"));
+                "Could not parse document: C:\\workspace\\data\\gamification\\broken.gamification-definitions.json", null, true));
         GamificationDefinitionModel definition = new GamificationDefinitionModel(null, "healthy-game", "healthy",
                 "Healthy game", List.of(), List.of(), List.of(), List.of(), List.of(), Map.of());
         GamificationBindingModel binding = new GamificationBindingModel(null, "healthy-bindings", "healthy",
@@ -39,9 +40,14 @@ class GamificationApplicationServiceCatalogTests {
             assertThat(summary.metamodelId()).isEqualTo("healthy");
             assertThat(summary.definitionModelId()).isEqualTo("healthy-game");
         });
+        // Until the jar 15 this diagnostic had to repeat the store message, server path included; Home readiness shows it to the user,
+        // and the user required on 30/10 that diagnostics never disclose a path, even inside a 200. It names the metamodel and the problem.
         assertThat(result.diagnostics()).singleElement().asString()
-                .contains("Skipped invalid gamification document broken")
-                .contains("Could not parse document")
-                .contains("broken.gamification-definitions.json");
+                .contains("metamodel broken")
+                .contains("definitions are malformed")
+                .contains("left unchanged")
+                .doesNotContain("C:\\workspace")
+                .doesNotContain("broken.gamification-definitions.json")
+                .doesNotContain("Could not parse document");
     }
 }

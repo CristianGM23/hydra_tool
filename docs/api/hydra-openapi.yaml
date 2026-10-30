@@ -1221,6 +1221,24 @@ paths:
           description: Successful HYDRA response
         '400':
           description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/gamification/recovery:
+    get:
+      operationId: CanonicalGamificationController_recovery_get
+      tags: [CanonicalGamificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
+  /api/canonical-metamodels/{metamodelId}/gamification/recovery/quarantine:
+    post:
+      operationId: CanonicalGamificationController_quarantine_post
+      tags: [CanonicalGamificationController]
+      responses:
+        '200':
+          description: Successful HYDRA response
+        '400':
+          description: Actionable HYDRA problem response
   /api/canonical-metamodels/{metamodelId}/gamification/runtime/:
     delete:
       operationId: GamificationRuntimeController_reset_delete

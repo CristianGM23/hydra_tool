@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "hydraVersion": "4.32.107",
-  "operationCount": 577,
+  "operationCount": 579,
   "operations": [
     {
       "method": "get",
@@ -836,6 +836,18 @@
       "path": "/api/canonical-metamodels/{metamodelId}/gamification/exports/{format}",
       "operationId": "GamificationExportController_export_get",
       "controller": "GamificationExportController"
+    },
+    {
+      "method": "get",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/recovery",
+      "operationId": "CanonicalGamificationController_recovery_get",
+      "controller": "CanonicalGamificationController"
+    },
+    {
+      "method": "post",
+      "path": "/api/canonical-metamodels/{metamodelId}/gamification/recovery/quarantine",
+      "operationId": "CanonicalGamificationController_quarantine_post",
+      "controller": "CanonicalGamificationController"
     },
     {
       "method": "delete",

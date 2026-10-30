@@ -348,7 +348,7 @@ public class ApiExceptionHandler {
         HttpStatus status = switch(exception.getReason()) {
             case INVALID_REQUEST -> HttpStatus.BAD_REQUEST;
             case NOT_FOUND -> HttpStatus.NOT_FOUND;
-            case CONFLICT -> HttpStatus.CONFLICT;
+            case CONFLICT, CORRUPT_CONFIGURATION -> HttpStatus.CONFLICT;
             case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
             case STORAGE_ERROR, EXECUTION_FAILED -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
