@@ -153,6 +153,7 @@ public class ProjectIndexService {
     /** Descripción: Ejecuta la operación «persistIndex» correspondiente a la responsabilidad de ProjectIndexService. Entradas: root: ruta o ubicación utilizada por la operación; descriptor: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void persistIndex(Path root,ProjectDescriptor descriptor) {
         ProjectIndexDocument index=new ProjectIndexDocument("1.0",descriptor.id(),Instant.now(),artifacts(root,descriptor));
         Path destination=paths.resolve(root,descriptor.layout().internal()+"/project-index.json");
+        if(unchanged(destination,index)) return;
         try { files.writeAtomic(destination,mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(index)); }
         catch(JacksonException exception) { throw storage("Could not serialize the project index",exception); }
     }
@@ -177,9 +178,25 @@ public class ProjectIndexService {
                 refreshIndexedPath(root,descriptor,artifacts,relative.replace('\\','/'));
             }
             ProjectIndexDocument next=new ProjectIndexDocument("1.0",descriptor.id(),Instant.now(),List.copyOf(artifacts.values()));
+            if(java.util.Objects.equals(previous.schemaVersion(),next.schemaVersion())&&java.util.Objects.equals(previous.projectId(),next.projectId())&&java.util.Objects.equals(previous.artifacts(),next.artifacts())) return;
             files.writeAtomic(destination,mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(next));
         } catch(IOException | JacksonException exception) {
             throw storage("Could not update the project index",exception);
+        }
+    }
+
+    /**
+     * OBS-DET-PROJECT-INDEX-REGENERATED: opening an unchanged project rewrote its index with a new generatedAt, so the same project exported
+     * from two installations differed in .modeling/project-index.json. An index whose artifacts did not change is kept as it is (generatedAt is
+     * when the indexed content was last seen to change). Entradas: destination: índice persistido; next: índice recalculado. Salida: true si no cambia.
+     */
+    private boolean unchanged(Path destination,ProjectIndexDocument next) {
+        if(!Files.isRegularFile(destination)) return false;
+        try {
+            ProjectIndexDocument current=mapper.readValue(com.example.editor.io.BoundedIo.readInternal(destination),ProjectIndexDocument.class);
+            return java.util.Objects.equals(current.schemaVersion(),next.schemaVersion())&&java.util.Objects.equals(current.projectId(),next.projectId())&&java.util.Objects.equals(current.artifacts(),next.artifacts());
+        } catch(IOException | RuntimeException exception) {
+            return false;
         }
     }
 
