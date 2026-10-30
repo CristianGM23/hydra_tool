@@ -230,6 +230,8 @@ public class LocalDirectoryProjectStorage implements ProjectStoragePort {
                 Path nested=singleDirectoryChild(destination);
                 if(nested!=null&&Files.isRegularFile(nested.resolve(ProjectDescriptorStore.FILE_NAME),java.nio.file.LinkOption.NOFOLLOW_LINKS)) normalizeNestedImportedProject(destination,nested);
             }
+            // an uploaded archive without a project descriptor is an invalid request of the client (400), not a missing resource (404)
+            if(!Files.isRegularFile(descriptorPath,java.nio.file.LinkOption.NOFOLLOW_LINKS)) throw invalid("The archive is not a HYDRA project: "+ProjectDescriptorStore.FILE_NAME+" is missing at its root or in its single top-level folder");
             ProjectDescriptor descriptor=descriptors.read(destination); setActive(destination,descriptor,loadTabs(destination,descriptor));
             index.build(destination,descriptor,ProjectTreeView.LOGICAL); index.persist(destination, descriptor); changes.reset(destination,descriptor); return session();
         } catch(RuntimeException exception) {
