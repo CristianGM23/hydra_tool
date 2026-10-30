@@ -62,6 +62,8 @@ class ApiErrorDisclosureAndClassificationTests {
                 case "flow" -> new EventFlowApplicationException(EventFlowApplicationException.Reason.EXECUTION_FAILED, "java.lang.IllegalStateException: " + SECRET_PATH, cause);
                 case "validation" -> new ValidationRuntimeApplicationException(ValidationRuntimeApplicationException.Reason.EXECUTION_FAILED, "java.io.IOException: " + SECRET_PATH, cause);
                 case "standalone" -> new StandaloneEditorGenerationException(StandaloneEditorGenerationException.Reason.GENERATION_FAILED, "npm failed in " + SECRET_PATH, cause);
+                case "pending" -> new ProjectException(ProjectException.Reason.STORAGE_ERROR, "The import failed (" + SECRET_PATH + ") and the cleanup is incomplete. Pending: [METAMODEL:m1 (" + SECRET_PATH + ")]",
+                        "The import failed and the cleanup is incomplete. Pending: [METAMODEL:m1]", cause);
                 default -> new IllegalStateException(kind);
             };
         }
@@ -96,6 +98,16 @@ class ApiErrorDisclosureAndClassificationTests {
                 .doesNotContain("java.lang.").doesNotContain("java.io.");
         Map<String, String> expectedCode = Map.of("flow", "EXECUTION_FAILED", "validation", "EXECUTION_FAILED", "standalone", "GENERATION_FAILED");
         assertThat(body).contains("\"code\":\"" + expectedCode.getOrDefault(kind, "STORAGE_ERROR") + "\"");
+    }
+
+    /** A server failure whose explicit public message tells the client what is pending answers it, never the internal message with paths. */
+    @Test
+    void aServerFailureWithAnExplicitPublicMessageAnswersItWithoutInternalDetails() throws Exception {
+        MockHttpServletResponse response = mvc.perform(post("/server/pending")).andReturn().getResponse();
+        String body = response.getContentAsString();
+
+        assertThat(response.getStatus()).isEqualTo(500);
+        assertThat(body).contains("\"code\":\"STORAGE_ERROR\"").contains("Pending: [METAMODEL:m1]").doesNotContain("secret-project").doesNotContain("C:\\\\srv");
     }
 
     @Test

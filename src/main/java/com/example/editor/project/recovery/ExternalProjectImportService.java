@@ -89,7 +89,8 @@ public class ExternalProjectImportService {
         try { ledger = compensation.begin(report.fingerprint(), confirmedFingerprint == null ? report.fingerprint() : confirmedFingerprint, name); }
         catch(ExternalImportJournalException exception) {
             throw new ProjectException(ProjectException.Reason.STORAGE_ERROR,
-                    "The import journal cannot be written, so nothing was imported: " + exception.getMessage(), exception);
+                    "The import journal cannot be written, so nothing was imported: " + exception.getMessage(),
+                    "The import journal cannot be written, so nothing was imported. Check that the HYDRA data directory is writable and retry.", exception);
         }
         try { return runImport(entries, report, name, projectId, destination, ledger); }
         finally { ledger.close(); }
@@ -133,9 +134,14 @@ public class ExternalProjectImportService {
                 if(ledger != null) {
                     ExternalImportCompensationService.CompensationReport outcome = compensation.compensate(ledger);
                     if(!outcome.complete()) {
+                        // T-SEC: the client must learn what the failed import left pending (document kinds and ids); the cause, which may name
+                        // server paths, stays in the internal message that the server log records with the correlation id
+                        String retry = ". It will be retried before the next import.";
+                        // each pending entry is «<effect id> (<compensation error>)»: only the effect ids are public
+                        java.util.List<String> pendingIds = outcome.pending().stream().map(item -> item.contains(" (") ? item.substring(0, item.indexOf(" (")) : item).toList();
                         throw new ProjectException(ProjectException.Reason.STORAGE_ERROR, "The import failed (" + failure.getMessage()
-                                + ") and the cleanup of canonical documents is incomplete. Pending: " + outcome.pending()
-                                + ". It will be retried before the next import.", failure);
+                                + ") and the cleanup of canonical documents is incomplete. Pending: " + outcome.pending() + retry,
+                                "The import failed and the cleanup of canonical documents is incomplete. Pending: " + pendingIds + retry, failure);
                     }
                 }
                 throw failure;

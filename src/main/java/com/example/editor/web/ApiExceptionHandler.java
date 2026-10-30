@@ -434,7 +434,7 @@ public class ApiExceptionHandler {
             case FILE_TOO_LARGE -> HttpStatus.PAYLOAD_TOO_LARGE;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return respond(status, exception.getReason().name(), exception);
+        return respond(status, exception.getReason().name(), exception, exception.publicMessage());
     }
 
 
@@ -576,11 +576,19 @@ public class ApiExceptionHandler {
      * internal exceptions, goes to the server log with the correlation id and the client receives the public message of that code.
      */
     private ResponseEntity<ApiError> respond(HttpStatus status, String code, Exception exception) {
+        return respond(status, code, exception, "");
+    }
+
+    /**
+     * Like {@link #respond(HttpStatus, String, Exception)}; a server failure that carries an explicit public message (written for the client,
+     * without internal details, e.g. which canonical documents a failed import left pending) answers it instead of the generic one.
+     */
+    private ResponseEntity<ApiError> respond(HttpStatus status, String code, Exception exception, String publicMessage) {
         if(status != HttpStatus.INTERNAL_SERVER_ERROR) return ResponseEntity.status(status).body(new ApiError(code, exception.getMessage()));
         String correlationId = AuditRequestContext.correlationId();
         LOG.error("hydra.api_server_error code={} correlationId={} exception={}", code, correlationId, exception.getClass().getName(), exception);
         String suffix = correlationId.isBlank() ? "" : " Correlation ID: " + correlationId;
-        return ResponseEntity.status(status).body(new ApiError(code, serverMessage(code) + suffix));
+        return ResponseEntity.status(status).body(new ApiError(code, (publicMessage == null || publicMessage.isBlank() ? serverMessage(code) : publicMessage) + suffix));
     }
 
     /** Descripción: Mensaje público de un fallo del servidor según su código. Entradas: code: código del error. Salida: texto sin detalles internos. */
