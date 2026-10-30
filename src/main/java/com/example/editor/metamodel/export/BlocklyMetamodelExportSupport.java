@@ -24,7 +24,10 @@ final class BlocklyMetamodelExportSupport {
     /** Descripción: Ejecuta la operación «json» correspondiente a la responsabilidad de BlocklyMetamodelExportSupport. Entradas: context: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ String json(NeutralMetamodelExportContext context) {
         MetaModel model = context.neutralMetamodel();
         Map<String,Object> envelope = new LinkedHashMap<>();
-        envelope.put("schemaVersion", "1.0"); envelope.put("kind", "HYDRA_BLOCKLY_LAYER"); envelope.put("layer", "METAMODEL"); envelope.put("metamodelId", model.id()); envelope.put("payload", Map.of("metamodel", model)); envelope.put("blockDefinitions", blockDefinitions(model)); envelope.put("annotations", Map.of("hydra.blockly.integration", "independent-layer", "hydra.blockly.execution", "declarative"));
+        envelope.put("schemaVersion", "1.0"); envelope.put("kind", "HYDRA_BLOCKLY_LAYER"); envelope.put("layer", "METAMODEL"); envelope.put("metamodelId", model.id()); envelope.put("payload", Map.of("metamodel", model)); envelope.put("blockDefinitions", blockDefinitions(model));
+        // OBS-DET-BLOCKLY-ANNOTATIONS-ORDER: Map.of iterates in an order seeded per JVM; the declared order keeps the export byte-identical
+        Map<String,Object> annotations = new LinkedHashMap<>(); annotations.put("hydra.blockly.integration", "independent-layer"); annotations.put("hydra.blockly.execution", "declarative");
+        envelope.put("annotations", annotations);
         try { return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(envelope); }
         catch(JacksonException exception) { throw new IllegalStateException("Could not serialize Blockly metamodel export", exception); }
     }
