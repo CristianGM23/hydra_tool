@@ -40,12 +40,16 @@ public class GrammarNativeToolchainService {
     private final ExternalToolProcessRunner runner;
     private final HydraTemporaryWorkspace workspaces;
     private final GrammarProperties properties;
+    private final GrammarNativeDependencyTemplates templates;
 
     /** Descripción: Inicializa una instancia de GrammarNativeToolchainService con sus dependencias y datos de entrada. Entradas: runner: dato de entrada necesario para la operación; workspaces: dato de entrada necesario para la operación; properties: configuración que gobierna el comportamiento. Salida: deja la instancia inicializada y lista para su uso. */ public GrammarNativeToolchainService(ExternalToolProcessRunner runner, HydraTemporaryWorkspace workspaces,
             GrammarProperties properties) {
         this.runner = runner;
         this.workspaces = workspaces;
         this.properties = properties;
+        this.templates = new GrammarNativeDependencyTemplates(properties.getNativeDependencyTemplateDirectory(),
+                properties.isNativeDependencyTemplatesEnabled(), properties.getNativeDependencyTemplateMaximumEntries(),
+                properties.getNativeDependencyTemplateMaximumBytes());
     }
 
     /** Compatibility entry point for callers that do not need native runtime capture. */
@@ -63,13 +67,40 @@ public class GrammarNativeToolchainService {
         try {
             materialize(workspace, project);
             Map<String, String> environment = nativeEnvironment(properties.getNativeMaximumHeapMegabytes());
+            int profileSeconds = Math.max(1, (int)Math.ceil(profile.compileTimeoutMs() / 1000d));
+            int dependencySeconds = Math.max(profileSeconds, properties.getNativeDependencyTimeoutSeconds());
+            String packageLock = project.files().get(PACKAGE_LOCK);
+            String templateKey = packageLock == null ? "" : GrammarNativeDependencyTemplates.key(profile, packageLock);
+            String dependencySource = "NONE";
+            boolean templateStored = false;
             for(CommandSpec spec : commands(grammar, profile, project)) {
+                if(spec.dependencies() && !templateKey.isEmpty()) {
+                    var restored = templates.restore(templateKey, workspace);
+                    if(restored.isPresent()) {
+                        // npm ci of this very package-lock.json already produced this tree: restoring it is the same installation without npm
+                        steps.add(new GrammarNativeValidationStep(spec.id(), "PASSED", restored.get().millis(), 0, List.of(
+                                "Restored the dependencies that npm ci installed for this package-lock.json from the verified template "
+                                        + templateKey.substring(0, 12) + " (" + restored.get().files() + " files, " + restored.get().bytes()
+                                        + " bytes); npm was not run.")));
+                        dependencySource = "TEMPLATE";
+                        continue;
+                    }
+                }
+                int timeoutSeconds = spec.dependencies() ? dependencySeconds : profileSeconds;
                 TechnologyValidationStepResult result = runner.run(spec.id(), spec.description(), workspace, spec.command(), 0,
-                        Math.max(1, (int)Math.ceil(profile.compileTimeoutMs() / 1000d)), environment);
+                        timeoutSeconds, environment);
+                List<String> diagnostics = new ArrayList<>(bounded(result.diagnostics(), result.stderr(), properties.getNativeDiagnosticLimit(),
+                        properties.getNativeDiagnosticMessageMaxCharacters()));
+                if(result.status() == com.example.editor.integration.verification.TechnologyValidationStepStatus.TIMED_OUT) {
+                    diagnostics.add("Step budget " + timeoutSeconds + " s exceeded; " + systemLoad());
+                }
                 steps.add(new GrammarNativeValidationStep(result.id(), result.status().name(), result.durationMillis(),
-                        result.exitCode(), bounded(result.diagnostics(), result.stderr(), properties.getNativeDiagnosticLimit(),
-                                properties.getNativeDiagnosticMessageMaxCharacters())));
+                        result.exitCode(), List.copyOf(diagnostics)));
                 if(!result.successful()) break;
+                if(spec.dependencies()) {
+                    dependencySource = "NPM";
+                    if(!templateKey.isEmpty()) templateStored = templates.store(templateKey, workspace);
+                }
             }
             boolean commandsPassed = !steps.isEmpty() && steps.stream().allMatch(step -> "PASSED".equals(step.status()));
             if(commandsPassed) {
@@ -101,6 +132,10 @@ public class GrammarNativeToolchainService {
             metadata.put("runtimeFilesCaptured", Integer.toString(runtimeFiles.size()));
             metadata.put("reproducibilityFilesCaptured", Integer.toString(reproducibilityFiles.size()));
             metadata.put("capturedBytes", Long.toString(capturedBytes));
+            metadata.put("dependencySource", dependencySource);
+            metadata.put("dependencyTimeoutSeconds", Integer.toString(dependencySeconds));
+            metadata.put("dependencyTemplateKey", templateKey);
+            metadata.put("dependencyTemplateStored", Boolean.toString(templateStored));
             return new GrammarNativeValidationResult(true, success, steps, Map.copyOf(metadata), runtimeFiles,
                     reproducibilityFiles);
         } finally {
@@ -110,12 +145,14 @@ public class GrammarNativeToolchainService {
 
     /** Descripción: Ejecuta la operación «commands» correspondiente a la responsabilidad de CaptureBudget. Entradas: grammar: dato de entrada necesario para la operación; profile: archivo o contenido que debe procesarse; project: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private List<CommandSpec> commands(GrammarDefinitionModel grammar, GrammarToolchainProfile profile,
             GeneratedGrammarProject project) {
+        // with a lockfile every tarball is pinned by its integrity hash, so npm may take it from its local cache without revalidating it against
+        // the registry (BLQ-GR-NATIVE: a single slow revalidation took the step to 58.8 s); without a lockfile versions are resolved online
         List<String> npmDependencies = project.files().containsKey(PACKAGE_LOCK)
-                ? List.of(npm(), "ci", "--ignore-scripts", "--no-audit", "--no-fund")
+                ? List.of(npm(), "ci", "--ignore-scripts", "--no-audit", "--no-fund", "--prefer-offline")
                 : List.of(npm(), "install", "--ignore-scripts", "--no-audit", "--no-fund");
         return switch(grammar.technology()) {
             case LANGIUM -> List.of(
-                    new CommandSpec("langium-dependencies", "Install pinned Langium project dependencies", npmDependencies),
+                    new CommandSpec("langium-dependencies", "Install pinned Langium project dependencies", npmDependencies, true),
                     new CommandSpec("langium-build", "Generate and compile Langium project", List.of(npm(), "run", "build")),
                     new CommandSpec("langium-tests", "Run generated Langium smoke tests", List.of(npm(), "test", "--", "--run")));
             case XTEXT -> List.of(
@@ -126,7 +163,7 @@ public class GrammarNativeToolchainService {
             case ANTLR -> "TypeScript".equalsIgnoreCase(profile.targetLanguage()) ? List.of(
                     new CommandSpec("antlr-ts-generate", "Generate TypeScript parser with the official pinned ANTLR tool",
                             List.of(mvn(), "-B", "-q", "-f", "generator-pom.xml", "generate-sources")),
-                    new CommandSpec("antlr-ts-dependencies", "Install pinned ANTLR TypeScript project dependencies", npmDependencies),
+                    new CommandSpec("antlr-ts-dependencies", "Install pinned ANTLR TypeScript project dependencies", npmDependencies, true),
                     new CommandSpec("antlr-ts-build", "Compile generated ANTLR TypeScript project", List.of(npm(), "run", "build")),
                     new CommandSpec("antlr-ts-tests", "Run ANTLR TypeScript smoke tests", List.of(npm(), "test", "--", "--run")))
                     : List.of(new CommandSpec("antlr-java-build", "Generate, compile and test ANTLR Java project",
@@ -233,7 +270,19 @@ public class GrammarNativeToolchainService {
         return System.getProperty("os.name", "").toLowerCase(Locale.ROOT).contains("win") ? "mvn.cmd" : "mvn";
     }
 
-    private record CommandSpec(String id, String description, List<String> command) { }
+    /** Descripción: Carga del sistema al vencer un plazo, para distinguir contención de un proceso bloqueado. Entradas: ninguna. Salida: texto breve. */
+    private static String systemLoad() {
+        if(java.lang.management.ManagementFactory.getOperatingSystemMXBean() instanceof com.sun.management.OperatingSystemMXBean os) {
+            return String.format(Locale.ROOT, "system CPU load %.0f%%, free physical memory %d MB, available processors %d",
+                    Math.max(0d, os.getCpuLoad()) * 100d, os.getFreeMemorySize() / (1024L * 1024L), os.getAvailableProcessors());
+        }
+        return "system load unavailable";
+    }
+
+    private record CommandSpec(String id, String description, List<String> command, boolean dependencies) {
+        /** Descripción: Paso que no instala dependencias. Entradas: id, description, command. Salida: especificación. */
+        CommandSpec(String id, String description, List<String> command) { this(id, description, command, false); }
+    }
     private record CaptureResult(Map<String, String> runtimeFiles, Map<String, String> reproducibilityFiles,
             int requestedFiles) { }
 
