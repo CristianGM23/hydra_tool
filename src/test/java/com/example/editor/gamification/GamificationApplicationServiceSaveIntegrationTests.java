@@ -2,13 +2,20 @@ package com.example.editor.gamification;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.example.editor.config.StorageProperties;
 import com.example.editor.event.EventModelApplicationService;
@@ -18,6 +25,7 @@ import com.example.editor.event.persistence.JsonEventBindingModelRepository;
 import com.example.editor.event.persistence.JsonEventDefinitionModelRepository;
 import com.example.editor.gamification.persistence.JsonGamificationBindingRepository;
 import com.example.editor.gamification.persistence.JsonGamificationDefinitionRepository;
+import com.example.editor.gamification.web.CanonicalGamificationController;
 import com.example.editor.metamodel.application.CanonicalMetamodelApplicationService;
 import com.example.editor.metamodel.canonical.CanonicalMetamodelProperties;
 import com.example.editor.metamodel.canonical.JsonCanonicalMetamodelRepository;
@@ -25,6 +33,7 @@ import com.example.editor.metamodel.validation.NeutralMetamodelValidator;
 import com.example.editor.semantic.expression.ExpressionTestFixtures;
 import com.example.editor.validation.expression.ExpressionModelProperties;
 import com.example.editor.validation.expression.persistence.JsonExpressionModelRepository;
+import com.example.editor.web.ApiExceptionHandler;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
@@ -75,6 +84,27 @@ class GamificationApplicationServiceSaveIntegrationTests {
 
         JsonMapper mapper = JsonMapper.builder().findAndAddModules().build();
         assertThat(new JsonGamificationDefinitionRepository(properties(temporary), mapper).find(ExpressionTestFixtures.METAMODEL_ID)).isEmpty();
+    }
+
+    /**
+     * SEC-ERR (ronda 37c): cuando la lectura pone en cuarentena una configuración malformada, la respuesta 404 debe decirlo (código y mensaje
+     * públicos); antes llegaba vacía, indistinguible de «nunca hubo configuración». La ausencia normal sigue siendo un 404 sin cuerpo.
+     */
+    @Test
+    void aQuarantinedConfigurationIsAnsweredWithAnExplicitNotFoundAndAPlainAbsenceKeepsItsEmptyNotFound(@TempDir Path temporary) throws Exception {
+        GamificationApplicationService service = service(temporary);
+        service.create(ExpressionTestFixtures.METAMODEL_ID, validDefinitions(), validBindings());
+        Files.writeString(temporary.resolve("gamification").resolve(ExpressionTestFixtures.METAMODEL_ID + ".gamification-bindings.json"),
+                "{ unreadable bindings");
+        MockMvc mvc = MockMvcBuilders.standaloneSetup(new CanonicalGamificationController(service))
+                .setControllerAdvice(new ApiExceptionHandler()).build();
+        String path = "/api/canonical-metamodels/" + ExpressionTestFixtures.METAMODEL_ID + "/gamification";
+
+        mvc.perform(get(path)).andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("NOT_FOUND"))
+                .andExpect(jsonPath("$.message").value(Matchers.containsString("quarantined")));
+        String second = mvc.perform(get(path)).andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
+        assertThat(second).isEmpty();
     }
 
     private static GamificationDefinitionModel validDefinitions() {

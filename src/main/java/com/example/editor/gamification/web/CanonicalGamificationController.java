@@ -16,6 +16,7 @@ import com.example.editor.gamification.GamificationApplicationService;
 import com.example.editor.gamification.GamificationApplicationException;
 import com.example.editor.gamification.GamificationCheckReport;
 import com.example.editor.gamification.GamificationLoadResult;
+import com.example.editor.gamification.GamificationQuarantinedException;
 import com.example.editor.gamification.GamificationSaveResponse;
 import com.example.editor.gamification.GamificationSummary;
 
@@ -31,7 +32,7 @@ public class CanonicalGamificationController {
         return ResponseEntity.created(URI.create("/api/canonical-metamodels/" + metamodelId + "/gamification"))
                 .header("X-Gamification-Definitions-ETag", result.definitionEtag()).header("X-Gamification-Bindings-ETag", result.bindingEtag()).body(result);
     }
-    @GetMapping("/{metamodelId}/gamification") public ResponseEntity<GamificationLoadResult> find(@PathVariable String metamodelId) { try{return ResponseEntity.ok(service.find(metamodelId));}catch(GamificationApplicationException exception){if(exception.getReason()==GamificationApplicationException.Reason.NOT_FOUND)return ResponseEntity.notFound().build();throw exception;} }
+    @GetMapping("/{metamodelId}/gamification") public ResponseEntity<GamificationLoadResult> find(@PathVariable String metamodelId) { try{return ResponseEntity.ok(service.find(metamodelId));}catch(GamificationApplicationException exception){if(exception.getReason()==GamificationApplicationException.Reason.NOT_FOUND&&!(exception instanceof GamificationQuarantinedException))return ResponseEntity.notFound().build();throw exception;} }
     @PutMapping("/{metamodelId}/gamification") public ResponseEntity<GamificationSaveResponse> replace(@PathVariable String metamodelId,
             @RequestHeader(value = "If-Match-Definitions", required = false) String definitionEtag,
             @RequestHeader(value = "If-Match-Bindings", required = false) String bindingEtag,

@@ -80,7 +80,7 @@ public class GamificationApplicationService {
             return new GamificationLoadResult(definitions.document(), definitions.etag(), bindings.document(), bindings.etag(), report);
         } catch(CanonicalDocumentStoreException exception) {
             if(corruptDocumentRecovery.recoverIfMalformed(metamodelId, exception))
-                throw new GamificationApplicationException(GamificationApplicationException.Reason.NOT_FOUND,
+                throw new GamificationQuarantinedException(
                         "Gamification configuration was malformed and has been quarantined. A clean configuration can be created.", exception);
             throw translate(exception);
         }

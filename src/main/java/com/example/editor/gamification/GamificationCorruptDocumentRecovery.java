@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.example.editor.concurrent.ResourceStripedLock;
@@ -18,6 +20,7 @@ import com.example.editor.validation.persistence.CanonicalDocumentStoreException
  */
 @Component
 public final class GamificationCorruptDocumentRecovery {
+    private static final Logger LOG = LoggerFactory.getLogger(GamificationCorruptDocumentRecovery.class);
     private final Path directory;
     private final String definitionSuffix;
     private final String bindingSuffix;
@@ -51,6 +54,7 @@ public final class GamificationCorruptDocumentRecovery {
                 Files.createDirectories(quarantine);
                 moveIfPresent(definition, quarantine.resolve(definition.getFileName()));
                 moveIfPresent(binding, quarantine.resolve(binding.getFileName()));
+                LOG.warn("hydra.gamification_quarantined metamodelId={} quarantine={} cause={}", metamodelId, quarantine, exception.getMessage());
                 return true;
             } catch(IOException io) {
                 throw new GamificationApplicationException(GamificationApplicationException.Reason.STORAGE_ERROR,
