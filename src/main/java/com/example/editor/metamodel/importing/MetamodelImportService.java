@@ -94,6 +94,23 @@ public class MetamodelImportService implements MetamodelImportAnalysisProcessor 
         return new MetamodelImportSaveResult(saved.metamodel().id(), saved.etag(), preview);
     }
 
+    /**
+     * Persiste un snapshot ya analizado aplicando el modo estricto a sus avisos, con la misma regla que una importación completa (T-UPD): una
+     * vista previa calculada sin modo estricto no puede guardarse con él si contiene pérdida de información.
+     *
+     * @param preview snapshot canónico preparado.
+     * @param overwrite permite sustituir un metamodelo existente.
+     * @param strict rechaza la pérdida de información, como MetamodelImportOptions.strict().
+     * @return resultado persistido con el mismo preview analizado.
+     */
+    public MetamodelImportSaveResult importPrepared(MetamodelImportPreview preview, boolean overwrite, boolean strict) {
+        if(preview != null && (strict || properties.isStrictByDefault()) && containsLossyWarning(preview.warnings())) {
+            String message = preview.warnings().stream().filter(this::isLossyWarning).map(item -> item.code() + ": " + item.message()).collect(java.util.stream.Collectors.joining("; "));
+            throw new MetamodelDesignException(Reason.INVALID_REQUEST, "Strict metamodel import rejected semantic loss: " + message);
+        }
+        return importPrepared(preview, overwrite);
+    }
+
     /** Descripción: Actualiza el estado gestionado por ProcessedImport mediante la operación «saveCanonical». Entradas: metamodel: dato de entrada necesario para la operación; targets: dato de entrada necesario para la operación; overwrite: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private MetamodelSaveResponse saveCanonical(MetaModel metamodel, TargetConfigurationDocument targets, boolean overwrite) {
         try {
             MetamodelLoadResult existing = canonicalService.findById(metamodel.id());

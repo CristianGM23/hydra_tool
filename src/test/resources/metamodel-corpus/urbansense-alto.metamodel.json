@@ -1,0 +1,4241 @@
+{
+ "schemaVersion": "2.1",
+ "id": "urbansense-alto",
+ "name": "UrbanSense Advanced (alto)",
+ "classes": [
+  {
+   "id": "urbansense-alto-urbansensecity",
+   "name": "UrbanSenseCity",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Root container of one city deployment"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-urbansensecity-name",
+     "name": "name",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-powered",
+   "name": "Powered",
+   "kind": "INTERFACE",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Anything with a power supply"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-powered-batterypercent",
+     "name": "batteryPercent",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-networked",
+   "name": "Networked",
+   "kind": "INTERFACE",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Anything reachable over the network"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-networked-address",
+     "name": "address",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-calibratable",
+   "name": "Calibratable",
+   "kind": "INTERFACE",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Anything that needs periodic calibration"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-calibratable-calibratedon",
+     "name": "calibratedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-device",
+   "name": "Device",
+   "kind": "ABSTRACT_CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Deployed hardware unit"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-device-serial",
+     "name": "serial",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-device-model",
+     "name": "model",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-device-status",
+     "name": "status",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-devicestatus",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-device-installedon",
+     "name": "installedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-sensordevice",
+   "name": "SensorDevice",
+   "kind": "ABSTRACT_CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Device that measures quantities"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-sensordevice-samplingseconds",
+     "name": "samplingSeconds",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-airqualitysensor",
+   "name": "AirQualitySensor",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Measures pollutants"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-airqualitysensor-pollutant",
+     "name": "pollutant",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-pollutant",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-noisesensor",
+   "name": "NoiseSensor",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Measures sound level"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-noisesensor-weighting",
+     "name": "weighting",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-trafficcounter",
+   "name": "TrafficCounter",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Counts vehicles"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-trafficcounter-lanes",
+     "name": "lanes",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-weatherstation",
+   "name": "WeatherStation",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Multi-sensor weather station"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-weatherstation-heightmeters",
+     "name": "heightMeters",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-gateway",
+   "name": "Gateway",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Concentrates sensor traffic"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-gateway-maxdevices",
+     "name": "maxDevices",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-actuator",
+   "name": "Actuator",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Device that acts on the city"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-actuator-command",
+     "name": "command",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-zone",
+   "name": "Zone",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "City area (recursive: district > neighbourhood > block)"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-zone-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-zone-name",
+     "name": "name",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-zone-populationk",
+     "name": "populationK",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-location",
+   "name": "Location",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Geographic position of a device"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-location-latitude",
+     "name": "latitude",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-location-longitude",
+     "name": "longitude",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-location-altitudemeters",
+     "name": "altitudeMeters",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-quantitytype",
+   "name": "QuantityType",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Measured physical quantity and its unit"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-quantitytype-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-quantitytype-unit",
+     "name": "unit",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-quantitytype-minvalid",
+     "name": "minValid",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-quantitytype-maxvalid",
+     "name": "maxValid",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-channel",
+   "name": "Channel",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "One measured quantity of a sensor"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-channel-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-channel-precision",
+     "name": "precision",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-reading",
+   "name": "Reading",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Time-stamped value of a channel"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-reading-takenon",
+     "name": "takenOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-reading-value",
+     "name": "value",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-reading-quality",
+     "name": "quality",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-readingquality",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-threshold",
+   "name": "Threshold",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Limit that raises an alert"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-threshold-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-threshold-lower",
+     "name": "lower",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-threshold-upper",
+     "name": "upper",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-threshold-severity",
+     "name": "severity",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-alertseverity",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-alert",
+   "name": "Alert",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Raised when a reading crosses a threshold"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-alert-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-alert-raisedon",
+     "name": "raisedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-alert-severity",
+     "name": "severity",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-alertseverity",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-alert-acknowledged",
+     "name": "acknowledged",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "BOOLEAN",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-alert-state",
+     "name": "state",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-alertstate",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-alert-resolution",
+     "name": "resolution",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 0,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-operator",
+   "name": "Operator",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Person who handles alerts"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-operator-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-operator-name",
+     "name": "name",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-maintenancevisit",
+   "name": "MaintenanceVisit",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "On-site intervention"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-maintenancevisit-visitedon",
+     "name": "visitedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-maintenancevisit-notes",
+     "name": "notes",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-detectionrule",
+   "name": "DetectionRule",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Condition over readings that detects a situation"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-detectionrule-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-detectionrule-windowminutes",
+     "name": "windowMinutes",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-detectionrule-minoccurrences",
+     "name": "minOccurrences",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-detectionrule-enabled",
+     "name": "enabled",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "BOOLEAN",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-rulecondition",
+   "name": "RuleCondition",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "One condition of a detection rule"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-rulecondition-operator",
+     "name": "operator",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-comparison",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-rulecondition-value",
+     "name": "value",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-situation",
+   "name": "Situation",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Detected urban situation"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-situation-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-situation-detectedon",
+     "name": "detectedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-situation-confidencepercent",
+     "name": "confidencePercent",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-reactionplan",
+   "name": "ReactionPlan",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Ordered reaction to a situation"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-reactionplan-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-reactionplan-priority",
+     "name": "priority",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-reactionstep",
+   "name": "ReactionStep",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Step of a reaction plan"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-reactionstep-sequence",
+     "name": "sequence",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-reactionstep-action",
+     "name": "action",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-reactionstep-timeoutminutes",
+     "name": "timeoutMinutes",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-escalation",
+   "name": "Escalation",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Escalation when a step times out"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-escalation-level",
+     "name": "level",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-escalation-notifyrole",
+     "name": "notifyRole",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-aggregation",
+   "name": "Aggregation",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Periodic aggregate over a channel"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-aggregation-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-aggregation-function",
+     "name": "function",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-aggregatefunction",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-aggregation-periodminutes",
+     "name": "periodMinutes",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-aggregatevalue",
+   "name": "AggregateValue",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Computed aggregate"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-aggregatevalue-periodstart",
+     "name": "periodStart",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-aggregatevalue-value",
+     "name": "value",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-aggregatevalue-samples",
+     "name": "samples",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-datapipeline",
+   "name": "DataPipeline",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Transformation chain for raw data"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-datapipeline-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-datapipeline-active",
+     "name": "active",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "BOOLEAN",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-pipelinestage",
+   "name": "PipelineStage",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "One transformation stage"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-pipelinestage-sequence",
+     "name": "sequence",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-pipelinestage-kind",
+     "name": "kind",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-stagekind",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-calibrationrecord",
+   "name": "CalibrationRecord",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Calibration of a sensor"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-calibrationrecord-calibratedon",
+     "name": "calibratedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-calibrationrecord-offset",
+     "name": "offset",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-calibrationrecord-gain",
+     "name": "gain",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-workorder",
+   "name": "WorkOrder",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Maintenance work order"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-workorder-number",
+     "name": "number",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-workorder-openedon",
+     "name": "openedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-workorder-closedon",
+     "name": "closedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-workorder-priority",
+     "name": "priority",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-sparepart",
+   "name": "SparePart",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Part used in work orders"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-sparepart-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-sparepart-quantity",
+     "name": "quantity",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-firmwareversion",
+   "name": "FirmwareVersion",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Firmware release"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-firmwareversion-version",
+     "name": "version",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-firmwareversion-releasedon",
+     "name": "releasedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-firmwarerollout",
+   "name": "FirmwareRollout",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Deployment of firmware to devices"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-firmwarerollout-startedon",
+     "name": "startedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-firmwarerollout-successpercent",
+     "name": "successPercent",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-dashboard",
+   "name": "Dashboard",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Operator dashboard"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-dashboard-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-dashboard-refreshseconds",
+     "name": "refreshSeconds",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-widget",
+   "name": "Widget",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Dashboard widget"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-widget-title",
+     "name": "title",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-widget-kind",
+     "name": "kind",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-subscription",
+   "name": "Subscription",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Notification subscription"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-subscription-channel",
+     "name": "channel",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-notifychannel",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-subscription-target",
+     "name": "target",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-notificationmessage",
+   "name": "NotificationMessage",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Sent notification"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-notificationmessage-senton",
+     "name": "sentOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-notificationmessage-text",
+     "name": "text",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-schedule",
+   "name": "Schedule",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Time window for rules"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-schedule-fromhour",
+     "name": "fromHour",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-schedule-tohour",
+     "name": "toHour",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-holiday",
+   "name": "Holiday",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Day with special schedule"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-holiday-date",
+     "name": "date",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-holiday-name",
+     "name": "name",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-servicearea",
+   "name": "ServiceArea",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Area served by a maintenance team"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-servicearea-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-team",
+   "name": "Team",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Maintenance team"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-team-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-team-size",
+     "name": "size",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-shift",
+   "name": "Shift",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Team shift"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-shift-starthour",
+     "name": "startHour",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-shift-endhour",
+     "name": "endHour",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-dataqualityreport",
+   "name": "DataQualityReport",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Quality of the data of a channel"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-dataqualityreport-periodstart",
+     "name": "periodStart",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-dataqualityreport-missingpercent",
+     "name": "missingPercent",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-correlation",
+   "name": "Correlation",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Statistical link between two channels"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-correlation-coefficient",
+     "name": "coefficient",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-forecast",
+   "name": "Forecast",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Predicted channel value"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-forecast-forhour",
+     "name": "forHour",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-forecast-value",
+     "name": "value",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-modelversion",
+   "name": "ModelVersion",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Prediction model version"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-modelversion-version",
+     "name": "version",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-modelversion-accuracypercent",
+     "name": "accuracyPercent",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-incident",
+   "name": "Incident",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Operational incident of the platform"
+   },
+   "attributes": [
+    {
+     "id": "urbansense-alto-incident-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-incident-severity",
+     "name": "severity",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "urbansense-alto-enum-alertseverity",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-incident-closed",
+     "name": "closed",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "BOOLEAN",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  }
+ ],
+ "enums": [
+  {
+   "id": "urbansense-alto-enum-devicestatus",
+   "name": "DeviceStatus",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "urbansense-alto-enum-devicestatus-planned",
+     "name": "PLANNED",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-devicestatus-active",
+     "name": "ACTIVE",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-devicestatus-degraded",
+     "name": "DEGRADED",
+     "value": 2,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-devicestatus-offline",
+     "name": "OFFLINE",
+     "value": 3,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-devicestatus-retired",
+     "name": "RETIRED",
+     "value": 4,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-enum-pollutant",
+   "name": "Pollutant",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "urbansense-alto-enum-pollutant-no2",
+     "name": "NO2",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-pollutant-pm10",
+     "name": "PM10",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-pollutant-pm25",
+     "name": "PM25",
+     "value": 2,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-pollutant-o3",
+     "name": "O3",
+     "value": 3,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-pollutant-co",
+     "name": "CO",
+     "value": 4,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-enum-readingquality",
+   "name": "ReadingQuality",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "urbansense-alto-enum-readingquality-good",
+     "name": "GOOD",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-readingquality-suspect",
+     "name": "SUSPECT",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-readingquality-bad",
+     "name": "BAD",
+     "value": 2,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-enum-alertseverity",
+   "name": "AlertSeverity",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "urbansense-alto-enum-alertseverity-info",
+     "name": "INFO",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-alertseverity-warning",
+     "name": "WARNING",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-alertseverity-critical",
+     "name": "CRITICAL",
+     "value": 2,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-enum-alertstate",
+   "name": "AlertState",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "urbansense-alto-enum-alertstate-open",
+     "name": "OPEN",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-alertstate-acknowledged",
+     "name": "ACKNOWLEDGED",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-alertstate-resolved",
+     "name": "RESOLVED",
+     "value": 2,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-alertstate-dismissed",
+     "name": "DISMISSED",
+     "value": 3,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-enum-comparison",
+   "name": "Comparison",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "urbansense-alto-enum-comparison-greater",
+     "name": "GREATER",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-comparison-less",
+     "name": "LESS",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-comparison-equal",
+     "name": "EQUAL",
+     "value": 2,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-comparison-outside",
+     "name": "OUTSIDE",
+     "value": 3,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-enum-aggregatefunction",
+   "name": "AggregateFunction",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "urbansense-alto-enum-aggregatefunction-avg",
+     "name": "AVG",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-aggregatefunction-min",
+     "name": "MIN",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-aggregatefunction-max",
+     "name": "MAX",
+     "value": 2,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-aggregatefunction-sum",
+     "name": "SUM",
+     "value": 3,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-aggregatefunction-count",
+     "name": "COUNT",
+     "value": 4,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-aggregatefunction-p95",
+     "name": "P95",
+     "value": 5,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-enum-stagekind",
+   "name": "StageKind",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "urbansense-alto-enum-stagekind-filter",
+     "name": "FILTER",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-stagekind-smooth",
+     "name": "SMOOTH",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-stagekind-resample",
+     "name": "RESAMPLE",
+     "value": 2,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-stagekind-enrich",
+     "name": "ENRICH",
+     "value": 3,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-stagekind-anonymise",
+     "name": "ANONYMISE",
+     "value": 4,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "urbansense-alto-enum-notifychannel",
+   "name": "NotifyChannel",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "urbansense-alto-enum-notifychannel-email",
+     "name": "EMAIL",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-notifychannel-sms",
+     "name": "SMS",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-notifychannel-push",
+     "name": "PUSH",
+     "value": 2,
+     "annotations": {}
+    },
+    {
+     "id": "urbansense-alto-enum-notifychannel-webhook",
+     "name": "WEBHOOK",
+     "value": 3,
+     "annotations": {}
+    }
+   ]
+  }
+ ],
+ "dataTypes": [],
+ "relations": [
+  {
+   "id": "urbansense-alto-urbansensecity-rel-zones",
+   "name": "zones",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-zone",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-zone-rel-subzones",
+   "name": "subzones",
+   "sourceTypeId": "urbansense-alto-zone",
+   "targetTypeId": "urbansense-alto-zone",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {
+    "hydra.battery.purpose": "recursive zone tree"
+   }
+  },
+  {
+   "id": "urbansense-alto-zone-rel-parent",
+   "name": "parent",
+   "sourceTypeId": "urbansense-alto-zone",
+   "targetTypeId": "urbansense-alto-zone",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {
+    "hydra.battery.purpose": "navigation to the enclosing zone"
+   }
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-devices",
+   "name": "devices",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-device",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-device-rel-location",
+   "name": "location",
+   "sourceTypeId": "urbansense-alto-device",
+   "targetTypeId": "urbansense-alto-location",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-device-rel-zone",
+   "name": "zone",
+   "sourceTypeId": "urbansense-alto-device",
+   "targetTypeId": "urbansense-alto-zone",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-sensordevice-rel-gateway",
+   "name": "gateway",
+   "sourceTypeId": "urbansense-alto-sensordevice",
+   "targetTypeId": "urbansense-alto-gateway",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-quantities",
+   "name": "quantities",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-quantitytype",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-sensordevice-rel-channels",
+   "name": "channels",
+   "sourceTypeId": "urbansense-alto-sensordevice",
+   "targetTypeId": "urbansense-alto-channel",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-channel-rel-quantity",
+   "name": "quantity",
+   "sourceTypeId": "urbansense-alto-channel",
+   "targetTypeId": "urbansense-alto-quantitytype",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-channel-rel-readings",
+   "name": "readings",
+   "sourceTypeId": "urbansense-alto-channel",
+   "targetTypeId": "urbansense-alto-reading",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-channel-rel-thresholds",
+   "name": "thresholds",
+   "sourceTypeId": "urbansense-alto-channel",
+   "targetTypeId": "urbansense-alto-threshold",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-alerts",
+   "name": "alerts",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-alert",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-alert-rel-threshold",
+   "name": "threshold",
+   "sourceTypeId": "urbansense-alto-alert",
+   "targetTypeId": "urbansense-alto-threshold",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-alert-rel-reading",
+   "name": "reading",
+   "sourceTypeId": "urbansense-alto-alert",
+   "targetTypeId": "urbansense-alto-reading",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-alert-rel-assignee",
+   "name": "assignee",
+   "sourceTypeId": "urbansense-alto-alert",
+   "targetTypeId": "urbansense-alto-operator",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-operators",
+   "name": "operators",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-operator",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-device-rel-visits",
+   "name": "visits",
+   "sourceTypeId": "urbansense-alto-device",
+   "targetTypeId": "urbansense-alto-maintenancevisit",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-maintenancevisit-rel-operator",
+   "name": "operator",
+   "sourceTypeId": "urbansense-alto-maintenancevisit",
+   "targetTypeId": "urbansense-alto-operator",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-actuator-rel-controlledby",
+   "name": "controlledBy",
+   "sourceTypeId": "urbansense-alto-actuator",
+   "targetTypeId": "urbansense-alto-alert",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {
+    "hydra.battery.purpose": "actuators react to alerts"
+   }
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-detectionrules",
+   "name": "detectionRules",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-detectionrule",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-detectionrule-rel-conditions",
+   "name": "conditions",
+   "sourceTypeId": "urbansense-alto-detectionrule",
+   "targetTypeId": "urbansense-alto-rulecondition",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-rulecondition-rel-channel",
+   "name": "channel",
+   "sourceTypeId": "urbansense-alto-rulecondition",
+   "targetTypeId": "urbansense-alto-channel",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-situations",
+   "name": "situations",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-situation",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-situation-rel-rule",
+   "name": "rule",
+   "sourceTypeId": "urbansense-alto-situation",
+   "targetTypeId": "urbansense-alto-detectionrule",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-situation-rel-alerts",
+   "name": "alerts",
+   "sourceTypeId": "urbansense-alto-situation",
+   "targetTypeId": "urbansense-alto-alert",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-plans",
+   "name": "plans",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-reactionplan",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-reactionplan-rel-steps",
+   "name": "steps",
+   "sourceTypeId": "urbansense-alto-reactionplan",
+   "targetTypeId": "urbansense-alto-reactionstep",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-reactionstep-rel-escalations",
+   "name": "escalations",
+   "sourceTypeId": "urbansense-alto-reactionstep",
+   "targetTypeId": "urbansense-alto-escalation",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-detectionrule-rel-plan",
+   "name": "plan",
+   "sourceTypeId": "urbansense-alto-detectionrule",
+   "targetTypeId": "urbansense-alto-reactionplan",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-reactionstep-rel-actuator",
+   "name": "actuator",
+   "sourceTypeId": "urbansense-alto-reactionstep",
+   "targetTypeId": "urbansense-alto-actuator",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-channel-rel-aggregations",
+   "name": "aggregations",
+   "sourceTypeId": "urbansense-alto-channel",
+   "targetTypeId": "urbansense-alto-aggregation",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-aggregation-rel-values",
+   "name": "values",
+   "sourceTypeId": "urbansense-alto-aggregation",
+   "targetTypeId": "urbansense-alto-aggregatevalue",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-pipelines",
+   "name": "pipelines",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-datapipeline",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-datapipeline-rel-stages",
+   "name": "stages",
+   "sourceTypeId": "urbansense-alto-datapipeline",
+   "targetTypeId": "urbansense-alto-pipelinestage",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-datapipeline-rel-inputs",
+   "name": "inputs",
+   "sourceTypeId": "urbansense-alto-datapipeline",
+   "targetTypeId": "urbansense-alto-channel",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-calibratable-rel-calibrations",
+   "name": "calibrations",
+   "sourceTypeId": "urbansense-alto-calibratable",
+   "targetTypeId": "urbansense-alto-calibrationrecord",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-workorders",
+   "name": "workOrders",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-workorder",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-workorder-rel-device",
+   "name": "device",
+   "sourceTypeId": "urbansense-alto-workorder",
+   "targetTypeId": "urbansense-alto-device",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-workorder-rel-parts",
+   "name": "parts",
+   "sourceTypeId": "urbansense-alto-workorder",
+   "targetTypeId": "urbansense-alto-sparepart",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-firmware",
+   "name": "firmware",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-firmwareversion",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-firmwareversion-rel-rollouts",
+   "name": "rollouts",
+   "sourceTypeId": "urbansense-alto-firmwareversion",
+   "targetTypeId": "urbansense-alto-firmwarerollout",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-firmwarerollout-rel-targets",
+   "name": "targets",
+   "sourceTypeId": "urbansense-alto-firmwarerollout",
+   "targetTypeId": "urbansense-alto-device",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-dashboards",
+   "name": "dashboards",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-dashboard",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-dashboard-rel-widgets",
+   "name": "widgets",
+   "sourceTypeId": "urbansense-alto-dashboard",
+   "targetTypeId": "urbansense-alto-widget",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-widget-rel-channel",
+   "name": "channel",
+   "sourceTypeId": "urbansense-alto-widget",
+   "targetTypeId": "urbansense-alto-channel",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-operator-rel-subscriptions",
+   "name": "subscriptions",
+   "sourceTypeId": "urbansense-alto-operator",
+   "targetTypeId": "urbansense-alto-subscription",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-subscription-rel-rule",
+   "name": "rule",
+   "sourceTypeId": "urbansense-alto-subscription",
+   "targetTypeId": "urbansense-alto-detectionrule",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-messages",
+   "name": "messages",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-notificationmessage",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-notificationmessage-rel-subscription",
+   "name": "subscription",
+   "sourceTypeId": "urbansense-alto-notificationmessage",
+   "targetTypeId": "urbansense-alto-subscription",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-detectionrule-rel-schedule",
+   "name": "schedule",
+   "sourceTypeId": "urbansense-alto-detectionrule",
+   "targetTypeId": "urbansense-alto-schedule",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-holidays",
+   "name": "holidays",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-holiday",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-serviceareas",
+   "name": "serviceAreas",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-servicearea",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-servicearea-rel-zones",
+   "name": "zones",
+   "sourceTypeId": "urbansense-alto-servicearea",
+   "targetTypeId": "urbansense-alto-zone",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-servicearea-rel-teams",
+   "name": "teams",
+   "sourceTypeId": "urbansense-alto-servicearea",
+   "targetTypeId": "urbansense-alto-team",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-team-rel-shifts",
+   "name": "shifts",
+   "sourceTypeId": "urbansense-alto-team",
+   "targetTypeId": "urbansense-alto-shift",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-team-rel-members",
+   "name": "members",
+   "sourceTypeId": "urbansense-alto-team",
+   "targetTypeId": "urbansense-alto-operator",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-channel-rel-qualityreports",
+   "name": "qualityReports",
+   "sourceTypeId": "urbansense-alto-channel",
+   "targetTypeId": "urbansense-alto-dataqualityreport",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-correlations",
+   "name": "correlations",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-correlation",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-correlation-rel-left",
+   "name": "left",
+   "sourceTypeId": "urbansense-alto-correlation",
+   "targetTypeId": "urbansense-alto-channel",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-correlation-rel-right",
+   "name": "right",
+   "sourceTypeId": "urbansense-alto-correlation",
+   "targetTypeId": "urbansense-alto-channel",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-channel-rel-forecasts",
+   "name": "forecasts",
+   "sourceTypeId": "urbansense-alto-channel",
+   "targetTypeId": "urbansense-alto-forecast",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-modelversions",
+   "name": "modelVersions",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-modelversion",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-forecast-rel-model",
+   "name": "model",
+   "sourceTypeId": "urbansense-alto-forecast",
+   "targetTypeId": "urbansense-alto-modelversion",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-urbansensecity-rel-incidents",
+   "name": "incidents",
+   "sourceTypeId": "urbansense-alto-urbansensecity",
+   "targetTypeId": "urbansense-alto-incident",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-sensordevice-inheritance-device",
+   "name": "SensorDevice->Device",
+   "sourceTypeId": "urbansense-alto-sensordevice",
+   "targetTypeId": "urbansense-alto-device",
+   "kind": "INHERITANCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-sensordevice-implementation-powered",
+   "name": "SensorDevice->Powered",
+   "sourceTypeId": "urbansense-alto-sensordevice",
+   "targetTypeId": "urbansense-alto-powered",
+   "kind": "IMPLEMENTATION",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-sensordevice-implementation-networked",
+   "name": "SensorDevice->Networked",
+   "sourceTypeId": "urbansense-alto-sensordevice",
+   "targetTypeId": "urbansense-alto-networked",
+   "kind": "IMPLEMENTATION",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-airqualitysensor-inheritance-sensordevice",
+   "name": "AirQualitySensor->SensorDevice",
+   "sourceTypeId": "urbansense-alto-airqualitysensor",
+   "targetTypeId": "urbansense-alto-sensordevice",
+   "kind": "INHERITANCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-airqualitysensor-implementation-calibratable",
+   "name": "AirQualitySensor->Calibratable",
+   "sourceTypeId": "urbansense-alto-airqualitysensor",
+   "targetTypeId": "urbansense-alto-calibratable",
+   "kind": "IMPLEMENTATION",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-noisesensor-inheritance-sensordevice",
+   "name": "NoiseSensor->SensorDevice",
+   "sourceTypeId": "urbansense-alto-noisesensor",
+   "targetTypeId": "urbansense-alto-sensordevice",
+   "kind": "INHERITANCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-noisesensor-implementation-calibratable",
+   "name": "NoiseSensor->Calibratable",
+   "sourceTypeId": "urbansense-alto-noisesensor",
+   "targetTypeId": "urbansense-alto-calibratable",
+   "kind": "IMPLEMENTATION",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-trafficcounter-inheritance-sensordevice",
+   "name": "TrafficCounter->SensorDevice",
+   "sourceTypeId": "urbansense-alto-trafficcounter",
+   "targetTypeId": "urbansense-alto-sensordevice",
+   "kind": "INHERITANCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-weatherstation-inheritance-sensordevice",
+   "name": "WeatherStation->SensorDevice",
+   "sourceTypeId": "urbansense-alto-weatherstation",
+   "targetTypeId": "urbansense-alto-sensordevice",
+   "kind": "INHERITANCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-weatherstation-implementation-calibratable",
+   "name": "WeatherStation->Calibratable",
+   "sourceTypeId": "urbansense-alto-weatherstation",
+   "targetTypeId": "urbansense-alto-calibratable",
+   "kind": "IMPLEMENTATION",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-gateway-inheritance-device",
+   "name": "Gateway->Device",
+   "sourceTypeId": "urbansense-alto-gateway",
+   "targetTypeId": "urbansense-alto-device",
+   "kind": "INHERITANCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-gateway-implementation-networked",
+   "name": "Gateway->Networked",
+   "sourceTypeId": "urbansense-alto-gateway",
+   "targetTypeId": "urbansense-alto-networked",
+   "kind": "IMPLEMENTATION",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-actuator-inheritance-device",
+   "name": "Actuator->Device",
+   "sourceTypeId": "urbansense-alto-actuator",
+   "targetTypeId": "urbansense-alto-device",
+   "kind": "INHERITANCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "urbansense-alto-actuator-implementation-networked",
+   "name": "Actuator->Networked",
+   "sourceTypeId": "urbansense-alto-actuator",
+   "targetTypeId": "urbansense-alto-networked",
+   "kind": "IMPLEMENTATION",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  }
+ ],
+ "annotations": {
+  "hydra.battery.domain": "urbansense",
+  "hydra.battery.level": "alto",
+  "hydra.battery.purpose": "City sensor platform: devices, zones, readings, thresholds, alerts, detection, reaction and aggregation"
+ }
+}
