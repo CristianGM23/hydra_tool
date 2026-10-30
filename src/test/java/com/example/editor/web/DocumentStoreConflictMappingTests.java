@@ -25,6 +25,12 @@ class DocumentStoreConflictMappingTests {
         void fail(@PathVariable("reason") String reason) {
             throw new CanonicalDocumentStoreException(Reason.valueOf(reason), "Document has changed since it was loaded");
         }
+
+        @PostMapping("/store-io")
+        void failWritingTheFile() {
+            throw new CanonicalDocumentStoreException(Reason.STORAGE_ERROR, "Could not store document: C:\\srv\\hydra\\data\\secret-project\\doc.json",
+                    new java.io.IOException("disk full"));
+        }
     }
 
     private final MockMvc mvc = MockMvcBuilders.standaloneSetup(new Throwing()).setControllerAdvice(new ApiExceptionHandler()).build();
@@ -41,5 +47,14 @@ class DocumentStoreConflictMappingTests {
         mvc.perform(post("/store/NOT_FOUND")).andExpect(status().isNotFound());
         mvc.perform(post("/store/INVALID_REQUEST")).andExpect(status().isBadRequest());
         mvc.perform(post("/store/STORAGE_ERROR")).andExpect(status().isInternalServerError());
+    }
+
+    /** A storage failure is a server error: like any unexpected error it must not hand the server's paths or cause to the client. */
+    @Test
+    void aStorageFailureDoesNotDiscloseServerPathsToTheClient() throws Exception {
+        mvc.perform(post("/store-io")).andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.code").value("INTERNAL_ERROR"))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("secret-project"))))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("C:\\srv"))));
     }
 }

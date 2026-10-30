@@ -310,6 +310,9 @@ public class ApiExceptionHandler {
     /** Convierte los errores del almacén JSON compartido cuando llegan sin una capa de aplicación que los traduzca (p. ej. sesiones textuales): un conflicto optimista entre peticiones concurrentes es 412/409, no un 500. */
     @ExceptionHandler(com.example.editor.validation.persistence.CanonicalDocumentStoreException.class)
     /** Descripción: Traduce el motivo estable de CanonicalDocumentStoreException a su código HTTP. Entradas: exception: error del almacén. Salida: respuesta con el motivo y el mensaje. */ public ResponseEntity<ApiError> handleCanonicalDocumentStoreException(com.example.editor.validation.persistence.CanonicalDocumentStoreException exception) {
+        // DEF-API-STORE-ERROR-DISCLOSURE: a storage failure names server paths; as before this handler existed, it goes to the unexpected-error
+        // handler, which logs it with its correlation id and answers with the generic message
+        if(exception.getReason() == com.example.editor.validation.persistence.CanonicalDocumentStoreException.Reason.STORAGE_ERROR) return handleUnexpectedException(exception);
         HttpStatus status = switch(exception.getReason()) {
             case INVALID_REQUEST -> HttpStatus.BAD_REQUEST;
             case NOT_FOUND -> HttpStatus.NOT_FOUND;
