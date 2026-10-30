@@ -182,7 +182,8 @@ public final class AtomicJsonDocumentStore<T> implements CanonicalDocumentStore<
     /** Descripción: Obtiene la información correspondiente a «read» dentro de AtomicJsonDocumentStore. Entradas: path: ruta o ubicación utilizada por la operación; expectedId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ private StoredCanonicalDocument<T> read(Path path, String expectedId) {
         try {
             byte[] content = com.example.editor.io.BoundedIo.readInternal(path);
-            content = evolvePersistedDocument(path, content, true);
+            // sin migraciones para el namespace la evolución no cambia nada: se evita un árbol JSON completo por lectura
+            if(schemaEvolution.hasEvolutions(namespace)) content = evolvePersistedDocument(path, content, true);
             T document = objectMapper.readValue(content, type);
             if(!expectedId.equals(idExtractor.apply(document))) throw new CanonicalDocumentStoreException(Reason.STORAGE_ERROR, "Document id does not match its file name: " + expectedId);
             return new StoredCanonicalDocument<>(document, etag(content), path);
