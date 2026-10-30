@@ -92,11 +92,13 @@ public class EventModelApplicationService {
     /** Descripción: Obtiene la información correspondiente a «list» dentro de EventModelApplicationService. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public List<EventModelSummary> list() {
         Set<String> ids = new LinkedHashSet<>(definitionRepository.listMetamodelIds());
         ids.retainAll(bindingRepository.listMetamodelIds());
-        return ids.stream().map(id -> {
-            StoredCanonicalDocument<EventDefinitionModel> definitions = definitionRepository.findByMetamodelId(id).orElseThrow();
-            StoredCanonicalDocument<EventBindingModel> bindings = bindingRepository.findByMetamodelId(id).orElseThrow();
-            return new EventModelSummary(id, definitions.document().id(), definitions.document().eventTypes().size(), bindings.document().id(), bindings.document().bindings().size(), definitions.etag(), bindings.etag());
-        }).toList();
+        return ids.stream().map(id -> summary(id).orElseThrow()).toList();
+    }
+    /** Descripción: Resume los eventos de un solo metamodelo leyendo únicamente sus dos documentos, de modo que un documento ilegible de otro metamodelo no lo impide (preparación de Home). Entradas: metamodelId: identificador del metamodelo o del contexto semántico. Salida: el mismo resumen que list, o vacío si falta alguno de los dos documentos. */ public java.util.Optional<EventModelSummary> summary(String metamodelId) {
+        java.util.Optional<StoredCanonicalDocument<EventDefinitionModel>> definitions = definitionRepository.findByMetamodelId(metamodelId);
+        if(definitions.isEmpty()) return java.util.Optional.empty();
+        return bindingRepository.findByMetamodelId(metamodelId).map(bindings -> new EventModelSummary(metamodelId, definitions.get().document().id(),
+                definitions.get().document().eventTypes().size(), bindings.document().id(), bindings.document().bindings().size(), definitions.get().etag(), bindings.etag()));
     }
     /** Descripción: Valida las condiciones necesarias para «check» y rechaza entradas no válidas. Entradas: metamodelId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ public EventModelCheckReport check(String metamodelId) { EventModelLoadResult result = find(metamodelId); return result.checkReport(); }
     /** Descripción: Elimina o libera el recurso gestionado por «delete» de forma controlada. Entradas: metamodelId: identificador que delimita el recurso objetivo; definitionEtag: dato de entrada necesario para la operación; bindingEtag: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void delete(String metamodelId, String definitionEtag, String bindingEtag) {
