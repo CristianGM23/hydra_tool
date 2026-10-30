@@ -22,7 +22,8 @@ import com.example.editor.metamodel.importing.importers.XtextMetamodelImporter;
  * <li>a feature assigned in several places of one rule ({@code args+=P (',' args+=P)*}) is one feature in Xtext and Langium, but was split
  * into {@code args} and {@code args2}.</li>
  * </ul>
- * Supporting the constructs themselves is outside the current contract; what is required here is that nothing is lost silently.
+ * Since Langium D-1..D-4 (authorisation of 30/10) those three headers are imported (GrammarTypeInferenceImportTests); a header that is still
+ * not understood keeps being reported, never dropped silently.
  */
 class GrammarRuleCoverageImportTests {
 
@@ -67,14 +68,28 @@ class GrammarRuleCoverageImportTests {
             """;
 
     @Test
-    void ruleDeclarationsTheImporterDoesNotSupportAreReportedNeverDroppedSilently() {
-        List<TransformationWarning> warnings = new LangiumMetamodelImporter().importMetamodel(source("arithmetics.langium", ARITHMETICS), MetamodelImportOptions.defaults()).warnings();
+    void infixInfersAndFragmentRulesAreImportedAndAnUnknownHeaderIsStillReported() {
+        var output = new LangiumMetamodelImporter().importMetamodel(source("arithmetics.langium", ARITHMETICS), MetamodelImportOptions.defaults());
+        assertThat(output.warnings()).extracting(TransformationWarning::code).doesNotContain("IMPORT_GRAMMAR_RULE_NOT_IMPORTED");
+        assertThat(output.metamodel().classes()).extracting(MetaClass::name).contains("Expression", "BinaryExpression", "NumberLiteral");
 
-        assertThat(warnings).filteredOn(w -> w.code().equals("IMPORT_GRAMMAR_RULE_NOT_IMPORTED")).extracting(TransformationWarning::message)
-                .hasSize(3)
-                .anySatisfy(m -> assertThat(m).contains("infix BinaryExpression on PrimaryExpression"))
-                .anySatisfy(m -> assertThat(m).contains("PrimaryExpression infers Expression"))
-                .anySatisfy(m -> assertThat(m).contains("fragment Named"));
+        String unknown = ARITHMETICS + "\ndeprecated rule Legacy:\n    'legacy' name=ID;\n";
+        assertThat(new LangiumMetamodelImporter().importMetamodel(source("arithmetics.langium", unknown), MetamodelImportOptions.defaults()).warnings())
+                .filteredOn(w -> w.code().equals("IMPORT_GRAMMAR_RULE_NOT_IMPORTED")).extracting(TransformationWarning::message)
+                .singleElement().satisfies(m -> assertThat(m).contains("deprecated rule Legacy"));
+    }
+
+    @Test
+    void parameterizedRulesAreImportedUnderTheirOwnName() {
+        String grammar = """
+                grammar Params
+                entry Model: items+=Item<false>*;
+                Item<Strict>: <Strict> 'strict' name=ID | <!Strict> name=ID;
+                terminal ID: /[a-z]+/;
+                """;
+        var output = new LangiumMetamodelImporter().importMetamodel(source("params.langium", grammar), MetamodelImportOptions.defaults());
+        assertThat(output.metamodel().classes()).extracting(MetaClass::name).containsExactly("Model", "Item");
+        assertThat(relations(output, "Model")).extracting(MetaRelation::name).containsExactly("items");
     }
 
     @Test

@@ -1,0 +1,104 @@
+{
+ "classes": [
+  "Command",
+  "Event",
+  "State",
+  "Statemachine",
+  "Transition"
+ ],
+ "generalisations": [],
+ "features": [
+  [
+   "Command",
+   "name"
+  ],
+  [
+   "Event",
+   "name"
+  ],
+  [
+   "State",
+   "actions"
+  ],
+  [
+   "State",
+   "name"
+  ],
+  [
+   "State",
+   "transitions"
+  ],
+  [
+   "Statemachine",
+   "commands"
+  ],
+  [
+   "Statemachine",
+   "events"
+  ],
+  [
+   "Statemachine",
+   "init"
+  ],
+  [
+   "Statemachine",
+   "name"
+  ],
+  [
+   "Statemachine",
+   "states"
+  ],
+  [
+   "Transition",
+   "event"
+  ],
+  [
+   "Transition",
+   "state"
+  ]
+ ],
+ "crossReferences": [
+  [
+   "State",
+   "actions",
+   "Command"
+  ],
+  [
+   "Statemachine",
+   "init",
+   "State"
+  ],
+  [
+   "Transition",
+   "event",
+   "Event"
+  ],
+  [
+   "Transition",
+   "state",
+   "State"
+  ]
+ ],
+ "containments": [
+  [
+   "State",
+   "transitions"
+  ],
+  [
+   "Statemachine",
+   "commands"
+  ],
+  [
+   "Statemachine",
+   "events"
+  ],
+  [
+   "Statemachine",
+   "states"
+  ]
+ ],
+ "_fuente": {
+  "gramatica": "statemachine.langium",
+  "langiumCli": "4.4.0"
+ }
+}

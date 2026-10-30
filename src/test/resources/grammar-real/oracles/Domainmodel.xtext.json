@@ -1,0 +1,90 @@
+{
+ "_fuente": {
+  "gramatica": "Domainmodel.xtext",
+  "metodo": "MANUAL: the reference battery oracle (Xtext generated EPackage); Xtext lifts name to AbstractElement and name/type to Feature"
+ },
+ "classes": [
+  "AbstractElement",
+  "DomainModel",
+  "Entity",
+  "Feature",
+  "Operation",
+  "PackageDeclaration",
+  "Property"
+ ],
+ "generalisations": [
+  [
+   "Entity",
+   "AbstractElement"
+  ],
+  [
+   "Operation",
+   "Feature"
+  ],
+  [
+   "PackageDeclaration",
+   "AbstractElement"
+  ],
+  [
+   "Property",
+   "Feature"
+  ]
+ ],
+ "features": [
+  [
+   "AbstractElement",
+   "name"
+  ],
+  [
+   "DomainModel",
+   "elements"
+  ],
+  [
+   "DomainModel",
+   "importSection"
+  ],
+  [
+   "Entity",
+   "features"
+  ],
+  [
+   "Entity",
+   "superType"
+  ],
+  [
+   "Feature",
+   "name"
+  ],
+  [
+   "Feature",
+   "type"
+  ],
+  [
+   "Operation",
+   "body"
+  ],
+  [
+   "Operation",
+   "params"
+  ],
+  [
+   "PackageDeclaration",
+   "elements"
+  ]
+ ],
+ "crossReferences": [],
+ "containments": [
+  [
+   "DomainModel",
+   "elements"
+  ],
+  [
+   "Entity",
+   "features"
+  ],
+  [
+   "PackageDeclaration",
+   "elements"
+  ]
+ ]
+}

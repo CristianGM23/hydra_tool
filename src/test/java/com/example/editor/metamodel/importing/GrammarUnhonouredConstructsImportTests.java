@@ -8,20 +8,22 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.example.editor.metamodel.core.MetaClass;
+import com.example.editor.metamodel.core.MetaRelationKind;
 import com.example.editor.metamodel.core.TransformationWarning;
 import com.example.editor.metamodel.importing.importers.LangiumMetamodelImporter;
 import com.example.editor.metamodel.importing.importers.XtextMetamodelImporter;
 
 /**
- * FIND-GR-IMPORT-SILENT-RETURNS-TYPE and FIND-GR-IMPORT-SILENT-ALTERNATIVE-ACTIONS (proposal D-2/D-3): the importer accepts a parser rule
- * with an unqualified «returns T» and actions inside its alternatives, but names the class after the rule and merges what every alternative
- * assigns. That loss must be reported, like an unsupported rule header is: this change only adds the warnings, the imported metamodel is the
- * same. Recovering T or the alternative subtypes is a new capability (D-2/D-3) that is not part of the current contract.
+ * FIND-GR-IMPORT-SILENT-RETURNS-TYPE and FIND-GR-IMPORT-SILENT-ALTERNATIVE-ACTIONS. Jar 13 only reported the loss (a rule with an unqualified
+ * «returns T» was imported as a class named after the rule; the actions inside its alternatives were merged into that class), because recovering
+ * T and the alternative subtypes (proposal D-2/D-3) was not authorised yet. Since the authorisation of 30/10 the constructs are represented, so
+ * the same inputs now check the represented types and the absence of the loss warnings; an action form the importer still does not read keeps
+ * being reported (TextualGrammarImportParser.reportUnrepresentedConstructs).
  */
 class GrammarUnhonouredConstructsImportTests {
 
     @Test
-    void anUnqualifiedReturnTypeThatIsNotImportedIsReported() {
+    void anUnqualifiedReturnTypeIsTheClassOfEveryRuleThatReturnsIt() {
         String grammar = """
                 grammar Items
                 entry Model: items+=Item* others+=Other*;
@@ -30,15 +32,12 @@ class GrammarUnhonouredConstructsImportTests {
                 terminal ID: /[a-z]+/;
                 """;
         var output = new LangiumMetamodelImporter().importMetamodel(source("items.langium", grammar), MetamodelImportOptions.defaults());
-        List<TransformationWarning> lost = codes(output.warnings(), "IMPORT_GRAMMAR_RETURN_TYPE_NOT_IMPORTED");
-        assertThat(lost).hasSize(2);
-        assertThat(lost.get(0).message()).contains("Item").contains("Element");
-        assertThat(lost.get(1).message()).contains("Other").contains("Element");
-        assertThat(output.metamodel().classes()).extracting(MetaClass::name).containsExactly("Model", "Item", "Other");
+        assertThat(codes(output.warnings(), "IMPORT_GRAMMAR_RETURN_TYPE_NOT_IMPORTED")).isEmpty();
+        assertThat(output.metamodel().classes()).extracting(MetaClass::name).containsExactly("Model", "Element");
     }
 
     @Test
-    void aQualifiedReturnTypeWithAnotherNameThatIsNotImportedIsReported() {
+    void aQualifiedReturnTypeWithAnotherNameNamesTheClass() {
         String grammar = """
                 grammar Items
                 import "metamodel"
@@ -47,13 +46,12 @@ class GrammarUnhonouredConstructsImportTests {
                 terminal ID: /[a-z]+/;
                 """;
         var output = new LangiumMetamodelImporter().importMetamodel(source("items.langium", grammar), MetamodelImportOptions.defaults());
-        assertThat(codes(output.warnings(), "IMPORT_GRAMMAR_RETURN_TYPE_NOT_IMPORTED")).singleElement()
-                .satisfies(w -> assertThat(w.message()).contains("Foo").contains("model::Bar"));
-        assertThat(output.metamodel().classes()).extracting(MetaClass::name).containsExactly("Model", "Foo");
+        assertThat(codes(output.warnings(), "IMPORT_GRAMMAR_RETURN_TYPE_NOT_IMPORTED")).isEmpty();
+        assertThat(output.metamodel().classes()).extracting(MetaClass::name).containsExactly("Model", "Bar");
     }
 
     @Test
-    void actionsInsideAlternativesThatAreMergedIntoTheRuleAreReported() {
+    void actionsInsideAlternativesCreateTheirSubtypes() {
         String grammar = """
                 grammar Values
                 entry Model: items+=Primary*;
@@ -62,14 +60,12 @@ class GrammarUnhonouredConstructsImportTests {
                 terminal ID: /[a-z]+/;
                 """;
         var output = new LangiumMetamodelImporter().importMetamodel(source("values.langium", grammar), MetamodelImportOptions.defaults());
-        List<TransformationWarning> merged = codes(output.warnings(), "IMPORT_GRAMMAR_ALTERNATIVE_ACTIONS_MERGED");
-        assertThat(merged).hasSize(1);
-        assertThat(merged.get(0).message()).contains("Primary").contains("NumberLiteral").contains("Reference");
-        assertThat(output.metamodel().classes()).extracting(MetaClass::name).containsExactly("Model", "Primary");
+        assertThat(codes(output.warnings(), "IMPORT_GRAMMAR_ALTERNATIVE_ACTIONS_MERGED")).isEmpty();
+        assertThat(output.metamodel().classes()).extracting(MetaClass::name).containsExactly("Model", "Primary", "NumberLiteral", "Reference");
     }
 
     @Test
-    void xtextRewriteActionsAreReportedToo() {
+    void xtextRewriteActionsCreateTheBinaryType() {
         String grammar = """
                 grammar org.example.Ops with org.eclipse.xtext.common.Terminals
                 generate ops "http://example.org/ops"
@@ -78,8 +74,11 @@ class GrammarUnhonouredConstructsImportTests {
                 Atom: value=INT;
                 """;
         var output = new XtextMetamodelImporter().importMetamodel(source("ops.xtext", grammar), MetamodelImportOptions.defaults());
-        assertThat(codes(output.warnings(), "IMPORT_GRAMMAR_ALTERNATIVE_ACTIONS_MERGED")).singleElement()
-                .satisfies(w -> assertThat(w.message()).contains("Sum").contains("Plus"));
+        assertThat(codes(output.warnings(), "IMPORT_GRAMMAR_ALTERNATIVE_ACTIONS_MERGED")).isEmpty();
+        MetaClass plus = output.metamodel().classes().stream().filter(c -> c.name().equals("Plus")).findFirst().orElseThrow();
+        assertThat(output.metamodel().relations()).filteredOn(r -> r.sourceTypeId().equals(plus.id()) && r.kind() == MetaRelationKind.CONTAINMENT)
+                .extracting(r -> r.name()).containsExactlyInAnyOrder("left", "right");
+        assertThat(output.metamodel().relations()).filteredOn(r -> r.sourceTypeId().equals(plus.id()) && r.kind() == MetaRelationKind.INHERITANCE).hasSize(1);
     }
 
     @Test

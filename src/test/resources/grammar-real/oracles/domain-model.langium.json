@@ -1,0 +1,101 @@
+{
+ "classes": [
+  "AbstractElement",
+  "DataType",
+  "Domainmodel",
+  "Entity",
+  "Feature",
+  "PackageDeclaration",
+  "Type"
+ ],
+ "generalisations": [
+  [
+   "DataType",
+   "Type"
+  ],
+  [
+   "Entity",
+   "Type"
+  ],
+  [
+   "PackageDeclaration",
+   "AbstractElement"
+  ],
+  [
+   "Type",
+   "AbstractElement"
+  ]
+ ],
+ "features": [
+  [
+   "DataType",
+   "name"
+  ],
+  [
+   "Domainmodel",
+   "elements"
+  ],
+  [
+   "Entity",
+   "features"
+  ],
+  [
+   "Entity",
+   "name"
+  ],
+  [
+   "Entity",
+   "superType"
+  ],
+  [
+   "Feature",
+   "many"
+  ],
+  [
+   "Feature",
+   "name"
+  ],
+  [
+   "Feature",
+   "type"
+  ],
+  [
+   "PackageDeclaration",
+   "elements"
+  ],
+  [
+   "PackageDeclaration",
+   "name"
+  ]
+ ],
+ "crossReferences": [
+  [
+   "Entity",
+   "superType",
+   "Entity"
+  ],
+  [
+   "Feature",
+   "type",
+   "Type"
+  ]
+ ],
+ "containments": [
+  [
+   "Domainmodel",
+   "elements"
+  ],
+  [
+   "Entity",
+   "features"
+  ],
+  [
+   "PackageDeclaration",
+   "elements"
+  ]
+ ],
+ "_fuente": {
+  "gramatica": "domain-model.langium",
+  "langiumCli": "4.4.0"
+ }
+}
