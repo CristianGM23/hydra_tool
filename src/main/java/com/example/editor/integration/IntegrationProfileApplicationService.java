@@ -84,7 +84,7 @@ public class IntegrationProfileApplicationService {
             return;
         }
         try { metamodelService.findById(id); }
-        catch(MetamodelApplicationException exception) { throw new IntegrationProfileApplicationException(exception.getReason() == MetamodelApplicationException.Reason.NOT_FOUND ? IntegrationProfileApplicationException.Reason.NOT_FOUND : IntegrationProfileApplicationException.Reason.INVALID_REQUEST, exception.getMessage(), exception); }
+        catch(MetamodelApplicationException exception) { throw new IntegrationProfileApplicationException(exception.getReason() == MetamodelApplicationException.Reason.NOT_FOUND ? IntegrationProfileApplicationException.Reason.NOT_FOUND : exception.getReason() == MetamodelApplicationException.Reason.STORAGE_ERROR || exception.getReason() == MetamodelApplicationException.Reason.VALIDATION_ERROR ? IntegrationProfileApplicationException.Reason.STORAGE_ERROR : IntegrationProfileApplicationException.Reason.INVALID_REQUEST, exception.getMessage(), exception); }
     }
     /** Descripción: Ejecuta la operación «translate» correspondiente a la responsabilidad de IntegrationProfileApplicationService. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private IntegrationProfileApplicationException translate(CanonicalDocumentStoreException exception) {
         IntegrationProfileApplicationException.Reason reason = switch(exception.getReason()) {

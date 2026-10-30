@@ -157,7 +157,7 @@ public class GamificationApplicationService {
     }
     /** Descripción: Valida las condiciones necesarias para «requireMetamodel» y rechaza entradas no válidas. Entradas: id: identificador que delimita el recurso objetivo. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void requireMetamodel(String id) {
         try { metamodelService.findById(id); }
-        catch(MetamodelApplicationException exception) { throw new GamificationApplicationException(GamificationApplicationException.Reason.NOT_FOUND, "Metamodel was not found: " + id, exception); }
+        catch(MetamodelApplicationException exception) { if(exception.getReason() == MetamodelApplicationException.Reason.STORAGE_ERROR || exception.getReason() == MetamodelApplicationException.Reason.VALIDATION_ERROR) throw new GamificationApplicationException(GamificationApplicationException.Reason.STORAGE_ERROR, exception.getMessage(), exception); throw new GamificationApplicationException(GamificationApplicationException.Reason.NOT_FOUND, "Metamodel was not found: " + id, exception); }
     }
     /** Descripción: Ejecuta la operación «response» correspondiente a la responsabilidad de GamificationApplicationService. Entradas: definitions: dato de entrada necesario para la operación; bindings: dato de entrada necesario para la operación; report: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private GamificationSaveResponse response(StoredCanonicalDocument<GamificationDefinitionModel> definitions,
             StoredCanonicalDocument<GamificationBindingModel> bindings, GamificationCheckReport report) {

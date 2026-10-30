@@ -49,11 +49,14 @@ class DocumentStoreConflictMappingTests {
         mvc.perform(post("/store/STORAGE_ERROR")).andExpect(status().isInternalServerError());
     }
 
-    /** A storage failure is a server error: like any unexpected error it must not hand the server's paths or cause to the client. */
+    /**
+     * A storage failure is a server error: it must not hand the server's paths or cause to the client. Since T-SEC every subsystem answers a
+     * storage failure with its distinguishable STORAGE_ERROR code and the public storage message (jar 13 answered INTERNAL_ERROR here only).
+     */
     @Test
     void aStorageFailureDoesNotDiscloseServerPathsToTheClient() throws Exception {
         mvc.perform(post("/store-io")).andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.code").value("INTERNAL_ERROR"))
+                .andExpect(jsonPath("$.code").value("STORAGE_ERROR"))
                 .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("secret-project"))))
                 .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("C:\\srv"))));
     }
