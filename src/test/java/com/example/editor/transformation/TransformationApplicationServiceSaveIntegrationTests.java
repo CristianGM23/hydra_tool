@@ -99,6 +99,26 @@ class TransformationApplicationServiceSaveIntegrationTests {
         assertThat(new JsonTransformationRepository(properties(temporary), mapper).find("transformation-ghost")).isEmpty();
     }
 
+    /**
+     * SEC-ERR (ronda 37c): una definicion guardada cuyo metamodelo de extremo existe pero no se puede leer es un fallo del servidor
+     * (STORAGE_ERROR, 500), no una peticion incorrecta del cliente (400) ni un «metamodelo no encontrado».
+     */
+    @Test
+    void anUnreadableEndpointMetamodelIsAStorageErrorAndNotAnInvalidRequest(@TempDir Path temporary) throws Exception {
+        TransformationApplicationService service = service(temporary);
+        TransformationDefinitionDocument document = validModelToModelDocument();
+        service.create(document);
+        Path stored;
+        try (var files = java.nio.file.Files.list(temporary.resolve("metamodels"))) {
+            stored = files.filter(file -> file.getFileName().toString().endsWith(".metamodel.json")).findFirst().orElseThrow();
+        }
+        java.nio.file.Files.writeString(stored, "{ unreadable metamodel");
+
+        assertThatThrownBy(() -> service.find(document.id())).isInstanceOf(TransformationApplicationException.class)
+                .extracting(exception -> ((TransformationApplicationException) exception).getReason())
+                .isEqualTo(TransformationApplicationException.Reason.STORAGE_ERROR);
+    }
+
     private static TransformationDefinitionDocument validModelToModelDocument() {
         TransformationBinding binding = new TransformationBinding("binding:age", "person", ExpressionTestFixtures.AGE,
                 TransformationBindingKind.DIRECT, ExpressionTestFixtures.AGE, null, null, null, Map.of());
