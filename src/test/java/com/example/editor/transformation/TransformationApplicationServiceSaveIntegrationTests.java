@@ -100,23 +100,43 @@ class TransformationApplicationServiceSaveIntegrationTests {
     }
 
     /**
-     * SEC-ERR (ronda 37c): una definicion guardada cuyo metamodelo de extremo existe pero no se puede leer es un fallo del servidor
-     * (STORAGE_ERROR, 500), no una peticion incorrecta del cliente (400) ni un «metamodelo no encontrado».
+     * SEC-ERR (ronda 37c): una definicion guardada cuyo metamodelo de extremo existe pero no se puede usar nunca es una peticion incorrecta
+     * del cliente (400) ni un «metamodelo no encontrado». Desde la decision del usuario del 31/10 (D-MM-CORRUPT-CONTRATO) un metamodelo
+     * almacenado corrupto es 409 CORRUPT_CONFIGURATION (la excepcion del propio metamodelo, que tambien recibe su lectura directa) y el 500
+     * STORAGE_ERROR queda para un fallo real de lectura (siguiente prueba); hasta el jar 17 este caso esperaba STORAGE_ERROR.
      */
     @Test
-    void anUnreadableEndpointMetamodelIsAStorageErrorAndNotAnInvalidRequest(@TempDir Path temporary) throws Exception {
+    void aCorruptEndpointMetamodelIsACorruptConfigurationAndNotAnInvalidRequest(@TempDir Path temporary) throws Exception {
         TransformationApplicationService service = service(temporary);
         TransformationDefinitionDocument document = validModelToModelDocument();
         service.create(document);
-        Path stored;
-        try (var files = java.nio.file.Files.list(temporary.resolve("metamodels"))) {
-            stored = files.filter(file -> file.getFileName().toString().endsWith(".metamodel.json")).findFirst().orElseThrow();
-        }
-        java.nio.file.Files.writeString(stored, "{ unreadable metamodel");
+        java.nio.file.Files.writeString(storedMetamodel(temporary), "{ unreadable metamodel");
 
-        assertThatThrownBy(() -> service.find(document.id())).isInstanceOf(TransformationApplicationException.class)
-                .extracting(exception -> ((TransformationApplicationException) exception).getReason())
-                .isEqualTo(TransformationApplicationException.Reason.STORAGE_ERROR);
+        assertThatThrownBy(() -> service.find(document.id())).isInstanceOf(com.example.editor.metamodel.application.MetamodelApplicationException.class)
+                .extracting(exception -> ((com.example.editor.metamodel.application.MetamodelApplicationException) exception).getReason())
+                .isEqualTo(com.example.editor.metamodel.application.MetamodelApplicationException.Reason.CORRUPT_CONFIGURATION);
+    }
+
+    /** El fallo real de lectura del metamodelo de un extremo (otro programa lo tiene abierto en exclusiva) sigue siendo STORAGE_ERROR (500). */
+    @Test
+    void anUnreadableEndpointMetamodelIsAStorageErrorAndNotAnInvalidRequest(@TempDir Path temporary) throws Exception {
+        org.junit.jupiter.api.Assumptions.assumeTrue(System.getProperty("os.name", "").toLowerCase(java.util.Locale.ROOT).contains("win"), "exclusive file sharing is a Windows behaviour");
+        TransformationApplicationService service = service(temporary);
+        TransformationDefinitionDocument document = validModelToModelDocument();
+        service.create(document);
+        try (java.nio.channels.FileChannel held = java.nio.channels.FileChannel.open(storedMetamodel(temporary), java.nio.file.StandardOpenOption.READ,
+                java.nio.file.StandardOpenOption.WRITE, com.sun.nio.file.ExtendedOpenOption.NOSHARE_READ, com.sun.nio.file.ExtendedOpenOption.NOSHARE_WRITE,
+                com.sun.nio.file.ExtendedOpenOption.NOSHARE_DELETE)) {
+            assertThatThrownBy(() -> service.find(document.id())).isInstanceOf(TransformationApplicationException.class)
+                    .extracting(exception -> ((TransformationApplicationException) exception).getReason())
+                    .isEqualTo(TransformationApplicationException.Reason.STORAGE_ERROR);
+        }
+    }
+
+    private static Path storedMetamodel(Path temporary) throws Exception {
+        try (var files = java.nio.file.Files.list(temporary.resolve("metamodels"))) {
+            return files.filter(file -> file.getFileName().toString().endsWith(".metamodel.json")).findFirst().orElseThrow();
+        }
     }
 
     private static TransformationDefinitionDocument validModelToModelDocument() {
