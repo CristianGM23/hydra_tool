@@ -50,11 +50,14 @@ public class ProjectZipService {
         Path temporary=null;
         try {
             List<ExportEntry> entries=collectExportEntries(root);
+            Path realRoot=com.example.editor.io.FileSystemBoundaries.realRoot(root);
             temporary=Files.createTempFile("hydra-project-export-", ".zip");
             long expanded=0;
             try(ZipOutputStream zip=new ZipOutputStream(Files.newOutputStream(temporary))) {
                 for(ExportEntry source:entries) {
                     verifyPortableSource(source.path());
+                    // TOCTOU: the inventory was taken before reading; a directory replaced by a junction since then would be read outside the project
+                    if(com.example.editor.io.FileSystemBoundaries.escapes(source.path(),realRoot)) throw invalid("Directory junctions and links outside the project cannot be exported in a portable project archive: "+source.relative());
                     ZipEntry entry=new ZipEntry(source.directory()?source.relative()+"/":source.relative());
                     entry.setTime(source.lastModifiedMillis());
                     zip.putNextEntry(entry);

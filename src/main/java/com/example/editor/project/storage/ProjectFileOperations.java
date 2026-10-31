@@ -47,7 +47,8 @@ public class ProjectFileOperations {
                     }
                     return FileVisitResult.CONTINUE;
                 }
-                /** Descripción: Elimina cada fichero visitado sin seguir enlaces simbólicos. Entradas: file: fichero visitado; attrs: atributos básicos. Salida: continúa el recorrido tras eliminar el fichero. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
+                /** Descripción: Elimina cada fichero visitado sin seguir enlaces simbólicos; si su ruta ya resuelve fuera de lo que se borra no lo toca (TOCTOU: Windows deja renombrar un directorio mientras se enumera y poner una unión en su lugar, y los nombres restantes se resolverían a través de ella). Entradas: file: fichero visitado; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
+                    if(FileSystemBoundaries.escapes(file,realRoot)) return FileVisitResult.CONTINUE;
                     Files.deleteIfExists(file);
                     return FileVisitResult.CONTINUE;
                 }
@@ -68,7 +69,8 @@ public class ProjectFileOperations {
                 Files.createDirectories(destination.resolve(source.relativize(dir).toString()));
                 return FileVisitResult.CONTINUE;
             }
-            /** Descripción: Copia un fichero o enlace visitado conservando el enlace como enlace en lugar de seguirlo. Entradas: file: entrada origen; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
+            /** Descripción: Copia un fichero o enlace visitado conservando el enlace como enlace en lugar de seguirlo; rechaza un fichero cuya ruta ya resuelve fuera del origen (TOCTOU: su directorio se sustituyó por una unión después de entrar en él). Entradas: file: entrada origen; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
+                if(!attrs.isSymbolicLink()&&FileSystemBoundaries.escapes(file,realSource)) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Links to directories outside the copied directory are not allowed: "+source.relativize(file));
                 Path target=destination.resolve(source.relativize(file).toString());
                 if(target.getParent()!=null) Files.createDirectories(target.getParent());
                 if(attrs.isSymbolicLink()) Files.copy(file,target,LinkOption.NOFOLLOW_LINKS,StandardCopyOption.REPLACE_EXISTING);
