@@ -199,6 +199,9 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
                 "Xtext infers one rule hierarchy: the class is offered under each of its supertypes, which can make the generated parser ambiguous."));}});
         Map<String, String> identifiers = new LinkedHashMap<>();
         classes.keySet().forEach(id -> identifiers.put(id, identifierTerminal(id, classes, supertypes, metamodel)));
+        // Una referencia nombra cualquier clase de su subárbol: si alguna usa STRING, la referencia también (un nombre ID también se escribe como STRING).
+        Map<String, String> references = new LinkedHashMap<>();
+        classes.keySet().forEach(id -> references.put(id, subtree(id, subtypes, new LinkedHashSet<>()).stream().anyMatch(value -> identifiers.get(value).equals("STRING")) ? "STRING" : "ID"));
         boolean[] usesBoolean = {false};
         StringBuilder rules = new StringBuilder();
         rules.append("Model:\n  elements+=Element*;\n\n");
@@ -211,7 +214,7 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
         for(MetaClass metaClass : classes.values()){
             List<String> alternatives = new ArrayList<>(subtypes.getOrDefault(metaClass.id(), List.of()).stream().map(id -> escape(classes.get(id).name())).toList());
             boolean abstractType = metaClass.kind() == MetaClassKind.ABSTRACT_CLASS || metaClass.kind() == MetaClassKind.INTERFACE;
-            if(!abstractType || alternatives.isEmpty()){alternatives.add(ownSyntax(metaClass, classes, supertypes, identifiers, metamodel, diagnostics, usesBoolean));}
+            if(!abstractType || alternatives.isEmpty()){alternatives.add(ownSyntax(metaClass, classes, supertypes, identifiers, references, metamodel, diagnostics, usesBoolean));}
             rules.append(escape(metaClass.name())).append(":\n  ").append(String.join(" | ", alternatives)).append(";\n\n");
         }
         metamodel.enums().forEach(metaEnum -> rules.append("enum ").append(escape(metaEnum.name())).append(":\n  ")
@@ -226,10 +229,10 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
     }
 
     /** Descripción: Sintaxis propia de una clase: palabra clave, identificador y todos los atributos y relaciones, también los heredados. Entradas: la
-     *  clase, el índice de clases, los supertipos, los terminales de identificador, el metamodelo, los diagnósticos y el indicador de uso de booleanos.
-     *  Salida: la alternativa de la regla. */
+     *  clase, el índice de clases, los supertipos, los terminales de identificador y de referencia, el metamodelo, los diagnósticos y el indicador de
+     *  uso de booleanos. Salida: la alternativa de la regla. */
     private String ownSyntax(MetaClass metaClass, Map<String, MetaClass> classes, Map<String, List<String>> supertypes, Map<String, String> identifiers,
-            MetaModel metamodel, List<IntegrationDiagnostic> diagnostics, boolean[] usesBoolean){
+            Map<String, String> references, MetaModel metamodel, List<IntegrationDiagnostic> diagnostics, boolean[] usesBoolean){
         StringBuilder syntax = new StringBuilder("'").append(metaClass.name()).append("' name=").append(identifiers.get(metaClass.id()));
         Set<String> assigned = new LinkedHashSet<>(List.of("name"));
         List<String> lineage = lineage(metaClass.id(), supertypes);
@@ -248,7 +251,7 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
             for(MetaRelation relation : metamodel.relations()){
                 if(!relation.sourceTypeId().equals(id) || !structural(relation.kind()) || !assigned.add(relation.name())){continue;}
                 MetaClass target = classes.get(relation.targetTypeId());
-                String reference = target == null ? "[Element|ID]" : "[" + escape(target.name()) + "|" + identifiers.get(target.id()) + "]";
+                String reference = target == null ? "[Element|ID]" : "[" + escape(target.name()) + "|" + references.get(target.id()) + "]";
                 syntax.append(fragment(relation.name(), reference, many(relation.targetMultiplicity()), optional(relation.targetMultiplicity())));
             }
         }
@@ -277,6 +280,11 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
         if(!visiting.add(classId)){return;}
         for(String parent : supertypes.getOrDefault(classId, List.of())){collectLineage(parent, supertypes, ordered, visiting);}
         ordered.add(classId);
+    }
+    /** Descripción: La clase y todos sus descendientes; tolera ciclos. Entradas: id, subtipos y los ya visitados. Salida: el conjunto visitado. */
+    private Set<String> subtree(String classId, Map<String, List<String>> subtypes, Set<String> visited){
+        if(visited.add(classId)){subtypes.getOrDefault(classId, List.of()).forEach(child -> subtree(child, subtypes, visited));}
+        return visited;
     }
     private boolean many(Multiplicity multiplicity){return multiplicity != null && (multiplicity.unbounded() || multiplicity.upperBound() != null && multiplicity.upperBound() > 1);}
     private boolean optional(Multiplicity multiplicity){return multiplicity == null || multiplicity.lowerBound() == 0;}

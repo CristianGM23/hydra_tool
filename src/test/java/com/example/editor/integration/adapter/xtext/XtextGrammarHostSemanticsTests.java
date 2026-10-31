@@ -92,6 +92,39 @@ class XtextGrammarHostSemanticsTests {
         assertThat(rule(grammar, "Group")).contains("('returns' ^returns+=[Room|ID])*");
     }
 
+    /** Jerarquía mixta: Student declara su propio «name» de texto (STRING) y Lecturer no (ID). Con [Person|ID] un estudiante llamado «Ana López» no se
+     *  podía referenciar; la referencia al supertipo usa STRING, que también nombra a los profesores, y la referencia directa a Lecturer sigue en ID. */
+    @Test void aReferenceToAHierarchyThatMixesIdentifierKindsUsesStrings(){
+        MetaModel base = university();
+        MetaClass person = new MetaClass("person", "Person", MetaClassKind.ABSTRACT_CLASS, List.of(attribute("person-code", "code", MetaTypeReference.primitive(MetaPrimitiveType.STRING))), List.of(), Map.of());
+        MetaClass student = new MetaClass("student", "Student", MetaClassKind.CLASS, List.of(attribute("student-name", "name", MetaTypeReference.primitive(MetaPrimitiveType.STRING))), List.of(), Map.of());
+        List<MetaClass> classes = base.classes().stream().map(value -> switch(value.id()){case "person" -> person; case "student" -> student; default -> value;}).toList();
+        List<MetaRelation> relations = new java.util.ArrayList<>(base.relations());
+        relations.add(new MetaRelation("room-keeper", "keeper", "room", "lecturer", MetaRelationKind.REFERENCE, Multiplicity.optional(), Multiplicity.one(), "", true, true, Map.of()));
+        String grammar = grammar(new MetaModel(base.schemaVersion(), base.id(), base.name(), classes, base.enums(), base.dataTypes(), relations, base.annotations()));
+        assertThat(rule(grammar, "Student")).contains("'Student' name=STRING");
+        assertThat(rule(grammar, "Lecturer")).contains("'Lecturer' name=ID");
+        assertThat(rule(grammar, "Group")).contains("members+=[Person|STRING]");
+        assertThat(rule(grammar, "Room")).contains("keeper=[Lecturer|ID]");
+    }
+
+    /** Un atributo «name» que no es un texto de un solo valor no puede ser el identificador: el identificador name=ID lo sustituye, se asigna una sola
+     *  vez y se avisa con XTEXT_NAME_ATTRIBUTE_NOT_TEXT. */
+    @Test void aNameAttributeThatIsNotTextIsReplacedByTheIdentifierWithAWarning(){
+        MetaModel base = university();
+        MetaAttribute number = new MetaAttribute("room-name", "name", MetaTypeReference.primitive(MetaPrimitiveType.INTEGER), Multiplicity.one(), true, true, "", Map.of());
+        List<MetaClass> classes = base.classes().stream().map(value -> !value.id().equals("room") ? value
+                : new MetaClass("room", "Room", MetaClassKind.CLASS, List.of(number), List.of(), Map.of())).toList();
+        TechnologyCompilationResult result = adapter.compile(request(new MetaModel(base.schemaVersion(), base.id(), base.name(), classes, base.enums(), base.dataTypes(), base.relations(), base.annotations())));
+        String room = rule(text(result, ".xtext"), "Room");
+        assertThat(room).contains("'Room' name=ID");
+        assertThat(count(room, "name=")).isEqualTo(1);
+        assertThat(result.diagnostics()).anySatisfy(value -> {
+            assertThat(value.code()).isEqualTo("XTEXT_NAME_ATTRIBUTE_NOT_TEXT");
+            assertThat(value.elementId()).isEqualTo("room-name");
+        });
+    }
+
     @Test void aGrammarWithoutBooleansDoesNotImportEcore(){
         assertThat(grammar(TechnologyAdapterTestFixtures.xtextRequest())).doesNotContain("ecore").contains("employer=[Company|ID]", "'Person' name=STRING");
     }
