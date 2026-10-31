@@ -3,6 +3,7 @@ package com.example.editor.integration.roundtrip;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import com.example.editor.integration.compiler.TechnologyCompilationException;
+import com.example.editor.io.FileSystemBoundaries;
 
 /** Limits generated round-trip paths and refuses symbolic-link hops in existing ancestors. */
 public final class RoundTripSafePaths {
@@ -34,10 +35,14 @@ public final class RoundTripSafePaths {
         if(Files.isSymbolicLink(base)) {
             throw new TechnologyCompilationException("Symbolic round-trip root blocked: " + base);
         }
+        Path realBase;
+        try { realBase = FileSystemBoundaries.realRoot(base); }
+        catch(java.io.IOException exception) { throw new TechnologyCompilationException("Round-trip root cannot be resolved: " + relative); }
         Path cursor = base;
         for(String segment : segments) {
             cursor = cursor.resolve(segment);
-            if(Files.isSymbolicLink(cursor)) {
+            // SEC-WIN-JUNCTION: a Windows directory junction is not a symbolic link for Java but leads outside the root all the same
+            if(Files.isSymbolicLink(cursor) || FileSystemBoundaries.escapes(cursor, realBase)) {
                 throw new TechnologyCompilationException("Symbolic round-trip path blocked: " + relative);
             }
         }

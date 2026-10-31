@@ -107,11 +107,13 @@ public class ProjectZipService {
         long maximumBytes=properties.getMaxArchiveSizeBytes();
         ArrayList<ExportEntry> entries=new ArrayList<>(Math.min(maximumEntries,1024));
         long[] estimatedBytes={0L};
+        Path realRoot=com.example.editor.io.FileSystemBoundaries.realRoot(root);
         Files.walkFileTree(root,new SimpleFileVisitor<>() {
-            /** Descripción: Valida profundidad y número de directorios y omite por completo la caché interna no portable. Entradas: dir: directorio visitado; attrs: atributos básicos. Salida: continúa o salta el subárbol de caché. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) throws IOException {
+            /** Descripción: Valida profundidad y número de directorios y omite por completo la caché interna no portable; rechaza un directorio que resuelve fuera del proyecto (unión de Windows, SEC-WIN-JUNCTION), que el ZIP leería fuera de él. Entradas: dir: directorio visitado; attrs: atributos básicos. Salida: continúa o salta el subárbol de caché. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) throws IOException {
                 if(dir.equals(root)) return FileVisitResult.CONTINUE;
                 String relative=portableRelative(root,dir);
                 if(relative.equals(".modeling/cache")||relative.startsWith(".modeling/cache/")) return FileVisitResult.SKIP_SUBTREE;
+                if(com.example.editor.io.FileSystemBoundaries.escapes(dir,realRoot)) throw invalid("Directory junctions and links outside the project cannot be exported in a portable project archive: "+relative);
                 verifyDepth(relative,maximumDepth);
                 addEntry(entries,new ExportEntry(dir,relative,true,0L,attrs.lastModifiedTime().toMillis()),maximumEntries);
                 return FileVisitResult.CONTINUE;

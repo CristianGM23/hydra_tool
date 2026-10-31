@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.example.editor.io.FileSystemBoundaries;
 import com.example.editor.project.ArtifactKind;
 import com.example.editor.project.LocalProjectProperties;
 import com.example.editor.project.ProjectDescriptor;
@@ -137,10 +138,11 @@ public class ProjectWorkspaceBridge {
     /** Descripción: Recorre incrementalmente únicamente ficheros regulares reales sin seguir enlaces simbólicos. Entradas: root: raíz; consumer: operación por fichero; errorMessage: contexto del fallo. Salida: no devuelve valor. */
     /** Descripción: Ejecuta la operación «visitRegularFiles» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: root: ruta o ubicación utilizada por la operación; consumer: dato de entrada necesario para la operación; errorMessage: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void visitRegularFiles(Path root,FileConsumer consumer,String errorMessage) {
         try {
+            Path realRoot=FileSystemBoundaries.realRoot(root);
             Files.walkFileTree(root,new SimpleFileVisitor<>() {
-                /** Descripción: Rechaza directorios simbólicos antes de descender durante una sincronización de workspace. Entradas: directorio y atributos. Salida: devuelve la decisión de continuar el recorrido. */
-                /** Descripción: Ejecuta la operación «preVisitDirectory» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: dir: dato de entrada necesario para la operación; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) {
-                    if(attrs.isSymbolicLink()) throw invalid("Symbolic links are not allowed during project synchronization: "+dir);
+                /** Descripción: Rechaza directorios simbólicos, y los que resuelven fuera de la raíz (unión o punto de montaje de Windows, SEC-WIN-JUNCTION), antes de descender durante una sincronización de workspace. Entradas: directorio y atributos. Salida: devuelve la decisión de continuar el recorrido. */
+                @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) {
+                    if(attrs.isSymbolicLink()||FileSystemBoundaries.escapes(dir,realRoot)) throw invalid("Symbolic links and directory junctions are not allowed during project synchronization: "+dir);
                     return FileVisitResult.CONTINUE;
                 }
                 /** Descripción: Entrega únicamente ficheros regulares reales al consumidor de sincronización y rechaza enlaces simbólicos. Entradas: fichero y atributos. Salida: devuelve la decisión de continuar el recorrido. */
@@ -225,10 +227,15 @@ public class ProjectWorkspaceBridge {
         Path normalizedRoot=root.toAbsolutePath().normalize();
         Path current=normalizedRoot;
         if(Files.isSymbolicLink(current)) throw invalid("Symbolic links are not allowed in synchronization destinations: "+current);
+        Path realRoot;
+        try { realRoot=FileSystemBoundaries.realRoot(normalizedRoot); }
+        catch(IOException exception) { throw storage("Could not resolve the synchronization destination "+normalizedRoot,exception); }
         Path relative=normalizedRoot.relativize(destination.toAbsolutePath().normalize());
         for(Path segment:relative) {
             current=current.resolve(segment);
-            if(Files.exists(current,LinkOption.NOFOLLOW_LINKS)&&Files.isSymbolicLink(current)) throw invalid("Symbolic links are not allowed in synchronization destinations: "+current);
+            // SEC-WIN-JUNCTION: a Windows directory junction is not a symbolic link for Java but redirects the write outside the root
+            if(Files.exists(current,LinkOption.NOFOLLOW_LINKS)&&(Files.isSymbolicLink(current)||FileSystemBoundaries.escapes(current,realRoot)))
+                throw invalid("Symbolic links and directory junctions are not allowed in synchronization destinations: "+current);
         }
     }
 

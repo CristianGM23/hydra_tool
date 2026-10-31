@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import org.springframework.stereotype.Component;
 import com.example.editor.io.AtomicFiles;
+import com.example.editor.io.FileSystemBoundaries;
 import com.example.editor.project.ProjectException;
 
 /** Operaciones reutilizables de copia, borrado y escritura atómica. */
@@ -37,7 +38,15 @@ public class ProjectFileOperations {
     /** Descripción: Elimina o libera el recurso gestionado por «deleteRecursively» de forma controlada. Entradas: path: ruta o ubicación utilizada por la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void deleteRecursively(Path path) {
         if(path==null||!Files.exists(path,LinkOption.NOFOLLOW_LINKS)) return;
         try {
+            Path realRoot=FileSystemBoundaries.realRoot(path);
             Files.walkFileTree(path,new SimpleFileVisitor<>() {
+                /** Descripción: SEC-WIN-JUNCTION: un directorio que resuelve fuera de lo que se borra (unión o punto de montaje de Windows) se elimina como enlace, sin entrar en él ni tocar lo que contiene su destino. Entradas: dir: directorio visitado; attrs: atributos básicos. Salida: salta su subárbol o continúa. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) throws IOException {
+                    if(!dir.equals(path)&&FileSystemBoundaries.escapes(dir,realRoot)) {
+                        Files.delete(dir);
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
                 /** Descripción: Elimina cada fichero visitado sin seguir enlaces simbólicos. Entradas: file: fichero visitado; attrs: atributos básicos. Salida: continúa el recorrido tras eliminar el fichero. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
                     Files.deleteIfExists(file);
                     return FileVisitResult.CONTINUE;
@@ -52,8 +61,10 @@ public class ProjectFileOperations {
     }
 
     /** Descripción: Copia recursivamente un directorio sin materializar todo el árbol en memoria y sin seguir enlaces simbólicos. Entradas: source: raíz origen; destination: raíz destino. Salida: no devuelve valor; preserva la estructura visitada. */ private void copyDirectory(Path source,Path destination) throws IOException {
+        Path realSource=FileSystemBoundaries.realRoot(source);
         Files.walkFileTree(source,new SimpleFileVisitor<>() {
-            /** Descripción: Crea el directorio equivalente antes de visitar sus hijos. Entradas: dir: directorio origen; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) throws IOException {
+            /** Descripción: Crea el directorio equivalente antes de visitar sus hijos; rechaza un directorio que resuelve fuera del origen (SEC-WIN-JUNCTION). Entradas: dir: directorio origen; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) throws IOException {
+                if(FileSystemBoundaries.escapes(dir,realSource)) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Links to directories outside the copied directory are not allowed: "+source.relativize(dir));
                 Files.createDirectories(destination.resolve(source.relativize(dir).toString()));
                 return FileVisitResult.CONTINUE;
             }
