@@ -2,6 +2,7 @@ package com.example.editor.integration.injection;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
@@ -26,6 +27,7 @@ import com.example.editor.integration.IntegrationProfileModel;
 import com.example.editor.integration.compiler.TechnologyCompilationException;
 import com.example.editor.integration.compiler.TechnologyCompilationResult;
 import com.example.editor.integration.compiler.TechnologyGeneratedFile;
+import com.example.editor.io.FileSystemBoundaries;
 import tools.jackson.databind.json.JsonMapper;
 
 /** Aplica integraciones con preview, límites, escritura atómica, backup, detección de cambios manuales y rollback. */
@@ -94,7 +96,7 @@ public class SafeTechnologyInjectionService {
         if(preview.plan().status() == InjectionPlanStatus.BLOCKED){throw new TechnologyCompilationException("Injection is blocked by preview diagnostics");}
         Path targetRoot = resolveTargetRoot(targetDirectory, true);
         String manifestId = safeId("manifest-" + profile.id() + "-" + UUID.randomUUID());
-        Path backupRoot = targetRoot.resolve(INTERNAL_DIRECTORY).resolve("backups").resolve(manifestId);
+        Path backupRoot = internal(targetRoot, "backups", manifestId);
         Map<String, TechnologyGeneratedFile> generatedByPath = new LinkedHashMap<>();
         compilation.files().forEach(value -> generatedByPath.put(value.relativePath(), value));
         List<String> written = new ArrayList<>();
@@ -105,6 +107,7 @@ public class SafeTechnologyInjectionService {
                 Path target = safeResolve(targetRoot, change.path());
                 if(change.changeKind() == InjectionFileChangeKind.MODIFY){
                     Path backup = safeResolve(backupRoot, change.path());
+                    requireInside(targetRoot, backup);
                     Files.createDirectories(backup.getParent());
                     Files.copy(target, backup, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
                 }
@@ -127,7 +130,7 @@ public class SafeTechnologyInjectionService {
     /** Descripción: Ejecuta la operación «rollback» correspondiente a la responsabilidad de SafeTechnologyInjectionService. Entradas: targetDirectory: dato de entrada necesario para la operación; manifestId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ public TechnologyInjectionExecutionResult rollback(String targetDirectory, String manifestId){
         Path targetRoot = resolveTargetRoot(targetDirectory, false);
         InjectionManifest manifest = loadManifest(targetRoot, manifestId);
-        Path backupRoot = targetRoot.resolve(INTERNAL_DIRECTORY).resolve("backups").resolve(manifest.id());
+        Path backupRoot = internal(targetRoot, "backups", manifest.id());
         List<String> deleted = new ArrayList<>();
         List<String> restored = new ArrayList<>();
         try{
@@ -139,6 +142,7 @@ public class SafeTechnologyInjectionService {
                     Files.deleteIfExists(target); deleted.add(change.path());
                 }else if(change.changeKind() == InjectionFileChangeKind.MODIFY){
                     Path backup = safeResolve(backupRoot, change.path());
+                    requireInside(targetRoot, backup);
                     if(!Files.exists(backup)){throw new TechnologyCompilationException("Rollback backup is missing: " + change.path());}
                     atomicWrite(target, com.example.editor.io.BoundedIo.readInternal(backup)); restored.add(change.path());
                 }
@@ -154,8 +158,28 @@ public class SafeTechnologyInjectionService {
         Path allowed = properties.getAllowedRoot().toAbsolutePath().normalize();
         Path target = allowed.resolve(request.targetDirectory()).normalize();
         if(!target.startsWith(allowed)){throw new TechnologyCompilationException("Target directory escapes the configured injection root");}
+        requireInside(allowed, target);
         if(!create){return target;}
-        try{Files.createDirectories(target); return target;}catch(IOException exception){throw new TechnologyCompilationException("Could not create target directory", exception);}
+        try{Files.createDirectories(target);}catch(IOException exception){throw new TechnologyCompilationException("Could not create target directory", exception);}
+        requireInside(allowed, target);
+        return target;
+    }
+
+    /** Descripción: SEC-WIN-JUNCTION: comprueba por su ruta real que una ruta del anfitrión no sale de su raíz a través de un enlace, una unión de directorios o un punto de montaje; para una ruta que aún no existe se comprueba su antecesor existente más cercano bajo la raíz. Entradas: root: raíz cuyo contenido se protege; candidate: ruta léxicamente bajo la raíz. Salida: no devuelve valor; rechaza la ruta que escapa. */ private void requireInside(Path root, Path candidate){
+        try{
+            Path realRoot = FileSystemBoundaries.realRoot(root);
+            Path existing = candidate;
+            while(existing != null && existing.startsWith(root) && !Files.exists(existing, LinkOption.NOFOLLOW_LINKS)){existing = existing.getParent();}
+            if(existing != null && existing.startsWith(root) && FileSystemBoundaries.escapes(existing, realRoot)){
+                throw new TechnologyCompilationException("Injection path resolves outside its root through a link or directory junction: " + root.relativize(candidate));
+            }
+        }catch(IOException exception){throw new TechnologyCompilationException("Could not resolve the injection root", exception);}
+    }
+
+    /** Descripción: Ruta interna (.hydra) del anfitrión comprobada contra la raíz del anfitrión. Entradas: targetRoot: raíz del anfitrión; first y more: segmentos. Salida: la ruta si no escapa. */ private Path internal(Path targetRoot, String first, String... more){
+        Path result = targetRoot.resolve(INTERNAL_DIRECTORY).resolve(Path.of(first, more));
+        requireInside(targetRoot, result);
+        return result;
     }
 
     /** Descripción: Valida las condiciones necesarias para «validateLimits» y rechaza entradas no válidas. Entradas: compilation: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void validateLimits(TechnologyCompilationResult compilation){
@@ -169,7 +193,7 @@ public class SafeTechnologyInjectionService {
     }
 
     /** Descripción: Obtiene la información correspondiente a «loadIndex» dentro de SafeTechnologyInjectionService. Entradas: targetRoot: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private ManagedInjectionFileIndex loadIndex(Path targetRoot){
-        Path path = targetRoot.resolve(INTERNAL_DIRECTORY).resolve("managed-files.json");
+        Path path = internal(targetRoot, "managed-files.json");
         if(!Files.exists(path)){return new ManagedInjectionFileIndex("1.0", Map.of());}
         try{return mapper.readValue(com.example.editor.io.BoundedIo.readInternal(path), ManagedInjectionFileIndex.class);}
         catch(IOException | RuntimeException exception){throw new TechnologyCompilationException("Could not read managed-file index", exception);}
@@ -181,7 +205,7 @@ public class SafeTechnologyInjectionService {
         for(InjectionFileChange change : manifest.files()){
             files.put(change.path(), new ManagedInjectionFileIndex.Entry(change.generatedSha256(), manifest.id()));
         }
-        atomicWrite(targetRoot.resolve(INTERNAL_DIRECTORY).resolve("managed-files.json"), mapper.writeValueAsBytes(new ManagedInjectionFileIndex("1.0", files)));
+        atomicWrite(internal(targetRoot, "managed-files.json"), mapper.writeValueAsBytes(new ManagedInjectionFileIndex("1.0", files)));
     }
 
     /** Descripción: Actualiza el estado gestionado por SafeTechnologyInjectionService mediante la operación «updateIndexAfterRollback». Entradas: targetRoot: dato de entrada necesario para la operación; manifest: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void updateIndexAfterRollback(Path targetRoot, InjectionManifest manifest) throws IOException {
@@ -194,16 +218,16 @@ public class SafeTechnologyInjectionService {
                 else{files.put(change.path(), new ManagedInjectionFileIndex.Entry(change.originalSha256(), "rollback:" + manifest.id()));}
             }
         }
-        atomicWrite(targetRoot.resolve(INTERNAL_DIRECTORY).resolve("managed-files.json"), mapper.writeValueAsBytes(new ManagedInjectionFileIndex("1.0", files)));
+        atomicWrite(internal(targetRoot, "managed-files.json"), mapper.writeValueAsBytes(new ManagedInjectionFileIndex("1.0", files)));
     }
 
     /** Descripción: Ejecuta la operación «persistManifest» correspondiente a la responsabilidad de SafeTechnologyInjectionService. Entradas: targetRoot: dato de entrada necesario para la operación; manifest: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void persistManifest(Path targetRoot, InjectionManifest manifest) throws IOException {
-        atomicWrite(targetRoot.resolve(INTERNAL_DIRECTORY).resolve("manifests").resolve(manifest.id() + ".json"), mapper.writeValueAsBytes(manifest));
+        atomicWrite(internal(targetRoot, "manifests", manifest.id() + ".json"), mapper.writeValueAsBytes(manifest));
     }
 
     /** Descripción: Obtiene la información correspondiente a «loadManifest» dentro de SafeTechnologyInjectionService. Entradas: targetRoot: dato de entrada necesario para la operación; manifestId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ private InjectionManifest loadManifest(Path targetRoot, String manifestId){
         String safe = safeId(manifestId);
-        Path path = targetRoot.resolve(INTERNAL_DIRECTORY).resolve("manifests").resolve(safe + ".json");
+        Path path = internal(targetRoot, "manifests", safe + ".json");
         if(!Files.exists(path)){throw new TechnologyCompilationException("Injection manifest was not found: " + safe);}
         try{return mapper.readValue(com.example.editor.io.BoundedIo.readInternal(path), InjectionManifest.class);}
         catch(IOException | RuntimeException exception){throw new TechnologyCompilationException("Could not read injection manifest", exception);}
@@ -228,6 +252,7 @@ public class SafeTechnologyInjectionService {
         if(normalized.startsWith("/") || normalized.contains("../") || normalized.equals("..")){throw new TechnologyCompilationException("Unsafe injection path: " + relative);}
         Path result = root.resolve(normalized).normalize();
         if(!result.startsWith(root.normalize())){throw new TechnologyCompilationException("Injection path escapes the target root: " + relative);}
+        requireInside(root.normalize(), result);
         return result;
     }
 
