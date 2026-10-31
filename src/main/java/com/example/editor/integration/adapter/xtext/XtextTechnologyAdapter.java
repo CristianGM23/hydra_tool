@@ -2,6 +2,8 @@ package com.example.editor.integration.adapter.xtext;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +12,7 @@ import com.example.editor.integration.IntegrationArtifactKind;
 import com.example.editor.integration.IntegrationDependencyAction;
 import com.example.editor.integration.IntegrationDependencyChange;
 import com.example.editor.integration.IntegrationDiagnostic;
+import com.example.editor.integration.IntegrationDiagnosticSeverity;
 import com.example.editor.integration.IntegrationTechnology;
 import com.example.editor.integration.IntegrationVerificationStep;
 import com.example.editor.integration.compiler.TechnologyAdapter;
@@ -23,12 +26,14 @@ import com.example.editor.integration.compiler.TechnologyCompilationResult;
 import com.example.editor.integration.compiler.TechnologyGeneratedFile;
 import com.example.editor.metamodel.core.MetaAttribute;
 import com.example.editor.metamodel.core.MetaClass;
+import com.example.editor.metamodel.core.MetaClassKind;
 import com.example.editor.metamodel.core.MetaModel;
 import com.example.editor.metamodel.core.MetaPrimitiveType;
 import com.example.editor.metamodel.core.MetaRelation;
 import com.example.editor.metamodel.core.MetaRelationKind;
 import com.example.editor.metamodel.core.MetaTypeReference;
 import com.example.editor.metamodel.core.MetaTypeReferenceKind;
+import com.example.editor.metamodel.core.Multiplicity;
 import com.example.editor.grammar.core.GrammarDefinitionModel;
 import com.example.editor.grammar.core.GrammarTechnology;
 import tools.jackson.databind.json.JsonMapper;
@@ -44,6 +49,15 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
             IntegrationArtifactKind.GAMIFICATION_DEFINITIONS, IntegrationArtifactKind.GAMIFICATION_BINDINGS,
             IntegrationArtifactKind.GRAMMAR, IntegrationArtifactKind.TEXTUAL_EDITOR_DEFINITION, IntegrationArtifactKind.TEXTUAL_SYNTAX_STYLE,
             IntegrationArtifactKind.CODE_GENERATION);
+    /** Carpeta en la que el generador MWE2 del anfitrión escribe el código de cada módulo con StandardProjectConfig.mavenLayout: sin ella como
+     *  fuente y recurso, el validador, el módulo IDE y el módulo UI no compilan porque extienden clases que solo existen ahí. */
+    private static final String XTEXT_GEN_BUILD = "<build><plugins><plugin><groupId>org.codehaus.mojo</groupId><artifactId>build-helper-maven-plugin</artifactId><version>3.6.1</version>"
+            + "<executions><execution><id>add-xtext-gen</id><phase>generate-sources</phase><goals><goal>add-source</goal><goal>add-resource</goal></goals>"
+            + "<configuration><sources><source>src/main/xtext-gen</source></sources><resources><resource><directory>src/main/xtext-gen</directory>"
+            + "<excludes><exclude>**/*.java</exclude><exclude>**/*.g</exclude></excludes></resource></resources></configuration></execution></executions></plugin></plugins></build>";
+    private static final String BOOLEAN_RULE = "HydraBoolean";
+    /** Palabras reservadas de la gramática de Xtext 2.44 (Xtext.xtext): como nombre de regla, característica o literal deben escaparse con ^. */
+    private static final Set<String> XTEXT_KEYWORDS = Set.of("as", "current", "enum", "EOF", "false", "fragment", "generate", "grammar", "hidden", "import", "returns", "terminal", "true", "with");
     private final JsonMapper mapper;
 
     /** Descripción: Inicializa una instancia de XtextTechnologyAdapter con sus dependencias y datos de entrada. Entradas: mapper: componente de conversión utilizado durante el procesamiento. Salida: deja la instancia inicializada y lista para su uso. */ public XtextTechnologyAdapter(JsonMapper mapper){this.mapper = mapper;}
@@ -74,12 +88,13 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
             String ui = runtime + ".ui";
             List<String> sourceIds = TechnologyAdapterGenerationSupport.sourceIds(request);
             List<TechnologyGeneratedFile> files = new ArrayList<>();
+            List<IntegrationDiagnostic> grammarDiagnostics = new ArrayList<>();
             files.add(TechnologyAdapterSupport.text(root + "/pom.xml", "application/xml", parentPom(basePackage, languageName, xtextVersion), sourceIds));
             files.add(TechnologyAdapterSupport.text(runtime + "/pom.xml", "application/xml", runtimePom(basePackage, languageName, xtextVersion), sourceIds));
             files.add(TechnologyAdapterSupport.text(ide + "/pom.xml", "application/xml", childPom(basePackage, languageName, "ide", xtextVersion), sourceIds));
             files.add(TechnologyAdapterSupport.text(ui + "/pom.xml", "application/xml", childPom(basePackage, languageName, "ui", xtextVersion), sourceIds));
             files.add(TechnologyAdapterSupport.text(runtime + "/src/main/java/" + javaPath + "/" + languageName + ".xtext",
-                    "text/x-xtext", metamodel == null ? grammarSource(grammarDefinition) : grammar(metamodel, languagePackage, languageName), sourceIds));
+                    "text/x-xtext", metamodel == null ? grammarSource(grammarDefinition) : grammar(metamodel, languagePackage, languageName, grammarDiagnostics), sourceIds));
             files.add(TechnologyAdapterSupport.text(runtime + "/src/main/java/" + javaPath + "/validation/" + languageName + "Validator.java",
                     "text/x-java-source", validatorSource(languagePackage, languageName, metamodel != null), sourceIds));
             files.add(TechnologyAdapterSupport.text(runtime + "/src/main/java/" + javaPath + "/validation/HydraIssueCodes.java",
@@ -98,6 +113,8 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
                         "text/x-java-source", languageServerSource(languagePackage), sourceIds));
             files.add(TechnologyAdapterSupport.text(ide + "/src/main/java/" + javaPath + "/ide/" + languageName + "IdeModule.java",
                     "text/x-java-source", ideModuleSource(languagePackage, languageName), sourceIds));
+            files.add(TechnologyAdapterSupport.text(ide + "/src/main/java/" + javaPath + "/ide/HydraServerModule.java",
+                    "text/x-java-source", serverModuleSource(languagePackage), sourceIds));
             files.add(TechnologyAdapterSupport.text(ui + "/src/main/java/" + javaPath + "/ui/quickfix/" + languageName + "QuickfixProvider.java",
                     "text/x-java-source", quickFixSource(languagePackage, languageName), sourceIds));
             if(request.find(IntegrationArtifactKind.GRAMMAR).isPresent()){
@@ -111,6 +128,7 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
             files.addAll(TechnologyAdapterGenerationSupport.canonicalDocuments(runtime, "src/main/resources/hydra", request));
             files.add(TechnologyAdapterSupport.text(root + "/README.md", "text/markdown", readme(request, semanticId, languagePackage, metamodel != null), sourceIds));
             List<IntegrationDiagnostic> diagnostics = new ArrayList<>(TechnologyAdapterSupport.unsupportedDiagnostics(request, SUPPORTED, "Xtext"));
+            diagnostics.addAll(grammarDiagnostics);
             List<IntegrationDependencyChange> dependencies = List.of(
                     dependency("org.eclipse.xtext:org.eclipse.xtext", xtextVersion),
                     dependency("org.eclipse.xtext:org.eclipse.xtext.ide", xtextVersion),
@@ -156,60 +174,129 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
                   <groupId>%s</groupId><artifactId>%s</artifactId><version>1.0.0-SNAPSHOT</version>
                   <properties><xtext.version>%s</xtext.version><maven.compiler.release>17</maven.compiler.release></properties>
                   <dependencies><dependency><groupId>org.eclipse.xtext</groupId><artifactId>%s</artifactId><version>${xtext.version}</version></dependency>%s%s</dependencies>
+                  %s
                 </project>
-                """.formatted(TechnologyAdapterSupport.xml(basePackage), TechnologyAdapterSupport.xml(module), TechnologyAdapterSupport.xml(xtextVersion), TechnologyAdapterSupport.xml(dependency), runtimeDependency, changeDependency);
+                """.formatted(TechnologyAdapterSupport.xml(basePackage), TechnologyAdapterSupport.xml(module), TechnologyAdapterSupport.xml(xtextVersion), TechnologyAdapterSupport.xml(dependency), runtimeDependency, changeDependency, XTEXT_GEN_BUILD);
     }
 
-    /** Descripción: Ejecuta la operación «grammar» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: id: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ private String grammar(MetaModel metamodel, String languagePackage, String languageName){
+    /** Descripción: Genera la gramática Xtext de un metamodelo canónico. La herencia se expresa con reglas de elección (cada supertipo llama a sus
+     *  subtipos directos y Element solo a las raíces), así que el EPackage inferido conserva los supertipos y una referencia a un supertipo admite sus
+     *  subtipos; cada subtipo repite la sintaxis de lo heredado. Un atributo canónico «name» de un solo valor y tipo texto es el identificador del
+     *  elemento (name=STRING, referencias [T|STRING]) en lugar de asignarse dos veces; las enumeraciones son reglas enum y los booleanos devuelven
+     *  EBoolean. Entradas: metamodel, languagePackage, languageName y la lista de diagnósticos de lo que no se puede representar. Salida: la gramática. */
+    private String grammar(MetaModel metamodel, String languagePackage, String languageName, List<IntegrationDiagnostic> diagnostics){
+        Map<String, MetaClass> classes = new LinkedHashMap<>();
+        metamodel.classes().forEach(value -> classes.put(value.id(), value));
+        Map<String, List<String>> supertypes = new LinkedHashMap<>();
+        Map<String, List<String>> subtypes = new LinkedHashMap<>();
+        for(MetaRelation relation : metamodel.relations()){
+            if(relation.kind() == MetaRelationKind.INHERITANCE && classes.containsKey(relation.sourceTypeId()) && classes.containsKey(relation.targetTypeId()) && !relation.sourceTypeId().equals(relation.targetTypeId())){
+                supertypes.computeIfAbsent(relation.sourceTypeId(), ignored -> new ArrayList<>()).add(relation.targetTypeId());
+                subtypes.computeIfAbsent(relation.targetTypeId(), ignored -> new ArrayList<>()).add(relation.sourceTypeId());
+            }
+        }
+        supertypes.forEach((id, values) -> {if(values.size() > 1){diagnostics.add(new IntegrationDiagnostic(IntegrationDiagnosticSeverity.WARNING, "XTEXT_MULTIPLE_INHERITANCE", id, "metamodel.relations",
+                "Xtext infers one rule hierarchy: the class is offered under each of its supertypes, which can make the generated parser ambiguous."));}});
+        Map<String, String> identifiers = new LinkedHashMap<>();
+        classes.keySet().forEach(id -> identifiers.put(id, identifierTerminal(id, classes, supertypes, metamodel)));
+        boolean[] usesBoolean = {false};
+        StringBuilder rules = new StringBuilder();
+        rules.append("Model:\n  elements+=Element*;\n\n");
+        rules.append("Element:\n  ");
+        List<String> roots = classes.values().stream().filter(value -> !supertypes.containsKey(value.id())).map(value -> escape(value.name())).toList();
+        if(classes.isEmpty()){rules.append("GenericElement");}
+        else{rules.append(String.join(" | ", roots.isEmpty() ? classes.values().stream().map(value -> escape(value.name())).toList() : roots));}
+        rules.append(";\n\n");
+        if(classes.isEmpty()){rules.append("GenericElement: 'element' name=ID;\n\n");}
+        for(MetaClass metaClass : classes.values()){
+            List<String> alternatives = new ArrayList<>(subtypes.getOrDefault(metaClass.id(), List.of()).stream().map(id -> escape(classes.get(id).name())).toList());
+            boolean abstractType = metaClass.kind() == MetaClassKind.ABSTRACT_CLASS || metaClass.kind() == MetaClassKind.INTERFACE;
+            if(!abstractType || alternatives.isEmpty()){alternatives.add(ownSyntax(metaClass, classes, supertypes, identifiers, metamodel, diagnostics, usesBoolean));}
+            rules.append(escape(metaClass.name())).append(":\n  ").append(String.join(" | ", alternatives)).append(";\n\n");
+        }
+        metamodel.enums().forEach(metaEnum -> rules.append("enum ").append(escape(metaEnum.name())).append(":\n  ")
+                .append(String.join(" | ", metaEnum.literals().stream().map(value -> escape(value.name())).toList())).append(";\n\n"));
+        if(usesBoolean[0]){rules.append(BOOLEAN_RULE).append(" returns ecore::EBoolean:\n  'true' | 'false';\n\n");}
         StringBuilder source = new StringBuilder();
         source.append("grammar ").append(languagePackage).append('.').append(languageName).append(" with org.eclipse.xtext.common.Terminals\n\n");
+        if(usesBoolean[0]){source.append("import \"http://www.eclipse.org/emf/2002/Ecore\" as ecore\n");}
         source.append("generate ").append(TechnologyAdapterGenerationSupport.typescriptIdentifier(metamodel.id(), "hydraModel"))
                 .append(" \"").append(metamodel.annotations().getOrDefault("nsURI", "https://hydra.generated/" + metamodel.id())).append("\"\n\n");
-        source.append("Model:\n  elements+=Element*;\n\n");
-        source.append("Element:\n  ");
-        if(metamodel.classes().isEmpty()){source.append("GenericElement");}
-        else{source.append(String.join(" | ", metamodel.classes().stream().map(MetaClass::name).toList()));}
-        source.append(";\n\n");
-        if(metamodel.classes().isEmpty()){source.append("GenericElement: 'element' name=ID;\n\n");}
-        for(MetaClass metaClass : metamodel.classes()){
-            source.append(metaClass.name()).append(":\n  '").append(metaClass.name()).append("' name=ID");
-            for(MetaAttribute attribute : metaClass.attributes()){source.append(attributeFragment(attribute, metamodel));}
-            for(MetaRelation relation : metamodel.relations()){
-                if(relation.sourceTypeId().equals(metaClass.id()) && structural(relation.kind())){source.append(relationFragment(relation, metamodel));}
+        return source.append(rules).toString();
+    }
+
+    /** Descripción: Sintaxis propia de una clase: palabra clave, identificador y todos los atributos y relaciones, también los heredados. Entradas: la
+     *  clase, el índice de clases, los supertipos, los terminales de identificador, el metamodelo, los diagnósticos y el indicador de uso de booleanos.
+     *  Salida: la alternativa de la regla. */
+    private String ownSyntax(MetaClass metaClass, Map<String, MetaClass> classes, Map<String, List<String>> supertypes, Map<String, String> identifiers,
+            MetaModel metamodel, List<IntegrationDiagnostic> diagnostics, boolean[] usesBoolean){
+        StringBuilder syntax = new StringBuilder("'").append(metaClass.name()).append("' name=").append(identifiers.get(metaClass.id()));
+        Set<String> assigned = new LinkedHashSet<>(List.of("name"));
+        List<String> lineage = lineage(metaClass.id(), supertypes);
+        for(String id : lineage){
+            for(MetaAttribute attribute : classes.get(id).attributes()){
+                if(attribute.name().equals("name")){
+                    if(identifiers.get(metaClass.id()).equals("ID") && assigned.add("name#attribute")){diagnostics.add(new IntegrationDiagnostic(IntegrationDiagnosticSeverity.WARNING, "XTEXT_NAME_ATTRIBUTE_NOT_TEXT",
+                            attribute.id(), "metamodel.classes.attributes", "The attribute 'name' is not a single text value, so the Xtext identifier 'name' replaces it in the generated language."));}
+                    continue;
+                }
+                if(!assigned.add(attribute.name())){continue;}
+                String terminal = xtextType(attribute.type(), metamodel);
+                if(terminal.equals(BOOLEAN_RULE)){usesBoolean[0] = true;}
+                syntax.append(fragment(attribute.name(), terminal, many(attribute.multiplicity()), optional(attribute.multiplicity())));
             }
-            source.append(";\n\n");
+            for(MetaRelation relation : metamodel.relations()){
+                if(!relation.sourceTypeId().equals(id) || !structural(relation.kind()) || !assigned.add(relation.name())){continue;}
+                MetaClass target = classes.get(relation.targetTypeId());
+                String reference = target == null ? "[Element|ID]" : "[" + escape(target.name()) + "|" + identifiers.get(target.id()) + "]";
+                syntax.append(fragment(relation.name(), reference, many(relation.targetMultiplicity()), optional(relation.targetMultiplicity())));
+            }
         }
-        metamodel.enums().forEach(metaEnum -> source.append(metaEnum.name()).append(": ")
-                .append(String.join(" | ", metaEnum.literals().stream().map(value -> "'" + value.name() + "'").toList())).append(";\n\n"));
-        return source.toString();
+        return syntax.toString();
+    }
+
+    /** Descripción: Terminal del identificador de una clase: STRING cuando la clase (o un antecesor) tiene un atributo canónico «name» de un solo valor y
+     *  tipo texto, que pasa a ser el identificador; ID en otro caso. Entradas: id de la clase, índice, supertipos y metamodelo. Salida: STRING o ID. */
+    private String identifierTerminal(String classId, Map<String, MetaClass> classes, Map<String, List<String>> supertypes, MetaModel metamodel){
+        for(String id : lineage(classId, supertypes)){
+            for(MetaAttribute attribute : classes.get(id).attributes()){
+                if(attribute.name().equals("name")){return !many(attribute.multiplicity()) && xtextType(attribute.type(), metamodel).equals("STRING") ? "STRING" : "ID";}
+            }
+        }
+        return "ID";
+    }
+
+    /** Descripción: Antecesores de una clase, del más general al más concreto, terminando en la propia clase; tolera ciclos. Entradas: id y supertipos.
+     *  Salida: lista ordenada sin repeticiones. */
+    private List<String> lineage(String classId, Map<String, List<String>> supertypes){
+        LinkedHashSet<String> ordered = new LinkedHashSet<>();
+        collectLineage(classId, supertypes, ordered, new LinkedHashSet<>());
+        return List.copyOf(ordered);
+    }
+    private void collectLineage(String classId, Map<String, List<String>> supertypes, Set<String> ordered, Set<String> visiting){
+        if(!visiting.add(classId)){return;}
+        for(String parent : supertypes.getOrDefault(classId, List.of())){collectLineage(parent, supertypes, ordered, visiting);}
+        ordered.add(classId);
+    }
+    private boolean many(Multiplicity multiplicity){return multiplicity != null && (multiplicity.unbounded() || multiplicity.upperBound() != null && multiplicity.upperBound() > 1);}
+    private boolean optional(Multiplicity multiplicity){return multiplicity == null || multiplicity.lowerBound() == 0;}
+    /** Descripción: Identificador de la gramática con ^ si coincide con una palabra reservada de Xtext (p. ej. una relación «returns»). Entradas: nombre. Salida: identificador seguro. */
+    private static String escape(String name){return XTEXT_KEYWORDS.contains(name) ? "^" + name : name;}
+    private String fragment(String feature, String value, boolean many, boolean optional){
+        String assignment = escape(feature) + (many ? "+=" : "=") + value;
+        if(many){return "\n  ('" + feature + "' " + assignment + ")*";}
+        if(optional){return "\n  ('" + feature + "' " + assignment + ")?";}
+        return "\n  '" + feature + "' " + assignment;
     }
 
     /** Descripción: Ejecuta la operación «structural» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: kind: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean structural(MetaRelationKind kind){return kind == MetaRelationKind.REFERENCE || kind == MetaRelationKind.CONTAINMENT || kind == MetaRelationKind.AGGREGATION;}
-    /** Descripción: Ejecuta la operación «attributeFragment» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: attribute: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String attributeFragment(MetaAttribute attribute, MetaModel metamodel){
-        String terminal = xtextType(attribute.type(), metamodel);
-        boolean many = attribute.multiplicity() != null && (attribute.multiplicity().unbounded() || attribute.multiplicity().upperBound() != null && attribute.multiplicity().upperBound() > 1);
-        boolean optional = attribute.multiplicity() == null || attribute.multiplicity().lowerBound() == 0;
-        String assignment = attribute.name() + (many ? "+=" : "=") + terminal;
-        if(many){return "\n  ('" + attribute.name() + "' " + assignment + ")*";}
-        if(optional){return "\n  ('" + attribute.name() + "' " + assignment + ")?";}
-        return "\n  '" + attribute.name() + "' " + assignment;
-    }
-    /** Descripción: Ejecuta la operación «relationFragment» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: relation: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String relationFragment(MetaRelation relation, MetaModel metamodel){
-        String target = metamodel.classes().stream().filter(value -> value.id().equals(relation.targetTypeId())).map(MetaClass::name).findFirst().orElse("Element");
-        boolean many = relation.targetMultiplicity() != null && (relation.targetMultiplicity().unbounded() || relation.targetMultiplicity().upperBound() != null && relation.targetMultiplicity().upperBound() > 1);
-        boolean optional = relation.targetMultiplicity() == null || relation.targetMultiplicity().lowerBound() == 0;
-        String assignment = relation.name() + (many ? "+=" : "=") + "[" + target + "|ID]";
-        if(many){return "\n  ('" + relation.name() + "' " + assignment + ")*";}
-        if(optional){return "\n  ('" + relation.name() + "' " + assignment + ")?";}
-        return "\n  '" + relation.name() + "' " + assignment;
-    }
     /** Descripción: Ejecuta la operación «xtextType» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: type: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String xtextType(MetaTypeReference type, MetaModel metamodel){
         if(type == null){return "STRING";}
-        if(type.kind() == MetaTypeReferenceKind.ENUM){return metamodel.enums().stream().filter(value -> value.id().equals(type.targetId())).map(value -> value.name()).findFirst().orElse("ID");}
+        if(type.kind() == MetaTypeReferenceKind.ENUM){return metamodel.enums().stream().filter(value -> value.id().equals(type.targetId())).map(value -> escape(value.name())).findFirst().orElse("ID");}
         if(type.kind() != MetaTypeReferenceKind.PRIMITIVE){return "STRING";}
         try{
             MetaPrimitiveType primitive = MetaPrimitiveType.valueOf(type.targetId());
-            return switch(primitive){case BOOLEAN -> "('true'|'false')"; case BYTE, SHORT, INTEGER, LONG, BIG_INTEGER -> "INT"; default -> "STRING";};
+            return switch(primitive){case BOOLEAN -> BOOLEAN_RULE; case BYTE, SHORT, INTEGER, LONG, BIG_INTEGER -> "INT"; default -> "STRING";};
         }catch(IllegalArgumentException exception){return "STRING";}
     }
 
@@ -316,7 +403,6 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
             """.formatted(packageName);}
     /** Descripción: Genera el servidor Xtext LSP que anuncia y procesa didSave como frontera de commit HYDRA. Entradas: packageName. Salida: fuente Java del servidor. */ private String languageServerSource(String packageName){return """
             package %s.ide;
-            import com.google.inject.Inject;
             import org.eclipse.emf.common.util.URI;
             import org.eclipse.lsp4j.DidCloseTextDocumentParams;
             import org.eclipse.lsp4j.DidSaveTextDocumentParams;
@@ -327,21 +413,35 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
             import org.eclipse.lsp4j.TextDocumentSyncOptions;
             import org.eclipse.lsp4j.jsonrpc.messages.Either;
             import org.eclipse.xtext.ide.server.LanguageServerImpl;
-            import org.eclipse.xtext.ide.server.WorkspaceManager;
             import %s.runtime.HydraXtextRuntime;
-            /** Language server whose save notification is the explicit HYDRA commit boundary. */
+            /** Language server whose save notification is the explicit HYDRA commit boundary. The commit reads the document through the server's own
+             *  workspace manager, queued after the standard save handling (WorkspaceManager is not a singleton: an injected one is never initialized). */
             public final class HydraLanguageServer extends LanguageServerImpl {
-                @Inject private WorkspaceManager workspaceManager;
                 @Override protected ServerCapabilities createServerCapabilities(InitializeParams params){ServerCapabilities capabilities=super.createServerCapabilities(params);TextDocumentSyncOptions sync=new TextDocumentSyncOptions();sync.setOpenClose(true);sync.setChange(TextDocumentSyncKind.Incremental);SaveOptions save=new SaveOptions();save.setIncludeText(false);sync.setSave(save);capabilities.setTextDocumentSync(Either.forRight(sync));return capabilities;}
-                @Override public void didSave(DidSaveTextDocumentParams params){URI uri=URI.createURI(params.getTextDocument().getUri());workspaceManager.doRead(uri,(document,resource)->{if(resource!=null&&!resource.getContents().isEmpty())HydraXtextRuntime.synchronize(resource.getContents().get(0),"XTEXT_DID_SAVE");return null;});}
+                @Override public void didSave(DidSaveTextDocumentParams params){super.didSave(params);URI uri=getURI(params.getTextDocument());getRequestManager().runRead(cancelIndicator->getWorkspaceManager().doRead(uri,(document,resource)->{if(resource!=null&&!resource.getContents().isEmpty())HydraXtextRuntime.synchronize(resource.getContents().get(0),"XTEXT_DID_SAVE");return null;}));}
                 @Override public void didClose(DidCloseTextDocumentParams params){super.didClose(params);HydraXtextRuntime.release(params.getTextDocument().getUri());}
             }
             """.formatted(packageName,packageName);}
-    /** Descripción: Genera el módulo IDE que sustituye el LanguageServerImpl por el servidor HYDRA. Entradas: packageName y languageName. Salida: fuente Java del módulo. */ private String ideModuleSource(String packageName, String languageName){return """
+    /** Descripción: Genera el módulo IDE del lenguaje. No enlaza el servidor de lenguaje: LanguageServerImpl pertenece al inyector del servidor
+     *  (ServerModule) y, enlazado en el inyector del lenguaje, Guice no puede crear ese inyector (faltan IRequestManager, IProjectDescriptionFactory e
+     *  IMultiRootWorkspaceConfigFactory) y ningún servidor LSP carga el lenguaje. Entradas: packageName y languageName. Salida: fuente Java del módulo. */ private String ideModuleSource(String packageName, String languageName){return """
             package %s.ide;
-            import org.eclipse.xtext.ide.server.LanguageServerImpl;
-            public class %sIdeModule extends Abstract%sIdeModule { public Class<? extends LanguageServerImpl> bindLanguageServerImpl(){return HydraLanguageServer.class;} }
+            /** Language-level IDE bindings. The HYDRA language server is bound at server level by HydraServerModule. */
+            public class %sIdeModule extends Abstract%sIdeModule { }
             """.formatted(packageName, languageName, languageName);}
+    /** Descripción: Genera el módulo Guice de nivel servidor que sustituye LanguageServerImpl por HydraLanguageServer sobre el ServerModule de Xtext.
+     *  Entradas: packageName. Salida: fuente Java del módulo. */ private String serverModuleSource(String packageName){return """
+            package %s.ide;
+            import com.google.inject.AbstractModule;
+            import com.google.inject.util.Modules;
+            import org.eclipse.xtext.ide.server.LanguageServerImpl;
+            import org.eclipse.xtext.ide.server.ServerModule;
+            /** Xtext ServerModule whose language server is HydraLanguageServer (didSave is the HYDRA commit boundary).
+             *  Launch with ServerLauncher.launch(prefix, args, new HydraServerModule()) or Guice.createInjector(new HydraServerModule()). */
+            public class HydraServerModule extends AbstractModule {
+                @Override protected void configure(){install(Modules.override(new ServerModule()).with(binder->binder.bind(LanguageServerImpl.class).to(HydraLanguageServer.class)));}
+            }
+            """.formatted(packageName);}
     /** Descripción: Genera el quick fix Xtext que ejecuta ActionModel a través del runtime y revierte EObject+runtime ante fallo. Entradas: packageName y languageName. Salida: fuente Java del proveedor. */ private String quickFixSource(String packageName, String languageName){return """
             package %s.ui.quickfix;
             import java.util.Map;
@@ -383,6 +483,8 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
             - Language package: `%s`.
             - Runtime, IDE and UI concerns are separated into distinct modules.
             - Draft validation is side-effect free; LSP `didSave` is the explicit commit boundary for Events → EventFlow → Gamification.
+            - Launch the language server with the server-level module `ide.HydraServerModule` (`ServerLauncher.launch(prefix, args, new HydraServerModule())`); the stock `ServerModule` also serves the language, without the HYDRA commit boundary.
+            - Generated modules compile the Xtext generator output from `src/main/xtext-gen` (MWE2 `StandardProjectConfig` with `mavenLayout = true`).
             - Quick fixes and operations are wrapped with EMF ChangeRecorder plus a full HYDRA checkpoint, so host model and runtime roll back together on failure.
             - Validation works in metamodel-first and grammar-first without requiring a synthetic `Model.elements` feature.
             - Canonical HYDRA JSON remains embedded for traceability and partial-fidelity capabilities.
