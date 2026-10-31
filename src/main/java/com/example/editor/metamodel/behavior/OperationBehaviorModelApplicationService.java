@@ -96,6 +96,7 @@ public class OperationBehaviorModelApplicationService {
         try { return metamodelService.findById(id).metamodel(); }
         catch(MetamodelApplicationException exception) {
             OperationBehaviorModelApplicationException.Reason reason = switch(exception.getReason()) {
+                case CORRUPT_CONFIGURATION -> throw exception;
                 case INVALID_REQUEST -> OperationBehaviorModelApplicationException.Reason.INVALID_REQUEST;
                 case NOT_FOUND -> OperationBehaviorModelApplicationException.Reason.NOT_FOUND;
                 case CONFLICT -> OperationBehaviorModelApplicationException.Reason.CONFLICT;

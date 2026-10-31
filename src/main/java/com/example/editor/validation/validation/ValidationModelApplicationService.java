@@ -114,6 +114,7 @@ public class ValidationModelApplicationService {
         try { return metamodelService.findById(id).metamodel(); }
         catch(MetamodelApplicationException exception) {
             ValidationModelApplicationException.Reason reason = switch(exception.getReason()) {
+                case CORRUPT_CONFIGURATION -> throw exception;
                 case INVALID_REQUEST -> ValidationModelApplicationException.Reason.INVALID_REQUEST;
                 case NOT_FOUND -> ValidationModelApplicationException.Reason.NOT_FOUND;
                 case CONFLICT -> ValidationModelApplicationException.Reason.CONFLICT;

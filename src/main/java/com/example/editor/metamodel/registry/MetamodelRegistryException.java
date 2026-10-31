@@ -63,6 +63,8 @@ public class MetamodelRegistryException extends RuntimeException {
         INVALID_REQUEST,
         NOT_FOUND,
         CONFLICT,
-        STORAGE_ERROR
+        STORAGE_ERROR,
+        /** The stored canonical metamodel exists but is not a valid metamodel (409, D-MM-CORRUPT-CONTRATO). */
+        CORRUPT_CONFIGURATION
     }
 }

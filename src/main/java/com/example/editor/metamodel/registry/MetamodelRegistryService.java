@@ -16,6 +16,8 @@ import com.example.editor.emf.MetamodelLoader;
 import com.example.editor.metamodel.MetamodelDescriptor;
 import com.example.editor.metamodel.MetamodelIntrospectionService;
 import com.example.editor.metamodel.application.CanonicalMetamodelApplicationService;
+import com.example.editor.metamodel.canonical.CanonicalMetamodelCatalog;
+import com.example.editor.metamodel.canonical.CanonicalMetamodelRepositoryException;
 import com.example.editor.metamodel.canonical.CanonicalMetamodelSummary;
 import com.example.editor.metamodel.projection.EcoreMirrorService;
 import com.example.editor.metamodel.projection.ProjectionCoordinator;
@@ -39,6 +41,7 @@ public class MetamodelRegistryService implements com.example.editor.project.Proj
     private final Path metamodelDirectory;
     private final Map<String, RegisteredMetamodel> registry = new LinkedHashMap<>();
     private final Map<String, RuntimeMetamodelStatus> statuses = new LinkedHashMap<>();
+    private final java.util.Set<String> corrupt = new java.util.HashSet<>();
 
     /** Descripción: Inicializa una instancia de MetamodelRegistryService con sus dependencias y datos de entrada. Entradas: storageProperties: configuración que gobierna el comportamiento; metamodelLoader: dato de entrada necesario para la operación; introspectionService: servicio colaborador utilizado por la operación; canonicalService: servicio colaborador utilizado por la operación; projectionCoordinator: dato de entrada necesario para la operación. Salida: deja la instancia inicializada y lista para su uso. */ public MetamodelRegistryService(StorageProperties storageProperties, MetamodelLoader metamodelLoader, MetamodelIntrospectionService introspectionService, CanonicalMetamodelApplicationService canonicalService, ProjectionCoordinator projectionCoordinator) {
         this.storageProperties = storageProperties;
@@ -54,8 +57,21 @@ public class MetamodelRegistryService implements com.example.editor.project.Proj
         prepareDirectory();
         Map<String, RegisteredMetamodel> discovered = new LinkedHashMap<>();
         Map<String, RuntimeMetamodelStatus> discoveredStatuses = new LinkedHashMap<>();
+        java.util.Set<String> discoveredCorrupt = new java.util.HashSet<>();
+        CanonicalMetamodelCatalog catalog = canonicalService.catalog();
 
-        for(CanonicalMetamodelSummary summary : canonicalService.findAll()) {
+        // D-MM-CORRUPT-CONTRATO (DEF-MM-CORRUPT-STARTUP-FAIL, DEF-MM-CORRUPT-WRITE-REPORTED-AS-FAILED): a stored metamodel that cannot be used
+        // is reported in the runtime status instead of failing the start-up of HYDRA or the write that rebuilt the registry
+        for(CanonicalMetamodelCatalog.Omitted omitted : catalog.omitted()) {
+            if(omitted.metamodelId() == null) continue;
+            boolean corrupt = omitted.reason() == CanonicalMetamodelRepositoryException.Reason.CORRUPT_CONFIGURATION;
+            if(corrupt) discoveredCorrupt.add(omitted.metamodelId());
+            discoveredStatuses.put(omitted.metamodelId(), new RuntimeMetamodelStatus(omitted.metamodelId(), ProjectionStatus.FAILED, false, corrupt
+                    ? "The stored canonical metamodel is not a valid metamodel; the stored files were left unchanged and the details were recorded in the server log."
+                    : "The stored canonical metamodel could not be read; the details were recorded in the server log."));
+        }
+
+        for(CanonicalMetamodelSummary summary : catalog.metamodels()) {
             String id = summary.id();
             try {
                 TargetConfigurationDocument targets = projectionCoordinator.findTargets(id);
@@ -97,6 +113,8 @@ public class MetamodelRegistryService implements com.example.editor.project.Proj
         registry.putAll(discovered);
         statuses.clear();
         statuses.putAll(discoveredStatuses);
+        corrupt.clear();
+        corrupt.addAll(discoveredCorrupt);
     }
 
     /** Descripción: Recarga el registro tras traer un proyecto al espacio de trabajo. Salida: un aviso por cada metamodelo que sigue sin estar disponible para el runtime EMF, con su motivo. */
@@ -142,6 +160,9 @@ public class MetamodelRegistryService implements com.example.editor.project.Proj
             return registered;
         }
         RuntimeMetamodelStatus status = statuses.get(id);
+        if(status != null && corrupt.contains(id)) {
+            throw new MetamodelRegistryException(Reason.CORRUPT_CONFIGURATION, CanonicalMetamodelRepositoryException.corruptPublicMessage(id));
+        }
         if(status != null) {
             throw new MetamodelRegistryException(Reason.NOT_FOUND, "Metamodel is not available for the EMF runtime (" + status.projectionStatus() + "): " + id + (status.message().isBlank() ? "" : ". " + status.message()));
         }

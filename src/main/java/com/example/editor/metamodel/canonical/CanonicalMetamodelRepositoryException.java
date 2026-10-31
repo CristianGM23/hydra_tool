@@ -23,11 +23,19 @@ public class CanonicalMetamodelRepositoryException extends RuntimeException {
         return reason;
     }
 
+    /** Descripción: Mensaje público de un metamodelo almacenado corrupto, sin rutas ni detalles internos (D-MM-CORRUPT-CONTRATO). Entradas: metamodelId: id del metamodelo. Salida: texto para el cliente. */
+    public static String corruptPublicMessage(String metamodelId) {
+        return "The stored canonical metamodel '" + metamodelId + "' cannot be used: its stored representation is not a valid canonical metamodel. "
+                + "The stored files were left unchanged; restore the metamodel from a backup or from the project history. The details were recorded in the server log.";
+    }
+
     public enum Reason {
         INVALID_REQUEST,
         NOT_FOUND,
         CONFLICT,
         PRECONDITION_FAILED,
-        STORAGE_ERROR
+        STORAGE_ERROR,
+        /** The stored document exists but is not a valid canonical metamodel: a resource state, not a failure of the storage. */
+        CORRUPT_CONFIGURATION
     }
 }

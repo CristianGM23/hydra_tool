@@ -17,7 +17,29 @@ function ensureCanonical(model: MetaModel): MetaModel {
 }
 
 export async function listCanonicalMetamodels(): Promise<CanonicalMetamodelSummary[]> {
-    return readJson<CanonicalMetamodelSummary[]>(await backendFetch('/api/canonical-metamodels'));
+    return (await listCanonicalMetamodelsWithOmissions()).metamodels;
+}
+
+/** Stored metamodels left out of the listing because their document cannot be used (headers X-Hydra-Omitted-*, D-MM-CORRUPT-CONTRATO). */
+export interface CanonicalMetamodelListing {
+    metamodels: CanonicalMetamodelSummary[];
+    omittedCount: number;
+    omittedIds: string[];
+}
+
+export async function listCanonicalMetamodelsWithOmissions(): Promise<CanonicalMetamodelListing> {
+    const response = await backendFetch('/api/canonical-metamodels');
+    const metamodels = await readJson<CanonicalMetamodelSummary[]>(response);
+    const omittedCount = Number.parseInt(response.headers.get('X-Hydra-Omitted-Count') ?? '0', 10);
+    const omittedIds = (response.headers.get('X-Hydra-Omitted-Items') ?? '').split(',').map(id => id.trim()).filter(id => id.length > 0);
+    return { metamodels, omittedCount: Number.isFinite(omittedCount) && omittedCount > 0 ? omittedCount : 0, omittedIds };
+}
+
+/** Public notice for the metamodels the listing left out; empty when nothing was omitted. */
+export function describeOmittedMetamodels(listing: CanonicalMetamodelListing): string {
+    if (listing.omittedCount === 0) return '';
+    const named = listing.omittedIds.length > 0 ? `: ${listing.omittedIds.join(', ')}` : '';
+    return `${listing.omittedCount} stored metamodel(s) cannot be used and are not listed${named}. The stored files were left unchanged; restore them from a backup or from the project history.`;
 }
 
 export async function loadMetaModel(metamodelId: string): Promise<{ metamodel: MetaModel; etag: string }> {

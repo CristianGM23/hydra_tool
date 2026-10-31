@@ -9,7 +9,7 @@ import { HydraOperationProgress } from '../design-system/HydraOperationProgress'
 import { useBoundedDesignerHistory } from '../designer-ui/useBoundedDesignerHistory';
 import '../visual-style/visual-style.css';
 import './metamodel-designer.css';
-import { createMetaModel, deleteMetamodel, listCanonicalMetamodels, listMetamodelExportFormats, loadMetaModel, loadMetamodelDeletionImpact, loadMetamodelDiagram, reloadNotationDirectory, replaceMetaModel, saveMetamodelDiagram } from './api';
+import { createMetaModel, deleteMetamodel, describeOmittedMetamodels, listCanonicalMetamodels, listCanonicalMetamodelsWithOmissions, listMetamodelExportFormats, loadMetaModel, loadMetamodelDeletionImpact, loadMetamodelDiagram, reloadNotationDirectory, replaceMetaModel, saveMetamodelDiagram } from './api';
 import { deleteMetamodelElementsInBatch, deleteMetamodelRelationsInBatch } from './batchDeletion';
 import { createsSuperTypeCycle, validateAndNormalizeConnection } from './connectionValidation';
 import { findMetamodelDataTypeError } from './dataTypeUtils';
@@ -123,13 +123,17 @@ export function MetamodelDesigner({ onSaved, initialSection = 'STRUCTURE', secti
 
     useEffect(() => {
         let active = true;
-        void Promise.all([listCanonicalMetamodels(), listMetamodelImportFormats()])
-            .then(([models, formats]) => {
+        void Promise.all([listCanonicalMetamodelsWithOmissions(), listMetamodelImportFormats()])
+            .then(([listing, formats]) => {
                 if(!active) return;
+                const models = listing.metamodels;
                 setMetamodels(models);
                 setImportFormats(formats);
                 if(models.length > 0) setSelectedMetamodelId(models[0].id);
                 setError('');
+                // D-MM-CORRUPT-CONTRATO: a stored metamodel that cannot be used is not listed, but the user is told that it exists
+                const omitted = describeOmittedMetamodels(listing);
+                if(omitted) setMessage(omitted);
             })
             .catch(exception => {
                 if(!active) return;

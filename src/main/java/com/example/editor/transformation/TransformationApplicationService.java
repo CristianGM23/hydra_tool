@@ -166,7 +166,9 @@ public class TransformationApplicationService {
             try {
                 result.add(metamodels.findById(endpoint.metamodelId()).metamodel());
             } catch(MetamodelApplicationException exception) {
-                // A metamodel that exists but cannot be read is a server-side failure, never the client's mistake.
+                // A corrupt stored metamodel keeps its own 409 (D-MM-CORRUPT-CONTRATO); one that cannot be read is a server-side failure,
+                // never the client's mistake.
+                if(exception.isCorruptConfiguration()) throw exception;
                 if(exception.getReason() == MetamodelApplicationException.Reason.STORAGE_ERROR)
                     throw new TransformationApplicationException(TransformationApplicationException.Reason.STORAGE_ERROR,
                             "Transformation endpoint metamodel could not be read: " + endpoint.metamodelId(), exception);

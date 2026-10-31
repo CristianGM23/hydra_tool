@@ -26,6 +26,8 @@ public class MetamodelProjectionException extends RuntimeException {
     public enum Reason {
         INVALID_REQUEST,
         NOT_FOUND,
-        STORAGE_ERROR
+        STORAGE_ERROR,
+        /** The stored canonical metamodel exists but is not a valid metamodel (409, D-MM-CORRUPT-CONTRATO). */
+        CORRUPT_CONFIGURATION
     }
 }

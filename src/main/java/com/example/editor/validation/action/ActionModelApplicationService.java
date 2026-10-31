@@ -92,6 +92,7 @@ public class ActionModelApplicationService {
         try { return metamodelService.findById(id).metamodel(); }
         catch(MetamodelApplicationException exception) {
             ActionModelApplicationException.Reason reason = switch(exception.getReason()) {
+                case CORRUPT_CONFIGURATION -> throw exception;
                 case INVALID_REQUEST -> ActionModelApplicationException.Reason.INVALID_REQUEST;
                 case NOT_FOUND -> ActionModelApplicationException.Reason.NOT_FOUND;
                 case CONFLICT -> ActionModelApplicationException.Reason.CONFLICT;

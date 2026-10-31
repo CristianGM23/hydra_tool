@@ -29,6 +29,13 @@ public class MetamodelApplicationException extends RuntimeException {
         CONFLICT,
         VALIDATION_ERROR,
         STORAGE_ERROR,
-        PRECONDITION_FAILED
+        PRECONDITION_FAILED,
+        /** The stored metamodel exists but is not a valid canonical metamodel (409): its message is public and names no server path. */
+        CORRUPT_CONFIGURATION
+    }
+
+    /** Descripción: Indica si el metamodelo almacenado está corrupto; los módulos que dependen de él propagan esta misma excepción (409) en lugar de traducirla a su propio 404/400/500. Entradas: ninguna. Salida: true para CORRUPT_CONFIGURATION. */
+    public boolean isCorruptConfiguration() {
+        return reason == Reason.CORRUPT_CONFIGURATION;
     }
 }

@@ -173,6 +173,7 @@ public class ExpressionModelApplicationService {
             return metamodelService.findById(metamodelId).metamodel();
         } catch(MetamodelApplicationException exception) {
             ExpressionModelApplicationException.Reason reason = switch(exception.getReason()) {
+                case CORRUPT_CONFIGURATION -> throw exception;
                 case INVALID_REQUEST -> ExpressionModelApplicationException.Reason.INVALID_REQUEST;
                 case NOT_FOUND -> ExpressionModelApplicationException.Reason.NOT_FOUND;
                 case CONFLICT -> ExpressionModelApplicationException.Reason.CONFLICT;

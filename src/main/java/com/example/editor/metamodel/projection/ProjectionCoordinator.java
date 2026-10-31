@@ -26,6 +26,8 @@ import com.example.editor.metamodel.target.TargetConfigurationRepository;
 @Service
 public class ProjectionCoordinator {
 
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProjectionCoordinator.class);
+
     private final CanonicalMetamodelRepository canonicalRepository;
     private final TargetConfigurationRepository targetRepository;
     private final ProjectionManifestRepository manifestRepository;
@@ -245,6 +247,10 @@ public class ProjectionCoordinator {
             return canonicalRepository.findById(metamodelId)
                     .orElseThrow(() -> new MetamodelProjectionException(MetamodelProjectionException.Reason.NOT_FOUND, "Canonical metamodel was not found: " + metamodelId));
         } catch (CanonicalMetamodelRepositoryException exception) {
+            if (exception.getReason() == CanonicalMetamodelRepositoryException.Reason.CORRUPT_CONFIGURATION) {
+                LOGGER.warn("hydra.metamodel_corrupt_configuration metamodelId={} correlationId={}", metamodelId, com.example.editor.audit.AuditRequestContext.correlationId(), exception);
+                throw new MetamodelProjectionException(MetamodelProjectionException.Reason.CORRUPT_CONFIGURATION, CanonicalMetamodelRepositoryException.corruptPublicMessage(metamodelId), exception);
+            }
             MetamodelProjectionException.Reason reason = exception.getReason() == CanonicalMetamodelRepositoryException.Reason.INVALID_REQUEST
                     ? MetamodelProjectionException.Reason.INVALID_REQUEST
                     : exception.getReason() == CanonicalMetamodelRepositoryException.Reason.NOT_FOUND

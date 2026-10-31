@@ -251,6 +251,12 @@ class MetamodelRegistryServiceTests {
         public List<CanonicalMetamodelSummary> findAll() {
             return List.copyOf(summaries);
         }
+
+        /** The registry reads the catalog (D-MM-CORRUPT-CONTRATO): the same summaries, nothing omitted. */
+        @Override
+        public com.example.editor.metamodel.canonical.CanonicalMetamodelCatalog catalog() {
+            return new com.example.editor.metamodel.canonical.CanonicalMetamodelCatalog(findAll(), List.of());
+        }
     }
 
     private static final class StubProjectionCoordinator extends ProjectionCoordinator {

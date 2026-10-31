@@ -71,7 +71,7 @@ public class ApiExceptionHandler {
             status = HttpStatus.BAD_REQUEST;
         } else if (reason == Reason.NOT_FOUND) {
             status = HttpStatus.NOT_FOUND;
-        } else if (reason == Reason.CONFLICT) {
+        } else if (reason == Reason.CONFLICT || reason == Reason.CORRUPT_CONFIGURATION) {
             status = HttpStatus.CONFLICT;
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -212,6 +212,8 @@ public class ApiExceptionHandler {
             case CONFLICT -> HttpStatus.CONFLICT;
             case VALIDATION_ERROR -> HttpStatus.UNPROCESSABLE_CONTENT;
             case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
+            // D-MM-CORRUPT-CONTRATO: a stored metamodel that is not a valid metamodel is a state of the resource (409), its message is public
+            case CORRUPT_CONFIGURATION -> HttpStatus.CONFLICT;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
 
@@ -226,6 +228,7 @@ public class ApiExceptionHandler {
         HttpStatus status = switch (exception.getReason()) {
             case INVALID_REQUEST -> HttpStatus.BAD_REQUEST;
             case NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case CORRUPT_CONFIGURATION -> HttpStatus.CONFLICT;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
 

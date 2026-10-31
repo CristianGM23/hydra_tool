@@ -174,6 +174,44 @@ public class JsonCanonicalMetamodelRepository implements CanonicalMetamodelRepos
     }
 
     @Override
+    /** Descripción: Lista los metamodelos legibles y aparta, sin tocar sus ficheros, los que no se pueden usar: un documento corrupto o ilegible de un metamodelo no oculta a los demás (D-MM-CORRUPT-CONTRATO). Entradas: ninguna. Salida: resúmenes ordenados y metamodelos omitidos con su motivo; un fallo al listar el directorio se propaga como STORAGE_ERROR. */ public CanonicalMetamodelCatalog catalog() {
+        requireEnabled();
+        Path directory = storageProperties.metamodels().toAbsolutePath().normalize();
+
+        if (!Files.isDirectory(directory)) {
+            return new CanonicalMetamodelCatalog(List.of(), List.of());
+        }
+
+        String suffix = validatedSuffix();
+        List<String> names;
+        try (var stream = Files.list(directory)) {
+            names = stream.filter(Files::isRegularFile).map(path -> path.getFileName().toString())
+                    .filter(name -> name.endsWith(suffix) && !name.endsWith(suffix + ".tmp"))
+                    .map(name -> name.substring(0, name.length() - suffix.length())).sorted().toList();
+        } catch (IOException exception) {
+            throw new CanonicalMetamodelRepositoryException(Reason.STORAGE_ERROR, "Could not list canonical metamodels: " + directory, exception);
+        }
+        List<CanonicalMetamodelSummary> summaries = new java.util.ArrayList<>();
+        List<CanonicalMetamodelCatalog.Omitted> omitted = new java.util.ArrayList<>();
+        for (String id : names) {
+            if (!MetamodelIdPolicy.valid(id)) {
+                // a file whose name is not a metamodel id cannot be addressed by the API; its name is never echoed to the client
+                omitted.add(new CanonicalMetamodelCatalog.Omitted(null, Reason.CORRUPT_CONFIGURATION,
+                        new CanonicalMetamodelRepositoryException(Reason.CORRUPT_CONFIGURATION, "Stored canonical metamodel file name is not a metamodel id: " + directory.resolve(id + suffix))));
+                continue;
+            }
+            try {
+                // a document deleted between the listing and its read is simply no longer part of the catalog
+                findById(id).ifPresent(stored -> summaries.add(new CanonicalMetamodelSummary(stored.metamodel().id(), stored.metamodel().name(), stored.metamodel().schemaVersion(), stored.etag())));
+            } catch (CanonicalMetamodelRepositoryException exception) {
+                if (exception.getReason() != Reason.CORRUPT_CONFIGURATION && exception.getReason() != Reason.STORAGE_ERROR) throw exception;
+                omitted.add(new CanonicalMetamodelCatalog.Omitted(id, exception.getReason(), exception));
+            }
+        }
+        return new CanonicalMetamodelCatalog(List.copyOf(summaries), List.copyOf(omitted));
+    }
+
+    @Override
     /** Descripción: Evalúa la condición «exists» sin modificar el estado externo. Entradas: id: identificador que delimita el recurso objetivo. Salida: devuelve un indicador que expresa el resultado de la condición. */ public boolean exists(String id) {
         return findById(id).isPresent();
     }
@@ -238,17 +276,19 @@ public class JsonCanonicalMetamodelRepository implements CanonicalMetamodelRepos
             byte[] content = com.example.editor.io.BoundedIo.readInternal(path);
             MetaModel metamodel = codec.read(content);
             if (!expectedId.equals(metamodel.id())) {
-                throw new CanonicalMetamodelRepositoryException(Reason.STORAGE_ERROR,
-                        "Canonical metamodel id does not match its file name: " + expectedId);
+                throw new CanonicalMetamodelRepositoryException(Reason.CORRUPT_CONFIGURATION,
+                        "Canonical metamodel id does not match its file name: " + expectedId + " (" + path + ")");
             }
             byte[] canonicalContent = canonicalBytes(metamodel);
             return new StoredMetamodel(metamodel, etag(canonicalContent), path);
         } catch (CanonicalMetamodelRepositoryException exception) {
             throw exception;
         } catch (IllegalArgumentException exception) {
-            throw new CanonicalMetamodelRepositoryException(Reason.INVALID_REQUEST, exception.getMessage(), exception);
+            // D-MM-CORRUPT-CONTRATO: stored bytes that do not form a valid metamodel are a corrupt stored configuration, not a bad request
+            throw new CanonicalMetamodelRepositoryException(Reason.CORRUPT_CONFIGURATION,
+                    "Stored canonical metamodel is not valid: " + path + ": " + exception.getMessage(), exception);
         } catch (JacksonException exception) {
-            throw new CanonicalMetamodelRepositoryException(Reason.STORAGE_ERROR,
+            throw new CanonicalMetamodelRepositoryException(Reason.CORRUPT_CONFIGURATION,
                     "Could not parse canonical metamodel: " + path, exception);
         } catch (IOException exception) {
             throw new CanonicalMetamodelRepositoryException(Reason.STORAGE_ERROR,
@@ -261,7 +301,9 @@ public class JsonCanonicalMetamodelRepository implements CanonicalMetamodelRepos
         Path temporary = temporaryFor(destination);
         if (!Files.isRegularFile(temporary)) return;
         if (Files.isRegularFile(destination)) {
-            deleteTemporary(temporary);
+            // D-MM-CORRUPT-CONTRATO: next to a corrupt published document the temporary file may be the only valid copy; it is left for an
+            // explicit recovery instead of being deleted by a read
+            if (readable(destination, id)) deleteTemporary(temporary);
             return;
         }
         try {
@@ -277,6 +319,15 @@ public class JsonCanonicalMetamodelRepository implements CanonicalMetamodelRepos
         } catch (IOException exception) {
             throw new CanonicalMetamodelRepositoryException(Reason.STORAGE_ERROR,
                     "Could not recover interrupted canonical write: " + id, exception);
+        }
+    }
+
+    /** Descripción: Indica si el documento publicado forma el metamodelo de su fichero, sin modificar nada. Entradas: destination: documento publicado; id: id esperado. Salida: false si está corrupto o no se puede leer. */
+    private boolean readable(Path destination, String id) {
+        try {
+            return id.equals(codec.read(com.example.editor.io.BoundedIo.readInternal(destination)).id());
+        } catch (JacksonException | IllegalArgumentException | IOException exception) {
+            return false;
         }
     }
 

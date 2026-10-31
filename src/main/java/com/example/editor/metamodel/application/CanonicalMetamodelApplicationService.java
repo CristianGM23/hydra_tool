@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.example.editor.audit.AuditRequestContext;
+import com.example.editor.metamodel.canonical.CanonicalMetamodelCatalog;
 import com.example.editor.metamodel.canonical.CanonicalMetamodelRepository;
 import com.example.editor.metamodel.canonical.CanonicalMetamodelRepositoryException;
 import com.example.editor.metamodel.canonical.CanonicalMetamodelSummary;
@@ -68,7 +70,7 @@ public class CanonicalMetamodelApplicationService implements MetamodelQueryPort 
             List<ProjectionResult> projections = projectionCoordinator == null ? List.of() : projectionCoordinator.synchronizeAfterSave(stored.metamodel(), stored.etag(), prepared.targets());
             return new MetamodelSaveResponse(stored.metamodel(), prepared.validation(), projections, stored.etag());
         } catch (CanonicalMetamodelRepositoryException exception) {
-            throw translate(exception);
+            throw translate(exception, prepared.metamodel().id());
         }
     }
 
@@ -92,7 +94,7 @@ public class CanonicalMetamodelApplicationService implements MetamodelQueryPort 
             List<ProjectionResult> projections = projectionCoordinator == null ? List.of() : projectionCoordinator.synchronizeAfterSave(stored.metamodel(), stored.etag(), prepared.targets());
             return new MetamodelSaveResponse(stored.metamodel(), prepared.validation(), projections, stored.etag());
         } catch (CanonicalMetamodelRepositoryException exception) {
-            throw translate(exception);
+            throw translate(exception, id);
         }
     }
 
@@ -106,17 +108,26 @@ public class CanonicalMetamodelApplicationService implements MetamodelQueryPort 
             }
             throw new MetamodelApplicationException(MetamodelApplicationException.Reason.NOT_FOUND, "Canonical metamodel or semantic context was not found: " + id);
         } catch (CanonicalMetamodelRepositoryException exception) {
-            throw translate(exception);
+            throw translate(exception, id);
         }
     }
 
     /** Descripción: Implementa el puerto neutral de consulta y exige que el contexto exista. Entradas: id: identificador. Salida: metamodelo neutral. */ @Override public MetaModel requireMetamodel(String id){return findById(id).metamodel();}
 
-    /** Descripción: Obtiene la información correspondiente a «findAll» dentro de CanonicalMetamodelApplicationService. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public List<CanonicalMetamodelSummary> findAll() {
+    /** Descripción: Lista los metamodelos que se pueden usar; los que tienen el documento corrupto o ilegible se omiten (ver catalog()). Entradas: ninguna. Salida: resúmenes ordenados por id. */ public List<CanonicalMetamodelSummary> findAll() {
+        return catalog().metamodels();
+    }
+
+    /** Descripción: Catálogo de metamodelos (D-MM-CORRUPT-CONTRATO): un documento corrupto o ilegible no oculta a los demás; cada omitido se registra en el log con su causa y el correlationId, y nunca se mueve ni se modifica. Entradas: ninguna. Salida: metamodelos utilizables y omitidos; un fallo al listar el almacén se propaga como STORAGE_ERROR. */ public CanonicalMetamodelCatalog catalog() {
         try {
-            return repository.findAll();
+            CanonicalMetamodelCatalog catalog = repository.catalog();
+            for (CanonicalMetamodelCatalog.Omitted omitted : catalog.omitted()) {
+                LOGGER.warn("hydra.metamodel_catalog_entry_omitted metamodelId={} reason={} correlationId={}", omitted.metamodelId(), omitted.reason(),
+                        AuditRequestContext.correlationId(), omitted.cause());
+            }
+            return catalog;
         } catch (CanonicalMetamodelRepositoryException exception) {
-            throw translate(exception);
+            throw translate(exception, null);
         }
     }
 
@@ -132,7 +143,7 @@ public class CanonicalMetamodelApplicationService implements MetamodelQueryPort 
         try {
             repository.delete(id, expectedEtag);
         } catch (CanonicalMetamodelRepositoryException exception) {
-            throw translate(exception);
+            throw translate(exception, id);
         }
 
         if (projectionCoordinator != null) {
@@ -182,14 +193,19 @@ public class CanonicalMetamodelApplicationService implements MetamodelQueryPort 
     private record PreparedForSave(MetaModel metamodel, ValidationReport validation, TargetConfigurationDocument targets) {
     }
 
-    /** Descripción: Ejecuta la operación «translate» correspondiente a la responsabilidad de CanonicalMetamodelApplicationService. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private MetamodelApplicationException translate(CanonicalMetamodelRepositoryException exception) {
+    /** Descripción: Traduce el error del repositorio al de la aplicación; un metamodelo almacenado corrupto se responde con un mensaje público sin rutas y su causa se registra en el log con el correlationId. Entradas: exception: error del repositorio; metamodelId: metamodelo afectado (puede ser null). Salida: la excepción de aplicación. */ private MetamodelApplicationException translate(CanonicalMetamodelRepositoryException exception, String metamodelId) {
         MetamodelApplicationException.Reason reason = switch (exception.getReason()) {
             case INVALID_REQUEST -> MetamodelApplicationException.Reason.INVALID_REQUEST;
             case NOT_FOUND -> MetamodelApplicationException.Reason.NOT_FOUND;
             case CONFLICT -> MetamodelApplicationException.Reason.CONFLICT;
             case PRECONDITION_FAILED -> MetamodelApplicationException.Reason.PRECONDITION_FAILED;
             case STORAGE_ERROR -> MetamodelApplicationException.Reason.STORAGE_ERROR;
+            case CORRUPT_CONFIGURATION -> MetamodelApplicationException.Reason.CORRUPT_CONFIGURATION;
         };
+        if (reason == MetamodelApplicationException.Reason.CORRUPT_CONFIGURATION) {
+            LOGGER.warn("hydra.metamodel_corrupt_configuration metamodelId={} correlationId={}", metamodelId, AuditRequestContext.correlationId(), exception);
+            return new MetamodelApplicationException(reason, CanonicalMetamodelRepositoryException.corruptPublicMessage(metamodelId), exception);
+        }
 
         return new MetamodelApplicationException(reason, exception.getMessage(), exception);
     }
