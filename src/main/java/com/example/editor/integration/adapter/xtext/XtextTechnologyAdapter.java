@@ -1,13 +1,18 @@
 package com.example.editor.integration.adapter.xtext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
+import com.example.editor.integration.IntegrationBuildSystem;
 import com.example.editor.integration.IntegrationArtifactKind;
 import com.example.editor.integration.IntegrationDependencyAction;
 import com.example.editor.integration.IntegrationDependencyChange;
@@ -56,6 +61,17 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
             + "<configuration><sources><source>src/main/xtext-gen</source></sources><resources><resource><directory>src/main/xtext-gen</directory>"
             + "<excludes><exclude>**/*.java</exclude><exclude>**/*.g</exclude></excludes></resource></resources></configuration></execution></executions></plugin></plugins></build>";
     private static final String BOOLEAN_RULE = "HydraBoolean";
+    private static final String ANTLR_RUNTIME = "org.antlr.runtime;bundle-version=\"[3.2.0,3.2.1)\"";
+    private static final String TYCHO_README = """
+
+            ## Tycho build (buildSystem TYCHO)
+
+            - The package root is an aggregator whose parent is the host Tycho parent (setting `tychoParent`): Tycho, the target platform and the environments stay in the host.
+            - Runtime, IDE and UI are `eclipse-plugin` bundles. Their `META-INF/MANIFEST.MF` are complete before the build because Tycho reads them when it sets up the reactor, before MWE2 runs; the MWE2 manifest merge has nothing to add.
+            - Host target platform: the Eclipse platform, the Xtext runtime and UI features, `org.eclipse.xtext.ide`, `org.eclipse.lsp4j` and `org.eclipse.lsp4j.jsonrpc` (the `p2` dependency changes).
+            - Host MWE2 workflow: `StandardProjectConfig` with `mavenLayout = true`, `eclipsePlugin = { enabled = true }`, `createEclipseMetaData = true` and `metaInf = "<module>/META-INF"` for each module; MWE2 writes `plugin.xml` for the runtime and UI bundles.
+            - Projects whose documents open in the Eclipse editor need the Xtext nature (`org.eclipse.xtext.ui.shared.xtextNature`).
+            """;
     /** Palabras reservadas de la gramática de Xtext 2.44 (Xtext.xtext): como nombre de regla, característica o literal deben escaparse con ^. */
     private static final Set<String> XTEXT_KEYWORDS = Set.of("as", "current", "enum", "EOF", "false", "fragment", "generate", "grammar", "hidden", "import", "returns", "terminal", "true", "with");
     private final JsonMapper mapper;
@@ -89,12 +105,20 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
             List<String> sourceIds = TechnologyAdapterGenerationSupport.sourceIds(request);
             List<TechnologyGeneratedFile> files = new ArrayList<>();
             List<IntegrationDiagnostic> grammarDiagnostics = new ArrayList<>();
-            files.add(TechnologyAdapterSupport.text(root + "/pom.xml", "application/xml", parentPom(basePackage, languageName, xtextVersion), sourceIds));
-            files.add(TechnologyAdapterSupport.text(runtime + "/pom.xml", "application/xml", runtimePom(basePackage, languageName, xtextVersion), sourceIds));
-            files.add(TechnologyAdapterSupport.text(ide + "/pom.xml", "application/xml", childPom(basePackage, languageName, "ide", xtextVersion), sourceIds));
-            files.add(TechnologyAdapterSupport.text(ui + "/pom.xml", "application/xml", childPom(basePackage, languageName, "ui", xtextVersion), sourceIds));
-            files.add(TechnologyAdapterSupport.text(runtime + "/src/main/java/" + javaPath + "/" + languageName + ".xtext",
-                    "text/x-xtext", metamodel == null ? grammarSource(grammarDefinition) : grammar(metamodel, languagePackage, languageName, grammarDiagnostics), sourceIds));
+            boolean tycho = request.profile().target().buildSystem() == IntegrationBuildSystem.TYCHO;
+            String grammarText = metamodel == null ? grammarSource(grammarDefinition) : grammar(metamodel, languagePackage, languageName, grammarDiagnostics);
+            if(tycho){
+                files.add(TechnologyAdapterSupport.text(root + "/pom.xml", "application/xml", tychoParentPom(basePackage, languageName, hostParent(request, root)), sourceIds));
+                for(String module : List.of(runtime, ide, ui)){
+                    files.add(TechnologyAdapterSupport.text(module + "/pom.xml", "application/xml", eclipsePluginPom(basePackage, languageName, module.substring(root.length() + 1)), sourceIds));
+                }
+            }else{
+                files.add(TechnologyAdapterSupport.text(root + "/pom.xml", "application/xml", parentPom(basePackage, languageName, xtextVersion), sourceIds));
+                files.add(TechnologyAdapterSupport.text(runtime + "/pom.xml", "application/xml", runtimePom(basePackage, languageName, xtextVersion), sourceIds));
+                files.add(TechnologyAdapterSupport.text(ide + "/pom.xml", "application/xml", childPom(basePackage, languageName, "ide", xtextVersion), sourceIds));
+                files.add(TechnologyAdapterSupport.text(ui + "/pom.xml", "application/xml", childPom(basePackage, languageName, "ui", xtextVersion), sourceIds));
+            }
+            files.add(TechnologyAdapterSupport.text(runtime + "/src/main/java/" + javaPath + "/" + languageName + ".xtext", "text/x-xtext", grammarText, sourceIds));
             files.add(TechnologyAdapterSupport.text(runtime + "/src/main/java/" + javaPath + "/validation/" + languageName + "Validator.java",
                     "text/x-java-source", validatorSource(languagePackage, languageName, metamodel != null), sourceIds));
             files.add(TechnologyAdapterSupport.text(runtime + "/src/main/java/" + javaPath + "/validation/HydraIssueCodes.java",
@@ -124,12 +148,34 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
                 files.add(TechnologyAdapterSupport.text(ui + "/src/main/java/" + javaPath + "/ui/" + languageName + "UiModule.java", "text/x-java-source", textualUiModuleSource(languagePackage,languageName), sourceIds));
                 files.addAll(TechnologyAdapterTextualCustomizationSupport.neutralFiles(ui,request,mapper));
             }
-            files.add(TechnologyAdapterSupport.text(ui + "/META-INF/MANIFEST.MF", "text/plain", manifest(basePackage, languageName), sourceIds));
+            boolean uiResources = files.stream().anyMatch(file -> file.relativePath().startsWith(ui + "/hydra/"));
+            if(tycho){
+                String grammarPackage = grammarPackage(grammarText, languagePackage);
+                files.add(TechnologyAdapterSupport.text(runtime + "/META-INF/MANIFEST.MF", "text/plain", runtimeManifest(runtime.substring(root.length() + 1), languagePackage, grammarPackage, generatedPackages(grammarText), xtextVersion), sourceIds));
+                files.add(TechnologyAdapterSupport.text(ide + "/META-INF/MANIFEST.MF", "text/plain", ideManifest(runtime.substring(root.length() + 1), languagePackage, grammarPackage, xtextVersion), sourceIds));
+                files.add(TechnologyAdapterSupport.text(ui + "/META-INF/MANIFEST.MF", "text/plain", uiManifest(runtime.substring(root.length() + 1), languageName, languagePackage, grammarPackage, xtextVersion), sourceIds));
+                files.add(TechnologyAdapterSupport.text(runtime + "/build.properties", "text/plain", buildProperties(List.of("src/main/java/", "src/main/resources/", "src/main/xtext-gen/"), List.of("model/generated/", "META-INF/", ".", "plugin.xml")), sourceIds));
+                files.add(TechnologyAdapterSupport.text(ide + "/build.properties", "text/plain", buildProperties(List.of("src/main/java/", "src/main/xtext-gen/"), List.of("META-INF/", ".")), sourceIds));
+                files.add(TechnologyAdapterSupport.text(ui + "/build.properties", "text/plain", buildProperties(List.of("src/main/java/", "src/main/xtext-gen/"),
+                        uiResources ? List.of("META-INF/", ".", "plugin.xml", "hydra/") : List.of("META-INF/", ".", "plugin.xml")), sourceIds));
+            }else{
+                files.add(TechnologyAdapterSupport.text(ui + "/META-INF/MANIFEST.MF", "text/plain", manifest(basePackage, languageName), sourceIds));
+            }
             files.addAll(TechnologyAdapterGenerationSupport.canonicalDocuments(runtime, "src/main/resources/hydra", request));
-            files.add(TechnologyAdapterSupport.text(root + "/README.md", "text/markdown", readme(request, semanticId, languagePackage, metamodel != null), sourceIds));
+            files.add(TechnologyAdapterSupport.text(root + "/README.md", "text/markdown", readme(request, semanticId, languagePackage, metamodel != null) + (tycho ? TYCHO_README : ""), sourceIds));
             List<IntegrationDiagnostic> diagnostics = new ArrayList<>(TechnologyAdapterSupport.unsupportedDiagnostics(request, SUPPORTED, "Xtext"));
             diagnostics.addAll(grammarDiagnostics);
-            List<IntegrationDependencyChange> dependencies = List.of(
+            if(!tycho){
+                diagnostics.add(new IntegrationDiagnostic(IntegrationDiagnosticSeverity.WARNING, "XTEXT_UI_REQUIRES_TYCHO", ui, "target.buildSystem",
+                        "The Eclipse UI module needs org.eclipse.xtext.ui, which is only published to p2 repositories (Maven Central stops at 2.10.0): "
+                                + "build it with buildSystem TYCHO; with " + request.profile().target().buildSystem() + " only the runtime and IDE modules build."));
+            }
+            List<IntegrationDependencyChange> dependencies = tycho ? List.of(
+                    p2Unit("org.eclipse.xtext.runtime.feature.group", xtextVersion),
+                    p2Unit("org.eclipse.xtext.ui.feature.group", xtextVersion),
+                    p2Unit("org.eclipse.xtext.ide", xtextVersion),
+                    p2Unit("org.eclipse.lsp4j", null),
+                    p2Unit("org.eclipse.lsp4j.jsonrpc", null)) : List.of(
                     dependency("org.eclipse.xtext:org.eclipse.xtext", xtextVersion),
                     dependency("org.eclipse.xtext:org.eclipse.xtext.ide", xtextVersion),
                     dependency("org.eclipse.xtext:org.eclipse.xtext.ui", xtextVersion),
@@ -149,6 +195,115 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
     }
 
     /** Descripción: Ejecuta la operación «dependency» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: coordinate: dato de entrada necesario para la operación; version: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private IntegrationDependencyChange dependency(String coordinate, String version){return new IntegrationDependencyChange("maven", coordinate, version, "compile", IntegrationDependencyAction.ADD);}
+
+    /** Unidad de la plataforma objetivo p2 que el anfitrión Tycho debe contener. */
+    private IntegrationDependencyChange p2Unit(String id, String version){return new IntegrationDependencyChange("p2", id, version, "target-platform", IntegrationDependencyAction.ADD);}
+
+    /** Padre Tycho del ANFITRIÓN (ajuste tychoParent = groupId:artifactId:version): define Tycho, la plataforma objetivo y los entornos, que el
+     *  paquete no fija para no convertirse en una distribución independiente. relativePath: ajuste tychoParentRelativePath o, por defecto, el pom
+     *  raíz del anfitrión, en el que se inyecta la raíz generada. Salida: groupId, artifactId, version y relativePath. */
+    private String[] hostParent(TechnologyCompilationRequest request, String root){
+        Map<String, String> settings = request.profile().target().settings();
+        String[] coordinates = settings.getOrDefault("tychoParent", "").trim().split(":");
+        if(coordinates.length != 3 || Arrays.stream(coordinates).anyMatch(String::isBlank)){
+            throw new TechnologyCompilationException("Xtext with buildSystem TYCHO requires the setting tychoParent=groupId:artifactId:version of the host Tycho parent POM (Tycho, target platform and environments)");
+        }
+        String relativePath = settings.getOrDefault("tychoParentRelativePath", "../".repeat(root.split("/").length) + "pom.xml");
+        return new String[]{coordinates[0].trim(), coordinates[1].trim(), coordinates[2].trim(), relativePath};
+    }
+
+    /** Reactor del paquete para Tycho: agrega los tres bundles y hereda del padre Tycho del anfitrión. */
+    private String tychoParentPom(String basePackage, String languageName, String[] parent){
+        String artifact = TechnologyAdapterSupport.slug(basePackage + "." + languageName);
+        String module = basePackage + "." + languageName.toLowerCase();
+        return """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion>
+                  <parent><groupId>%s</groupId><artifactId>%s</artifactId><version>%s</version><relativePath>%s</relativePath></parent>
+                  <groupId>%s</groupId><artifactId>%s.parent</artifactId><version>1.0.0-SNAPSHOT</version><packaging>pom</packaging>
+                  <modules><module>%s</module><module>%s.ide</module><module>%s.ui</module></modules>
+                </project>
+                """.formatted(TechnologyAdapterSupport.xml(parent[0]), TechnologyAdapterSupport.xml(parent[1]), TechnologyAdapterSupport.xml(parent[2]),
+                TechnologyAdapterSupport.xml(parent[3]), TechnologyAdapterSupport.xml(basePackage), artifact, module, module, module);
+    }
+
+    /** Bundle eclipse-plugin: Tycho exige que artifactId sea el Bundle-SymbolicName y que 1.0.0-SNAPSHOT corresponda a 1.0.0.qualifier. */
+    private String eclipsePluginPom(String basePackage, String languageName, String module){
+        return """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion>
+                  <parent><groupId>%s</groupId><artifactId>%s.parent</artifactId><version>1.0.0-SNAPSHOT</version></parent>
+                  <artifactId>%s</artifactId><packaging>eclipse-plugin</packaging>
+                </project>
+                """.formatted(TechnologyAdapterSupport.xml(basePackage), TechnologyAdapterSupport.slug(basePackage + "." + languageName), TechnologyAdapterSupport.xml(module));
+    }
+
+    /** Paquete Java de la gramática (cabecera «grammar a.b.C»): en él escribe MWE2 el código generado de los tres bundles. */
+    private static String grammarPackage(String grammarText, String fallback){
+        Matcher header = Pattern.compile("(?m)^\\s*grammar\\s+([\\w.]+)").matcher(grammarText);
+        return header.find() && header.group(1).contains(".") ? header.group(1).substring(0, header.group(1).lastIndexOf('.')) : fallback;
+    }
+
+    /** EPackages que infiere la gramática (declaraciones «generate»): MWE2 genera su código EMF en grammarPackage.<nombre>{,.impl,.util}. */
+    private static List<String> generatedPackages(String grammarText){
+        List<String> names = new ArrayList<>();
+        Matcher generate = Pattern.compile("(?m)^\\s*generate\\s+\\^?(\\w+)").matcher(grammarText);
+        while(generate.find()){names.add(generate.group(1));}
+        return names;
+    }
+
+    /** MANIFEST del bundle runtime. Tycho lo lee al montar el reactor, antes de MWE2, así que ya declara todo lo que piden las clases de HYDRA y
+     *  las que generará MWE2 (Xtext 2.44: sus fragmentos fusionan Require-Bundle y Export-Package y no encuentran nada que añadir). */
+    private String runtimeManifest(String runtime, String languagePackage, String grammarPackage, List<String> generatedPackages, String xtextVersion){
+        Set<String> exports = new TreeSet<>(List.of(grammarPackage, grammarPackage + ".generator", grammarPackage + ".parser.antlr", grammarPackage + ".parser.antlr.internal",
+                grammarPackage + ".scoping", grammarPackage + ".serializer", grammarPackage + ".services", grammarPackage + ".validation",
+                languagePackage + ".runtime", languagePackage + ".validation"));
+        generatedPackages.forEach(name -> exports.addAll(List.of(grammarPackage + "." + name, grammarPackage + "." + name + ".impl", grammarPackage + "." + name + ".util")));
+        return bundleManifest("HYDRA generated Xtext runtime", runtime, null, exports,
+                List.of(ANTLR_RUNTIME, "org.eclipse.emf.common", "org.eclipse.emf.ecore", "org.eclipse.emf.ecore.change", "org.eclipse.xtext", xbaseLib(xtextVersion)),
+                List.of("org.apache.log4j"));
+    }
+
+    /** MANIFEST del bundle IDE: servidor de lenguaje de HYDRA (Guice, LSP4J) y asistente de contenido que genera MWE2. */
+    private String ideManifest(String runtime, String languagePackage, String grammarPackage, String xtextVersion){
+        return bundleManifest("HYDRA generated Xtext IDE", runtime + ".ide", null,
+                new TreeSet<>(List.of(languagePackage + ".ide", grammarPackage + ".ide", grammarPackage + ".ide.contentassist.antlr", grammarPackage + ".ide.contentassist.antlr.internal")),
+                List.of(runtime, ANTLR_RUNTIME, "org.eclipse.emf.common", "org.eclipse.emf.ecore", "org.eclipse.xtext", "org.eclipse.xtext.ide", xbaseLib(xtextVersion)),
+                List.of("com.google.inject", "com.google.inject.util", "org.eclipse.lsp4j", "org.eclipse.lsp4j.jsonrpc.messages"));
+    }
+
+    /** MANIFEST del bundle UI: el activador es el que genera MWE2 (paquete ui.internal de la gramática, nombre del último segmento del bundle). */
+    private String uiManifest(String runtime, String languageName, String languagePackage, String grammarPackage, String xtextVersion){
+        String simple = languageName.toLowerCase();
+        String activator = grammarPackage + ".ui.internal." + Character.toUpperCase(simple.charAt(0)) + simple.substring(1) + "Activator";
+        return bundleManifest("HYDRA generated Xtext UI", runtime + ".ui", activator,
+                new TreeSet<>(List.of(grammarPackage + ".ui.contentassist", grammarPackage + ".ui.internal", grammarPackage + ".ui.quickfix", languagePackage + ".ui.quickfix")),
+                List.of(runtime, runtime + ".ide", "org.eclipse.compare", "org.eclipse.emf.common", "org.eclipse.emf.ecore", "org.eclipse.ui", "org.eclipse.ui.editors",
+                        "org.eclipse.ui.ide", "org.eclipse.xtext", "org.eclipse.xtext.builder", "org.eclipse.xtext.ide", "org.eclipse.xtext.ui",
+                        "org.eclipse.xtext.ui.codetemplates.ui", "org.eclipse.xtext.ui.shared", xbaseLib(xtextVersion)),
+                List.of("com.google.inject", "org.apache.log4j"));
+    }
+
+    private static String xbaseLib(String xtextVersion){return "org.eclipse.xtext.xbase.lib;bundle-version=\"" + xtextVersion + "\"";}
+
+    private static String bundleManifest(String name, String symbolicName, String activator, Set<String> exports, List<String> requires, List<String> imports){
+        StringBuilder manifest = new StringBuilder("Manifest-Version: 1.0\nBundle-ManifestVersion: 2\n")
+                .append("Bundle-Name: ").append(name).append('\n')
+                .append("Bundle-SymbolicName: ").append(symbolicName).append(";singleton:=true\n")
+                .append("Bundle-Version: 1.0.0.qualifier\n")
+                .append("Bundle-RequiredExecutionEnvironment: JavaSE-21\n")
+                .append("Bundle-ActivationPolicy: lazy\n");
+        if(activator != null){manifest.append("Bundle-Activator: ").append(activator).append('\n');}
+        manifest.append("Export-Package: ").append(String.join(",\n ", exports)).append('\n');
+        manifest.append("Require-Bundle: ").append(String.join(",\n ", requires)).append('\n');
+        manifest.append("Import-Package: ").append(String.join(",\n ", imports)).append('\n');
+        return manifest.append("Automatic-Module-Name: ").append(symbolicName).append('\n').toString();
+    }
+
+    /** build.properties con la disposición Maven que usa el anfitrión (mavenLayout): fuentes de HYDRA, recursos y salida de MWE2. */
+    private static String buildProperties(List<String> sources, List<String> binIncludes){
+        return "source.. = " + String.join(",\\\n           ", sources) + "\nbin.includes = " + String.join(",\\\n               ", binIncludes) + "\n";
+    }
 
     /** Descripción: Ejecuta la operación «parentPom» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: basePackage: dato de entrada necesario para la operación; languageName: dato de entrada necesario para la operación; xtextVersion: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String parentPom(String basePackage, String languageName, String xtextVersion){
         String artifact = TechnologyAdapterSupport.slug(basePackage + "." + languageName);
