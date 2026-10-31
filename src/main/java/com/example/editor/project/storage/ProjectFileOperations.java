@@ -1,9 +1,11 @@
 package com.example.editor.project.storage;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
@@ -47,9 +49,14 @@ public class ProjectFileOperations {
                     }
                     return FileVisitResult.CONTINUE;
                 }
-                /** Descripción: Elimina cada fichero visitado sin seguir enlaces simbólicos; si su ruta ya resuelve fuera de lo que se borra no lo toca (TOCTOU: Windows deja renombrar un directorio mientras se enumera y poner una unión en su lugar, y los nombres restantes se resolverían a través de ella). Entradas: file: fichero visitado; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
-                    if(FileSystemBoundaries.escapes(file,realRoot)) return FileVisitResult.CONTINUE;
-                    Files.deleteIfExists(file);
+                /** Descripción: Elimina cada fichero visitado sin seguir enlaces simbólicos; si su ruta ya resuelve fuera de lo que se borra no lo toca (TOCTOU: Windows deja renombrar un directorio mientras se enumera y poner una unión en su lugar, y los nombres restantes se resolverían a través de ella). Un fichero regular se fija antes de comprobarlo para que ningún antecesor cambie entre la comprobación y el borrado. Entradas: file: fichero visitado; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
+                    if(!attrs.isRegularFile()) {
+                        if(!FileSystemBoundaries.escapes(file,realRoot)) Files.deleteIfExists(file);
+                        return FileVisitResult.CONTINUE;
+                    }
+                    try(Closeable pin=FileSystemBoundaries.pin(file)) {
+                        if(!FileSystemBoundaries.escapes(file,realRoot)) Files.deleteIfExists(file);
+                    } catch(NoSuchFileException gone) { /* ya no existe: nada que borrar */ }
                     return FileVisitResult.CONTINUE;
                 }
                 /** Descripción: Elimina un directorio después de procesar sus hijos y propaga cualquier fallo previo. Entradas: dir: directorio visitado; exception: fallo del recorrido si existe. Salida: continúa el recorrido tras eliminar el directorio. */ @Override public FileVisitResult postVisitDirectory(Path dir,IOException exception) throws IOException {
@@ -69,12 +76,14 @@ public class ProjectFileOperations {
                 Files.createDirectories(destination.resolve(source.relativize(dir).toString()));
                 return FileVisitResult.CONTINUE;
             }
-            /** Descripción: Copia un fichero o enlace visitado conservando el enlace como enlace en lugar de seguirlo; rechaza un fichero cuya ruta ya resuelve fuera del origen (TOCTOU: su directorio se sustituyó por una unión después de entrar en él). Entradas: file: entrada origen; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
-                if(!attrs.isSymbolicLink()&&FileSystemBoundaries.escapes(file,realSource)) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Links to directories outside the copied directory are not allowed: "+source.relativize(file));
+            /** Descripción: Copia un fichero o enlace visitado conservando el enlace como enlace en lugar de seguirlo; rechaza un fichero cuya ruta ya resuelve fuera del origen (TOCTOU: su directorio se sustituyó por una unión después de entrar en él). Un fichero regular se fija antes de comprobarlo para que la copia lea el mismo fichero comprobado. Entradas: file: entrada origen; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
                 Path target=destination.resolve(source.relativize(file).toString());
                 if(target.getParent()!=null) Files.createDirectories(target.getParent());
-                if(attrs.isSymbolicLink()) Files.copy(file,target,LinkOption.NOFOLLOW_LINKS,StandardCopyOption.REPLACE_EXISTING);
-                else Files.copy(file,target,StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.COPY_ATTRIBUTES);
+                if(attrs.isSymbolicLink()) { Files.copy(file,target,LinkOption.NOFOLLOW_LINKS,StandardCopyOption.REPLACE_EXISTING); return FileVisitResult.CONTINUE; }
+                try(Closeable pin=attrs.isRegularFile()?FileSystemBoundaries.pin(file):() -> {}) {
+                    if(FileSystemBoundaries.escapes(file,realSource)) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Links to directories outside the copied directory are not allowed: "+source.relativize(file));
+                    Files.copy(file,target,StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.COPY_ATTRIBUTES);
+                }
                 return FileVisitResult.CONTINUE;
             }
         });

@@ -1,8 +1,13 @@
 package com.example.editor.io;
 
+import java.io.Closeable;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.file.LinkOption;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Locale;
 
 /**
  * Contención de rutas por su ruta real (SEC-WIN-JUNCTION). {@code Files.isSymbolicLink} no reconoce una unión de directorios de Windows
@@ -26,4 +31,12 @@ public final class FileSystemBoundaries {
         catch(NoSuchFileException missing) { return false; }
         catch(IOException unresolvable) { return true; }
     }
+
+    /** Descripción: Fija un fichero regular mientras se comprueba su ruta real y se opera con él por nombre (TOCTOU de SEC-WIN-JUNCTION). Con un handle abierto a un fichero, NTFS no deja renombrar ninguno de sus directorios antecesores, así que nadie puede sustituir uno por una unión entre la comprobación y la operación (sin fijarlo, el borrado de un proyecto por HTTP borró ficheros de fuera: resultados/sondas/toctou/sistema-borrado-despues-jar20.json). El handle comparte el borrado, de modo que la propia operación puede borrar o mover el fichero. En POSIX un handle abierto no impide renombrar, así que allí no se abre nada. Entradas: file: fichero regular. Salida: el handle, que se cierra al terminar la operación. */
+    public static Closeable pin(Path file) throws IOException {
+        if(!WINDOWS) return () -> {};
+        return FileChannel.open(file, StandardOpenOption.READ, LinkOption.NOFOLLOW_LINKS);
+    }
+
+    private static final boolean WINDOWS = System.getProperty("os.name", "").toLowerCase(Locale.ROOT).startsWith("windows");
 }

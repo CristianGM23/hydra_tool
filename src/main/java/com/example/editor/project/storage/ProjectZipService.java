@@ -56,13 +56,16 @@ public class ProjectZipService {
             try(ZipOutputStream zip=new ZipOutputStream(Files.newOutputStream(temporary))) {
                 for(ExportEntry source:entries) {
                     verifyPortableSource(source.path());
-                    // TOCTOU: the inventory was taken before reading; a directory replaced by a junction since then would be read outside the project
-                    if(com.example.editor.io.FileSystemBoundaries.escapes(source.path(),realRoot)) throw invalid("Directory junctions and links outside the project cannot be exported in a portable project archive: "+source.relative());
-                    ZipEntry entry=new ZipEntry(source.directory()?source.relative()+"/":source.relative());
-                    entry.setTime(source.lastModifiedMillis());
-                    zip.putNextEntry(entry);
-                    if(!source.directory()) expanded=copyExportFile(source.path(),zip,expanded);
-                    zip.closeEntry();
+                    // TOCTOU: the inventory was taken before reading; a directory replaced by a junction since then would be read outside the project.
+                    // A file is pinned first, so none of its directories can be swapped between this check and the read
+                    try(java.io.Closeable pin=source.directory()?() -> {}:com.example.editor.io.FileSystemBoundaries.pin(source.path())) {
+                        if(com.example.editor.io.FileSystemBoundaries.escapes(source.path(),realRoot)) throw invalid("Directory junctions and links outside the project cannot be exported in a portable project archive: "+source.relative());
+                        ZipEntry entry=new ZipEntry(source.directory()?source.relative()+"/":source.relative());
+                        entry.setTime(source.lastModifiedMillis());
+                        zip.putNextEntry(entry);
+                        if(!source.directory()) expanded=copyExportFile(source.path(),zip,expanded);
+                        zip.closeEntry();
+                    }
                 }
                 zip.finish();
             }

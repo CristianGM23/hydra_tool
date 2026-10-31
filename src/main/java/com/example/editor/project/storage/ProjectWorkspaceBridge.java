@@ -146,11 +146,14 @@ public class ProjectWorkspaceBridge {
                     return FileVisitResult.CONTINUE;
                 }
                 /** Descripción: Entrega únicamente ficheros regulares reales al consumidor de sincronización y rechaza enlaces simbólicos. Entradas: fichero y atributos. Salida: devuelve la decisión de continuar el recorrido. */
-                /** Descripción: Ejecuta la operación «visitFile» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: file: archivo o contenido que debe procesarse; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) {
+                /** Descripción: Ejecuta la operación «visitFile» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: file: archivo o contenido que debe procesarse; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
                     if(attrs.isSymbolicLink()) throw invalid("Symbolic links are not allowed during project synchronization: "+file);
-                    // TOCTOU: the directory was checked when the walk entered it; if it has since been replaced by a junction, the name resolves outside
-                    if(FileSystemBoundaries.escapes(file,realRoot)) throw invalid("Symbolic links and directory junctions are not allowed during project synchronization: "+file);
-                    if(attrs.isRegularFile()) consumer.accept(file,attrs);
+                    // TOCTOU: the directory was checked when the walk entered it; if it has since been replaced by a junction, the name resolves outside.
+                    // A regular file is pinned first, so none of its directories can be swapped between this check and the copy done by the consumer
+                    try(java.io.Closeable pin=attrs.isRegularFile()?FileSystemBoundaries.pin(file):() -> {}) {
+                        if(FileSystemBoundaries.escapes(file,realRoot)) throw invalid("Symbolic links and directory junctions are not allowed during project synchronization: "+file);
+                        if(attrs.isRegularFile()) consumer.accept(file,attrs);
+                    }
                     return FileVisitResult.CONTINUE;
                 }
             });

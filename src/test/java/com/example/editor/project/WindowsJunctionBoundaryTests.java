@@ -104,34 +104,42 @@ class WindowsJunctionBoundaryTests {
     /**
      * TOCTOU: the walk checks a directory once, when it enters it, and then deletes each entry by name. Windows lets a directory that is
      * being enumerated be renamed, so another process can put a junction in its place after the check; every remaining name is then
-     * resolved through the junction (probe resultados/sondas/toctou: 50 of 50 names resolved outside after the swap).
+     * resolved through the junction (probe resultados/sondas/toctou: 50 of 50 names resolved outside after the swap). Checking each name just
+     * before deleting it still left a window between the check and the deletion: through HTTP the jar 20 deleted one file outside in 2 of 5
+     * runs (resultados/sondas/toctou/sistema-borrado-despues-jar20.json), so the race is repeated. The racer retries the rename until it lands:
+     * while a file is pinned the directory cannot be renamed, which is the protection itself, and the race must still happen during the walk.
      */
     @Test void swappingADirectoryForAJunctionWhileItIsBeingDeletedNeverDeletesTheFilesItPointsTo() throws Exception {
-        Path doomed=temporary.resolve("doomed-race"); Path inner=doomed.resolve("A"); Files.createDirectories(inner);
-        Path target=temporary.resolve("outside-race"); Files.createDirectories(target);
-        int count=3000;
-        for(int i=0;i<count;i++){String name="f%04d.txt".formatted(i);Files.writeString(inner.resolve(name),"inside");Files.writeString(target.resolve(name),"outside data");}
-        Path staged=temporary.resolve("staged-junction"); junction(staged,target);
-        Path first=inner.resolve("f0000.txt");
-        String[] swap={"not attempted"};
-        Thread racer=new Thread(() -> {
-            try {
+        int count=2000;
+        for(int run=0;run<5;run++) {
+            Path doomed=temporary.resolve("doomed-race-"+run); Path inner=doomed.resolve("A"); Files.createDirectories(inner);
+            Path target=temporary.resolve("outside-race-"+run); Files.createDirectories(target);
+            for(int i=0;i<count;i++){String name="f%04d.txt".formatted(i);Files.writeString(inner.resolve(name),"inside");Files.writeString(target.resolve(name),"outside data");}
+            Path staged=temporary.resolve("staged-junction-"+run); junction(staged,target);
+            Path moved=temporary.resolve("A-moved-"+run);
+            Path first=inner.resolve("f0000.txt");
+            String[] swap={"not attempted"};
+            Thread racer=new Thread(() -> {
                 long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(60);
                 while(Files.exists(first)&&System.nanoTime()<deadline) Thread.onSpinWait();
-                Files.move(inner,temporary.resolve("A-moved"));
-                Files.move(staged,inner);
-                swap[0]="swapped";
-            } catch(Exception exception) { swap[0]="swap failed: "+exception; }
-        });
-        racer.start();
+                while(!swap[0].equals("swapped")&&System.nanoTime()<deadline) {
+                    try {
+                        if(!Files.exists(moved)) Files.move(inner,moved);
+                        Files.move(staged,inner);
+                        swap[0]="swapped";
+                    } catch(Exception exception) { swap[0]="swap failed: "+exception; Thread.onSpinWait(); }
+                }
+            });
+            racer.start();
 
-        catchThrowable(() -> new ProjectFileOperations().deleteRecursively(doomed));
-        racer.join(TimeUnit.SECONDS.toMillis(90));
+            catchThrowable(() -> new ProjectFileOperations().deleteRecursively(doomed));
+            racer.join(TimeUnit.SECONDS.toMillis(90));
 
-        assertThat(swap[0]).as("the directory must be replaced by the junction while it is being deleted").isEqualTo("swapped");
-        long survivors;
-        try(var files=Files.list(target)) { survivors=files.count(); }
-        assertThat(survivors).as("files outside the deleted directory were deleted through a junction swapped in during the walk").isEqualTo(count);
+            assertThat(swap[0]).as("run %d: the directory must be replaced by the junction while it is being deleted", run).isEqualTo("swapped");
+            long survivors;
+            try(var files=Files.list(target)) { survivors=files.count(); }
+            assertThat(survivors).as("run %d: files outside the deleted directory were deleted through a junction swapped in during the walk", run).isEqualTo(count);
+        }
     }
 
     @Test void aJunctionThatStaysInsideTheProjectIsNotAnEscape() throws Exception {
