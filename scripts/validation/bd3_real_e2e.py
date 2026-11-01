@@ -23,7 +23,8 @@ from build_generated_editor import precache
 from verify_web_package import verify
 
 JAVA = ROOT / 'src/main/java/com/example/editor'
-JAVA_SOURCES = ['io/AtomicFiles.java', *['standalone/distribution/' + name + '.java' for name in (
+JAVA_SOURCES = ['io/AtomicFiles.java', 'io/FileSystemBoundaries.java', 'io/TransientFileAccessRetry.java',
+                *['standalone/distribution/' + name + '.java' for name in (
     'StandaloneDistributionPackageResult', 'StandaloneDistributionProfile',
     'StandaloneDistributionTarget', 'StandaloneDistributionDiagnostic',
     'StandaloneDistributionDiagnosticSeverity', 'StandaloneDistributionValidationReport',

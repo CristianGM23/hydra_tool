@@ -270,7 +270,8 @@ class BD2FunctionalTests(unittest.TestCase):
 
 
 def run_java():
-    javafiles = ['io/AtomicFiles.java', *['standalone/distribution/' + name + '.java' for name in (
+    javafiles = ['io/AtomicFiles.java', 'io/FileSystemBoundaries.java', 'io/TransientFileAccessRetry.java',
+                 *['standalone/distribution/' + name + '.java' for name in (
         'StandaloneDistributionPackageResult', 'StandaloneDistributionProfile',
         'StandaloneDistributionTarget', 'StandaloneDistributionDiagnostic',
         'StandaloneDistributionDiagnosticSeverity', 'StandaloneDistributionValidationReport',
@@ -304,7 +305,8 @@ if __name__ == '__main__':
             raise RuntimeError('Real generated-editor build failed: ' + json.dumps(run, indent=2))
         classes = allowed / 'classes'
         classes.mkdir()
-        sources = [str(JAVA / file) for file in ['io/AtomicFiles.java', *[
+        sources = [str(JAVA / file) for file in [
+            'io/AtomicFiles.java', 'io/FileSystemBoundaries.java', 'io/TransientFileAccessRetry.java', *[
             'standalone/distribution/' + name + '.java' for name in (
                 'StandaloneDistributionPackageResult', 'StandaloneDistributionProfile',
                 'StandaloneDistributionTarget', 'StandaloneDistributionDiagnostic',
