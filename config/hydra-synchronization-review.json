@@ -56,6 +56,12 @@
       "review": "accepted"
     },
     {
+      "path": "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "scope": "STRIPED_RESOURCE",
+      "occurrences": 7,
+      "review": "accepted; every block synchronizes on GamificationCorruptDocumentRecovery.lockFor, the 64 fixed stripes that serialize the operations on one metamodel's pair"
+    },
+    {
       "path": "src/main/java/com/example/editor/gamification/GamificationCorruptDocumentRecovery.java",
       "scope": "STRIPED_RESOURCE",
       "occurrences": 1,
