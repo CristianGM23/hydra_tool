@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,9 +43,13 @@ import tools.jackson.databind.json.JsonMapper;
  * definicion, referencias, plegado, tokens semanticos, invalidacion y compatibilidad de instantaneas). Las
  * posiciones y los identificadores esperados son literales del texto fuente del test; una sesion de lectura
  * no cambia nada: se relee y el borrador queda como estaba.
+ * El contexto se cierra al terminar la clase: si quedara en la cache de Spring, su publicador asincrono de
+ * auditoria podria seguir escribiendo en audit-log mientras JUnit borra el @TempDir estatico, y el cierre de la
+ * clase fallaria con «Failed to delete temp directory» (INC-TEST-TEMPDIR-CLEANUP, 29/10 y 01/11).
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class TextualLanguageServiceHttpQueriesIntegrationTests {
 
     @TempDir
