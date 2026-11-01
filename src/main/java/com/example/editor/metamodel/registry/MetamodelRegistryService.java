@@ -124,15 +124,20 @@ public class MetamodelRegistryService implements com.example.editor.project.Proj
                 .map(status -> "Metamodel " + status.metamodelId() + " is not available for the EMF runtime (" + status.projectionStatus() + ")" + (status.message().isBlank() ? "" : ": " + status.message())).toList();
     }
 
-    /** Descripción: Indica si la proyección Ecore se genera automáticamente (ON_SAVE): solo entonces el registro puede reconstruirla sin decisión del usuario. Entradas: targets: configuración de destinos del metamodelo. */
+    /** Descripción: Indica si la proyección Ecore se genera automáticamente (ON_SAVE): solo entonces el registro puede reconstruirla sin decisión del usuario. Entradas: targets: configuración de destinos del metamodelo. Salida: devuelve un indicador que expresa el resultado de la condición. */
     private static boolean rebuildable(TargetConfigurationDocument targets) {
         return targets != null && targets.ecore() != null && targets.ecore().enabled() && targets.ecore().generationMode() == com.example.editor.metamodel.target.EcoreGenerationMode.ON_SAVE;
     }
 
-    /** Descripción: SHA-256 hexadecimal de un fichero de proyección. */
+    /** Descripción: SHA-256 hexadecimal de un fichero de proyección, leído en flujo sin materializarlo. Entradas: path: fichero de proyección. Salida: huella hexadecimal, o «unreadable» si no se puede leer. */
     private static String sha256(Path path) {
-        try { return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(path))); }
-        catch(java.io.IOException | java.security.NoSuchAlgorithmException exception) { return "unreadable"; }
+        try {
+            java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+            try(java.io.InputStream input = new java.security.DigestInputStream(Files.newInputStream(path), digest)) {
+                input.transferTo(java.io.OutputStream.nullOutputStream());
+            }
+            return java.util.HexFormat.of().formatHex(digest.digest());
+        } catch(java.io.IOException | java.security.NoSuchAlgorithmException exception) { return "unreadable"; }
     }
 
     /** Descripción: Obtiene la información correspondiente a «list» dentro de MetamodelRegistryService. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public synchronized List<RegisteredMetamodel> list() {
