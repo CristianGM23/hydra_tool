@@ -77,7 +77,7 @@ public final class EcoreImportMetadata {
         return Map.copyOf(result);
     }
 
-    private static void flag(Map<String, String> target, String key, boolean value) {
+    /** Descripción: Ejecuta la operación «flag» correspondiente a la responsabilidad de EcoreImportMetadata. Entradas: target: dato de entrada necesario para la operación; key: identificador que delimita el recurso objetivo; value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private static void flag(Map<String, String> target, String key, boolean value) {
         if(value) target.put(key, "true");
     }
 

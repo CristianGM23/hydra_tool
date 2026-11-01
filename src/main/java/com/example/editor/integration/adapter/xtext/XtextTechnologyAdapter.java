@@ -196,12 +196,12 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
 
     /** Descripción: Ejecuta la operación «dependency» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: coordinate: dato de entrada necesario para la operación; version: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private IntegrationDependencyChange dependency(String coordinate, String version){return new IntegrationDependencyChange("maven", coordinate, version, "compile", IntegrationDependencyAction.ADD);}
 
-    /** Unidad de la plataforma objetivo p2 que el anfitrión Tycho debe contener. */
+    /** Descripción: Unidad de la plataforma objetivo p2 que el anfitrión Tycho debe contener. Entradas: id: identificador que delimita el recurso objetivo; version: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private IntegrationDependencyChange p2Unit(String id, String version){return new IntegrationDependencyChange("p2", id, version, "target-platform", IntegrationDependencyAction.ADD);}
 
-    /** Padre Tycho del ANFITRIÓN (ajuste tychoParent = groupId:artifactId:version): define Tycho, la plataforma objetivo y los entornos, que el
+    /** Descripción: Padre Tycho del ANFITRIÓN (ajuste tychoParent = groupId:artifactId:version): define Tycho, la plataforma objetivo y los entornos, que el
      *  paquete no fija para no convertirse en una distribución independiente. relativePath: ajuste tychoParentRelativePath o, por defecto, el pom
-     *  raíz del anfitrión, en el que se inyecta la raíz generada. Salida: groupId, artifactId, version y relativePath. */
+     *  raíz del anfitrión, en el que se inyecta la raíz generada. Salida: groupId, artifactId, version y relativePath. Entradas: request: solicitud con los datos necesarios para ejecutar la operación; root: ruta o ubicación utilizada por la operación. */
     private String[] hostParent(TechnologyCompilationRequest request, String root){
         Map<String, String> settings = request.profile().target().settings();
         String[] coordinates = settings.getOrDefault("tychoParent", "").trim().split(":");
@@ -212,7 +212,7 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
         return new String[]{coordinates[0].trim(), coordinates[1].trim(), coordinates[2].trim(), relativePath};
     }
 
-    /** Reactor del paquete para Tycho: agrega los tres bundles y hereda del padre Tycho del anfitrión. */
+    /** Descripción: Reactor del paquete para Tycho: agrega los tres bundles y hereda del padre Tycho del anfitrión. Entradas: basePackage: dato de entrada necesario para la operación; languageName: dato de entrada necesario para la operación; parent: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private String tychoParentPom(String basePackage, String languageName, String[] parent){
         String artifact = TechnologyAdapterSupport.slug(basePackage + "." + languageName);
         String module = basePackage + "." + languageName.toLowerCase();
@@ -227,7 +227,7 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
                 TechnologyAdapterSupport.xml(parent[3]), TechnologyAdapterSupport.xml(basePackage), artifact, module, module, module);
     }
 
-    /** Bundle eclipse-plugin: Tycho exige que artifactId sea el Bundle-SymbolicName y que 1.0.0-SNAPSHOT corresponda a 1.0.0.qualifier. */
+    /** Descripción: Bundle eclipse-plugin: Tycho exige que artifactId sea el Bundle-SymbolicName y que 1.0.0-SNAPSHOT corresponda a 1.0.0.qualifier. Entradas: basePackage: dato de entrada necesario para la operación; languageName: dato de entrada necesario para la operación; module: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private String eclipsePluginPom(String basePackage, String languageName, String module){
         return """
                 <?xml version="1.0" encoding="UTF-8"?>
@@ -238,13 +238,13 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
                 """.formatted(TechnologyAdapterSupport.xml(basePackage), TechnologyAdapterSupport.slug(basePackage + "." + languageName), TechnologyAdapterSupport.xml(module));
     }
 
-    /** Paquete Java de la gramática (cabecera «grammar a.b.C»): en él escribe MWE2 el código generado de los tres bundles. */
+    /** Descripción: Paquete Java de la gramática (cabecera «grammar a.b.C»): en él escribe MWE2 el código generado de los tres bundles. Entradas: grammarText: dato de entrada necesario para la operación; fallback: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private static String grammarPackage(String grammarText, String fallback){
         Matcher header = Pattern.compile("(?m)^\\s*grammar\\s+([\\w.]+)").matcher(grammarText);
         return header.find() && header.group(1).contains(".") ? header.group(1).substring(0, header.group(1).lastIndexOf('.')) : fallback;
     }
 
-    /** EPackages que infiere la gramática (declaraciones «generate»): MWE2 genera su código EMF en grammarPackage.<nombre>{,.impl,.util}. */
+    /** Descripción: EPackages que infiere la gramática (declaraciones «generate»): MWE2 genera su código EMF en grammarPackage.<nombre>{,.impl,.util}. Entradas: grammarText: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private static List<String> generatedPackages(String grammarText){
         List<String> names = new ArrayList<>();
         Matcher generate = Pattern.compile("(?m)^\\s*generate\\s+\\^?(\\w+)").matcher(grammarText);
@@ -252,8 +252,8 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
         return names;
     }
 
-    /** MANIFEST del bundle runtime. Tycho lo lee al montar el reactor, antes de MWE2, así que ya declara todo lo que piden las clases de HYDRA y
-     *  las que generará MWE2 (Xtext 2.44: sus fragmentos fusionan Require-Bundle y Export-Package y no encuentran nada que añadir). */
+    /** Descripción: MANIFEST del bundle runtime. Tycho lo lee al montar el reactor, antes de MWE2, así que ya declara todo lo que piden las clases de HYDRA y
+     *  las que generará MWE2 (Xtext 2.44: sus fragmentos fusionan Require-Bundle y Export-Package y no encuentran nada que añadir). Entradas: runtime: dato de entrada necesario para la operación; languagePackage: dato de entrada necesario para la operación; grammarPackage: dato de entrada necesario para la operación; generatedPackages: dato de entrada necesario para la operación; xtextVersion: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private String runtimeManifest(String runtime, String languagePackage, String grammarPackage, List<String> generatedPackages, String xtextVersion){
         Set<String> exports = new TreeSet<>(List.of(grammarPackage, grammarPackage + ".generator", grammarPackage + ".parser.antlr", grammarPackage + ".parser.antlr.internal",
                 grammarPackage + ".scoping", grammarPackage + ".serializer", grammarPackage + ".services", grammarPackage + ".validation",
@@ -264,7 +264,7 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
                 List.of("org.apache.log4j"));
     }
 
-    /** MANIFEST del bundle IDE: servidor de lenguaje de HYDRA (Guice, LSP4J) y asistente de contenido que genera MWE2. */
+    /** Descripción: MANIFEST del bundle IDE: servidor de lenguaje de HYDRA (Guice, LSP4J) y asistente de contenido que genera MWE2. Entradas: runtime: dato de entrada necesario para la operación; languagePackage: dato de entrada necesario para la operación; grammarPackage: dato de entrada necesario para la operación; xtextVersion: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private String ideManifest(String runtime, String languagePackage, String grammarPackage, String xtextVersion){
         return bundleManifest("HYDRA generated Xtext IDE", runtime + ".ide", null,
                 new TreeSet<>(List.of(languagePackage + ".ide", grammarPackage + ".ide", grammarPackage + ".ide.contentassist.antlr", grammarPackage + ".ide.contentassist.antlr.internal")),
@@ -272,7 +272,7 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
                 List.of("com.google.inject", "com.google.inject.util", "org.eclipse.lsp4j", "org.eclipse.lsp4j.jsonrpc.messages"));
     }
 
-    /** MANIFEST del bundle UI: el activador es el que genera MWE2 (paquete ui.internal de la gramática, nombre del último segmento del bundle). */
+    /** Descripción: MANIFEST del bundle UI: el activador es el que genera MWE2 (paquete ui.internal de la gramática, nombre del último segmento del bundle). Entradas: runtime: dato de entrada necesario para la operación; languageName: dato de entrada necesario para la operación; languagePackage: dato de entrada necesario para la operación; grammarPackage: dato de entrada necesario para la operación; xtextVersion: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private String uiManifest(String runtime, String languageName, String languagePackage, String grammarPackage, String xtextVersion){
         String simple = languageName.toLowerCase();
         String activator = grammarPackage + ".ui.internal." + Character.toUpperCase(simple.charAt(0)) + simple.substring(1) + "Activator";
@@ -284,9 +284,9 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
                 List.of("com.google.inject", "org.apache.log4j"));
     }
 
-    private static String xbaseLib(String xtextVersion){return "org.eclipse.xtext.xbase.lib;bundle-version=\"" + xtextVersion + "\"";}
+    /** Descripción: Ejecuta la operación «xbaseLib» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: xtextVersion: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static String xbaseLib(String xtextVersion){return "org.eclipse.xtext.xbase.lib;bundle-version=\"" + xtextVersion + "\"";}
 
-    private static String bundleManifest(String name, String symbolicName, String activator, Set<String> exports, List<String> requires, List<String> imports){
+    /** Descripción: Ejecuta la operación «bundleManifest» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: name: dato de entrada necesario para la operación; symbolicName: dato de entrada necesario para la operación; activator: dato de entrada necesario para la operación; exports: dato de entrada necesario para la operación; requires: dato de entrada necesario para la operación; imports: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static String bundleManifest(String name, String symbolicName, String activator, Set<String> exports, List<String> requires, List<String> imports){
         StringBuilder manifest = new StringBuilder("Manifest-Version: 1.0\nBundle-ManifestVersion: 2\n")
                 .append("Bundle-Name: ").append(name).append('\n')
                 .append("Bundle-SymbolicName: ").append(symbolicName).append(";singleton:=true\n")
@@ -300,7 +300,7 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
         return manifest.append("Automatic-Module-Name: ").append(symbolicName).append('\n').toString();
     }
 
-    /** build.properties con la disposición Maven que usa el anfitrión (mavenLayout): fuentes de HYDRA, recursos y salida de MWE2. */
+    /** Descripción: build.properties con la disposición Maven que usa el anfitrión (mavenLayout): fuentes de HYDRA, recursos y salida de MWE2. Entradas: sources: dato de entrada necesario para la operación; binIncludes: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private static String buildProperties(List<String> sources, List<String> binIncludes){
         return "source.. = " + String.join(",\\\n           ", sources) + "\nbin.includes = " + String.join(",\\\n               ", binIncludes) + "\n";
     }
@@ -431,7 +431,7 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
         collectLineage(classId, supertypes, ordered, new LinkedHashSet<>());
         return List.copyOf(ordered);
     }
-    private void collectLineage(String classId, Map<String, List<String>> supertypes, Set<String> ordered, Set<String> visiting){
+    /** Descripción: Ejecuta la operación «collectLineage» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: classId: identificador que delimita el recurso objetivo; supertypes: dato de entrada necesario para la operación; ordered: dato de entrada necesario para la operación; visiting: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void collectLineage(String classId, Map<String, List<String>> supertypes, Set<String> ordered, Set<String> visiting){
         if(!visiting.add(classId)){return;}
         for(String parent : supertypes.getOrDefault(classId, List.of())){collectLineage(parent, supertypes, ordered, visiting);}
         ordered.add(classId);
@@ -441,11 +441,11 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
         if(visited.add(classId)){subtypes.getOrDefault(classId, List.of()).forEach(child -> subtree(child, subtypes, visited));}
         return visited;
     }
-    private boolean many(Multiplicity multiplicity){return multiplicity != null && (multiplicity.unbounded() || multiplicity.upperBound() != null && multiplicity.upperBound() > 1);}
-    private boolean optional(Multiplicity multiplicity){return multiplicity == null || multiplicity.lowerBound() == 0;}
+    /** Descripción: Ejecuta la operación «many» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: multiplicity: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean many(Multiplicity multiplicity){return multiplicity != null && (multiplicity.unbounded() || multiplicity.upperBound() != null && multiplicity.upperBound() > 1);}
+    /** Descripción: Ejecuta la operación «optional» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: multiplicity: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean optional(Multiplicity multiplicity){return multiplicity == null || multiplicity.lowerBound() == 0;}
     /** Descripción: Identificador de la gramática con ^ si coincide con una palabra reservada de Xtext (p. ej. una relación «returns»). Entradas: nombre. Salida: identificador seguro. */
     private static String escape(String name){return XTEXT_KEYWORDS.contains(name) ? "^" + name : name;}
-    private String fragment(String feature, String value, boolean many, boolean optional){
+    /** Descripción: Ejecuta la operación «fragment» correspondiente a la responsabilidad de XtextTechnologyAdapter. Entradas: feature: dato de entrada necesario para la operación; value: valor de entrada que debe procesarse; many: dato de entrada necesario para la operación; optional: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String fragment(String feature, String value, boolean many, boolean optional){
         String assignment = escape(feature) + (many ? "+=" : "=") + value;
         if(many){return "\n  ('" + feature + "' " + assignment + ")*";}
         if(optional){return "\n  ('" + feature + "' " + assignment + ")?";}
@@ -587,13 +587,15 @@ public class XtextTechnologyAdapter implements TechnologyAdapter {
             """.formatted(packageName,packageName);}
     /** Descripción: Genera el módulo IDE del lenguaje. No enlaza el servidor de lenguaje: LanguageServerImpl pertenece al inyector del servidor
      *  (ServerModule) y, enlazado en el inyector del lenguaje, Guice no puede crear ese inyector (faltan IRequestManager, IProjectDescriptionFactory e
-     *  IMultiRootWorkspaceConfigFactory) y ningún servidor LSP carga el lenguaje. Entradas: packageName y languageName. Salida: fuente Java del módulo. */ private String ideModuleSource(String packageName, String languageName){return """
+     *  IMultiRootWorkspaceConfigFactory) y ningún servidor LSP carga el lenguaje. Entradas: packageName y languageName. Salida: fuente Java del módulo. */
+    private String ideModuleSource(String packageName, String languageName){return """
             package %s.ide;
             /** Language-level IDE bindings. The HYDRA language server is bound at server level by HydraServerModule. */
             public class %sIdeModule extends Abstract%sIdeModule { }
             """.formatted(packageName, languageName, languageName);}
     /** Descripción: Genera el módulo Guice de nivel servidor que sustituye LanguageServerImpl por HydraLanguageServer sobre el ServerModule de Xtext.
-     *  Entradas: packageName. Salida: fuente Java del módulo. */ private String serverModuleSource(String packageName){return """
+     *  Entradas: packageName. Salida: fuente Java del módulo. */
+    private String serverModuleSource(String packageName){return """
             package %s.ide;
             import com.google.inject.AbstractModule;
             import com.google.inject.util.Modules;

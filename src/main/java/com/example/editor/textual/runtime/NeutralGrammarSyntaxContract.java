@@ -130,7 +130,7 @@ final class NeutralGrammarSyntaxContract {
         return mismatch(source,tokens,recognition,"FULL_ITERATIVE",max);
     }
 
-    /** Descripción: Presupuesto de estados del reconocedor para un texto de «tokens» símbolos: proporcional al tamaño, con un mínimo para textos pequeños y un máximo que acota la memoria de una petición. */
+    /** Descripción: Presupuesto de estados del reconocedor para un texto de «tokens» símbolos: proporcional al tamaño, con un mínimo para textos pequeños y un máximo que acota la memoria de una petición. Entradas: tokens: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     static long stateBudget(int tokens){
         return Math.min(MAX_EARLEY_STATES,Math.max(MIN_EARLEY_STATES,EARLEY_STATES_PER_TOKEN*(long)tokens));
     }
@@ -352,7 +352,7 @@ final class NeutralGrammarSyntaxContract {
         if(grammar==null||!grammar.byLhs().containsKey(startRule))return new Recognition(false,RecognitionStatus.INVALID_GRAMMAR,0,Set.of(),Set.of());
         Production start=grammar.start(startRule);
         int n=tokens.size();
-        Chart[] chart=new Chart[n+1];chart[0]=new Chart();chart[0].add(Chart.item(start.id(),0,0));
+        Chart[] chart=new Chart[n+1];Chart initial=new Chart();initial.add(Chart.item(start.id(),0,0));chart[0]=initial;
         long states=1;Frontier frontier=new Frontier();
         for(int position=0;position<=n;position++){
             Chart current=chart[position];
@@ -397,7 +397,7 @@ final class NeutralGrammarSyntaxContract {
     /** Lo que la gramática esperaba en la posición más lejana alcanzada: solo de esa posición (nunca restos de la anterior) y con la regla más interna primero, que es la que da sentido al diagnóstico. */
     private static final class Frontier{
         int furthest;private int recordedAt=-1;private final LinkedHashSet<String> expected=new LinkedHashSet<>();private final LinkedHashSet<String> rules=new LinkedHashSet<>();private String innermost;private int innermostOrigin=-1;
-        /** Descripción: Registra que en «position» se esperaba «label» dentro de «rule», cuyo ítem empezó en «origin». */ void record(int position,String label,String rule,int origin){
+        /** Descripción: Registra que en «position» se esperaba «label» dentro de «rule», cuyo ítem empezó en «origin». Entradas: position: dato de entrada necesario para la operación; label: dato de entrada necesario para la operación; rule: dato de entrada necesario para la operación; origin: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void record(int position,String label,String rule,int origin){
             if(position<furthest)return;
             if(position!=recordedAt){expected.clear();rules.clear();innermost=null;innermostOrigin=-1;recordedAt=position;furthest=position;}
             expected.add(label);
@@ -405,8 +405,8 @@ final class NeutralGrammarSyntaxContract {
             rules.add(rule);
             if(origin>innermostOrigin){innermost=rule;innermostOrigin=origin;}
         }
-        Set<String> expected(){return recordedAt==furthest?expected:Set.of();}
-        Set<String> contexts(){LinkedHashSet<String> out=new LinkedHashSet<>();if(recordedAt!=furthest)return out;if(innermost!=null)out.add(innermost);out.addAll(rules);return out;}
+        /** Descripción: Ejecuta la operación «expected» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ Set<String> expected(){return recordedAt==furthest?expected:Set.of();}
+        /** Descripción: Ejecuta la operación «contexts» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ Set<String> contexts(){LinkedHashSet<String> out=new LinkedHashSet<>();if(recordedAt!=furthest)return out;if(innermost!=null)out.add(innermost);out.addAll(rules);return out;}
     }
 
     /** Descripción: Ejecuta la operación «terminalMatches» correspondiente a la responsabilidad de GrammarToken. Entradas: name: dato de entrada necesario para la operación; token: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private static boolean terminalMatches(String name,ModelToken token){
@@ -513,7 +513,7 @@ final class NeutralGrammarSyntaxContract {
             List<List<FirstTerminal>> perProduction=new ArrayList<>(all.size());for(Production p:all)perProduction.add(List.copyOf(firstOf(p,byRule,nulls)));
             this.first=List.copyOf(perProduction);
         }
-        /** Descripción: Terminales con los que puede empezar «p», recorriendo su lado derecho mientras los símbolos sean anulables. */ private static LinkedHashSet<FirstTerminal> firstOf(Production p,Map<String,LinkedHashSet<FirstTerminal>> byRule,Set<String> nulls){
+        /** Descripción: Terminales con los que puede empezar «p», recorriendo su lado derecho mientras los símbolos sean anulables. Entradas: p: dato de entrada necesario para la operación; byRule: dato de entrada necesario para la operación; nulls: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static LinkedHashSet<FirstTerminal> firstOf(Production p,Map<String,LinkedHashSet<FirstTerminal>> byRule,Set<String> nulls){
             LinkedHashSet<FirstTerminal> out=new LinkedHashSet<>();
             for(Symbol symbol:p.rhs()){
                 if(symbol instanceof Terminal terminal){out.add(new FirstTerminal(terminal,p.lhs()));return out;}
@@ -522,13 +522,13 @@ final class NeutralGrammarSyntaxContract {
             }
             return out;
         }
-        Map<String,List<Production>> byLhs(){return byLhs;}
-        Production production(int id){return productions.get(id);}
-        Production start(String rule){return starts.get(rule);}
-        String owner(String rule){return owners.getOrDefault(rule,rule);}
-        boolean nullable(String rule){return nullable.contains(rule);}
-        List<FirstTerminal> first(Production p){return first.get(p.id());}
-        /** Descripción: Indica si «p» puede derivar el siguiente token (o la cadena vacía, que nunca se descarta). */ boolean canStart(Production p,ModelToken lookahead){
+        /** Descripción: Ejecuta la operación «byLhs» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ Map<String,List<Production>> byLhs(){return byLhs;}
+        /** Descripción: Ejecuta la operación «production» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: id: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ Production production(int id){return productions.get(id);}
+        /** Descripción: Crea o prepara el resultado de «start» dentro de NeutralGrammarSyntaxContract. Entradas: rule: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ Production start(String rule){return starts.get(rule);}
+        /** Descripción: Ejecuta la operación «owner» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: rule: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ String owner(String rule){return owners.getOrDefault(rule,rule);}
+        /** Descripción: Ejecuta la operación «nullable» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: rule: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ boolean nullable(String rule){return nullable.contains(rule);}
+        /** Descripción: Ejecuta la operación «first» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: p: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ List<FirstTerminal> first(Production p){return first.get(p.id());}
+        /** Descripción: Indica si «p» puede derivar el siguiente token (o la cadena vacía, que nunca se descarta). Entradas: p: dato de entrada necesario para la operación; lookahead: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ boolean canStart(Production p,ModelToken lookahead){
             if(nullableProduction[p.id()])return true;
             if(lookahead==null)return false;
             for(FirstTerminal candidate:first.get(p.id()))if(candidate.terminal().matches(lookahead))return true;
@@ -538,14 +538,14 @@ final class NeutralGrammarSyntaxContract {
     /** Conjunto ordenado de ítems Earley de una posición, codificados en un long (producción, punto, origen) para que la memoria crezca con el número de estados y no con objetos. */
     private static final class Chart{
         private long[] items=new long[4];private int size;private long[] table=new long[8];private int used; // ~4 items per position in list-shaped models
-        static long item(int production,int dot,int origin){return ((long)production<<40)|((long)dot<<32)|(origin&0xffffffffL);}
-        static int production(long item){return (int)(item>>>40);}
-        static int dot(long item){return (int)((item>>>32)&0xff);}
-        static int origin(long item){return (int)item;}
-        static long advance(long item){return item+(1L<<32);}
-        int size(){return size;}
-        long get(int index){return items[index];}
-        /** Descripción: Añade el ítem si no estaba. Salida: true si es nuevo. */ boolean add(long item){
+        /** Descripción: Ejecuta la operación «item» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: production: dato de entrada necesario para la operación; dot: dato de entrada necesario para la operación; origin: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static long item(int production,int dot,int origin){return ((long)production<<40)|((long)dot<<32)|(origin&0xffffffffL);}
+        /** Descripción: Ejecuta la operación «production» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: item: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static int production(long item){return (int)(item>>>40);}
+        /** Descripción: Ejecuta la operación «dot» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: item: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static int dot(long item){return (int)((item>>>32)&0xff);}
+        /** Descripción: Ejecuta la operación «origin» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: item: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static int origin(long item){return (int)item;}
+        /** Descripción: Ejecuta la operación «advance» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: item: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ static long advance(long item){return item+(1L<<32);}
+        /** Descripción: Ejecuta la operación «size» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ int size(){return size;}
+        /** Descripción: Obtiene la información correspondiente a «get» dentro de NeutralGrammarSyntaxContract. Entradas: index: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ long get(int index){return items[index];}
+        /** Descripción: Añade el ítem si no estaba. Salida: true si es nuevo. Entradas: item: dato de entrada necesario para la operación. */ boolean add(long item){
             if((used+1)*2>table.length)rehash();
             long key=item+1;int mask=table.length-1;int slot=(int)(mix(key)&mask);
             while(table[slot]!=0){if(table[slot]==key)return false;slot=(slot+1)&mask;}
@@ -553,9 +553,9 @@ final class NeutralGrammarSyntaxContract {
             if(size==items.length)items=Arrays.copyOf(items,size*2);
             items[size++]=item;return true;
         }
-        boolean contains(long item){long key=item+1;int mask=table.length-1;int slot=(int)(mix(key)&mask);while(table[slot]!=0){if(table[slot]==key)return true;slot=(slot+1)&mask;}return false;}
-        private void rehash(){long[] old=table;table=new long[old.length*2];int mask=table.length-1;for(long key:old)if(key!=0){int slot=(int)(mix(key)&mask);while(table[slot]!=0)slot=(slot+1)&mask;table[slot]=key;}}
-        private static long mix(long key){long h=key*0x9E3779B97F4A7C15L;return h^(h>>>29);}
+        /** Descripción: Evalúa la condición «contains» sin modificar el estado externo. Entradas: item: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ boolean contains(long item){long key=item+1;int mask=table.length-1;int slot=(int)(mix(key)&mask);while(table[slot]!=0){if(table[slot]==key)return true;slot=(slot+1)&mask;}return false;}
+        /** Descripción: Ejecuta la operación «rehash» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: no requiere parámetros de entrada. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void rehash(){long[] old=table;table=new long[old.length*2];int mask=table.length-1;for(long key:old)if(key!=0){int slot=(int)(mix(key)&mask);while(table[slot]!=0)slot=(slot+1)&mask;table[slot]=key;}}
+        /** Descripción: Ejecuta la operación «mix» correspondiente a la responsabilidad de NeutralGrammarSyntaxContract. Entradas: key: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ private static long mix(long key){long h=key*0x9E3779B97F4A7C15L;return h^(h>>>29);}
     }
     private enum RecognitionStatus{ACCEPTED,REJECTED,TOO_COMPLEX,INVALID_GRAMMAR}
     private record Recognition(boolean accepted,RecognitionStatus status,int furthest,Set<String> expected,Set<String> contexts){Recognition{expected=expected==null?Set.of():Collections.unmodifiableSet(new LinkedHashSet<>(expected));contexts=contexts==null?Set.of():Collections.unmodifiableSet(new LinkedHashSet<>(contexts));}}

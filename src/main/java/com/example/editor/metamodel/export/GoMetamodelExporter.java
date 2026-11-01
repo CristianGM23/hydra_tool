@@ -53,7 +53,7 @@ public class GoMetamodelExporter implements MetamodelBinaryExporter {
         if(aliases.length()>0)out.insert(out.indexOf("package model\n\n")+"package model\n\n".length()+(usesDate(context)?"import \"time\"\n\n".length():0),aliases.append('\n'));
         return out.toString();
     }
-    /** DEF-EXP-PRIMITIVE-ALIAS-COLLISION: a classifier of the metamodel that already has an alias's name keeps it; the primitive stays plain. */
+    /** Descripción: DEF-EXP-PRIMITIVE-ALIAS-COLLISION: a classifier of the metamodel that already has an alias's name keeps it; the primitive stays plain. Entradas: context: dato de entrada necesario para la operación; name: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */
     private static boolean declaresType(NeutralMetamodelExportContext context,String name){
         com.example.editor.metamodel.core.MetaModel model=context.neutralMetamodel();
         return java.util.stream.Stream.of(model.classes().stream().map(MetaClass::name),model.enums().stream().map(com.example.editor.metamodel.core.MetaEnum::name),model.dataTypes().stream().map(MetaDataType::name))
@@ -82,7 +82,7 @@ public class GoMetamodelExporter implements MetamodelBinaryExporter {
         for(MetaOperation operation:value.operations())appendOperation(out,context,operation);out.append("}\n\n");
     }
 
-    /** Descripción: Etiqueta de campo Go: json con «omitempty» para lo opcional y, solo cuando hace falta, hydra con la contención/agregación y la multiplicidad que Go no expresa (distinta de 0..1, 1..1, 0..* y 1..*). */
+    /** Descripción: Etiqueta de campo Go: json con «omitempty» para lo opcional y, solo cuando hace falta, hydra con la contención/agregación y la multiplicidad que Go no expresa (distinta de 0..1, 1..1, 0..* y 1..*). Entradas: jsonName: dato de entrada necesario para la operación; kind: dato de entrada necesario para la operación; multiplicity: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private String tags(String jsonName,MetaRelationKind kind,Multiplicity multiplicity){
         StringBuilder out=new StringBuilder("json:\"").append(jsonName);
         if(optional(multiplicity))out.append(",omitempty");

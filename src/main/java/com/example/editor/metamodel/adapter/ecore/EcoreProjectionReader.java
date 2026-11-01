@@ -248,7 +248,7 @@ final class EcoreProjectionReader {
         return List.copyOf(result);
     }
 
-    /** Descripción: Devuelve base, o base:2, base:3... la primera que no esté usada. */
+    /** Descripción: Devuelve base, o base:2, base:3... la primera que no esté usada. Entradas: base: dato de entrada necesario para la operación; used: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     String uniqueId(String base, Set<String> used) {
         String candidate = base;
         for(int index = 2; used.contains(candidate); index++) candidate = base + ":" + index;
@@ -259,6 +259,7 @@ final class EcoreProjectionReader {
      * Descripción: Ecore permite que una referencia apunte a una interfaz; el metamodelo neutral no (STRUCTURAL_RELATION_TO_INTERFACE). Aplica la
      * política declarada STRUCTURAL_INTERFACE_TO_ABSTRACT_CLASS de los demás importadores: la interfaz pasa a clase abstracta anotada (y con ella
      * las interfaces que la extienden), con un aviso por clase; la exportación a Ecore restaura interface="true" a partir de la anotación.
+     * Entradas: classes: dato de entrada necesario para la operación; relations: dato de entrada necesario para la operación; warnings: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método.
      */
     List<MetaClass> adaptStructuralInterfaces(List<MetaClass> classes, List<MetaRelation> relations, List<TransformationWarning> warnings) {
         Map<String, MetaClassKind> kinds = new HashMap<>();
@@ -293,7 +294,7 @@ final class EcoreProjectionReader {
         return List.copyOf(result);
     }
 
-    /** Descripción: Un supertipo es IMPLEMENTATION solo de una clase hacia una interfaz; entre dos interfaces o dos clases es INHERITANCE. */
+    /** Descripción: Un supertipo es IMPLEMENTATION solo de una clase hacia una interfaz; entre dos interfaces o dos clases es INHERITANCE. Entradas: classes: dato de entrada necesario para la operación; relations: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     List<MetaRelation> normalizeGeneralizations(List<MetaClass> classes, List<MetaRelation> relations) {
         Map<String, MetaClassKind> kinds = new HashMap<>();
         classes.forEach(value -> kinds.put(value.id(), value.kind()));

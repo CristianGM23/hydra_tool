@@ -95,13 +95,14 @@ public class MetamodelImportService implements MetamodelImportAnalysisProcessor 
     }
 
     /**
-     * Persiste un snapshot ya analizado aplicando el modo estricto a sus avisos, con la misma regla que una importación completa (T-UPD): una
+     * Descripción: Persiste un snapshot ya analizado aplicando el modo estricto a sus avisos, con la misma regla que una importación completa (T-UPD): una
      * vista previa calculada sin modo estricto no puede guardarse con él si contiene pérdida de información.
      *
      * @param preview snapshot canónico preparado.
      * @param overwrite permite sustituir un metamodelo existente.
      * @param strict rechaza la pérdida de información, como MetamodelImportOptions.strict().
      * @return resultado persistido con el mismo preview analizado.
+     * Entradas: preview: dato de entrada necesario para la operación; overwrite: dato de entrada necesario para la operación; strict: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método.
      */
     public MetamodelImportSaveResult importPrepared(MetamodelImportPreview preview, boolean overwrite, boolean strict) {
         if(preview != null && (strict || properties.isStrictByDefault()) && containsLossyWarning(preview.warnings())) {

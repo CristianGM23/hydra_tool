@@ -24,22 +24,22 @@ public record GamificationQuarantineRecord(String schemaVersion, String metamode
         public static final String MOVED = "MOVED";
         public static final String VANISHED = "VANISHED";
 
-        Document withOutcome(String value) { return new Document(role, fileName, etag, sizeBytes, state, value); }
+        /** Descripción: Ejecuta la operación «withOutcome» correspondiente a la responsabilidad de GamificationQuarantineRecord. Entradas: value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ Document withOutcome(String value) { return new Document(role, fileName, etag, sizeBytes, state, value); }
     }
 
     public GamificationQuarantineRecord {
         documents = documents == null ? List.of() : List.copyOf(documents);
     }
 
-    GamificationQuarantineRecord withDocuments(List<Document> value) {
+    /** Descripción: Ejecuta la operación «withDocuments» correspondiente a la responsabilidad de GamificationQuarantineRecord. Entradas: value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ GamificationQuarantineRecord withDocuments(List<Document> value) {
         return new GamificationQuarantineRecord(schemaVersion, metamodelId, quarantineId, status, createdAt, completedAt, correlationId, value);
     }
 
-    GamificationQuarantineRecord completed(String at) {
+    /** Descripción: Ejecuta la operación «completed» correspondiente a la responsabilidad de GamificationQuarantineRecord. Entradas: at: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ GamificationQuarantineRecord completed(String at) {
         return new GamificationQuarantineRecord(schemaVersion, metamodelId, quarantineId, COMPLETE, createdAt, at, correlationId, documents);
     }
 
-    /** ETag recorded for a role, or null when the quarantine did not include a document with that role. */
+    /** Descripción: ETag recorded for a role, or null when the quarantine did not include a document with that role. Entradas: role: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     String etagOf(String role) {
         return documents.stream().filter(document -> role.equals(document.role())).map(Document::etag).findFirst().orElse(null);
     }

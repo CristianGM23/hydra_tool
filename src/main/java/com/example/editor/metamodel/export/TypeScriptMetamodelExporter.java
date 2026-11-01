@@ -60,7 +60,7 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         return out.toString();
     }
 
-    /** Descripción: Orden de declaración: una clase base antes que sus subclases (TypeScript no permite extender una clase declarada después); por lo demás, el orden del metamodelo. */
+    /** Descripción: Orden de declaración: una clase base antes que sus subclases (TypeScript no permite extender una clase declarada después); por lo demás, el orden del metamodelo. Entradas: context: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private List<MetaClass> declarationOrder(NeutralMetamodelExportContext context){
         List<MetaClass> all=context.neutralMetamodel().classes();
         java.util.Map<String,MetaClass> byId=new java.util.LinkedHashMap<>();all.forEach(value->byId.put(value.id(),value));
@@ -68,7 +68,7 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         for(MetaClass value:all)visit(context,value,byId,done,new java.util.HashSet<>(),out);
         return out;
     }
-    /** Descripción: Recorrido en profundidad por las clases base (herencia entre clases), tolerante a ciclos. */
+    /** Descripción: Recorrido en profundidad por las clases base (herencia entre clases), tolerante a ciclos. Entradas: context: dato de entrada necesario para la operación; value: valor de entrada que debe procesarse; byId: identificador que delimita el recurso objetivo; done: dato de entrada necesario para la operación; visiting: dato de entrada necesario para la operación; out: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */
     private void visit(NeutralMetamodelExportContext context,MetaClass value,java.util.Map<String,MetaClass> byId,java.util.Set<String> done,java.util.Set<String> visiting,List<MetaClass> out){
         if(done.contains(value.id())||!visiting.add(value.id()))return;
         for(MetaRelation base:MetamodelExportSupport.superTypeRelationsFrom(context,value.id())){
@@ -78,7 +78,7 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         if(done.add(value.id()))out.add(value);
     }
 
-    /** Descripción: Declara la clase con la construcción TypeScript de su tipo neutral: interfaz («extends» de sus superinterfaces), clase o clase abstracta («extends» de su clase base, «implements» de sus interfaces). Una clase redeclara con «declare» los miembros de las interfaces que implementa (TypeScript lo exige y el importador sabe que pertenecen a la interfaz); una segunda clase base, que TypeScript no expresa, se anota con «@hydra extends». Entradas: out: salida; context: metamodelo; value: clase. */ private void appendClass(StringBuilder out,NeutralMetamodelExportContext context,MetaClass value){
+    /** Descripción: Declara la clase con la construcción TypeScript de su tipo neutral: interfaz («extends» de sus superinterfaces), clase o clase abstracta («extends» de su clase base, «implements» de sus interfaces). Una clase redeclara con «declare» los miembros de las interfaces que implementa (TypeScript lo exige y el importador sabe que pertenecen a la interfaz); una segunda clase base, que TypeScript no expresa, se anota con «@hydra extends». Entradas: out: salida; context: metamodelo; value: clase. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void appendClass(StringBuilder out,NeutralMetamodelExportContext context,MetaClass value){
         String name=MetamodelExportSupport.pascal(value.name(),"GeneratedClass");
         List<MetaRelation> supers=MetamodelExportSupport.superTypeRelationsFrom(context,value.id());
         List<String> inherited=supers.stream().filter(item->item.kind()==MetaRelationKind.INHERITANCE).map(item->typeName(context,item)).distinct().toList();
@@ -122,7 +122,7 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         out.append("}\n\n");
     }
 
-    /** Descripción: Propiedades propias: «?» si son opcionales, «!» (asignación definida) si son obligatorias en una clase, arrays para las múltiples y etiquetas «@hydra» para el tipo de relación y para las multiplicidades que TypeScript no expresa. */
+    /** Descripción: Propiedades propias: «?» si son opcionales, «!» (asignación definida) si son obligatorias en una clase, arrays para las múltiples y etiquetas «@hydra» para el tipo de relación y para las multiplicidades que TypeScript no expresa. Entradas: out: dato de entrada necesario para la operación; context: dato de entrada necesario para la operación; value: valor de entrada que debe procesarse; classBody: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */
     private void appendMembers(StringBuilder out,NeutralMetamodelExportContext context,MetaClass value,boolean classBody){
         for(MetaAttribute attribute:value.attributes()){
             appendTags(out,null,attribute.multiplicity());
@@ -137,7 +137,7 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         }
     }
 
-    /** Descripción: Comentario JSDoc «@hydra» con lo que la sintaxis no expresa: contención/agregación y multiplicidades distintas de 0..1, 1..1, 0..* y 1..*. */
+    /** Descripción: Comentario JSDoc «@hydra» con lo que la sintaxis no expresa: contención/agregación y multiplicidades distintas de 0..1, 1..1, 0..* y 1..*. Entradas: out: dato de entrada necesario para la operación; kind: dato de entrada necesario para la operación; multiplicity: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */
     private void appendTags(StringBuilder out,MetaRelationKind kind,Multiplicity multiplicity){
         StringBuilder tags=new StringBuilder();
         if(kind==MetaRelationKind.CONTAINMENT) tags.append(" @hydra containment");
@@ -146,14 +146,14 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         if(tags.length()>0) out.append("  /**").append(tags).append(" */\n");
     }
 
-    /** Descripción: Indica si «?» y los arrays bastan para expresar la multiplicidad (0..1, 1..1, 0..*, 1..*). */
+    /** Descripción: Indica si «?» y los arrays bastan para expresar la multiplicidad (0..1, 1..1, 0..*, 1..*). Entradas: multiplicity: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */
     private boolean representable(Multiplicity multiplicity){
         if(multiplicity==null)return true;
         boolean many=multiplicity.unbounded()||multiplicity.upperBound()>1;
         return multiplicity.lowerBound()<=1&&(!many||multiplicity.unbounded());
     }
 
-    /** Descripción: Interfaces implementadas por la clase y todas sus superinterfaces, sin repetir. */
+    /** Descripción: Interfaces implementadas por la clase y todas sus superinterfaces, sin repetir. Entradas: context: dato de entrada necesario para la operación; value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */
     private List<MetaClass> interfaceClosure(NeutralMetamodelExportContext context,MetaClass value){
         java.util.Map<String,MetaClass> byId=new java.util.LinkedHashMap<>();context.neutralMetamodel().classes().forEach(item->byId.put(item.id(),item));
         java.util.LinkedHashMap<String,MetaClass> out=new java.util.LinkedHashMap<>();java.util.ArrayDeque<String> pending=new java.util.ArrayDeque<>();
@@ -167,10 +167,10 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         return List.copyOf(out.values());
     }
 
-    /** Descripción: Nombre TypeScript del tipo destino de una relación de herencia o implementación. */
+    /** Descripción: Nombre TypeScript del tipo destino de una relación de herencia o implementación. Entradas: context: dato de entrada necesario para la operación; relation: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private String typeName(NeutralMetamodelExportContext context,MetaRelation relation){return MetamodelExportSupport.pascal(MetamodelExportSupport.relationTargetName(context,relation),"GeneratedClass");}
 
-    /** Descripción: Firma TypeScript de una operación. */
+    /** Descripción: Firma TypeScript de una operación. Entradas: context: dato de entrada necesario para la operación; operation: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private String signature(NeutralMetamodelExportContext context,MetaOperation operation){
         StringBuilder out=new StringBuilder(MetamodelExportSupport.camel(operation.name(),"operation")).append('(');
         for(int index=0;index<operation.parameters().size();index++) {
@@ -207,7 +207,7 @@ public class TypeScriptMetamodelExporter implements MetamodelBinaryExporter {
         return NUMERIC_ALIASES.contains(mapped) && declaresType(context,mapped) ? "number" : mapped;
     }
     private static final List<String> NUMERIC_ALIASES=List.of("Byte","Short","Integer","Long","Float","Decimal","BigInteger");
-    private static boolean declaresType(NeutralMetamodelExportContext context,String name){
+    /** Descripción: Ejecuta la operación «declaresType» correspondiente a la responsabilidad de TypeScriptMetamodelExporter. Entradas: context: dato de entrada necesario para la operación; name: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private static boolean declaresType(NeutralMetamodelExportContext context,String name){
         com.example.editor.metamodel.core.MetaModel model=context.neutralMetamodel();
         return java.util.stream.Stream.of(model.classes().stream().map(MetaClass::name),model.enums().stream().map(com.example.editor.metamodel.core.MetaEnum::name),model.dataTypes().stream().map(MetaDataType::name))
                 .flatMap(names->names).anyMatch(value->MetamodelExportSupport.pascal(value,"GeneratedType").equals(name));

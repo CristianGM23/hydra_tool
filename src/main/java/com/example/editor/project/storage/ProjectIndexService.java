@@ -186,7 +186,7 @@ public class ProjectIndexService {
     }
 
     /**
-     * OBS-DET-PROJECT-INDEX-REGENERATED: opening an unchanged project rewrote its index with a new generatedAt, so the same project exported
+     * Descripción: OBS-DET-PROJECT-INDEX-REGENERATED: opening an unchanged project rewrote its index with a new generatedAt, so the same project exported
      * from two installations differed in .modeling/project-index.json. An index whose artifacts did not change is kept as it is (generatedAt is
      * when the indexed content was last seen to change). Entradas: destination: índice persistido; next: índice recalculado. Salida: true si no cambia.
      */

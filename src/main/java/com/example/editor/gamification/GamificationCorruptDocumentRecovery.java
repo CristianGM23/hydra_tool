@@ -62,8 +62,8 @@ public final class GamificationCorruptDocumentRecovery {
     /** Test seam around each move (simulated crash, document removed by another program); production uses NONE. */
     interface Steps {
         Steps NONE = new Steps() { };
-        default void beforeMove(String role, Path source) throws IOException { }
-        default void afterMove(String role) { }
+        /** Descripción: Ejecuta la operación «beforeMove» correspondiente a la responsabilidad de GamificationCorruptDocumentRecovery. Entradas: role: dato de entrada necesario para la operación; source: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ default void beforeMove(String role, Path source) throws IOException { }
+        /** Descripción: Ejecuta la operación «afterMove» correspondiente a la responsabilidad de GamificationCorruptDocumentRecovery. Entradas: role: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ default void afterMove(String role) { }
     }
 
     @Autowired

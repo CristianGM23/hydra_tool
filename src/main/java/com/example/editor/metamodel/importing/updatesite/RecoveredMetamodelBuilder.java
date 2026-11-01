@@ -46,7 +46,7 @@ final class RecoveredMetamodelBuilder {
         addRelation(className, name, targetClassName, multiplicity, containment ? MetaRelationKind.CONTAINMENT : MetaRelationKind.REFERENCE);
     }
 
-    /** Descripción: Añade una relación estructural de tipo «kind» (REFERENCE, CONTAINMENT o AGGREGATION) entre dos clases. */
+    /** Descripción: Añade una relación estructural de tipo «kind» (REFERENCE, CONTAINMENT o AGGREGATION) entre dos clases. Entradas: className: dato de entrada necesario para la operación; name: dato de entrada necesario para la operación; targetClassName: dato de entrada necesario para la operación; multiplicity: dato de entrada necesario para la operación; kind: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */
     void addRelation(String className, String name, String targetClassName, Multiplicity multiplicity, MetaRelationKind kind) {
         MutableClass source = addClass(className, MetaClassKind.CLASS);
         MutableClass target = addClass(targetClassName, MetaClassKind.CLASS);
@@ -57,7 +57,7 @@ final class RecoveredMetamodelBuilder {
                 "", true, true, Map.of()));
     }
 
-    /** Descripción: Añade una relación de implementación (clase que implementa una interfaz). */
+    /** Descripción: Añade una relación de implementación (clase que implementa una interfaz). Entradas: className: dato de entrada necesario para la operación; interfaceName: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */
     void addImplementation(String className, String interfaceName) {
         MutableClass source = addClass(className, MetaClassKind.CLASS);
         MutableClass target = addClass(interfaceName, MetaClassKind.INTERFACE);
@@ -66,7 +66,7 @@ final class RecoveredMetamodelBuilder {
                 MetaRelationKind.IMPLEMENTATION, Multiplicity.one(), Multiplicity.one(), "", true, true, Map.of()));
     }
 
-    /** Descripción: Indica si ya se ha declarado una enumeración con ese nombre. */
+    /** Descripción: Indica si ya se ha declarado una enumeración con ese nombre. Entradas: name: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */
     boolean hasEnum(String name) {
         return enums.containsKey(visibleName(name, "RecoveredEnum"));
     }
@@ -108,7 +108,7 @@ final class RecoveredMetamodelBuilder {
         return List.copyOf(adapted);
     }
 
-    /** Descripción: Marca una interfaz como clase abstracta adaptada. */
+    /** Descripción: Marca una interfaz como clase abstracta adaptada. Entradas: value: valor de entrada que debe procesarse; language: dato de entrada necesario para la operación; adapted: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */
     private void adapt(MutableClass value, String language, List<String> adapted) {
         if(value.kind != MetaClassKind.INTERFACE) return;
         value.kind = MetaClassKind.ABSTRACT_CLASS;

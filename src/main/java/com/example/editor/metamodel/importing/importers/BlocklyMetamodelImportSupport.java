@@ -91,8 +91,8 @@ final class BlocklyMetamodelImportSupport {
         return result;
     }
 
-    /** FIND-INT-BLOCKLY-JS-OWN-EXPORT: the blockly-javascript file HYDRA exports keeps its definitions in the literal assigned to «layer» and
-     *  registers them through that variable. Only a literal whose kind is HYDRA_BLOCKLY_LAYER is read; nothing in the script is executed. */
+    /** Descripción: FIND-INT-BLOCKLY-JS-OWN-EXPORT: the blockly-javascript file HYDRA exports keeps its definitions in the literal assigned to «layer» and
+     *  registers them through that variable. Only a literal whose kind is HYDRA_BLOCKLY_LAYER is read; nothing in the script is executed. Entradas: text: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */
     private List<JsonNode> readHydraLayer(String text) {
         List<JsonNode> result = new ArrayList<>();
         for(String value : balanced(text, HYDRA_LAYER, '{', '}')) {
@@ -102,8 +102,8 @@ final class BlocklyMetamodelImportSupport {
         return result;
     }
 
-    /** OBS-DET-BLOCKLY-ANNOTATIONS-ORDER: the metamodel copies annotations in iteration order and Map.of iterates in an order seeded per JVM,
-     *  so annotations are built in their declared order. */
+    /** Descripción: OBS-DET-BLOCKLY-ANNOTATIONS-ORDER: the metamodel copies annotations in iteration order and Map.of iterates in an order seeded per JVM,
+     *  so annotations are built in their declared order. Entradas: keysAndValues: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private static Map<String,String> ordered(String... keysAndValues) { Map<String,String> result = new LinkedHashMap<>(); for(int i = 0; i < keysAndValues.length; i += 2) result.put(keysAndValues[i], keysAndValues[i + 1]); return result; }
 
     /** Descripción: Obtiene la información correspondiente a «readClassicExternalJsonInit» dentro de BlocklyMetamodelImportSupport. Entradas: text: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ private List<JsonNode> readClassicExternalJsonInit(String text) {

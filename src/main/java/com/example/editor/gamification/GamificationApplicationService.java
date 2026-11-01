@@ -38,18 +38,18 @@ public class GamificationApplicationService {
     private enum Status { VALID, MALFORMED, MISSING }
     /** One document of the pair as the store sees it: readable, corrupt or absent. */
     private record Outcome<T>(Status status, StoredCanonicalDocument<T> stored, CanonicalDocumentStoreException failure) {
-        T document() { return stored == null ? null : stored.document(); }
+        /** Descripción: Ejecuta la operación «document» correspondiente a la responsabilidad de GamificationApplicationService. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ T document() { return stored == null ? null : stored.document(); }
     }
     /** Both documents of a pair, classified without changing anything. */
     private record PairState(Outcome<GamificationDefinitionModel> definitions, Outcome<GamificationBindingModel> bindings) {
-        boolean absent() { return definitions.status() == Status.MISSING && bindings.status() == Status.MISSING; }
-        boolean healthy() { return definitions.status() == Status.VALID && bindings.status() == Status.VALID; }
-        String state() {
+        /** Descripción: Ejecuta la operación «absent» correspondiente a la responsabilidad de GamificationApplicationService. Entradas: no requiere parámetros de entrada. Salida: devuelve un indicador que expresa el resultado de la condición. */ boolean absent() { return definitions.status() == Status.MISSING && bindings.status() == Status.MISSING; }
+        /** Descripción: Ejecuta la operación «healthy» correspondiente a la responsabilidad de GamificationApplicationService. Entradas: no requiere parámetros de entrada. Salida: devuelve un indicador que expresa el resultado de la condición. */ boolean healthy() { return definitions.status() == Status.VALID && bindings.status() == Status.VALID; }
+        /** Descripción: Ejecuta la operación «state» correspondiente a la responsabilidad de GamificationApplicationService. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ String state() {
             if(healthy()) return "HEALTHY";
             if(absent()) return "ABSENT";
             return definitions.status() == Status.MALFORMED || bindings.status() == Status.MALFORMED ? "CORRUPT" : "INCOMPLETE";
         }
-        String problems() {
+        /** Descripción: Ejecuta la operación «problems» correspondiente a la responsabilidad de GamificationApplicationService. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ String problems() {
             List<String> problems = new ArrayList<>();
             if(definitions.status() != Status.VALID) problems.add("definitions are " + definitions.status().name().toLowerCase(java.util.Locale.ROOT));
             if(bindings.status() != Status.VALID) problems.add("bindings are " + bindings.status().name().toLowerCase(java.util.Locale.ROOT));
@@ -179,8 +179,9 @@ public class GamificationApplicationService {
     }
 
     /**
-     * Read-only recovery status of one pair: what each document is (VALID, MALFORMED or MISSING), the SHA-256 ETag of its exact bytes,
+     * Descripción: Read-only recovery status of one pair: what each document is (VALID, MALFORMED or MISSING), the SHA-256 ETag of its exact bytes,
      * the readable content and the quarantines already made. Nothing is changed; it is the input of {@link #quarantine}.
+     * Entradas: metamodelId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método.
      */
     public GamificationRecoveryReport inspectRecovery(String metamodelId) {
         requireMetamodel(metamodelId);
@@ -205,11 +206,12 @@ public class GamificationApplicationService {
     }
 
     /**
-     * Explicit quarantine of a corrupt or incomplete pair. The client sends the ETags it inspected (If-Match-Definitions and
+     * Descripción: Explicit quarantine of a corrupt or incomplete pair. The client sends the ETags it inspected (If-Match-Definitions and
      * If-Match-Bindings; no header for a document that is missing, no wildcard): if any stored document is not exactly the one it
      * inspected the answer is 412 and nothing moves; a healthy pair is never quarantined (409). The pair is moved, never deleted, into
      * {@code .invalid-recovery/<id>/<quarantineId>/} with a manifest written before the first move. Repeating the request after an
      * interruption completes the pending quarantine; repeating it after it completed returns the same result (idempotent).
+     * Entradas: metamodelId: identificador que delimita el recurso objetivo; expectedDefinitionEtag: dato de entrada necesario para la operación; expectedBindingEtag: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método.
      */
     public GamificationQuarantineResult quarantine(String metamodelId, String expectedDefinitionEtag, String expectedBindingEtag) {
         requireMetamodel(metamodelId);

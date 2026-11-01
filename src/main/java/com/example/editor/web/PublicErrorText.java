@@ -17,7 +17,7 @@ final class PublicErrorText {
     private static final int MINIMUM_ROOT_LENGTH = 4;
     private static final List<Map.Entry<Pattern, String>> ROOTS = roots();
 
-    private PublicErrorText() { }
+    /** Descripción: Inicializa una instancia de PublicErrorText con sus dependencias y datos de entrada. Entradas: no requiere parámetros de entrada. Salida: deja la instancia inicializada y lista para su uso. */ private PublicErrorText() { }
 
     /** Descripción: Sustituye cada raíz conocida por su marcador. Entradas: text: texto público. Salida: texto sin raíces del servidor. */
     static String redact(String text) {

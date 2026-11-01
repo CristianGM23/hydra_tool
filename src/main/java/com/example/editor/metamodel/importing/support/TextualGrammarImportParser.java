@@ -43,9 +43,10 @@ final class TextualGrammarImportParser {
     private static final Pattern QUOTED = Pattern.compile("'(?:\\\\.|[^'\\\\])*'|\"(?:\\\\.|[^\"\\\\])*\"");
 
     /**
-     * FIND-GR-IMPORT-SILENT-ALTERNATIVE-ACTIONS: since D-2/D-3 the type a rule returns and the objects its actions create are represented
+     * Descripción: FIND-GR-IMPORT-SILENT-ALTERNATIVE-ACTIONS: since D-2/D-3 the type a rule returns and the objects its actions create are represented
      * (TextualGrammarTypeInference). An action written in a form the importer does not understand stays inside the rule's own features; that
      * loss is still reported instead of being silent.
+     * Entradas: rule: dato de entrada necesario para la operación; segmentation: dato de entrada necesario para la operación; warnings: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente.
      */
     private static void reportUnrepresentedConstructs(GrammarRule rule, TextualGrammarTypeInference.Segmentation segmentation, List<TransformationWarning> warnings) {
         List<String> parts = new ArrayList<>();

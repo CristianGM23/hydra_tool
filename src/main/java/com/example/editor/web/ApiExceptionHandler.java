@@ -574,17 +574,19 @@ public class ApiExceptionHandler {
     }
 
     /**
-     * T-SEC (DEF-API-SERVER-ERROR-DISCLOSURE): a client error keeps its message, which the client needs to correct the request; a server failure
+     * Descripción: T-SEC (DEF-API-SERVER-ERROR-DISCLOSURE): a client error keeps its message, which the client needs to correct the request; a server failure
      * keeps its distinguishable code (STORAGE_ERROR, EXECUTION_FAILED, GENERATION_FAILED...) but its message, which names server files or
      * internal exceptions, goes to the server log with the correlation id and the client receives the public message of that code.
+     * Entradas: status: dato de entrada necesario para la operación; code: dato de entrada necesario para la operación; exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método.
      */
     private ResponseEntity<ApiError> respond(HttpStatus status, String code, Exception exception) {
         return respond(status, code, exception, "");
     }
 
     /**
-     * Like {@link #respond(HttpStatus, String, Exception)}; a server failure that carries an explicit public message (written for the client,
+     * Descripción: Like {@link #respond(HttpStatus, String, Exception)}; a server failure that carries an explicit public message (written for the client,
      * without internal details, e.g. which canonical documents a failed import left pending) answers it instead of the generic one.
+     * Entradas: status: dato de entrada necesario para la operación; code: dato de entrada necesario para la operación; exception: dato de entrada necesario para la operación; publicMessage: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método.
      */
     private ResponseEntity<ApiError> respond(HttpStatus status, String code, Exception exception, String publicMessage) {
         if(status != HttpStatus.INTERNAL_SERVER_ERROR) return ResponseEntity.status(status).body(new ApiError(code, exception.getMessage()));

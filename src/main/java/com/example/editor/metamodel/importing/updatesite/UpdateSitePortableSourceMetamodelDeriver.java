@@ -171,7 +171,7 @@ public class UpdateSitePortableSourceMetamodelDeriver {
         return builder.build(targetId,fileStem(path),Map.of("hydra.recovery.inference","GO_SOURCE","hydra.recovery.nonExecuting","true"));
     }
 
-    /** Descripción: Registra un campo o getter Go: nombre de la etiqueta json (o el del campo), «omitempty» como opcional, «[]» como múltiple y la etiqueta «hydra». */
+    /** Descripción: Registra un campo o getter Go: nombre de la etiqueta json (o el del campo), «omitempty» como opcional, «[]» como múltiple y la etiqueta «hydra». Entradas: builder: dato de entrada necesario para la operación; owner: dato de entrada necesario para la operación; goName: dato de entrada necesario para la operación; rawType: dato de entrada necesario para la operación; tag: dato de entrada necesario para la operación; known: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */
     private void goMember(RecoveredMetamodelBuilder builder,String owner,String goName,String rawType,String tag,Set<String> known){
         String type=rawType.trim();Map<String,String> tags=goTags(tag==null?"":tag);
         String json=tags.getOrDefault("json","");String name=json.isBlank()||json.startsWith(",")?lowerFirst(goName):json.split(",")[0];
@@ -182,7 +182,7 @@ public class UpdateSitePortableSourceMetamodelDeriver {
         record(builder,owner,name,base,many,optional,hydra,known);
     }
 
-    /** Descripción: Añade a «owner» la propiedad «name» de tipo «base»: relación si el tipo es una clase recuperada, atributo en otro caso; con la multiplicidad expresada en el código o en la etiqueta «multiplicity». */
+    /** Descripción: Añade a «owner» la propiedad «name» de tipo «base»: relación si el tipo es una clase recuperada, atributo en otro caso; con la multiplicidad expresada en el código o en la etiqueta «multiplicity». Entradas: builder: dato de entrada necesario para la operación; owner: dato de entrada necesario para la operación; name: dato de entrada necesario para la operación; base: dato de entrada necesario para la operación; many: dato de entrada necesario para la operación; optional: dato de entrada necesario para la operación; tags: dato de entrada necesario para la operación; known: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */
     private void record(RecoveredMetamodelBuilder builder,String owner,String name,String base,boolean many,boolean optional,Map<String,String> tags,Set<String> known){
         int lower=optional?0:1;Integer upper=many?null:1;
         String declared=tags.get("multiplicity");
@@ -194,13 +194,13 @@ public class UpdateSitePortableSourceMetamodelDeriver {
         } else builder.addAttribute(owner,name,builder.hasEnum(base)?base:mapPortableType(base),multiplicity);
     }
 
-    /** Descripción: Añade herencia o implementación según la declaración (en TypeScript «implements»; en Go, interfaz incrustada en un struct). */
+    /** Descripción: Añade herencia o implementación según la declaración (en TypeScript «implements»; en Go, interfaz incrustada en un struct). Entradas: builder: dato de entrada necesario para la operación; name: dato de entrada necesario para la operación; parent: dato de entrada necesario para la operación; kinds: dato de entrada necesario para la operación; implementation: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */
     private void addSuper(RecoveredMetamodelBuilder builder,String name,String parent,Map<String,String> kinds,boolean implementation){
         if(parent==null||parent.isBlank()||parent.equals(name))return;
         if(implementation)builder.addImplementation(name,parent);else builder.addInheritance(name,parent);
     }
 
-    /** Descripción: Divide un cuerpo en miembros separados por «separator» o por fin de línea, fuera de llaves, paréntesis y cadenas; cada miembro conserva las etiquetas «@hydra» de los comentarios que lo preceden. */
+    /** Descripción: Divide un cuerpo en miembros separados por «separator» o por fin de línea, fuera de llaves, paréntesis y cadenas; cada miembro conserva las etiquetas «@hydra» de los comentarios que lo preceden. Entradas: body: dato de entrada necesario para la operación; separator: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private List<Segment> segments(String body,char separator){
         List<Segment> out=new ArrayList<>();StringBuilder code=new StringBuilder();StringBuilder comments=new StringBuilder();
         int depth=0;char quote=0;
@@ -219,28 +219,28 @@ public class UpdateSitePortableSourceMetamodelDeriver {
         return out;
     }
 
-    /** Descripción: Cierra el miembro en curso; un comentario sin código queda pendiente para el miembro siguiente. */
+    /** Descripción: Cierra el miembro en curso; un comentario sin código queda pendiente para el miembro siguiente. Entradas: out: dato de entrada necesario para la operación; code: dato de entrada necesario para la operación; comments: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */
     private void flush(List<Segment> out,StringBuilder code,StringBuilder comments){
         String text=code.toString().trim();
         if(text.isEmpty())return;
         out.add(new Segment(text,tags(comments.toString())));code.setLength(0);comments.setLength(0);
     }
 
-    /** Descripción: Etiquetas «@hydra nombre [valor]» de un comentario. */
+    /** Descripción: Etiquetas «@hydra nombre [valor]» de un comentario. Entradas: comment: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private Map<String,String> tags(String comment){
         Map<String,String> out=new LinkedHashMap<>();Matcher tag=HYDRA_TAG.matcher(comment==null?"":comment);
         while(tag.find())out.put(tag.group(1),tag.group(2)==null?"":tag.group(2).trim());
         return out;
     }
 
-    /** Descripción: Comentario de documentación /** ... *&#47; inmediatamente anterior a una declaración (vacío si no lo hay). */
+    /** Descripción: Comentario de documentación /** Descripción: ... *&#47; inmediatamente anterior a una declaración (vacío si no lo hay). Entradas: source: dato de entrada necesario para la operación; start: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private String precedingDocComment(String source,int start){
         String before=source.substring(Math.max(0,start-2_000),start);
         Matcher comment=Pattern.compile("(?s)/\\*\\*((?:(?!\\*/).)*)\\*/\\s*$").matcher(before);
         return comment.find()?comment.group(1):"";
     }
 
-    /** Descripción: Líneas de comentario «//» inmediatamente anteriores a una declaración Go. */
+    /** Descripción: Líneas de comentario «//» inmediatamente anteriores a una declaración Go. Entradas: source: dato de entrada necesario para la operación; start: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private String precedingLineComments(String source,int start){
         String[] lines=source.substring(Math.max(0,start-2_000),start).split("\\R",-1);
         StringBuilder out=new StringBuilder();
@@ -248,13 +248,13 @@ public class UpdateSitePortableSourceMetamodelDeriver {
         return out.toString();
     }
 
-    /** Descripción: Etiquetas de un campo Go: clave:"valor" ... */
+    /** Descripción: Etiquetas de un campo Go: clave:"valor" ... Entradas: tag: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private Map<String,String> goTags(String tag){
         Map<String,String> out=new LinkedHashMap<>();Matcher pair=Pattern.compile("(\\w+):\"([^\"]*)\"").matcher(tag);
         while(pair.find())out.put(pair.group(1),pair.group(2));
         return out;
     }
-    /** Descripción: Constantes de una enumeración Go en sus bloques const: «Nombre Tipo = valor» y las líneas siguientes que solo nombran una constante (iota implícito) mientras sigan siendo de ese tipo; el prefijo del tipo se quita del nombre. */
+    /** Descripción: Constantes de una enumeración Go en sus bloques const: «Nombre Tipo = valor» y las líneas siguientes que solo nombran una constante (iota implícito) mientras sigan siendo de ese tipo; el prefijo del tipo se quita del nombre. Entradas: source: dato de entrada necesario para la operación; type: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
     private List<String> goConstants(String source,String type){
         List<String> out=new ArrayList<>();
         Matcher block=Pattern.compile("(?s)\\bconst\\s*\\((.*?)\\)").matcher(source);

@@ -40,7 +40,7 @@ public final class FileSystemBoundaries {
 
     /** Descripción: Una escritura cuyo destino resuelve fuera de su raíz a través de un enlace o una unión (T-SEC-JUNCTION-AMPLIAR); cuando se lanza no se ha escrito nada. El mensaje solo lleva el nombre del fichero, no rutas internas. Entradas: target: destino rechazado. Salida: no aplica. */
     public static final class EscapeException extends IOException {
-        public EscapeException(Path target) {
+        /** Descripción: Inicializa una instancia de EscapeException con sus dependencias y datos de entrada. Entradas: target: dato de entrada necesario para la operación. Salida: deja la instancia inicializada y lista para su uso. */ public EscapeException(Path target) {
             super("Path resolves outside its root through a link or directory junction: " + (target.getFileName() == null ? "" : target.getFileName()));
         }
     }

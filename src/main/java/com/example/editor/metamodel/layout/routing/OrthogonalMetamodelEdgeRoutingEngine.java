@@ -199,7 +199,7 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
         return List.of();
     }
 
-    /** Descripción: Abandona el encaminado si el hilo ha sido interrumpido (misma convención que el analizador textual). Salida: lanza CancellationException. */
+    /** Descripción: Abandona el encaminado si el hilo ha sido interrumpido (misma convención que el analizador textual). Salida: lanza CancellationException. Entradas: no requiere parámetros de entrada. */
     private static void checkInterrupted() {
         if(Thread.currentThread().isInterrupted()) {
             throw new java.util.concurrent.CancellationException("Metamodel edge routing cancelled");
@@ -355,25 +355,25 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
         private final int[] generationOf;
         private int generation;
 
-        /** Descripción: Reserva el espacio de una rejilla. Entradas: número de estados (celdas x 3 direcciones). */ private SearchSpace(int states) {
+        /** Descripción: Reserva el espacio de una rejilla. Entradas: número de estados (celdas x 3 direcciones). Salida: deja la instancia inicializada y lista para su uso. */ private SearchSpace(int states) {
             cost = new double[states];
             previous = new int[states];
             generationOf = new int[states];
         }
 
-        /** Descripción: Empieza una búsqueda nueva invalidando la anterior en O(1). */ private void begin() {
+        /** Descripción: Empieza una búsqueda nueva invalidando la anterior en O(1). Entradas: no requiere parámetros de entrada. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void begin() {
             generation += 1;
         }
 
-        /** Descripción: Coste conocido de un estado en esta búsqueda (infinito si no se ha alcanzado). */ private double cost(int state) {
+        /** Descripción: Coste conocido de un estado en esta búsqueda (infinito si no se ha alcanzado). Entradas: state: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private double cost(int state) {
             return generationOf[state] == generation ? cost[state] : Double.POSITIVE_INFINITY;
         }
 
-        /** Descripción: Predecesor de un estado en esta búsqueda (-1 si no tiene). */ private int previous(int state) {
+        /** Descripción: Predecesor de un estado en esta búsqueda (-1 si no tiene). Entradas: state: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private int previous(int state) {
             return generationOf[state] == generation ? previous[state] : -1;
         }
 
-        /** Descripción: Registra el mejor coste de un estado y su predecesor. */ private void set(int state, double value, int from) {
+        /** Descripción: Registra el mejor coste de un estado y su predecesor. Entradas: state: dato de entrada necesario para la operación; value: valor de entrada que debe procesarse; from: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void set(int state, double value, int from) {
             generationOf[state] = generation;
             cost[state] = value;
             previous[state] = from;
@@ -391,19 +391,19 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
         private int[] state = new int[256];
         private int size;
 
-        /** Descripción: Crea el montículo. Entradas: ancho de la rejilla en celdas (para desempatar por x e y). */ private StateHeap(int width) {
+        /** Descripción: Crea el montículo. Entradas: ancho de la rejilla en celdas (para desempatar por x e y). Salida: deja la instancia inicializada y lista para su uso. */ private StateHeap(int width) {
             this.width = width;
         }
 
-        private int size() {
+        /** Descripción: Ejecuta la operación «size» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private int size() {
             return size;
         }
 
-        private double topCost() {
+        /** Descripción: Ejecuta la operación «topCost» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private double topCost() {
             return cost[0];
         }
 
-        private void add(double estimatedTotal, double knownCost, int value) {
+        /** Descripción: Ejecuta la operación «add» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: estimatedTotal: dato de entrada necesario para la operación; knownCost: dato de entrada necesario para la operación; value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void add(double estimatedTotal, double knownCost, int value) {
             if(size == state.length) {
                 estimated = java.util.Arrays.copyOf(estimated, size * 2);
                 cost = java.util.Arrays.copyOf(cost, size * 2);
@@ -421,7 +421,7 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
             state[index] = value;
         }
 
-        private int poll() {
+        /** Descripción: Ejecuta la operación «poll» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private int poll() {
             int result = state[0];
             size -= 1;
             if(size > 0) {
@@ -444,13 +444,13 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
             return result;
         }
 
-        private void move(int from, int to) {
+        /** Descripción: Ejecuta la operación «move» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: from: dato de entrada necesario para la operación; to: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void move(int from, int to) {
             estimated[to] = estimated[from];
             cost[to] = cost[from];
             state[to] = state[from];
         }
 
-        /** Descripción: Orden de la PriorityQueue anterior: estimado, x, y, dirección. */ private int compare(double firstEstimated, int first, double secondEstimated, int second) {
+        /** Descripción: Orden de la PriorityQueue anterior: estimado, x, y, dirección. Entradas: firstEstimated: dato de entrada necesario para la operación; first: dato de entrada necesario para la operación; secondEstimated: dato de entrada necesario para la operación; second: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private int compare(double firstEstimated, int first, double secondEstimated, int second) {
             int byEstimate = Double.compare(firstEstimated, secondEstimated);
             if(byEstimate != 0) return byEstimate;
             int firstCell = first / 3;
@@ -485,7 +485,7 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
         private final List<NodeDesign> nodes;
         private SearchSpace searchSpace;
 
-        /** Descripción: Inicializa la rejilla. Entradas: tamaño, origen, extensión, celdas bloqueadas y nodos. */ private RoutingGrid(double gridSize, double originX, double originY, int maximumX, int maximumY, boolean[] blocked, List<NodeDesign> nodes) {
+        /** Descripción: Inicializa la rejilla. Entradas: tamaño, origen, extensión, celdas bloqueadas y nodos. Salida: deja la instancia inicializada y lista para su uso. */ private RoutingGrid(double gridSize, double originX, double originY, int maximumX, int maximumY, boolean[] blocked, List<NodeDesign> nodes) {
             this.gridSize = gridSize;
             this.originX = originX;
             this.originY = originY;
@@ -530,17 +530,17 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
             return new RoutingGrid(gridSize, originX, originY, maximumX, maximumY, blocked, nodes);
         }
 
-        /** Descripción: Ajusta un punto a la celda más próxima dentro de la rejilla. */ private GridPoint snap(RoutePointDesign point) {
+        /** Descripción: Ajusta un punto a la celda más próxima dentro de la rejilla. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private GridPoint snap(RoutePointDesign point) {
             int x = (int) Math.round((point.x() - originX) / gridSize);
             int y = (int) Math.round((point.y() - originY) / gridSize);
             return new GridPoint(Math.max(0, Math.min(maximumX, x)), Math.max(0, Math.min(maximumY, y)));
         }
 
-        /** Descripción: Coordenadas de diagrama de una celda. */ private RoutePointDesign toPoint(GridPoint point) {
+        /** Descripción: Coordenadas de diagrama de una celda. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private RoutePointDesign toPoint(GridPoint point) {
             return new RoutePointDesign(originX + point.x() * gridSize, originY + point.y() * gridSize);
         }
 
-        /** Descripción: Vecinos dentro de la rejilla en el orden izquierda, derecha, arriba, abajo. */ private List<Step> neighbours(GridPoint point) {
+        /** Descripción: Vecinos dentro de la rejilla en el orden izquierda, derecha, arriba, abajo. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private List<Step> neighbours(GridPoint point) {
             List<Step> result = new ArrayList<>(4);
             add(result, point.x() - 1, point.y(), true);
             add(result, point.x() + 1, point.y(), true);
@@ -549,38 +549,38 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
             return result;
         }
 
-        private void add(List<Step> result, int x, int y, boolean horizontal) {
+        /** Descripción: Ejecuta la operación «add» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: result: dato de entrada necesario para la operación; x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación; horizontal: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void add(List<Step> result, int x, int y, boolean horizontal) {
             if(inside(x, y)) {
                 result.add(new Step(new GridPoint(x, y), horizontal));
             }
         }
 
-        private boolean inside(int x, int y) {
+        /** Descripción: Ejecuta la operación «inside» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean inside(int x, int y) {
             return x >= 0 && x <= maximumX && y >= 0 && y <= maximumY;
         }
 
-        private boolean isBlocked(GridPoint point) {
+        /** Descripción: Evalúa la condición «isBlocked» sin modificar el estado externo. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean isBlocked(GridPoint point) {
             return blocked[index(point)];
         }
 
-        private boolean blocked(int x, int y) {
+        /** Descripción: Ejecuta la operación «blocked» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean blocked(int x, int y) {
             return blocked[y * width + x];
         }
 
-        private int width() {
+        /** Descripción: Ejecuta la operación «width» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private int width() {
             return width;
         }
 
-        /** Descripción: Índice de estado (celda x 3 + dirección). */ private int state(int x, int y, int direction) {
+        /** Descripción: Índice de estado (celda x 3 + dirección). Entradas: x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación; direction: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private int state(int x, int y, int direction) {
             return (y * width + x) * 3 + direction;
         }
 
-        private GridPoint point(int state) {
+        /** Descripción: Ejecuta la operación «point» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: state: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private GridPoint point(int state) {
             int cell = state / 3;
             return new GridPoint(cell % width, cell / width);
         }
 
-        /** Descripción: Espacio de búsqueda reutilizado por todas las aristas de esta rejilla. */ private SearchSpace searchSpace() {
+        /** Descripción: Espacio de búsqueda reutilizado por todas las aristas de esta rejilla. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private SearchSpace searchSpace() {
             if(searchSpace == null) searchSpace = new SearchSpace(blocked.length * 3);
             return searchSpace;
         }
@@ -611,7 +611,7 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
 
         private int[] componentLabels;
 
-        /** Descripción: Etiqueta (una vez) las componentes conexas de las celdas libres con un recorrido en anchura. Salida: etiqueta por celda (-1 si está bloqueada). */
+        /** Descripción: Etiqueta (una vez) las componentes conexas de las celdas libres con un recorrido en anchura. Salida: etiqueta por celda (-1 si está bloqueada). Entradas: no requiere parámetros de entrada. */
         private int[] components() {
             if(componentLabels != null) return componentLabels;
             int[] labels = new int[blocked.length];
@@ -645,11 +645,11 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
             return labels;
         }
 
-        private int index(GridPoint point) {
+        /** Descripción: Ejecuta la operación «index» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private int index(GridPoint point) {
             return point.y() * width + point.x();
         }
 
-        /** Descripción: Coste de congestión y cruce de un paso de (x, y) a (nx, ny), con la misma fórmula que la versión con mapas. */ private double congestionCost(int x, int y, int nx, int ny, boolean horizontal, MetamodelLayoutProperties properties) {
+        /** Descripción: Coste de congestión y cruce de un paso de (x, y) a (nx, ny), con la misma fórmula que la versión con mapas. Entradas: x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación; nx: dato de entrada necesario para la operación; ny: dato de entrada necesario para la operación; horizontal: dato de entrada necesario para la operación; properties: configuración que gobierna el comportamiento. Salida: devuelve el resultado definido por el contrato del método. */ private double congestionCost(int x, int y, int nx, int ny, boolean horizontal, MetamodelLayoutProperties properties) {
             int segment = horizontal ? y * width + Math.min(x, nx) : Math.min(y, ny) * width + x;
             int used = horizontal ? horizontalUsage[segment] : verticalUsage[segment];
             int crossing = horizontal ? verticalCells[ny * width + nx] : horizontalCells[ny * width + nx];
@@ -664,7 +664,7 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
             return result;
         }
 
-        /** Descripción: Reserva los tramos ortogonales de una ruta ya trazada. */ private void reserve(List<RoutePointDesign> route) {
+        /** Descripción: Reserva los tramos ortogonales de una ruta ya trazada. Entradas: route: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void reserve(List<RoutePointDesign> route) {
             for(int index = 0; index < route.size() - 1; index += 1) {
                 GridPoint first = snap(route.get(index));
                 GridPoint second = snap(route.get(index + 1));
@@ -687,11 +687,11 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
             }
         }
 
-        private double gridSize() {
+        /** Descripción: Ejecuta la operación «gridSize» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private double gridSize() {
             return gridSize;
         }
 
-        private List<NodeDesign> nodes() {
+        /** Descripción: Ejecuta la operación «nodes» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private List<NodeDesign> nodes() {
             return nodes;
         }
     }

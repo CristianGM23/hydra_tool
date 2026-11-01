@@ -370,7 +370,7 @@ public class JavaMetamodelImporter implements MetamodelImporter {
             return false;
         }
 
-        /** Descripción: java.beans.Introspector.decapitalize: «Code» -> «code», «URL» -> «URL». */
+        /** Descripción: java.beans.Introspector.decapitalize: «Code» -> «code», «URL» -> «URL». Entradas: value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */
         private static String decapitalize(String value) {
             if(value.length() > 1 && Character.isUpperCase(value.charAt(0)) && Character.isUpperCase(value.charAt(1))) return value;
             return Character.toLowerCase(value.charAt(0)) + value.substring(1);

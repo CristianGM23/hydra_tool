@@ -323,7 +323,7 @@ final class TextualGrammarModelEngine {
             return isPrimitiveExpression(name) ? primitiveType(name).targetId() : null;
         }
 
-        /** Descripción: Multiplicidad que cubre las dos dadas (mínimo de las cotas inferiores; sin cota superior si alguna no la tiene). */
+        /** Descripción: Multiplicidad que cubre las dos dadas (mínimo de las cotas inferiores; sin cota superior si alguna no la tiene). Entradas: first: dato de entrada necesario para la operación; second: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
         static Multiplicity union(Multiplicity first, Multiplicity second) {
             Integer upper = first.upperBound() == null || second.upperBound() == null ? null : Math.max(first.upperBound(), second.upperBound());
             return new Multiplicity(Math.min(first.lowerBound(), second.lowerBound()), upper);
