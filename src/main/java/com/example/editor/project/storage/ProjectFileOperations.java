@@ -37,6 +37,24 @@ public class ProjectFileOperations {
         catch(IOException exception) { throw storage("Could not copy "+source,exception); }
     }
 
+    /** Descripción: Como copyRegularBounded, para un destino dentro de una raíz que puede recibir rutas del usuario: el temporal queda fijado y comprobado dentro de la raíz hasta publicarse (T-SEC-JUNCTION-AMPLIAR, AtomicFiles.copyReplacingBoundedWithin). Entradas: source: fichero origen; root: raíz que contiene el destino; destination: destino; maximumBytes: presupuesto máximo. Salida: devuelve los bytes copiados; INVALID_REQUEST si el destino resuelve fuera de la raíz. */ public long copyRegularBoundedWithin(Path source,Path root,Path destination,long maximumBytes) {
+        if(source==null||root==null||destination==null) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Source, root and destination are required");
+        if(Files.isSymbolicLink(source)||!Files.isRegularFile(source,LinkOption.NOFOLLOW_LINKS)) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Source must be a regular file without symbolic links");
+        try { return AtomicFiles.copyReplacingBoundedWithin(source,destination,root,maximumBytes); }
+        catch(FileSystemBoundaries.EscapeException escape) { throw escaped(escape); }
+        catch(IOException exception) { throw storage("Could not copy "+source,exception); }
+    }
+
+    /** Descripción: Como writeAtomic, para un destino dentro de una raíz que puede recibir rutas del usuario (T-SEC-JUNCTION-AMPLIAR, AtomicFiles.writeReplacingWithin). Entradas: root: raíz que contiene el destino; destination: destino; content: bytes a persistir. Salida: no devuelve valor; INVALID_REQUEST si el destino resuelve fuera de la raíz. */ public void writeAtomicWithin(Path root,Path destination,byte[] content) {
+        try { AtomicFiles.writeReplacingWithin(destination,content,root); }
+        catch(FileSystemBoundaries.EscapeException escape) { throw escaped(escape); }
+        catch(IOException exception) { throw storage("Could not write " + destination,exception); }
+    }
+
+    /** Descripción: Rechazo de una escritura que saldría de su raíz, con la misma clasificación que el resto de rechazos de enlaces y uniones. Entradas: escape: excepción de contención. Salida: la excepción de proyecto. */ private ProjectException escaped(FileSystemBoundaries.EscapeException escape) {
+        return new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Symbolic links and directory junctions are not allowed in write destinations: "+escape.getMessage(),escape);
+    }
+
     /** Descripción: Elimina o libera el recurso gestionado por «deleteRecursively» de forma controlada. Entradas: path: ruta o ubicación utilizada por la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void deleteRecursively(Path path) {
         if(path==null||!Files.exists(path,LinkOption.NOFOLLOW_LINKS)) return;
         try {

@@ -135,7 +135,7 @@ public class LocalDirectoryProjectStorage implements ProjectStoragePort {
             if(!Files.isRegularFile(path)) throw notFound("Project file was not found: " + relativePath);
             verifyEtag(path,request.expectedEtag());
             byte[] content=request.binary()?decode(request.content()):safeText(request.content()).getBytes(StandardCharsets.UTF_8);
-            verifyUploadSize(content.length); files.writeAtomic(path,content);
+            verifyUploadSize(content.length); files.writeAtomicWithin(activeRoot,path,content);
             ProjectTreeNode tree=afterMutation(relativePath);
             return result(relativePath,hashes.etag(content),tree);
         } finally { lock.writeLock().unlock(); }
@@ -149,7 +149,7 @@ public class LocalDirectoryProjectStorage implements ProjectStoragePort {
             if(Files.exists(target)) throw conflict("Project entry already exists: " + relative);
             try {
                 if(request.directory()) Files.createDirectories(target);
-                else files.writeAtomic(target,safeText(request.content()).getBytes(StandardCharsets.UTF_8));
+                else files.writeAtomicWithin(activeRoot,target,safeText(request.content()).getBytes(StandardCharsets.UTF_8));
             } catch(IOException exception) { throw storage("Could not create " + relative,exception); }
             ProjectTreeNode tree=afterMutation(relative);
             return result(relative,request.directory()?"":hashes.etag(readLimited(target,properties.getMaxUploadFileSizeBytes())),tree);
@@ -206,7 +206,7 @@ public class LocalDirectoryProjectStorage implements ProjectStoragePort {
             String relative=(directory==null||directory.isBlank()?"":directory.replace('\\','/')+"/")+safeName;
             Path target=paths.resolve(activeRoot,relative); if(Files.exists(target)) throw conflict("File already exists: " + relative);
             byte[] safeContent=content==null?new byte[0]:content;
-            files.writeAtomic(target,safeContent);
+            files.writeAtomicWithin(activeRoot,target,safeContent);
             ProjectTreeNode tree=afterMutation(relative);
             return result(relative,hashes.etag(safeContent),tree);
         } finally { lock.writeLock().unlock(); }

@@ -38,5 +38,12 @@ public final class FileSystemBoundaries {
         return FileChannel.open(file, StandardOpenOption.READ, LinkOption.NOFOLLOW_LINKS);
     }
 
+    /** Descripción: Una escritura cuyo destino resuelve fuera de su raíz a través de un enlace o una unión (T-SEC-JUNCTION-AMPLIAR); cuando se lanza no se ha escrito nada. El mensaje solo lleva el nombre del fichero, no rutas internas. Entradas: target: destino rechazado. Salida: no aplica. */
+    public static final class EscapeException extends IOException {
+        public EscapeException(Path target) {
+            super("Path resolves outside its root through a link or directory junction: " + (target.getFileName() == null ? "" : target.getFileName()));
+        }
+    }
+
     private static final boolean WINDOWS = System.getProperty("os.name", "").toLowerCase(Locale.ROOT).startsWith("windows");
 }

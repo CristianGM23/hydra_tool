@@ -102,7 +102,7 @@ public class ProjectWorkspaceBridge {
                 verifyDestination(normalizedProject,destination,"Synchronization destination escapes the project root");
                 verifyExistingPathChain(normalizedProject,destination);
                 String operation=operation(destination,mode);
-                if(!operation.equals("SKIP")&&apply) copyPortableRegularFile(file,destination,attrs.size());
+                if(!operation.equals("SKIP")&&apply) copyPortableRegularFile(file,normalizedProject,destination,attrs.size());
                 result.add(change(file,destination,operation,kind,attrs.size()));
             },"Could not scan workspace contribution "+contribution.id());
         }
@@ -129,7 +129,7 @@ public class ProjectWorkspaceBridge {
             verifyDestination(normalizedDestinationRoot,destination,"Workspace destination escapes its repository");
             verifyExistingPathChain(normalizedDestinationRoot,destination);
             String operation=operation(destination,mode);
-            if(!operation.equals("SKIP")&&apply) copyPortableRegularFile(file,destination,attrs.size());
+            if(!operation.equals("SKIP")&&apply) copyPortableRegularFile(file,normalizedDestinationRoot,destination,attrs.size());
             result.add(change(file,destination,operation,kind,attrs.size()));
         },"Could not scan the project");
         return immutableSorted(result);
@@ -162,11 +162,12 @@ public class ProjectWorkspaceBridge {
     }
 
     /** Descripción: Copia un fichero regular mediante publicación atómica y presupuesto por fichero, rechazando cambios concurrentes de tipo o tamaño. Entradas: source: fichero origen; destination: destino; expectedSize: tamaño observado. Salida: no devuelve valor. */
-    /** Descripción: Ejecuta la operación «copyPortableRegularFile» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: source: dato de entrada necesario para la operación; destination: dato de entrada necesario para la operación; expectedSize: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void copyPortableRegularFile(Path source,Path destination,long expectedSize) {
+    /** Descripción: Ejecuta la operación «copyPortableRegularFile» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: source: dato de entrada necesario para la operación; root: raíz del destino, en la que el temporal queda fijado hasta publicarse (T-SEC-JUNCTION-AMPLIAR); destination: dato de entrada necesario para la operación; expectedSize: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void copyPortableRegularFile(Path source,Path root,Path destination,long expectedSize) {
         long maximum=Math.max(1L,Math.min(properties.getMaxUploadFileSizeBytes(),properties.getMaxArchiveSizeBytes()));
         if(expectedSize>maximum) throw tooLarge("Synchronization file exceeds the configured per-file limit: "+source);
         if(Files.isSymbolicLink(source)||!Files.isRegularFile(source,LinkOption.NOFOLLOW_LINKS)) throw invalid("Synchronization source changed while being copied: "+source);
-        try { files.copyRegularBounded(source,destination,maximum); }
+        // TOCTOU: verifyExistingPathChain checked the destination by name; a directory swapped for a junction since then is caught with the temporary file pinned
+        try { files.copyRegularBoundedWithin(source,root,destination,maximum); }
         catch(ProjectException exception) { throw exception; }
     }
 

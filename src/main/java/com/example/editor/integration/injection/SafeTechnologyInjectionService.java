@@ -111,7 +111,7 @@ public class SafeTechnologyInjectionService {
                     Files.createDirectories(backup.getParent());
                     Files.copy(target, backup, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
                 }
-                atomicWrite(target, generated.content());
+                atomicWrite(targetRoot, target, generated.content());
                 written.add(change.path());
             }
             InjectionManifest manifest = new InjectionManifest("1.0", manifestId, profile.id(), compilation.technology(),
@@ -144,7 +144,7 @@ public class SafeTechnologyInjectionService {
                     Path backup = safeResolve(backupRoot, change.path());
                     requireInside(targetRoot, backup);
                     if(!Files.exists(backup)){throw new TechnologyCompilationException("Rollback backup is missing: " + change.path());}
-                    atomicWrite(target, com.example.editor.io.BoundedIo.readInternal(backup)); restored.add(change.path());
+                    atomicWrite(targetRoot, target, com.example.editor.io.BoundedIo.readInternal(backup)); restored.add(change.path());
                 }
             }
             updateIndexAfterRollback(targetRoot, manifest);
@@ -205,7 +205,7 @@ public class SafeTechnologyInjectionService {
         for(InjectionFileChange change : manifest.files()){
             files.put(change.path(), new ManagedInjectionFileIndex.Entry(change.generatedSha256(), manifest.id()));
         }
-        atomicWrite(internal(targetRoot, "managed-files.json"), mapper.writeValueAsBytes(new ManagedInjectionFileIndex("1.0", files)));
+        atomicWrite(targetRoot, internal(targetRoot, "managed-files.json"), mapper.writeValueAsBytes(new ManagedInjectionFileIndex("1.0", files)));
     }
 
     /** Descripción: Actualiza el estado gestionado por SafeTechnologyInjectionService mediante la operación «updateIndexAfterRollback». Entradas: targetRoot: dato de entrada necesario para la operación; manifest: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void updateIndexAfterRollback(Path targetRoot, InjectionManifest manifest) throws IOException {
@@ -218,11 +218,11 @@ public class SafeTechnologyInjectionService {
                 else{files.put(change.path(), new ManagedInjectionFileIndex.Entry(change.originalSha256(), "rollback:" + manifest.id()));}
             }
         }
-        atomicWrite(internal(targetRoot, "managed-files.json"), mapper.writeValueAsBytes(new ManagedInjectionFileIndex("1.0", files)));
+        atomicWrite(targetRoot, internal(targetRoot, "managed-files.json"), mapper.writeValueAsBytes(new ManagedInjectionFileIndex("1.0", files)));
     }
 
     /** Descripción: Ejecuta la operación «persistManifest» correspondiente a la responsabilidad de SafeTechnologyInjectionService. Entradas: targetRoot: dato de entrada necesario para la operación; manifest: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void persistManifest(Path targetRoot, InjectionManifest manifest) throws IOException {
-        atomicWrite(internal(targetRoot, "manifests", manifest.id() + ".json"), mapper.writeValueAsBytes(manifest));
+        atomicWrite(targetRoot, internal(targetRoot, "manifests", manifest.id() + ".json"), mapper.writeValueAsBytes(manifest));
     }
 
     /** Descripción: Obtiene la información correspondiente a «loadManifest» dentro de SafeTechnologyInjectionService. Entradas: targetRoot: dato de entrada necesario para la operación; manifestId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ private InjectionManifest loadManifest(Path targetRoot, String manifestId){
@@ -241,7 +241,7 @@ public class SafeTechnologyInjectionService {
                 if(change.changeKind() == InjectionFileChangeKind.ADD){Files.deleteIfExists(target);}
                 else if(change.changeKind() == InjectionFileChangeKind.MODIFY){
                     Path backup = safeResolve(backupRoot, change.path());
-                    if(Files.exists(backup)){atomicWrite(target, com.example.editor.io.BoundedIo.readInternal(backup));}
+                    if(Files.exists(backup)){atomicWrite(targetRoot, target, com.example.editor.io.BoundedIo.readInternal(backup));}
                 }
             }catch(RuntimeException | IOException ignored){/* La causa original se conserva. */}
         }
@@ -256,12 +256,9 @@ public class SafeTechnologyInjectionService {
         return result;
     }
 
-    /** Descripción: Ejecuta la operación «atomicWrite» correspondiente a la responsabilidad de SafeTechnologyInjectionService. Entradas: target: dato de entrada necesario para la operación; content: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void atomicWrite(Path target, byte[] content) throws IOException {
-        Files.createDirectories(target.getParent());
-        Path temporary = target.resolveSibling(target.getFileName() + ".hydra.tmp");
-        Files.write(temporary, content);
-        try{Files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);}
-        catch(java.nio.file.AtomicMoveNotSupportedException exception){Files.move(temporary, target, StandardCopyOption.REPLACE_EXISTING);}
+    /** Descripción: Ejecuta la operación «atomicWrite» correspondiente a la responsabilidad de SafeTechnologyInjectionService. Entradas: root: raíz de inyección, en la que el temporal queda fijado y comprobado hasta publicarse (T-SEC-JUNCTION-AMPLIAR); target: dato de entrada necesario para la operación; content: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente (una escritura que saldría de la raíz es una IOException, así que apply compensa lo ya escrito). */ private void atomicWrite(Path root, Path target, byte[] content) throws IOException {
+        // TOCTOU: safeResolve checked the target by name; a directory swapped for a junction since then is caught with the temporary file pinned
+        com.example.editor.io.AtomicFiles.writeReplacingWithin(target, content, root);
     }
 
     /** Descripción: Evalúa la condición «hashFile» sin modificar el estado externo. Entradas: path: ruta o ubicación utilizada por la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private String hashFile(Path path){try{return sha256(com.example.editor.io.BoundedIo.readInternal(path));}catch(IOException exception){throw new TechnologyCompilationException("Could not hash target file: " + path, exception);}}

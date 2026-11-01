@@ -3,6 +3,8 @@ package com.example.editor.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -10,6 +12,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.UUID;
 
 /** Operaciones locales de publicación atómica con fallback seguro cuando el proveedor NIO rechaza ATOMIC_MOVE. */
 public final class AtomicFiles {
@@ -46,6 +49,61 @@ public final class AtomicFiles {
         }catch(IOException exception){Files.deleteIfExists(temporary);throw exception;}
         try{moveReplacing(temporary,normalized);return total;}finally{Files.deleteIfExists(temporary);}
     }
+
+    /** Descripción: Como writeReplacing, pero para un destino dentro de una raíz que puede recibir rutas del usuario (T-SEC-JUNCTION-AMPLIAR). Ver publishWithin. Entradas: target: destino; content: bytes a persistir; root: raíz que contiene el destino. Salida: no devuelve valor; FileSystemBoundaries.EscapeException, sin escribir nada, si el destino sale de la raíz. */
+    public static void writeReplacingWithin(Path target, byte[] content, Path root) throws IOException {
+        byte[] bytes=content==null?new byte[0]:content;
+        publishWithin(target,root,channel -> {ByteBuffer buffer=ByteBuffer.wrap(bytes);while(buffer.hasRemaining())channel.write(buffer);return bytes.length;});
+    }
+
+    /** Descripción: Como copyReplacingBounded, pero para un destino dentro de una raíz que puede recibir rutas del usuario (T-SEC-JUNCTION-AMPLIAR). Ver publishWithin. Entradas: source: fichero origen; target: destino; root: raíz que contiene el destino; maximumBytes: máximo de bytes admitidos. Salida: los bytes copiados; FileSystemBoundaries.EscapeException, sin escribir nada, si el destino sale de la raíz. */
+    public static long copyReplacingBoundedWithin(Path source,Path target,Path root,long maximumBytes) throws IOException {
+        if(source==null)throw new IllegalArgumentException("source is required");
+        if(maximumBytes<0)throw new IllegalArgumentException("maximumBytes must not be negative");
+        return publishWithin(target,root,channel -> {
+            long total=0;
+            try(InputStream input=Files.newInputStream(source,LinkOption.NOFOLLOW_LINKS)){
+                byte[] buffer=new byte[64*1024];int read;
+                while((read=input.read(buffer))>=0){if(read==0)continue;try{total=Math.addExact(total,read);}catch(ArithmeticException exception){throw new IOException("Source size overflow",exception);}if(total>maximumBytes)throw new IOException("Source exceeds maximum of "+maximumBytes+" bytes");ByteBuffer chunk=ByteBuffer.wrap(buffer,0,read);while(chunk.hasRemaining())channel.write(chunk);}
+            }
+            return total;
+        });
+    }
+
+    /**
+     * TOCTOU de escritura (T-SEC-JUNCTION-AMPLIAR): el llamante comprueba la cadena del destino y después se escribe por nombre, así que un
+     * antecesor cambiado por una unión entre medias desvía la escritura fuera de la raíz y sustituye lo que haya allí (sonda
+     * resultados/sondas/toctou/sonda_toctou_escritura_http.py). El temporal se crea y se abre en una sola operación (CREATE_NEW) y sigue
+     * abierto hasta publicarlo: con un handle abierto, NTFS no deja renombrar ninguno de sus antecesores, así que la ruta real comprobada con
+     * él abierto es donde quedan los bytes y donde aterriza el movimiento al destino, que es su hermano. Si escapa, el temporal se borra con el
+     * handle aún abierto (el borrado se comparte), de modo que lo que se borra es ese mismo fichero. En POSIX un handle abierto no impide
+     * renombrar y la comprobación solo estrecha la ventana. Riesgo residual: createDirectories puede crear directorios vacíos fuera.
+     * La ruta real de la raíz se resuelve después de crear los directorios: una raíz que aún no existe no tiene ruta real y su forma escrita
+     * (por ejemplo, un nombre corto 8.3 de Windows) no coincidiría con la del temporal.
+     */
+    /** Descripción: Escribe un temporal fijado dentro de la raíz y lo publica sobre el destino antes de cerrarlo. Entradas: target: destino; root: raíz que contiene el destino; writer: escribe el contenido en el canal del temporal. Salida: lo que devuelve writer. */
+    private static long publishWithin(Path target,Path root,ChannelWriter writer) throws IOException {
+        if(target==null||root==null)throw new IllegalArgumentException("target and root are required");
+        Path normalized=target.toAbsolutePath().normalize();Path parent=normalized.getParent();
+        if(parent==null)throw new IllegalArgumentException("target must have a parent directory");
+        Files.createDirectories(parent);
+        Path realRoot=FileSystemBoundaries.realRoot(root);
+        Path temporary=parent.resolve("."+normalized.getFileName()+"-"+UUID.randomUUID()+".tmp");
+        try(FileChannel channel=FileChannel.open(temporary,StandardOpenOption.CREATE_NEW,StandardOpenOption.WRITE,LinkOption.NOFOLLOW_LINKS)){
+            try{
+                if(FileSystemBoundaries.escapes(temporary,realRoot))throw new FileSystemBoundaries.EscapeException(normalized);
+                long written=writer.write(channel);
+                moveReplacing(temporary,normalized);
+                return written;
+            }catch(IOException|RuntimeException failure){
+                try{Files.deleteIfExists(temporary);}catch(IOException cleanup){failure.addSuppressed(cleanup);}
+                throw failure;
+            }
+        }
+    }
+
+    /** Escritura del contenido en el canal de un temporal fijado. */
+    @FunctionalInterface private interface ChannelWriter { long write(FileChannel channel) throws IOException; }
 
     /**
      * Publica un fichero sustituyendo el destino. Primero intenta ATOMIC_MOVE; algunos

@@ -142,6 +142,51 @@ class WindowsJunctionBoundaryTests {
         }
     }
 
+    /**
+     * T-SEC-JUNCTION-AMPLIAR, TOCTOU of a write: the synchronization checks the chain of each destination and then writes it by name, so a
+     * project directory swapped for a junction in between sends the write outside the project, replacing what is there (probe
+     * resultados/sondas/toctou/sonda_toctou_escritura_http.py). The racer swaps the directory as soon as the first file lands in it; the
+     * synchronization creates the directory again for its next file, so every real directory found under the name is moved aside until the
+     * junction takes it.
+     */
+    @Test void swappingADirectoryForAJunctionWhileTheWorkspaceIsSynchronizedNeverWritesThroughIt() throws Exception {
+        int count=2000;
+        Path sourceDirectory=metamodels.resolve("datos"); Files.createDirectories(sourceDirectory);
+        for(int i=0;i<count;i++) Files.writeString(sourceDirectory.resolve("f%04d.metamodel.json".formatted(i)),"{\"from\":\"workspace\"}");
+        for(int run=0;run<5;run++) {
+            Path runProject=temporary.resolve("project-race-"+run); Path inner=runProject.resolve("metamodels").resolve("datos"); Files.createDirectories(inner);
+            Path target=temporary.resolve("outside-write-race-"+run); Files.createDirectories(target);
+            for(int i=0;i<count;i++) Files.writeString(target.resolve("f%04d.metamodel.json".formatted(i)),"outside data");
+            Path staged=temporary.resolve("staged-write-junction-"+run); junction(staged,target);
+            Path first=inner.resolve("f0000.metamodel.json");
+            String[] swap={"not attempted"};
+            Thread racer=new Thread(() -> {
+                long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(60);
+                int movedAside=0;
+                while(!Files.exists(first)&&System.nanoTime()<deadline) Thread.onSpinWait();
+                while(!swap[0].equals("swapped")&&System.nanoTime()<deadline) {
+                    try {
+                        if(Files.exists(inner)) Files.move(inner,inner.resolveSibling("datos-moved-"+movedAside++));
+                        Files.move(staged,inner);
+                        swap[0]="swapped";
+                    } catch(Exception exception) { swap[0]="swap failed: "+exception; Thread.onSpinWait(); }
+                }
+            });
+            racer.start();
+
+            catchThrowable(() -> bridge.apply(runProject,descriptor,new ProjectSyncRequest(WorkspaceTransferDirection.WORKSPACE_TO_PROJECT,WorkspaceTransferMode.REPLACE)));
+            racer.join(TimeUnit.SECONDS.toMillis(90));
+
+            assertThat(swap[0]).as("run %d: the directory must be replaced by the junction while it is being written", run).isEqualTo("swapped");
+            List<String> touched;
+            try(var files=Files.list(target)) {
+                touched=files.filter(file -> { try { return !Files.readString(file).equals("outside data"); } catch(java.io.IOException exception) { return true; } })
+                        .map(file -> file.getFileName().toString()).toList();
+            }
+            assertThat(touched).as("run %d: files outside the project were written through a junction swapped in during the synchronization", run).isEmpty();
+        }
+    }
+
     @Test void aJunctionThatStaysInsideTheProjectIsNotAnEscape() throws Exception {
         Path doomed=temporary.resolve("doomed-inside"); Files.createDirectories(doomed.resolve("data"));
         junction(doomed.resolve("alias"),doomed.resolve("data"));
