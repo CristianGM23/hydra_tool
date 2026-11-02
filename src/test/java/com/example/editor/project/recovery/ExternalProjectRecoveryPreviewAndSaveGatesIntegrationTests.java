@@ -42,6 +42,7 @@ import com.example.editor.definition.EditorDefinitionApplicationService;
 import com.example.editor.definition.EditorDefinitionLoadResult;
 import com.example.editor.definition.assets.EditorVisualAssetService;
 import com.example.editor.metamodel.web.MetamodelHttpTestEnvironment;
+import com.example.editor.testing.LiveFileTrees;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -136,18 +137,14 @@ class ExternalProjectRecoveryPreviewAndSaveGatesIntegrationTests {
 
     /** Nombres de los documentos con este sufijo en cualquier almacen canonico. */
     private static List<String> documents(String suffix) throws IOException {
-        try (var walk = Files.walk(root)) {
-            return walk.filter(Files::isRegularFile).map(path -> path.getFileName().toString())
-                    .filter(name -> name.endsWith(suffix)).sorted().toList();
-        }
+        return LiveFileTrees.regularFiles(root).stream().map(path -> path.getFileName().toString())
+                .filter(name -> name.endsWith(suffix)).sorted().toList();
     }
 
     private static Path documentPath(String name) throws IOException {
-        try (var walk = Files.walk(root)) {
-            List<Path> found = walk.filter(Files::isRegularFile).filter(path -> path.getFileName().toString().equals(name)).toList();
-            assertThat(found).as("documento %s", name).hasSize(1);
-            return found.get(0);
-        }
+        List<Path> found = LiveFileTrees.regularFiles(root).stream().filter(path -> path.getFileName().toString().equals(name)).toList();
+        assertThat(found).as("documento %s", name).hasSize(1);
+        return found.get(0);
     }
 
     private static List<String> expectedNames(String... path) throws IOException {

@@ -29,6 +29,7 @@ import com.example.editor.metamodel.core.MetaModel;
 import com.example.editor.metamodel.importing.MetamodelImportOptions;
 import com.example.editor.metamodel.importing.MetamodelImportService;
 import com.example.editor.metamodel.web.MetamodelHttpTestEnvironment;
+import com.example.editor.testing.LiveFileTrees;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -83,9 +84,7 @@ class ExternalValidationRecoveryRealStoresIntegrationTests {
 
     /** Documentos con este sufijo en cualquier almacen del directorio temporal. */
     private static List<Path> documents(String suffix) throws IOException {
-        try (var walk = Files.walk(root)) {
-            return walk.filter(Files::isRegularFile).filter(path -> path.getFileName().toString().endsWith(suffix)).sorted().toList();
-        }
+        return LiveFileTrees.regularFiles(root).stream().filter(path -> path.getFileName().toString().endsWith(suffix)).sorted().toList();
     }
 
     private static JsonNode readSingle(String suffix) throws IOException {

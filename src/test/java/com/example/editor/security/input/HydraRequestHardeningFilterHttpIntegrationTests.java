@@ -24,6 +24,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import com.example.editor.testing.LiveFileTrees;
+
 /**
  * Filtro de endurecimiento de peticiones HTTP: Tomcat real en puerto aleatorio + {@link HttpClient} real contra
  * /api/..., con limites reducidos (URI 200, query 300, cabecera 1000, JSON 2048 B, multipart 4096 B).
@@ -58,9 +60,7 @@ class HydraRequestHardeningFilterHttpIntegrationTests {
 
     @AfterAll
     static void cleanUp() throws IOException {
-        try (var walk = Files.walk(ROOT)) {
-            for (Path path : walk.sorted(java.util.Comparator.reverseOrder()).toList()) Files.deleteIfExists(path);
-        }
+        LiveFileTrees.deleteRecursively(ROOT);
     }
 
     @Autowired private Environment environment;

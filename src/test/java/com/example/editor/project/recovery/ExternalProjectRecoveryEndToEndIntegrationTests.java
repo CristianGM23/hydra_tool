@@ -10,7 +10,6 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -25,6 +24,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import com.example.editor.testing.LiveFileTrees;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -79,9 +79,7 @@ class ExternalProjectRecoveryEndToEndIntegrationTests {
 
     @AfterAll
     static void cleanUp() throws IOException {
-        try (var walk = Files.walk(ROOT)) {
-            for (Path path : walk.sorted(Comparator.reverseOrder()).toList()) Files.deleteIfExists(path);
-        }
+        LiveFileTrees.deleteRecursively(ROOT);
     }
 
     @Autowired private MockMvc mvc;

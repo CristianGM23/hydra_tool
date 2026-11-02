@@ -43,6 +43,7 @@ import com.example.editor.definition.EditorDefinitionApplicationService;
 import com.example.editor.metamodel.web.MetamodelHttpTestEnvironment;
 import com.example.editor.project.ProjectApplicationService;
 import com.example.editor.project.ProjectException;
+import com.example.editor.testing.LiveFileTrees;
 
 import tools.jackson.databind.json.JsonMapper;
 
@@ -105,13 +106,11 @@ class ExternalImportRollbackCompensationIntegrationTests {
     /** Contenido de los almacenes canónicos, sin el registro de auditoría (solo anexado por diseño) ni el registro de proyectos. */
     private static Map<String, String> canonicalState() throws IOException {
         Map<String, String> state = new TreeMap<>();
-        try (var walk = Files.walk(root)) {
-            for (Path file : walk.filter(Files::isRegularFile).toList()) {
-                String relative = root.relativize(file).toString().replace('\\', '/');
-                if (relative.contains("audit") || relative.startsWith("projects/") || relative.startsWith("external-import-journal/")) continue;
-                try { state.put(relative, HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(file)))); }
-                catch (java.security.NoSuchAlgorithmException exception) { throw new IllegalStateException(exception); }
-            }
+        for (Path file : LiveFileTrees.regularFiles(root)) {
+            String relative = root.relativize(file).toString().replace('\\', '/');
+            if (relative.contains("audit") || relative.startsWith("projects/") || relative.startsWith("external-import-journal/")) continue;
+            try { state.put(relative, HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(file)))); }
+            catch (java.security.NoSuchAlgorithmException exception) { throw new IllegalStateException(exception); }
         }
         return state;
     }

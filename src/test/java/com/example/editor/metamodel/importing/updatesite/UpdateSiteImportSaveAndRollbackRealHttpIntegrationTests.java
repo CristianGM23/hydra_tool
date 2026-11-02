@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +28,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import com.example.editor.testing.LiveFileTrees;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -79,9 +79,7 @@ class UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests {
 
     @AfterAll
     static void cleanUp() throws IOException {
-        try (var walk = Files.walk(ROOT)) {
-            for (Path path : walk.sorted(Comparator.reverseOrder()).toList()) Files.deleteIfExists(path);
-        }
+        LiveFileTrees.deleteRecursively(ROOT);
     }
 
     @Autowired private Environment environment;
@@ -144,18 +142,14 @@ class UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests {
 
     /** Nombres de los documentos con este sufijo en cualquier almacen del directorio temporal. */
     private static List<String> documents(String suffix) throws IOException {
-        try (var walk = Files.walk(ROOT)) {
-            return walk.filter(Files::isRegularFile).map(path -> path.getFileName().toString())
-                    .filter(name -> name.endsWith(suffix)).sorted().toList();
-        }
+        return LiveFileTrees.regularFiles(ROOT).stream().map(path -> path.getFileName().toString())
+                .filter(name -> name.endsWith(suffix)).sorted().toList();
     }
 
     private static Path documentPath(String name) throws IOException {
-        try (var walk = Files.walk(ROOT)) {
-            List<Path> found = walk.filter(Files::isRegularFile).filter(path -> path.getFileName().toString().equals(name)).toList();
-            assertThat(found).as("documento %s", name).hasSize(1);
-            return found.get(0);
-        }
+        List<Path> found = LiveFileTrees.regularFiles(ROOT).stream().filter(path -> path.getFileName().toString().equals(name)).toList();
+        assertThat(found).as("documento %s", name).hasSize(1);
+        return found.get(0);
     }
 
     private static List<String> expectedClasses() throws IOException {

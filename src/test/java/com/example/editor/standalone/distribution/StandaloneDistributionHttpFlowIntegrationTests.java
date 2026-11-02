@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -28,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import com.example.editor.testing.LiveFileTrees;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -63,9 +63,7 @@ class StandaloneDistributionHttpFlowIntegrationTests {
 
     @AfterAll
     static void cleanUp() throws IOException {
-        try (var walk = Files.walk(ROOT)) {
-            for (Path path : walk.sorted(Comparator.reverseOrder()).toList()) Files.deleteIfExists(path);
-        }
+        LiveFileTrees.deleteRecursively(ROOT);
     }
 
     @Autowired private Environment environment;
