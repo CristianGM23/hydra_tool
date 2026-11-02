@@ -26,13 +26,14 @@ class ProjectIndexStabilityTests {
         LocalDirectoryProjectStorage first = ProjectStorageTestFixture.storage(temporary.resolve("installation-1"));
         first.create(new CreateLocalProjectRequest(temporary.toString(), "stable", "Stable", "", false));
         first.upload("assets", "a.txt", "uno".getBytes(StandardCharsets.UTF_8));
-        Path index = temporary.resolve("stable/.modeling/project-index.json");
+        // the project directory comes from the display name ("Stable"), not from the id: on a case-sensitive file system "stable" does not exist
+        Path index = temporary.resolve("Stable/.modeling/project-index.json");
         byte[] before = Files.readAllBytes(index);
         FileTime modified = Files.getLastModifiedTime(index);
         Thread.sleep(1_100L);
 
         LocalDirectoryProjectStorage second = ProjectStorageTestFixture.storage(temporary.resolve("installation-2"));
-        second.open(new OpenLocalProjectRequest(temporary.resolve("stable").toString(), false, null));
+        second.open(new OpenLocalProjectRequest(temporary.resolve("Stable").toString(), false, null));
 
         assertThat(Files.readAllBytes(index)).isEqualTo(before);
         assertThat(Files.getLastModifiedTime(index)).isEqualTo(modified);
@@ -41,7 +42,7 @@ class ProjectIndexStabilityTests {
     @Test void aRealChangeStillUpdatesTheIndex() throws Exception {
         LocalDirectoryProjectStorage storage = ProjectStorageTestFixture.storage(temporary.resolve("installation-1"));
         storage.create(new CreateLocalProjectRequest(temporary.toString(), "changing", "Changing", "", false));
-        Path index = temporary.resolve("changing/.modeling/project-index.json");
+        Path index = temporary.resolve("Changing/.modeling/project-index.json");
         String before = Files.readString(index);
 
         storage.upload("assets", "nuevo.txt", "nuevo".getBytes(StandardCharsets.UTF_8));
