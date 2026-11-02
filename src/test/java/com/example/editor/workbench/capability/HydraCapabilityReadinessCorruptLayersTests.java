@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import com.example.editor.event.EventBindingModel;
@@ -40,6 +41,8 @@ import com.example.editor.metamodel.web.MetamodelHttpTestEnvironment;
  * exception of the store; a corrupt metamodel still fails, as reading the metamodel itself does.
  */
 @SpringBootTest
+// INC-TEST-TEMPDIR-CLEANUP: close the context before JUnit deletes the static @TempDir; its asynchronous audit writer may still be writing to it
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class HydraCapabilityReadinessCorruptLayersTests {
     private static final String CORRUPT = "{ unreadable document written by the test";
     private static final List<String> MODULES = List.of("metamodels", "validations", "events", "event-flows", "editors", "integrations");

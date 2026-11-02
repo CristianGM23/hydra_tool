@@ -21,6 +21,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -43,6 +44,8 @@ import tools.jackson.databind.json.JsonMapper;
  */
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+// INC-TEST-TEMPDIR-CLEANUP: close the context before JUnit deletes the static @TempDir; its asynchronous audit writer may still be writing to it
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class VisualImportMetamodelAssociationRealStackIntegrationTests {
 
     private static final String FIXTURE = "/fixtures/sirius-complete/";

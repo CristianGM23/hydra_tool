@@ -22,6 +22,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import com.example.editor.metamodel.core.MetaModel;
@@ -42,6 +43,8 @@ import tools.jackson.databind.json.JsonMapper;
  */
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+// INC-TEST-TEMPDIR-CLEANUP: close the context before JUnit deletes the static @TempDir; its asynchronous audit writer may still be writing to it
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ExternalValidationRecoveryRealStoresIntegrationTests {
     private static final String FIXTURE = "/fixtures/sirius-complete/";
     private static final String ECORE = "com.hydra.sirius.fixture.metamodel/model/hydratest.ecore";

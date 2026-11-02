@@ -33,6 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
@@ -53,6 +54,8 @@ import tools.jackson.databind.json.JsonMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+// INC-TEST-TEMPDIR-CLEANUP: close the context before JUnit deletes the static @TempDir; its asynchronous audit writer may still be writing to it
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ExternalImportRollbackCompensationIntegrationTests {
     private static final String FIXTURE = "/fixtures/sirius-complete/";
     private static final JsonMapper JSON = JsonMapper.builder().build();
