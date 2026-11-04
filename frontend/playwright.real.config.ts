@@ -13,11 +13,13 @@ export default defineConfig({
     fullyParallel: false,
     workers: 1,
     retries: 0,
+    // Google Chrome estable del sistema (no el Chromium de Playwright): ver e2e/browser-guard.ts.
+    globalSetup: './e2e/browser-guard.ts',
     reporter: [['json', { outputFile: process.env.PLAYWRIGHT_JSON_OUTPUT_NAME ?? 'test-results/real-e2e.json' }], ['list']],
     use: { baseURL: `http://127.0.0.1:${web}`, trace: 'retain-on-failure', screenshot: 'only-on-failure' },
     webServer: [
         { command: 'node e2e/real-backend.mjs', url: `http://127.0.0.1:${api}/api/system/status`, timeout: 240_000, reuseExistingServer: false, stdout: 'pipe', stderr: 'pipe' },
         { command: 'node e2e/real-web.mjs', url: `http://127.0.0.1:${web}/`, timeout: 30_000, reuseExistingServer: false },
     ],
-    projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+    projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], channel: 'chrome' } }],
 });
