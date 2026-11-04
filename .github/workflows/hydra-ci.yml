@@ -27,6 +27,9 @@ jobs:
       - name: Frontend dependencies
         working-directory: frontend
         run: npm ci && npx playwright install chromium
+      - name: Patched Google Chrome for the E2E suites
+        working-directory: frontend
+        run: npx playwright install --force chrome
       - name: Frontend full gate
         working-directory: frontend
         run: npm run build && npm test -- --run && npm run lint
