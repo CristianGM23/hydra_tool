@@ -80,15 +80,6 @@
    "residual": "StandaloneDistributionValidationService internals beyond codes and the Materializer were not read. No component test for StandaloneDistributionCenter.tsx. A further UNTRACKED file appeared in the working tree DURING this pass (StandaloneWebDeploymentPackager.java, POST /package-deployable-web, DEPLOYABLE_WEB_ASSETS ZIP; no tests found) plus untracked scripts/distribution/{build_generated_editor.py,verify_web_package.py}, scripts/testing/bd-block2, scripts/validation/{run_native_e2e_matrix.py,validate_bd_block2.ps1,verify_bd_block2.py}: the packager is documented, the scripts are classified non-architectural tooling. The working tree is still moving: re-run the baseline comparison before trusting this."
   },
   {
-   "id": "gap-t001",
-   "kind": "TEST_EVIDENCE",
-   "severity": "high",
-   "status": "OPEN",
-   "title": "Failing tests in the latest recorded execution",
-   "detail": "Failing: gate:readiness:72:maven-full-verify, gate:release:04:primary-full-tree, gate:rc1:01:fix100-release-qualification, gate:rc2:05:rc1-qualification. Recorded in test-execution-state.json; the behaviour affected is described in each record (limits/behavior).",
-   "ref": "knowledge/tests/test-gaps.json"
-  },
-  {
    "id": "gap-t002",
    "kind": "TEST_EVIDENCE",
    "severity": "medium",
@@ -129,7 +120,7 @@
    "kind": "TEST_EVIDENCE",
    "severity": "low",
    "status": "OPEN",
-   "title": "134 verification scripts have no execution evidence in the local artifacts",
+   "title": "138 verification scripts have no execution evidence in the local artifacts",
    "detail": "Historical per-fix verifiers, native/e2e scripts and PowerShell wrappers are not part of the latest recorded run; native installer/OS evidence is opt-in (generated-editor workflow).",
    "ref": "knowledge/tests/test-gaps.json"
   },
@@ -138,8 +129,8 @@
    "kind": "TEST_EVIDENCE",
    "severity": "low",
    "status": "OPEN",
-   "title": "5 tests whose meaning still needs review",
-   "detail": "java:com.example.editor.integration.roundtrip.resolution.RoundTripResolutionWorkflowServiceTests, java:com.example.editor.integration.verification.GeneratedTechnologyProjectAcceptanceTests, java:com.example.editor.metamodel.target.JsonTargetConfigurationRepositoryTests, java:com.example.editor.metamodel.target.TargetConfigurationDocumentTests, script:scripts/testing/run_rc1_product_e2e.py",
+   "title": "6 tests whose meaning still needs review",
+   "detail": "java:com.example.editor.integration.roundtrip.resolution.RoundTripResolutionWorkflowServiceTests, java:com.example.editor.integration.verification.GeneratedTechnologyProjectAcceptanceTests, java:com.example.editor.metamodel.importing.SourceAccessorImportTests, java:com.example.editor.metamodel.target.JsonTargetConfigurationRepositoryTests, java:com.example.editor.metamodel.target.TargetConfigurationDocumentTests, script:scripts/testing/run_rc1_product_e2e.py",
    "ref": "knowledge/tests/test-gaps.json"
   }
  ],
@@ -285,12 +276,11 @@
   ]
  },
  "testEvidenceSummary": {
-  "generatedAt": "2026-10-29T07:43:40.221Z",
+  "generatedAt": "2026-11-04T16:01:08.548Z",
   "byStatus": {
-   "PASS": 917,
-   "DISCOVERED": 134,
-   "SKIPPED": 2,
-   "FAIL": 4
+   "NOT_EXECUTED": 336,
+   "PASS": 680,
+   "DISCOVERED": 138
   },
   "store": "knowledge/tests/"
  }

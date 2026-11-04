@@ -106,41 +106,40 @@
  "capabilityRevalidationTriggeredBy": "Uncommitted working-tree changes under integration/parity, integration/{compiler,web} and standalone/distribution (+ frontend distribution-center). 'integration' and 'publication' were re-read this pass (scoped lookups). Every other capability was deepened (not re-validated) with scoped enumeration lookups against unchanged evidence roots.",
  "nextIncrementalDiffInstructions": "Resolve current HEAD dynamically first. If it still equals analyzedState.head.sha, only re-check working-tree status (git status --porcelain), re-diff the paths in changedArchitecturallyRelevantPathsSincePreviousAnalysis against what capabilities-cache.json says was verified, and reclassify anything new. If HEAD has advanced, run: git diff --name-status 4e4455a63c02fa89fdd60bbf00035b28c34a68a3..HEAD -- . ':!docs/architecture/archify' ':!.claude' ':!CLAUDE.md', then fold in current staged/unstaged/untracked state the same way this file does, and update analyzedState/previouslyAnalyzedState accordingly. Never hard-code the resulting SHA into a prompt or conversation as a future assumption -- always re-resolve dynamically.",
  "testEvidence": {
-  "generatedAt": "2026-10-29T07:43:40.221Z",
+  "generatedAt": "2026-11-04T16:01:08.548Z",
   "store": "knowledge/tests/",
   "repositoryState": {
-   "head": "826c7a7c21fd1fd3447b2f2c86ac8a11efeacc06",
-   "branch": "archify-v3-cierre-20261022",
-   "unstaged": 9,
-   "untracked": 0
+   "head": "dabca100487098df8e8b7515f97dfd13847d1980",
+   "branch": "candidato-docs-pw-dabca10",
+   "unstaged": 18,
+   "untracked": 187
   },
   "executionEvidence": {
    "surefire": {
     "store": {
      "index": "target/archify-v3/evidence/evidence-index.json",
-     "classes": 509
+     "classes": 222
     },
     "dir": null,
     "citedFromBuild": 0,
-    "sample": "target/archify-v3/evidence/surefire/suite-maven-completa-20261028T114910Z/TEST-com.example.editor.EditorApplicationTests.xml",
-    "suites": 509,
-    "newest": "2026-10-28T12:42:01.434Z",
+    "sample": "target/archify-v3/evidence/surefire/run-20261103T101001Z/TEST-com.example.editor.audit.CanonicalDocumentMutationAuditIntegrationTests.xml",
+    "suites": 222,
+    "newest": "2026-11-03T11:06:22.178Z",
     "start": null
    },
    "gates": {
     "readiness": 73,
-    "release": 5,
-    "rc1": 2,
-    "rc2": 6
+    "release": 18,
+    "rc1": 13,
+    "rc2": 26
    }
   },
   "counts": {
-   "records": 1057,
+   "records": 1154,
    "byStatus": {
-    "PASS": 917,
-    "DISCOVERED": 134,
-    "SKIPPED": 2,
-    "FAIL": 4
+    "NOT_EXECUTED": 336,
+    "PASS": 680,
+    "DISCOVERED": 138
    }
   },
   "note": "Test evidence is tracked incrementally: run knowledge/tests/discover-tests.js --changed, analyse new/modified tests, then build-test-evidence.js."
