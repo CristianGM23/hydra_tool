@@ -276,11 +276,11 @@
   ]
  },
  "testEvidenceSummary": {
-  "generatedAt": "2026-11-04T16:01:08.548Z",
+  "generatedAt": "2026-11-05T03:50:59.990Z",
   "byStatus": {
-   "NOT_EXECUTED": 336,
-   "PASS": 680,
-   "DISCOVERED": 138
+   "PASS": 1014,
+   "DISCOVERED": 138,
+   "SKIPPED": 2
   },
   "store": "knowledge/tests/"
  }

@@ -106,25 +106,25 @@
  "capabilityRevalidationTriggeredBy": "Uncommitted working-tree changes under integration/parity, integration/{compiler,web} and standalone/distribution (+ frontend distribution-center). 'integration' and 'publication' were re-read this pass (scoped lookups). Every other capability was deepened (not re-validated) with scoped enumeration lookups against unchanged evidence roots.",
  "nextIncrementalDiffInstructions": "Resolve current HEAD dynamically first. If it still equals analyzedState.head.sha, only re-check working-tree status (git status --porcelain), re-diff the paths in changedArchitecturallyRelevantPathsSincePreviousAnalysis against what capabilities-cache.json says was verified, and reclassify anything new. If HEAD has advanced, run: git diff --name-status 4e4455a63c02fa89fdd60bbf00035b28c34a68a3..HEAD -- . ':!docs/architecture/archify' ':!.claude' ':!CLAUDE.md', then fold in current staged/unstaged/untracked state the same way this file does, and update analyzedState/previouslyAnalyzedState accordingly. Never hard-code the resulting SHA into a prompt or conversation as a future assumption -- always re-resolve dynamically.",
  "testEvidence": {
-  "generatedAt": "2026-11-04T16:01:08.548Z",
+  "generatedAt": "2026-11-05T03:50:59.990Z",
   "store": "knowledge/tests/",
   "repositoryState": {
-   "head": "dabca100487098df8e8b7515f97dfd13847d1980",
+   "head": "fe677b32eee17840e2bfd3fb6d8427de874ff9ea",
    "branch": "candidato-docs-pw-dabca10",
-   "unstaged": 18,
-   "untracked": 187
+   "unstaged": 9,
+   "untracked": 189
   },
   "executionEvidence": {
    "surefire": {
     "store": {
      "index": "target/archify-v3/evidence/evidence-index.json",
-     "classes": 222
+     "classes": 558
     },
     "dir": null,
     "citedFromBuild": 0,
-    "sample": "target/archify-v3/evidence/surefire/run-20261103T101001Z/TEST-com.example.editor.audit.CanonicalDocumentMutationAuditIntegrationTests.xml",
-    "suites": 222,
-    "newest": "2026-11-03T11:06:22.178Z",
+    "sample": "target/archify-v3/evidence/surefire/baseline-g4-rc2-second-full-validation-final-20261105/TEST-com.example.editor.EditorApplicationTests.xml",
+    "suites": 558,
+    "newest": "2026-11-05T00:36:06.032Z",
     "start": null
    },
    "gates": {
@@ -137,9 +137,9 @@
   "counts": {
    "records": 1154,
    "byStatus": {
-    "NOT_EXECUTED": 336,
-    "PASS": 680,
-    "DISCOVERED": 138
+    "PASS": 1014,
+    "DISCOVERED": 138,
+    "SKIPPED": 2
    }
   },
   "note": "Test evidence is tracked incrementally: run knowledge/tests/discover-tests.js --changed, analyse new/modified tests, then build-test-evidence.js."

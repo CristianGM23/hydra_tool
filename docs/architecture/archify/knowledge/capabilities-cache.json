@@ -182,8 +182,7 @@
     "evidenceSummary": {
      "tests": 210,
      "byStatus": {
-      "NOT_EXECUTED": 113,
-      "PASS": 88,
+      "PASS": 201,
       "DISCOVERED": 9
      },
      "byStrength": {
@@ -207,7 +206,7 @@
      "endToEnd": true,
      "stagesTotal": 52,
      "stagesWithEvidence": 49,
-     "stagesDirectlyVerified": 42
+     "stagesDirectlyVerified": 47
     },
     "evidenceIds": [
      "java:com.example.editor.definition.importing.VisualImportMetamodelAssociationHttpIntegrationTests",
@@ -232,17 +231,17 @@
      "imp": "ok",
      "rec": "partial",
      "rev": "ok",
-     "sv": "partial",
+     "sv": "ok",
      "ok": "ok",
      "fix": "ok",
      "art": "ok"
     },
     "metamodel_delete_cascade": {
      "prep": "ok",
-     "scan": "partial",
+     "scan": "ok",
      "prim": "ok",
-     "clean": "partial",
-     "d1": "partial",
+     "clean": "ok",
+     "d1": "ok",
      "rec": "ok",
      "ab": "ok",
      "art": "ok"
@@ -252,7 +251,7 @@
      "d1": "ok",
      "fix": "ok",
      "in": "ok",
-     "gen": "partial",
+     "gen": "ok",
      "art": "ok"
     },
     "metamodel_author_canvas": {
@@ -459,8 +458,7 @@
     "evidenceSummary": {
      "tests": 97,
      "byStatus": {
-      "NOT_EXECUTED": 17,
-      "PASS": 76,
+      "PASS": 93,
       "DISCOVERED": 4
      },
      "byStrength": {
@@ -481,7 +479,7 @@
      "endToEnd": true,
      "stagesTotal": 57,
      "stagesWithEvidence": 51,
-     "stagesDirectlyVerified": 39
+     "stagesDirectlyVerified": 44
     },
     "evidenceIds": [
      "java:com.example.editor.definition.EditorDefinitionApplicationServiceGuidedSaveIntegrationTests",
@@ -511,11 +509,11 @@
      "art": "ok"
     },
     "model_editor_compile": {
-     "chk": "partial",
-     "d1": "partial",
-     "cmp": "partial",
+     "chk": "ok",
+     "d1": "ok",
+     "cmp": "ok",
      "vw": "ok",
-     "art": "partial"
+     "art": "ok"
     },
     "model_editor_session": {
      "op": "ok",
@@ -543,7 +541,7 @@
      "p5": "ok",
      "d1": "partial",
      "sv": "ok",
-     "p6": "partial",
+     "p6": "ok",
      "art": "ok"
     },
     "model_editor_author_structure": {
@@ -777,9 +775,9 @@
     "evidenceSummary": {
      "tests": 116,
      "byStatus": {
-      "NOT_EXECUTED": 55,
-      "PASS": 39,
-      "DISCOVERED": 22
+      "PASS": 93,
+      "DISCOVERED": 22,
+      "SKIPPED": 1
      },
      "byStrength": {
       "MEDIUM": 55,
@@ -803,7 +801,7 @@
      "endToEnd": true,
      "stagesTotal": 40,
      "stagesWithEvidence": 40,
-     "stagesDirectlyVerified": 35
+     "stagesDirectlyVerified": 39
     },
     "evidenceIds": [
      "java:com.example.editor.integration.adapter.eclipse.EclipseModelingDistributionTechnologyAdapterTests",
@@ -826,7 +824,7 @@
     "integration_deliver": {
      "conf": "ok",
      "ana": "ok",
-     "gen": "partial",
+     "gen": "ok",
      "ok": "ok",
      "ver": "ok",
      "pre": "ok",
@@ -849,9 +847,9 @@
      "to": "ok",
      "cmp": "ok",
      "nat": "partial",
-     "ass": "partial",
-     "cert": "partial",
-     "ok": "partial",
+     "ass": "ok",
+     "cert": "ok",
+     "ok": "ok",
      "ko": "ok"
     },
     "integration_author_wizard": {
@@ -1071,8 +1069,7 @@
     "evidenceSummary": {
      "tests": 90,
      "byStatus": {
-      "NOT_EXECUTED": 33,
-      "PASS": 31,
+      "PASS": 64,
       "DISCOVERED": 26
      },
      "byStrength": {
@@ -1099,7 +1096,7 @@
      "endToEnd": true,
      "stagesTotal": 43,
      "stagesWithEvidence": 43,
-     "stagesDirectlyVerified": 42
+     "stagesDirectlyVerified": 43
     },
     "evidenceIds": [
      "java:com.example.editor.codegen.ModelCodeGenerationServiceTests",
@@ -1143,7 +1140,7 @@
      "zip": "ok"
     },
     "publication_author_codegen": {
-     "t": "partial",
+     "t": "ok",
      "ns": "ok",
      "tr": "ok",
      "pv": "ok",
@@ -1267,8 +1264,7 @@
     "evidenceSummary": {
      "tests": 30,
      "byStatus": {
-      "PASS": 13,
-      "NOT_EXECUTED": 2,
+      "PASS": 15,
       "DISCOVERED": 15
      },
      "byStrength": {
@@ -1604,8 +1600,7 @@
     "evidenceSummary": {
      "tests": 77,
      "byStatus": {
-      "NOT_EXECUTED": 16,
-      "PASS": 52,
+      "PASS": 68,
       "DISCOVERED": 9
      },
      "byStrength": {
@@ -1628,7 +1623,7 @@
      "endToEnd": true,
      "stagesTotal": 89,
      "stagesWithEvidence": 88,
-     "stagesDirectlyVerified": 83
+     "stagesDirectlyVerified": 88
     },
     "evidenceIds": [
      "java:com.example.editor.definition.runtime.session.EditorSessionEventPublicationIntegrationTests",
@@ -1726,8 +1721,8 @@
      "a3": "ok",
      "a4": "ok",
      "a5": "ok",
-     "a6": "partial",
-     "r1": "partial"
+     "a6": "ok",
+     "r1": "ok"
     },
     "events_author_flow": {
      "a1": "ok",
@@ -1744,9 +1739,9 @@
      "a1": "ok",
      "a2": "ok",
      "a3": "ok",
-     "d1": "partial",
-     "a4": "partial",
-     "r1": "partial"
+     "d1": "ok",
+     "a4": "ok",
+     "r1": "ok"
     },
     "events_author_run": {
      "a1": "ok",
@@ -1988,8 +1983,7 @@
     "evidenceSummary": {
      "tests": 53,
      "byStatus": {
-      "NOT_EXECUTED": 4,
-      "PASS": 40,
+      "PASS": 44,
       "DISCOVERED": 9
      },
      "byStrength": {
@@ -2433,8 +2427,7 @@
     "evidenceSummary": {
      "tests": 94,
      "byStatus": {
-      "NOT_EXECUTED": 27,
-      "PASS": 59,
+      "PASS": 86,
       "DISCOVERED": 8
      },
      "byStrength": {
@@ -2456,7 +2449,7 @@
      "endToEnd": true,
      "stagesTotal": 100,
      "stagesWithEvidence": 98,
-     "stagesDirectlyVerified": 93
+     "stagesDirectlyVerified": 94
     },
     "evidenceIds": [
      "java:com.example.editor.grammar.application.GrammarApplicationServiceSaveIntegrationTests",
@@ -2537,7 +2530,7 @@
     "grammar_conversion_preview": {
      "em": "ok",
      "pv": "ok",
-     "eq": "partial",
+     "eq": "ok",
      "ap": "ok",
      "rj": "ok"
     },
@@ -2735,8 +2728,7 @@
     "evidenceSummary": {
      "tests": 73,
      "byStatus": {
-      "NOT_EXECUTED": 25,
-      "PASS": 41,
+      "PASS": 66,
       "DISCOVERED": 7
      },
      "byStrength": {
@@ -2757,7 +2749,7 @@
      "endToEnd": true,
      "stagesTotal": 42,
      "stagesWithEvidence": 39,
-     "stagesDirectlyVerified": 35
+     "stagesDirectlyVerified": 38
     },
     "evidenceIds": [
      "java:com.example.editor.project.LocalDirectoryProjectStorageTests",
@@ -2794,7 +2786,7 @@
      "x1": "ok",
      "x2": "ok",
      "x3": "ok",
-     "x4": "partial",
+     "x4": "ok",
      "r": "ok"
     },
     "project_author_tree": {
@@ -2821,8 +2813,8 @@
     "project_author_export": {
      "a": "ok",
      "b": "partial",
-     "d": "partial",
-     "r": "partial"
+     "d": "ok",
+     "r": "ok"
     },
     "project_author_home": {
      "a": "ok",
@@ -2980,8 +2972,7 @@
     "evidenceSummary": {
      "tests": 75,
      "byStatus": {
-      "PASS": 65,
-      "NOT_EXECUTED": 5,
+      "PASS": 70,
       "DISCOVERED": 5
      },
      "byStrength": {
@@ -3171,8 +3162,8 @@
     "evidenceSummary": {
      "tests": 48,
      "byStatus": {
-      "PASS": 23,
-      "NOT_EXECUTED": 14,
+      "PASS": 36,
+      "SKIPPED": 1,
       "DISCOVERED": 11
      },
      "byStrength": {
@@ -3400,8 +3391,8 @@
     "evidenceSummary": {
      "tests": 28,
      "byStatus": {
-      "PASS": 16,
-      "NOT_EXECUTED": 10,
+      "PASS": 25,
+      "SKIPPED": 1,
       "DISCOVERED": 2
      },
      "byStrength": {
@@ -3422,7 +3413,7 @@
      "endToEnd": true,
      "stagesTotal": 36,
      "stagesWithEvidence": 35,
-     "stagesDirectlyVerified": 33
+     "stagesDirectlyVerified": 34
     },
     "evidenceIds": [
      "java:com.example.editor.remote.auth.RemoteOAuthProviderSetupServiceTests",
@@ -3447,7 +3438,7 @@
      "r": "ok"
     },
     "repos_oauth_connect": {
-     "d1": "partial",
+     "d1": "ok",
      "a2": "ok",
      "a3": "ok",
      "a4": "ok",
@@ -3622,8 +3613,7 @@
     "evidenceSummary": {
      "tests": 24,
      "byStatus": {
-      "NOT_EXECUTED": 1,
-      "PASS": 21,
+      "PASS": 22,
       "DISCOVERED": 2
      },
      "byStrength": {
@@ -3754,8 +3744,7 @@
     "evidenceSummary": {
      "tests": 103,
      "byStatus": {
-      "NOT_EXECUTED": 40,
-      "PASS": 50,
+      "PASS": 90,
       "DISCOVERED": 13
      },
      "byStrength": {
@@ -3779,7 +3768,7 @@
      "endToEnd": true,
      "stagesTotal": 6,
      "stagesWithEvidence": 6,
-     "stagesDirectlyVerified": 2
+     "stagesDirectlyVerified": 6
     },
     "evidenceIds": [
      "java:com.example.editor.audit.CanonicalDocumentMutationAuditIntegrationTests",
@@ -3800,11 +3789,11 @@
    },
    "processStageEvidence": {
     "persistence_save_etag": {
-     "a": "partial",
-     "d": "partial",
-     "b": "partial",
+     "a": "ok",
+     "d": "ok",
+     "b": "ok",
      "c": "ok",
-     "x": "partial",
+     "x": "ok",
      "r": "ok"
     }
    }
@@ -3873,8 +3862,7 @@
     "evidenceSummary": {
      "tests": 15,
      "byStatus": {
-      "NOT_EXECUTED": 5,
-      "PASS": 9,
+      "PASS": 14,
       "DISCOVERED": 1
      },
      "byStrength": {
@@ -3977,8 +3965,7 @@
     "evidenceSummary": {
      "tests": 57,
      "byStatus": {
-      "NOT_EXECUTED": 28,
-      "PASS": 20,
+      "PASS": 48,
       "DISCOVERED": 9
      },
      "byStrength": {
@@ -4446,8 +4433,7 @@
     "evidenceSummary": {
      "tests": 54,
      "byStatus": {
-      "NOT_EXECUTED": 8,
-      "PASS": 40,
+      "PASS": 48,
       "DISCOVERED": 6
      },
      "byStrength": {
@@ -5061,8 +5047,7 @@
     "evidenceSummary": {
      "tests": 94,
      "byStatus": {
-      "PASS": 58,
-      "NOT_EXECUTED": 27,
+      "PASS": 85,
       "DISCOVERED": 9
      },
      "byStrength": {
@@ -5084,7 +5069,7 @@
      "endToEnd": true,
      "stagesTotal": 79,
      "stagesWithEvidence": 77,
-     "stagesDirectlyVerified": 72
+     "stagesDirectlyVerified": 74
     },
     "evidenceIds": [
      "java:com.example.editor.definition.runtime.session.EditorModelSessionRealStackLifecycleIntegrationTests",
@@ -5119,8 +5104,8 @@
     },
     "validation_execute": {
      "mode": "ok",
-     "comp": "partial",
-     "exec": "partial",
+     "comp": "ok",
+     "exec": "ok",
      "cand": "ok",
      "eval": "ok",
      "diag": "ok",
@@ -5202,7 +5187,7 @@
  },
  "capabilitiesNotYetModeled": [],
  "testEvidence": {
-  "generatedAt": "2026-11-04T16:01:08.548Z",
+  "generatedAt": "2026-11-05T03:50:59.990Z",
   "store": "knowledge/tests/",
   "note": "Per-capability testEvidence / processStageEvidence are compact references into knowledge/tests/*; regenerate with build-test-evidence.js after regenerating this cache."
  }
