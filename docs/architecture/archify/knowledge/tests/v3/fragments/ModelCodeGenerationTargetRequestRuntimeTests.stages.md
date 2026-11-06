@@ -1,0 +1,3 @@
+ModelCodeGenerationTargetRequestRuntimeTests - stage mapping
+- x_generate_certify_distribute.tgt: aRequestNeedsOneMetamodelOneMatchingModelAndOneKnownTarget (L137/L140 missing metamodel or model, L149 unknown target) + theHttpCatalogOffersEveryTargetAndEachChosenTargetProducesItsOwnArtifact (L104 catalog vs hand-written list, L113 each target artifact) + optionalNamespaceNameTraceabilityAndPreviewApplyToTheChosenTarget (L166/L182 options and preview).
+- publication_author_codegen.t (indirect): same catalog and per-target generation; the dialog where the person chooses is UI and is not exercised.

@@ -146,6 +146,9 @@ public class GrammarCompilationService {
                 evidence.put("nativeValidation",value.successful()?"PASSED":"DEFERRED");
                 evidence.put("nativeSteps",Integer.toString(value.steps().size()));
                 evidence.put("nativeDurationMillis",Long.toString(value.steps().stream().mapToLong(GrammarNativeValidationStep::durationMillis).sum()));
+                // BLQ-GR-NATIVE: whether the dependencies were installed by npm or restored from a verified template, and the step budget
+                if(value.metadata().containsKey("dependencySource"))evidence.put("nativeDependencySource",value.metadata().get("dependencySource"));
+                if(value.metadata().containsKey("dependencyTimeoutSeconds"))evidence.put("nativeDependencyTimeoutSeconds",value.metadata().get("dependencyTimeoutSeconds"));
                 evidence.put("runtimeFilesCaptured",Integer.toString(value.runtimeFiles().size()));
                 evidence.put("reproducibilityFilesCaptured",Integer.toString(value.reproducibilityFiles().size()));
                 return Map.copyOf(evidence);

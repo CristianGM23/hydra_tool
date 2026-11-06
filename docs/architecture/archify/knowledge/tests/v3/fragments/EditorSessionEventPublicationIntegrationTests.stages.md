@@ -1,0 +1,6 @@
+- events_publish_session.d1: disabledPolicyPublishes... (L62) sin publicación la lista de eventos del bus queda vacía.
+- events_publish_session.a1: mismo test (L73-90) origen, contexto, sujeto, transacción, correlación y revisión del evento publicado.
+- events_publish_session.d2: withoutAutosave... (L103) eventos retenidos (buffer 2, disco sin el elemento); con autoguardado salen de inmediato (L91).
+- events_publish_session.a3 y x_validate_fix_revalidate_reward.sv: L111 tras save el disco tiene el elemento y salen los 3 eventos en orden; discardingTheWorkingCopy... (L123) descartar no publica ni persiste.
+- events_publish_session.a4: L116 el suscriptor que falla recibe 3 eventos (3 intentos) y el otro recibe todos.
+- events_publish_session.a8: L146 un evento en memoria y el resto a JSONL en disco; L172 segunda sesión con el búfer lleno da CONFLICT. Descartada: a5 (enlaces de eventos).

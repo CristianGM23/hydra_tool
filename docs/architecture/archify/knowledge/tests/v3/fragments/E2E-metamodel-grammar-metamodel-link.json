@@ -1,0 +1,101 @@
+[
+  {
+    "id": "pw:e2e/real/metamodel/grammar-metamodel-link.spec.ts",
+    "name": {
+      "es": "Vincular una gramática con un metamodelo de extremo a extremo: elegir, importar y quitar",
+      "en": "Linking a grammar to a metamodel end to end: choose, import and remove"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["delivery"],
+    "caps": ["grammar", "metamodel", "persistence"],
+    "procs": [
+      { "id": "grammar_author_metamodel", "stages": ["c", "ex", "im", "cl"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/grammar-designer/GrammarMetamodelField.tsx",
+      "frontend/src/grammar-designer/GrammarIdentityForm.tsx",
+      "frontend/src/grammar-designer/GrammarDesigner.tsx",
+      "frontend/src/metamodel-designer/importApi.ts",
+      "src/main/java/com/example/editor/grammar/web/GrammarController.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarRepository.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportController.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportService.java"
+    ],
+    "pre": {
+      "es": "Backend real con almacenamiento temporal propio; un metamodelo mínimo se siembra por la API real como paso previo.",
+      "en": "Real backend with its own temporary storage; a minimal metamodel is seeded through the real API as a prior step."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, sin simulaciones. La subida usa el campo de fichero real del navegador. El oráculo hace GET a la API real de gramáticas y metamodelos y lee los ficheros que escribe el backend.",
+      "en": "Playwright with Chromium, no simulations. The upload uses the browser's real file input. The oracle issues GET calls to the real grammar and metamodel APIs and reads the files the backend writes."
+    },
+    "executes": {
+      "es": "Abre #/grammars, crea un borrador con id y nombre únicos, abre el menú 'Import', elige el modo 'LINKED' y un metamodelo del selector 'Optional metamodel', guarda, sube un .metamodel.json por el campo de fichero, guarda, elige 'No linked metamodel' y guarda.",
+      "en": "Opens #/grammars, creates a draft with unique id and name, opens the 'Import' menu, picks the 'LINKED' mode and a metamodel from the 'Optional metamodel' selector, saves, uploads a .metamodel.json through the file input, saves, picks 'No linked metamodel' and saves."
+    },
+    "asserts": {
+      "es": "GET /api/grammars/{id} y data/grammars/{id}.grammar.json dan metamodelId del metamodelo elegido y authoringMode LINKED; tras subir el fichero el metamodelo importado está en GET /api/canonical-metamodels y en disco y la gramática lo enlaza; al quitarlo metamodelId vacío y GRAMMAR_FIRST, y ambos metamodelos siguen guardados.",
+      "en": "GET /api/grammars/{id} and data/grammars/{id}.grammar.json give the chosen metamodel's metamodelId and authoringMode LINKED; after uploading the file the imported metamodel is in GET /api/canonical-metamodels and on disk and the grammar links it; on removal metamodelId is empty and GRAMMAR_FIRST, and both metamodels remain stored."
+    },
+    "behavior": {
+      "es": "Una persona vincula su gramática a un metamodelo ya guardado, o importa uno desde un fichero, y puede quitar el vínculo; el servidor guarda cada cambio y la gramática vuelve al modo «primero la gramática» sin borrar ningún metamodelo.",
+      "en": "A person links their grammar to an already saved metamodel, or imports one from a file, and can remove the link; the server stores each change and the grammar goes back to the grammar-first mode without deleting any metamodel."
+    },
+    "rule": {
+      "es": "Quitar el vínculo devuelve la gramática al modo «primero la gramática» y deja intactos los metamodelos guardados.",
+      "en": "Removing the link returns the grammar to the grammar-first mode and leaves the saved metamodels intact."
+    },
+    "scenario": {
+      "es": "Una gramática nueva se enlaza primero con un metamodelo guardado, después con uno importado desde un fichero del navegador y por último se desvincula; cada paso se guarda.",
+      "en": "A new grammar is first linked to a saved metamodel, then to one imported from a browser file and finally unlinked; each step is saved."
+    },
+    "result": {
+      "es": "La gramática guardada refleja en cada paso el metamodelo enlazado y el modo de trabajo, y el metamodelo importado queda guardado.",
+      "en": "The saved grammar reflects at each step the linked metamodel and the working mode, and the imported metamodel is stored."
+    },
+    "expected": {
+      "es": "Una ejecución correcta termina con la gramática sin vínculo en el modo «primero la gramática» y con los dos metamodelos todavía guardados.",
+      "en": "A passing run ends with the grammar unlinked in the grammar-first mode and with both metamodels still stored."
+    },
+    "guarantee": {
+      "es": "Elegir, importar y quitar el metamodelo de una gramática funciona en un navegador real y el servidor conserva cada cambio.",
+      "en": "Choosing, importing and removing a grammar's metamodel works in a real browser and the server keeps each change."
+    },
+    "limits": {
+      "es": "No importa carpetas completas, solo un fichero de formato neutro; no compila ni activa la gramática y no ejecuta el reconocimiento de la regla de entrada. Quitar el vínculo se hace con la opción «sin metamodelo vinculado» del selector, que es el único gesto existente.",
+      "en": "It does not import whole folders, only a neutral-format file; it neither compiles nor activates the grammar and does not exercise entry-rule detection. Removal is done with the 'no linked metamodel' option of the selector, which is the only gesture available."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Formulario y subida de fichero reales en navegador, backend real y lectura independiente de los ficheros guardados en cada paso.",
+      "en": "Real form and file upload in a browser, real backend and independent reading of the stored files at each step."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "una gramática se vincula a un metamodelo guardado, a otro importado desde fichero y se desvincula conservando los metamodelos",
+        "scenario": { "es": "Se elige un metamodelo guardado, se importa otro desde fichero y se quita el vínculo, guardando tras cada paso.", "en": "A saved metamodel is chosen, another is imported from a file and the link is removed, saving after each step." },
+        "result": { "es": "Cada guardado refleja el vínculo vigente y los dos metamodelos permanecen.", "en": "Each save reflects the current link and both metamodels remain." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.grammar.application.GrammarIdentitySaveGateIntegrationTests",
+      "java:com.example.editor.metamodel.importing.MetamodelImportHttpPipelineIntegrationTests",
+      "vitest:frontend/src/grammar-designer/GrammarMetamodelField.test.tsx"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/metamodel/grammar-metamodel-link.spec.ts", "line": 55 },
+      { "path": "frontend/e2e/real/metamodel/grammar-metamodel-link.spec.ts", "line": 58 },
+      { "path": "frontend/e2e/real/metamodel/grammar-metamodel-link.spec.ts", "line": 66 },
+      { "path": "frontend/e2e/real/metamodel/grammar-metamodel-link.spec.ts", "line": 68 },
+      { "path": "frontend/e2e/real/metamodel/grammar-metamodel-link.spec.ts", "line": 77 },
+      { "path": "frontend/e2e/real/metamodel/grammar-metamodel-link.spec.ts", "line": 81 },
+      { "path": "frontend/e2e/real/metamodel/grammar-metamodel-link.spec.ts", "line": 88 },
+      { "path": "frontend/e2e/real/metamodel/grammar-metamodel-link.spec.ts", "line": 92 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

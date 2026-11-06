@@ -1,0 +1,106 @@
+[
+  {
+    "id": "pw:e2e/real/publication/publication-release-guided.spec.ts",
+    "name": {
+      "es": "Publicación de una versión de extremo a extremo: identidad, paquete, canal, validación, publicación y consulta de actualizaciones",
+      "en": "Publishing a release end to end: identity, package, channel, validation, publication and update check"
+    },
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": ["publication"],
+    "procs": [
+      { "id": "publication_author_release", "stages": ["id", "ar", "ch", "up"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/publication-center/PublicationCenter.tsx",
+      "frontend/src/publication-center/api.ts",
+      "src/main/java/com/example/editor/standalone/publication/DistributionPublicationController.java",
+      "src/main/java/com/example/editor/standalone/publication/DistributionPublicationService.java",
+      "src/main/java/com/example/editor/standalone/publication/DistributionPublicationValidator.java"
+    ],
+    "pre": {
+      "es": "Servidor real con almacenamiento temporal propio; el paquete a publicar se deja en disco, en la carpeta de distribución, como paso previo.",
+      "en": "Real server with its own temporary storage; the package to publish is left on disk, in the distribution folder, as a prior step."
+    },
+    "setup": {
+      "es": "Navegador real, interfaz en inglés, sin simulaciones. Producto único por ejecución. Para la consulta de actualizaciones se publica antes una versión 99.0.0 por la API real.",
+      "en": "Real browser, interface in English, no simulations. Product unique per run. For the update check a 99.0.0 release is published beforehand through the real API."
+    },
+    "executes": {
+      "es": "Abre #/publication en modo guiado, escribe el producto, la carpeta, elige la plataforma Linux x64 y una ruta inexistente, prueba el canal Beta y vuelve a Internal, pulsa 'Validate release' (bloqueado), corrige la ruta, valida y pulsa 'Publish release'. En 'Full workspace' pulsa 'Check channel'.",
+      "en": "Opens #/publication in guided mode, types the product and folder, picks the Linux x64 platform and a missing path, tries the Beta channel and goes back to Internal, presses 'Validate release' (blocked), fixes the path, validates and presses 'Publish release'. In 'Full workspace' it presses 'Check channel'."
+    },
+    "asserts": {
+      "es": "Beta sin dirección pública no deja avanzar; con el paquete inexistente la validación se bloquea y el servidor coincide; tras publicar, el manifiesto en disco lleva producto, canal, plataforma, tamaño y SHA-256 recalculado, la copia es idéntica y repetir la versión se rechaza. La consulta de canal muestra la misma respuesta que la petición independiente.",
+      "en": "Beta without a public address does not let the user continue; with the missing package validation is blocked and the server agrees; after publishing, the manifest on disk holds product, channel, platform, size and a recomputed SHA-256, the copy is identical and repeating the version is rejected. The channel check shows the same answer as the independent request."
+    },
+    "behavior": {
+      "es": "Una persona publica una versión: nombra el producto, señala el paquete de su plataforma, elige canal y firma, valida, publica y después consulta si un canal ofrece una versión más nueva.",
+      "en": "A person publishes a release: names the product, points to the platform package, picks channel and signing, validates, publishes and then checks whether a channel offers a newer version."
+    },
+    "rule": {
+      "es": "Un paquete inexistente bloquea la validación, los canales Beta y Estable exigen una dirección pública y una versión ya publicada no se puede volver a publicar.",
+      "en": "A missing package blocks validation, the Beta and Stable channels require a public address and an already published version cannot be published again."
+    },
+    "scenario": {
+      "es": "Asistente de publicación con un paquete de prueba, un primer intento con ruta errónea y otro corregido; modo completo con un producto que ya tiene una versión publicada y otro sin publicaciones.",
+      "en": "Publication wizard with a test package, a first attempt with a wrong path and a corrected one; full mode with a product that already has a published release and another with none."
+    },
+    "result": {
+      "es": "La versión queda publicada con los datos elegidos y la huella correcta, lo incompleto se rechaza y la consulta de actualizaciones coincide con la del servidor.",
+      "en": "The release is published with the chosen data and the right fingerprint, the incomplete is rejected and the update check matches the server's."
+    },
+    "expected": {
+      "es": "Una ejecución correcta bloquea el paquete inexistente, publica el corregido con manifiesto y huella exactos y muestra la actualización disponible o su ausencia según el servidor.",
+      "en": "A passing run blocks the missing package, publishes the corrected one with an exact manifest and fingerprint and shows the available update or its absence as the server says."
+    },
+    "guarantee": {
+      "es": "Los datos escritos en el centro de publicación determinan el manifiesto publicado y la respuesta de actualizaciones en el servidor real.",
+      "en": "The data entered in the publication center determines the published manifest and the update answer on the real server."
+    },
+    "limits": {
+      "es": "Canal y firma se prueban con Beta y firma externa (con un fichero de firma de prueba, sin comprobar su validez criptográfica); no se ejerce el canal Estable ni varias plataformas a la vez. La consulta de la versión instalada usa la versión de la propia aplicación.",
+      "en": "Channel and signing are tested with Beta and external signature (with a test signature file, its cryptographic validity is not checked); the Stable channel and several platforms at once are not exercised. The installed-version check uses the application's own version."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción real, servidor real y oráculo independiente (manifiesto en disco con hash recalculado y peticiones directas) sobre identidad, paquete y consulta, con rechazos.",
+      "en": "Real action, real server and an independent oracle (manifest on disk with a recomputed hash and direct requests) on identity, package and check, with rejections."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "el modo guiado valida y publica un paquete y bloquea lo incompleto",
+        "scenario": { "es": "Ruta errónea, canal Beta sin dirección, corrección y publicación.", "en": "Wrong path, Beta channel without address, correction and publication." },
+        "result": { "es": "Se bloquea dos veces y después se publica con manifiesto y hash exactos.", "en": "It is blocked twice and then published with an exact manifest and hash." }
+      },
+      {
+        "n": "el resolutor de actualizaciones coincide con la consulta independiente",
+        "scenario": { "es": "Producto con la versión 99.0.0 publicada y otro sin publicaciones.", "en": "Product with release 99.0.0 published and another with no publications." },
+        "result": { "es": "Se muestra actualización disponible con su paquete, y para el otro 'sin actualización'.", "en": "An available update is shown with its package, and for the other 'no update'." }
+      },
+      {
+        "n": "el canal y la firma elegidos llegan al manifiesto publicado y se exigen la dirección pública y la firma externa",
+        "scenario": { "es": "Canal Beta sin dirección, con dirección sin HTTPS, firma externa sin fichero de firma y, por último, todo correcto.", "en": "Beta channel with no address, with a non-HTTPS address, external signing without a signature file and finally everything correct." },
+        "result": { "es": "Se bloquea tres veces sin escribir nada y después el manifiesto queda en el canal Beta con la firma externa elegida.", "en": "It is blocked three times without writing anything and then the manifest lands in the Beta channel with the chosen external signature." }
+      }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 46 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 54 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 59 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 77 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 79 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 86 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 109 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 113 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 122 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 147 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 175 },
+      { "path": "frontend/e2e/real/publication/publication-release-guided.spec.ts", "line": 176 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

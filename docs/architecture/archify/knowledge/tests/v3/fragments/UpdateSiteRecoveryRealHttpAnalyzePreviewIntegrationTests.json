@@ -1,0 +1,90 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRecoveryRealHttpAnalyzePreviewIntegrationTests",
+    "name": {
+      "es": "Analizar y previsualizar la recuperación de un proyecto Sirius por HTTP real",
+      "en": "Analyze and preview a Sirius project recovery over real HTTP"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["recovery"],
+    "procs": [
+      {"id": "recovery_author_wizard", "stages": ["d"], "match": "direct"},
+      {"id": "recovery_lifecycle", "stages": ["a6"], "match": "direct"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportController.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteMaterializationController.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerRecoveryService.java"
+    ],
+    "pre": {
+      "es": "Fixture src/test/resources/fixtures/sirius-complete; directorio temporal vacío para todos los almacenes.",
+      "en": "Fixture src/test/resources/fixtures/sirius-complete; empty temporary directory for every store."
+    },
+    "setup": {
+      "es": "Servidor Tomcat real en puerto aleatorio y cliente HTTP real en lugar del transporte simulado; adaptadores profundos y repositorios reales. Se elevan los límites de partes del multipart porque el fixture sube veinte ficheros.",
+      "en": "Real Tomcat server on a random port and a real HTTP client instead of the simulated transport; real deep adapters and repositories. Multipart part limits are raised because the fixture uploads twenty files."
+    },
+    "executes": {
+      "es": "HttpClient sube el fixture Sirius como multipart a /api/update-site-imports/analyze y a /materialize con persist=false (una representación, todas las capas y selección vacía) sobre el contexto Spring real.",
+      "en": "HttpClient uploads the Sirius fixture as multipart to /api/update-site-imports/analyze and to /materialize with persist=false (one representation, all layers and an empty selection) over the real Spring context."
+    },
+    "asserts": {
+      "es": "Candidato directo del .ecore con nivel 1 y confianza EXACT seleccionado; clases del metamodelo contenidas en las del fichero de expectativas; vista previa aplicable con una representación, sin DUPLICATE_NODE_MAPPING y con ids de mapping únicos con todas; selección vacía no aplicable; recorrido del disco sin documentos en ningún caso.",
+      "en": "Direct .ecore candidate with level 1 and EXACT confidence selected; metamodel classes contain those of the expectations file; preview applicable with one representation, no DUPLICATE_NODE_MAPPING and unique mapping ids with all layers; empty selection not applicable; disk walk shows no documents in any case."
+    },
+    "behavior": {
+      "es": "Analizar un proyecto Sirius ofrece el candidato exacto y el metamodelo esperado, y la vista previa de materialización indica si es aplicable sin escribir nada.",
+      "en": "Analyzing a Sirius project offers the exact candidate and the expected metamodel, and the materialization preview says whether it is applicable without writing anything."
+    },
+    "rule": {
+      "es": "Analizar y previsualizar nunca escriben documentos; con todas las capas los identificadores de mapping no se repiten; sin ninguna capa elegida la vista previa no es aplicable.",
+      "en": "Analyzing and previewing never write documents; with all layers mapping identifiers do not repeat; with no layer chosen the preview is not applicable."
+    },
+    "scenario": {
+      "es": "Subir el fixture Sirius completo por HTTP real, analizarlo y previsualizar con una representación, con todas las capas y con una selección explícita vacía.",
+      "en": "Upload the complete Sirius fixture over real HTTP, analyze it and preview with one representation, with all layers and with an explicit empty selection."
+    },
+    "result": {
+      "es": "Candidatos y clases coinciden con los valores esperados; las tres vistas previas se calculan sin que aparezca ningún documento en el directorio temporal; solo la selección vacía no es aplicable.",
+      "en": "Candidates and classes match the expected values; the three previews are computed with no document appearing in the temporary directory; only the empty selection is not applicable."
+    },
+    "expected": {
+      "es": "Las aserciones sobre candidatos, clases, aplicabilidad y ausencia de documentos se cumplen en los cuatro pasos.",
+      "en": "Assertions on candidates, classes, applicability and absence of documents hold in the four steps."
+    },
+    "guarantee": {
+      "es": "El análisis y la vista previa de recuperación funcionan por red real con los resultados esperados y sin efectos en disco.",
+      "en": "Recovery analysis and preview work over a real network with the expected results and no disk effects."
+    },
+    "limits": {
+      "es": "No guarda ni revierte (otras pruebas lo cubren); la lista exacta de borradores de representación no se fija y la vista previa no ejecuta el editor generado.",
+      "en": "It does not save or roll back (other tests cover that); the exact list of representation drafts is not pinned and the preview does not run the generated editor."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Servidor y adaptadores reales, oráculo escrito a mano junto al fixture y comprobación de disco independiente.",
+      "en": "Real server and adapters, hand-written oracle next to the fixture and independent disk check."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "anEmptyExplicitSelectionIsNotApplicable",
+        "scenario": {"es": "Vista previa sin ninguna capa elegida.", "en": "Preview with no layer chosen."},
+        "result": {"es": "No aplicable y sin documentos en disco.", "en": "Not applicable and no documents on disk."}
+      }
+    ],
+    "src": [
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryRealHttpAnalyzePreviewIntegrationTests.java", "line": 175},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryRealHttpAnalyzePreviewIntegrationTests.java", "line": 186},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryRealHttpAnalyzePreviewIntegrationTests.java", "line": 193},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryRealHttpAnalyzePreviewIntegrationTests.java", "line": 205},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryRealHttpAnalyzePreviewIntegrationTests.java", "line": 217},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryRealHttpAnalyzePreviewIntegrationTests.java", "line": 234}
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

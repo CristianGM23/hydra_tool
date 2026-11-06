@@ -1,0 +1,136 @@
+[
+  {
+    "id": "java:com.example.editor.project.ProjectImportOriginsEffectsIntegrationTests",
+    "name": {
+      "es": "Efecto de cada origen de importación: solo el proyecto externo dispara la recuperación",
+      "en": "Effect of each import origin: only the external project triggers recovery"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "project",
+      "recovery"
+    ],
+    "procs": [
+      {
+        "id": "x_project_lifecycle_overview",
+        "stages": [
+          "d1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "project_import_export",
+        "stages": [
+          "i2"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/web/ProjectController.java",
+      "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryController.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+      "src/main/java/com/example/editor/remote/storage/RemoteProjectTransferService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío para proyectos y almacenes; un proyecto HYDRA mínimo con un metamodelo para los tres primeros orígenes y el fixture Sirius completo en ZIP para el externo.",
+      "en": "Empty temporary directory for projects and stores; a minimal HYDRA project with one metamodel for the first three origins and the complete Sirius fixture as a ZIP for the external one."
+    },
+    "setup": {
+      "es": "Contexto Spring real con transporte web de pruebas y todos los almacenes en un directorio temporal. El origen remoto usa un servidor propio en 127.0.0.1 que imita la lectura de la API de contenidos de GitHub; los demás componentes son los reales.",
+      "en": "Real Spring context with the test web transport and every store in a temp directory. The remote origin uses its own server on 127.0.0.1 that imitates reading the GitHub contents API; the other components are the real ones."
+    },
+    "executes": {
+      "es": "Importa un proyecto HYDRA por carpeta (/api/projects/import-directory), por ZIP (/api/projects/import) y desde el servidor loopback (RemoteProjectTransferService.importProject), y después un proyecto externo (/api/external-project-recovery/import); lista los ficheros de cada proyecto importado y el almacén de metamodelos.",
+      "en": "Imports a HYDRA project by folder (/api/projects/import-directory), by ZIP (/api/projects/import) and from the loopback server (RemoteProjectTransferService.importProject), then an external project (/api/external-project-recovery/import); lists the files of each imported project and the metamodel store."
+    },
+    "asserts": {
+      "es": "Las tres copias contienen el descriptor y el metamodelo con su texto literal, sin carpetas recovery/ ni external-source/, y el almacén de metamodelos sigue vacío; un ZIP sin descriptor se rechaza sin dejar carpeta; el externo crea recovery/*.json, preserva los veinte ficheros bajo external-source/ y deja un metamodelo con las clases esperadas.",
+      "en": "The three copies contain the descriptor and the metamodel with its literal text, with no recovery/ or external-source/ folders, and the metamodel store stays empty; a ZIP without descriptor is refused leaving no folder; the external one creates recovery/*.json, preserves the twenty files under external-source/ and leaves a metamodel with the expected classes."
+    },
+    "behavior": {
+      "es": "Importar un proyecto desde una carpeta, un ZIP o un repositorio remoto solo copia sus ficheros; únicamente importar un proyecto externo ejecuta la recuperación semántica y crea el metamodelo.",
+      "en": "Importing a project from a folder, a ZIP or a remote repository only copies its files; only importing an external project runs semantic recovery and creates the metamodel."
+    },
+    "rule": {
+      "es": "El origen decide el efecto: los orígenes HYDRA no generan carpeta de recuperación ni metamodelos; el origen externo sí; un archivo sin descriptor no se importa como proyecto HYDRA.",
+      "en": "The origin decides the effect: HYDRA origins produce no recovery folder or metamodels; the external origin does; an archive without descriptor is not imported as a HYDRA project."
+    },
+    "scenario": {
+      "es": "Importar el mismo proyecto HYDRA desde carpeta, ZIP y repositorio remoto simulado, probar un ZIP sin descriptor, e importar después el fixture Sirius como proyecto externo.",
+      "en": "Import the same HYDRA project from a folder, ZIP and simulated remote repository, try a ZIP without descriptor, and then import the Sirius fixture as an external project."
+    },
+    "result": {
+      "es": "Los listados de ficheros leídos del disco muestran copias simples en los tres primeros orígenes y, solo en el externo, la carpeta de recuperación, el original preservado y un metamodelo canónico nuevo.",
+      "en": "File listings read from disk show plain copies for the first three origins and, only for the external one, the recovery folder, the preserved original and a new canonical metamodel."
+    },
+    "expected": {
+      "es": "Las aserciones sobre listados, contenido literal y almacén de metamodelos se cumplen en los cuatro pasos ordenados.",
+      "en": "Assertions on listings, literal content and the metamodel store hold across the four ordered steps."
+    },
+    "guarantee": {
+      "es": "El efecto de cada origen de importación está comparado sobre disco: solo el proyecto externo dispara la recuperación semántica.",
+      "en": "The effect of each import origin is compared on disk: only the external project triggers semantic recovery."
+    },
+    "limits": {
+      "es": "El contenido de partida difiere en el caso externo, que no puede tener descriptor HYDRA. El repositorio remoto es un servidor propio de lectura, no el servicio real, y no prueba escritura ni conflictos remotos. Del origen externo solo se comprueba lo conservado y el metamodelo; no se afirma cuántos editores ni reglas se materializan.",
+      "en": "The starting content differs in the external case, which cannot have a HYDRA descriptor. The remote repository is an own read-only server, not the real service, and remote writes or conflicts are not tested. For the external origin only what is preserved and the metamodel are checked; the number of editors or rules materialized is not asserted."
+    },
+    "strength": "MEDIUM",
+    "external": "mocked",
+    "cases": [
+      {
+        "n": "importingAProjectZipOnlyCopiesFilesAndRejectsAnArchiveWithoutDescriptor",
+        "scenario": {
+          "es": "Importar el ZIP de un proyecto HYDRA y el ZIP de un proyecto externo con la importación simple.",
+          "en": "Import a HYDRA project ZIP and an external project ZIP with the plain import."
+        },
+        "result": {
+          "es": "El primero se copia; el segundo se rechaza sin dejar carpeta.",
+          "en": "The first is copied; the second is refused leaving no folder."
+        }
+      },
+      {
+        "n": "onlyAnExternalProjectArchiveTriggersSemanticRecovery",
+        "scenario": {
+          "es": "Importar el fixture Sirius como proyecto externo.",
+          "en": "Import the Sirius fixture as an external project."
+        },
+        "result": {
+          "es": "Aparecen la carpeta de recuperación, el original preservado y el metamodelo.",
+          "en": "The recovery folder, the preserved original and the metamodel appear."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectImportOriginsEffectsIntegrationTests.java",
+        "line": 162
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectImportOriginsEffectsIntegrationTests.java",
+        "line": 179
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectImportOriginsEffectsIntegrationTests.java",
+        "line": 200
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectImportOriginsEffectsIntegrationTests.java",
+        "line": 236
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectImportOriginsEffectsIntegrationTests.java",
+        "line": 253
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectImportOriginsEffectsIntegrationTests.java",
+        "line": 261
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

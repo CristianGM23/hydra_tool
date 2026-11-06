@@ -1,0 +1,3 @@
+- toolchains_author_available.a: lines 21-28 (select all, clear, Next disabled with none selected, enabled with one) and line 35 (the real request body carries only the selected key).
+- toolchains_author_available.b: lines 40-43 (matrix returned by the backend holds only the chosen technology with status and duration, i.e. the probes really ran) and lines 44-47 (same matrix persisted on disk).
+- toolchains_author_available.b (review): lines 50-52 (screen shows the same overall status as the stored matrix).

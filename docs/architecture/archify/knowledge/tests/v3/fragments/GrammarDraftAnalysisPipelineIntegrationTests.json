@@ -1,0 +1,96 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.application.GrammarDraftAnalysisPipelineIntegrationTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Análisis de borradores de gramática por HTTP: referencias, recursión y diagrama de clases",
+      "en": "Grammar draft analysis over HTTP: references, recursion and class diagram"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": ["grammar"],
+    "procs": [
+      { "id": "grammar_analyze_generate", "stages": ["fast", "rg", "rf", "pj"], "match": "direct" },
+      { "id": "grammar_author_monaco", "stages": ["an"], "match": "direct" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/web/GrammarController.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarAnalysisCoordinator.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarRuleGraphAnalyzer.java",
+      "src/main/java/com/example/editor/grammar/visualization/GrammarClassDiagramProjectionService.java"
+    ],
+    "pre": {
+      "es": "Ninguna: el análisis es en memoria y no usa herramientas nativas.",
+      "en": "None: the analysis is in memory and uses no native tools."
+    },
+    "setup": {
+      "es": "Controlador HTTP real servido de forma independiente, coordinador de análisis con proveedores Xtext, Langium y ANTLR reales y proyector de diagramas real.",
+      "en": "Real HTTP controller served standalone, analysis coordinator with real Xtext, Langium and ANTLR providers and real diagram projector."
+    },
+    "executes": {
+      "es": "POST /api/grammars/analyze-draft con borradores válido, de referencia ausente, ambigua y obsoleta, de recursión por la izquierda y por la derecha y con una regla sin uso; POST /api/grammars/class-diagram-draft.",
+      "en": "POST /api/grammars/analyze-draft with valid, missing-reference, ambiguous and stale drafts, left and right recursion and an unused rule; POST /api/grammars/class-diagram-draft."
+    },
+    "asserts": {
+      "es": "El borrador válido no tiene errores; REFERENCE_NOT_FOUND con candidato y acción de reemplazo, REFERENCE_AMBIGUOUS y REFERENCE_STALE como errores; la recursión izquierda es ERROR con leftCount 1 y la derecha no; la regla sin uso es WARNING; el diagrama tiene Person con age y manager y una arista de referencia, y no se escribe ningún fichero.",
+      "en": "The valid draft has no errors; REFERENCE_NOT_FOUND with candidate and replace action, REFERENCE_AMBIGUOUS and REFERENCE_STALE as errors; left recursion is ERROR with leftCount 1 and right recursion is not; the unused rule is WARNING; the diagram has Person with age and manager and a reference edge, and no file is written."
+    },
+    "behavior": {
+      "es": "Al analizar un borrador, HYDRA avisa de referencias ausentes, ambiguas u obsoletas con candidatos y acciones, bloquea solo la recursión por la izquierda y muestra el diagrama de clases deducido sin guardar nada.",
+      "en": "When analysing a draft, HYDRA reports missing, ambiguous or stale references with candidates and actions, blocks only left recursion and shows the deduced class diagram without saving anything."
+    },
+    "rule": {
+      "es": "Solo la recursión por la izquierda es un error bloqueante; una regla sin uso es un aviso; el borrador no se persiste.",
+      "en": "Only left recursion is a blocking error; an unused rule is a warning; the draft is not persisted."
+    },
+    "scenario": {
+      "es": "Enviar borradores distintos al análisis y al diagrama de clases y leer los diagnósticos, las acciones, los metadatos del grafo y el diagrama proyectado.",
+      "en": "Send different drafts to the analysis and the class diagram and read the diagnostics, actions, graph metadata and projected diagram."
+    },
+    "result": {
+      "es": "Cada borrador produce los diagnósticos y la gravedad esperados; el diagrama contiene las clases, atributos y referencias declarados y el disco queda vacío.",
+      "en": "Each draft produces the expected diagnostics and severity; the diagram holds the declared classes, attributes and references and the disk stays empty."
+    },
+    "expected": {
+      "es": "Las aserciones sobre códigos, gravedad, candidatos, metadatos y diagrama se cumplen.",
+      "en": "Assertions on codes, severity, candidates, metadata and diagram hold."
+    },
+    "guarantee": {
+      "es": "Evidencia real del análisis de borradores y de la proyección del diagrama a través de la capa HTTP, sin persistencia.",
+      "en": "Real evidence of draft analysis and diagram projection through the HTTP layer, without persistence."
+    },
+    "limits": {
+      "es": "Análisis neutral sin herramientas nativas; no se ejerce la correspondencia semántica desajustada ni la conversión entre tecnologías; no demuestra qué evento de la pantalla lanza el análisis.",
+      "en": "Neutral analysis without native tools; the mismatched semantic mapping and the technology conversion are not exercised; it does not show which screen event triggers the analysis."
+    },
+    "strengthWhy": {
+      "es": "Es una prueba real sin simulaciones, pero solo comprueba respuestas con literales y no un resultado persistido, por eso queda en medio.",
+      "en": "A real test without mocks, but it only checks responses with literals and not a persisted outcome, so it stays medium."
+    },
+    "cases": [
+      {
+        "n": "leftRecursionBlocksWhileRightRecursionAndUnusedRulesDoNot",
+        "scenario": { "es": "Recursión izquierda, derecha y regla sin uso.", "en": "Left recursion, right recursion and unused rule." },
+        "result": { "es": "Solo la izquierda es error.", "en": "Only the left one is an error." }
+      },
+      {
+        "n": "theDraftClassDiagramIsProjectedFromTheDraftWithoutWritingAnything",
+        "scenario": { "es": "Diagrama de clases de un borrador.", "en": "Class diagram of a draft." },
+        "result": { "es": "Clases y referencias deducidas; sin ficheros.", "en": "Deduced classes and references; no files." }
+      }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisPipelineIntegrationTests.java", "line": 129 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisPipelineIntegrationTests.java", "line": 143 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisPipelineIntegrationTests.java", "line": 153 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisPipelineIntegrationTests.java", "line": 161 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisPipelineIntegrationTests.java", "line": 172 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisPipelineIntegrationTests.java", "line": 178 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarDraftAnalysisPipelineIntegrationTests.java", "line": 206 }
+    ]
+  }
+]

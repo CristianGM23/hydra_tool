@@ -1,0 +1,175 @@
+[
+  {
+    "id": "java:com.example.editor.integration.web.TechnologyInjectionSyncRollbackHttpIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Previsualizar, aplicar, deshacer y sincronizar una integración generada por HTTP",
+      "en": "Preview, apply, undo and synchronize a generated integration over HTTP"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "layers2": [
+      "platform"
+    ],
+    "caps": [
+      "integration",
+      "security"
+    ],
+    "procs": [
+      {
+        "id": "integration_deliver",
+        "stages": [
+          "pre",
+          "app",
+          "rt"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_integrate_technology_native",
+        "stages": [
+          "pre",
+          "app",
+          "rt",
+          "rb"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java",
+      "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+      "src/main/java/com/example/editor/integration/injection/SafeTechnologyInjectionService.java",
+      "src/main/java/com/example/editor/integration/roundtrip/RoundTripSyncService.java",
+      "src/main/java/com/example/editor/integration/roundtrip/resolution/RoundTripResolutionWorkflowService.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring completo con todos los directorios dsl.* y la carpeta de destinos autorizados en un directorio temporal; metamodelo y perfil de integración creados por la API.",
+      "en": "Full Spring context with every dsl.* directory and the authorised targets folder in a temporary directory; metamodel and integration profile created through the API."
+    },
+    "setup": {
+      "es": "Cada escenario usa su propia carpeta de destino. El oráculo es la carpeta en disco comparada byte a byte con el ZIP que genera el mismo perfil, el registro de cambios escrito en disco y las ediciones manuales hechas por la prueba.",
+      "en": "Each scenario uses its own target folder. The oracle is the folder on disk compared byte by byte with the ZIP the same profile generates, the change record written on disk and the manual edits made by the test."
+    },
+    "executes": {
+      "es": "POST preview, apply, rollback, sync/preview, sync/apply, sync/resolve, sync/resolve/apply y sync/resolve/rollback por el controlador, la fachada de aplicación, el servicio de inyección segura y el flujo de resolución de round-trip reales.",
+      "en": "POST preview, apply, rollback, sync/preview, sync/apply, sync/resolve, sync/resolve/apply and sync/resolve/rollback through the real controller, application facade, safe injection service and round-trip resolution workflow."
+    },
+    "asserts": {
+      "es": "La vista previa lista los ficheros como altas y no escribe; aplicar escribe exactamente los ficheros del ZIP y un registro; un fichero manual en conflicto bloquea y no se escribe nada; deshacer deja la carpeta sin ficheros; una edición manual es conflicto, se exige decidir, se aplica la decisión y se puede deshacer.",
+      "en": "The preview lists files as additions and writes nothing; apply writes exactly the ZIP files and a record; a conflicting manual file blocks and nothing is written; undo leaves the folder with no files; a manual edit is a conflict, a decision is required, it is applied and can be undone."
+    },
+    "behavior": {
+      "es": "Los cambios en un proyecto existente se ven antes de guardarse, solo se aplican si la vista previa está lista, quedan registrados para poder deshacerlos y los cambios hechos a mano nunca se pisan sin una decisión explícita.",
+      "en": "Changes to an existing project are shown before being saved, applied only when the preview is ready, recorded so they can be undone, and manual changes are never overwritten without an explicit decision."
+    },
+    "rule": {
+      "es": "La vista previa no escribe; aplicar exige una vista previa sin conflictos; un destino fuera de la carpeta autorizada se rechaza; la sincronización clasifica cada fichero y no resuelve conflictos en silencio.",
+      "en": "The preview writes nothing; apply requires a conflict-free preview; a target outside the authorised folder is rejected; synchronization classifies each file and never resolves conflicts silently."
+    },
+    "scenario": {
+      "es": "Previsualizar sobre una carpeta vacía, aplicar, aplicar con un fichero manual en medio, deshacer, pedir destinos peligrosos, y tras editar a mano un fichero y cambiar el perfil sincronizar, decidir, aplicar y deshacer la resolución.",
+      "en": "Preview on an empty folder, apply, apply with a manual file in the way, undo, request dangerous targets, and after hand-editing a file and changing the profile synchronize, decide, apply and undo the resolution."
+    },
+    "result": {
+      "es": "La carpeta destino refleja exactamente cada paso: vacía tras la vista previa, con los ficheros del ZIP tras aplicar, intacta tras un conflicto, vacía tras deshacer, y con la edición manual restaurada al deshacer la resolución.",
+      "en": "The target folder reflects each step exactly: empty after the preview, with the ZIP files after apply, untouched after a conflict, empty after undo, and with the manual edit restored when the resolution is undone."
+    },
+    "expected": {
+      "es": "Estados HTTP, conjunto y contenido de ficheros en disco y clasificaciones de la sincronización coinciden con los valores literales y con el ZIP generado.",
+      "en": "HTTP statuses, set and content of files on disk and synchronization classifications match the literal values and the generated ZIP."
+    },
+    "guarantee": {
+      "es": "Evidencia real de la aplicación reversible de una integración y de la detección y resolución explícita de conflictos sobre disco real.",
+      "en": "Real evidence of the reversible application of an integration and of conflict detection and explicit resolution on a real disk."
+    },
+    "limits": {
+      "es": "Solo EMF; no prueba la fusión segura de regiones manuales ni el borrado en lo nativo; no cubre ficheros que cambian de ruta ni fallos de escritura a mitad de aplicar; no ejecuta herramientas nativas. No fija cómo se tratan los ficheros de infraestructura al sincronizar.",
+      "en": "EMF only; it does not test the safe merge of manual regions or deletion on the native side; it does not cover files that change path or write failures mid-apply; no native tools are run. It does not pin how infrastructure files are treated when synchronizing."
+    },
+    "strengthWhy": {
+      "es": "Cadena HTTP e inyección reales, oráculo independiente (carpeta en disco contra el ZIP) y varios casos de rechazo reales.",
+      "en": "Real HTTP and injection chain, independent oracle (folder on disk against the ZIP) and several real rejection cases."
+    },
+    "cases": [
+      {
+        "n": "manualConflictBlocksApplyAndWritesNothing",
+        "scenario": {
+          "es": "Un fichero manual ocupa la ruta de un fichero generado.",
+          "en": "A manual file occupies the path of a generated file."
+        },
+        "result": {
+          "es": "Vista previa bloqueada, aplicar da 422 y la carpeta solo conserva el fichero manual.",
+          "en": "Preview blocked, apply gives 422 and the folder keeps only the manual file."
+        }
+      },
+      {
+        "n": "rollbackRestoresTheInitialStateAndUnsafeRequestsAreRejected",
+        "scenario": {
+          "es": "Deshacer por registro, registro inexistente y destinos fuera de la carpeta autorizada.",
+          "en": "Undo by record, unknown record and targets outside the authorised folder."
+        },
+        "result": {
+          "es": "Carpeta sin ficheros; 422 y 400 sin crear nada fuera.",
+          "en": "Folder with no files; 422 and 400 without creating anything outside."
+        }
+      },
+      {
+        "n": "roundTripDetectsManualEditsAndAppliesAnExplicitDecision",
+        "scenario": {
+          "es": "Edición manual de un fichero y cambio del perfil.",
+          "en": "Manual edit of a file and a change in the profile."
+        },
+        "result": {
+          "es": "Conflicto detectado, aplicar bloqueado hasta decidir, decisión aplicada y deshecha.",
+          "en": "Conflict detected, apply blocked until decided, decision applied and undone."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionSyncRollbackHttpIntegrationTests.java",
+        "line": 122
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionSyncRollbackHttpIntegrationTests.java",
+        "line": 136
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionSyncRollbackHttpIntegrationTests.java",
+        "line": 140
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionSyncRollbackHttpIntegrationTests.java",
+        "line": 160
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionSyncRollbackHttpIntegrationTests.java",
+        "line": 179
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionSyncRollbackHttpIntegrationTests.java",
+        "line": 184
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionSyncRollbackHttpIntegrationTests.java",
+        "line": 207
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionSyncRollbackHttpIntegrationTests.java",
+        "line": 213
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionSyncRollbackHttpIntegrationTests.java",
+        "line": 236
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionSyncRollbackHttpIntegrationTests.java",
+        "line": 246
+      }
+    ]
+  }
+]

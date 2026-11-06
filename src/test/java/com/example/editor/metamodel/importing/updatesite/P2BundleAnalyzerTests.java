@@ -1,13 +1,23 @@
 package com.example.editor.metamodel.importing.updatesite;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class P2BundleAnalyzerTests {
+    @TempDir Path temporary;
+
+    /** Las propiedades por defecto escriben en ./data/update-site-imports (la caché de artefactos): estas pruebas usan un directorio temporal. */
+    private UpdateSiteImportProperties isolatedProperties() {
+        UpdateSiteImportProperties properties = new UpdateSiteImportProperties();
+        properties.setStorageRoot(temporary.resolve("update-site").toString());
+        return properties;
+    }
 
     @Test
     void classifiesModelGmfSiriusXtextEditEditorRuntimeUiAndThirdPartyBundles() {
@@ -34,7 +44,7 @@ class P2BundleAnalyzerTests {
                         UpdateSiteTestFixtures.entries("org/example/Utility.class", new byte[]{1, 2, 3})),
                 "features/com.example.feature_1.0.0.jar", UpdateSiteTestFixtures.jar("com.example.feature", "1.0.0", "",
                         UpdateSiteTestFixtures.entries("feature.xml", "<feature id=\"com.example.feature\" version=\"1.0.0\"><plugin id=\"com.example.model\"/></feature>")));
-        UpdateSiteRepositoryContent repository = new UpdateSiteArchiveReader(new UpdateSiteImportProperties())
+        UpdateSiteRepositoryContent repository = new UpdateSiteArchiveReader(isolatedProperties())
                 .read(List.of(new UpdateSiteInputFile("site.zip", UpdateSiteTestFixtures.zip(siteEntries))));
 
         UpdateSiteRepositorySummary summary = new P2BundleAnalyzer(new P2BundleClassifier())
@@ -59,7 +69,7 @@ class P2BundleAnalyzerTests {
     void preservesMissingRequiredDependenciesAndCyclesForReview() {
         byte[] a = UpdateSiteTestFixtures.jar("a", "1.0.0", "b,missing.bundle", Map.of());
         byte[] b = UpdateSiteTestFixtures.jar("b", "1.0.0", "a", Map.of());
-        UpdateSiteRepositoryContent repository = new UpdateSiteArchiveReader(new UpdateSiteImportProperties()).read(List.of(
+        UpdateSiteRepositoryContent repository = new UpdateSiteArchiveReader(isolatedProperties()).read(List.of(
                 new UpdateSiteInputFile("plugins/a_1.0.0.jar", a), new UpdateSiteInputFile("plugins/b_1.0.0.jar", b)));
 
         UpdateSiteRepositorySummary summary = new P2BundleAnalyzer(new P2BundleClassifier())

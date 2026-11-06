@@ -1,0 +1,84 @@
+[
+  {
+    "id": "pw:e2e/real/gamification/ledger-review.spec.ts",
+    "name": {
+      "es": "Vista de ledger de gamificación: revisar concesiones y actualizar con backend real",
+      "en": "Gamification ledger view: review grants and refresh with a real backend"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["gamification"],
+    "procs": [
+      { "id": "gamification_author_ledger", "stages": ["rd", "rf"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/gamification-designer/GamificationDesigner.tsx",
+      "frontend/src/gamification-designer/GamificationDesignerParts.tsx",
+      "frontend/src/gamification-designer/api.ts",
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeController.java",
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+      "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackProjector.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationRuntimeRepository.java"
+    ],
+    "pre": {
+      "es": "Metamodelo y catálogo de gamificación sembrados por la API real; dos concesiones reales previas concedidas por la API de eventos.",
+      "en": "Metamodel and gamification catalog seeded through the real API; two earlier real grants made through the events API."
+    },
+    "setup": {
+      "es": "Sin simulaciones de la API. La siembra y las concesiones usan la API real; el usuario solo revisa y pulsa Actualizar.",
+      "en": "No API simulation. Seeding and grants use the real API; the user only reviews and presses Refresh."
+    },
+    "executes": {
+      "es": "Abre la vista de ejecución y ledger de un metamodelo con concesiones reales, concede otra por la API y pulsa Actualizar.",
+      "en": "Opens the runtime and ledger view of a metamodel with real grants, makes another grant through the API and presses Refresh."
+    },
+    "asserts": {
+      "es": "Filas, personas, puntos y número de avisos coinciden con lo que devuelve el servidor y con el libro mayor del disco; antes de Actualizar la tabla no cambia; después aparece la fila nueva arriba y los puntos suben.",
+      "en": "Rows, people, points and notice count match what the server returns and the ledger on disk; before Refresh the table does not change; afterwards the new row appears on top and the points rise."
+    },
+    "behavior": {
+      "es": "El usuario ve qué se concedió, a quién y por qué, y Actualizar vuelve a consultar al servidor para incorporar concesiones nuevas.",
+      "en": "The user sees what was granted, to whom and why, and Refresh queries the server again to bring in new grants."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Dos personas con cinco puntos cada una; después una tercera concesión a la primera persona hecha fuera de la pantalla.",
+      "en": "Two people with five points each; then a third grant to the first person made outside the screen."
+    },
+    "result": {
+      "es": "La tabla pasa de dos a tres filas, la primera persona muestra diez puntos y el recuento de avisos sube igual que el del servidor.",
+      "en": "The table goes from two to three rows, the first person shows ten points and the notice count rises as the server's does."
+    },
+    "expected": {
+      "es": "Pantalla y servidor coinciden antes y después de Actualizar.",
+      "en": "Screen and server agree before and after Refresh."
+    },
+    "guarantee": {
+      "es": "La vista de ledger refleja fielmente lo que el servidor registró y Actualizar trae lo nuevo.",
+      "en": "The ledger view faithfully reflects what the server recorded and Refresh brings in what is new."
+    },
+    "limits": {
+      "es": "Las concesiones se hacen por la API, no desde la interfaz; no prueba Restablecer ni la compensación de concesiones, ni el contenido textual de cada aviso, ni más de cien avisos.",
+      "en": "Grants are made through the API, not from the interface; it does not test Reset, grant compensation, the text of each notice or more than a hundred notices."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción de usuario real en el navegador sobre el runtime real, con lectura independiente de la API y del fichero de libro mayor.",
+      "en": "Real user action in the browser over the real runtime, with independent reading of the API and the ledger file."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/gamification/ledger-review.spec.ts", "line": 29 },
+      { "path": "frontend/e2e/real/gamification/ledger-review.spec.ts", "line": 31 },
+      { "path": "frontend/e2e/real/gamification/ledger-review.spec.ts", "line": 33 },
+      { "path": "frontend/e2e/real/gamification/ledger-review.spec.ts", "line": 40 },
+      { "path": "frontend/e2e/real/gamification/ledger-review.spec.ts", "line": 45 },
+      { "path": "frontend/e2e/real/gamification/ledger-review.spec.ts", "line": 50 },
+      { "path": "frontend/e2e/real/gamification/ledger-review.spec.ts", "line": 51 },
+      { "path": "frontend/e2e/real/gamification/ledger-review.spec.ts", "line": 55 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

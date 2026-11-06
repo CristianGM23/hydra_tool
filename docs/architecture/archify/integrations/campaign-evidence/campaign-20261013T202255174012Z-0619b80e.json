@@ -1,0 +1,82 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-13T20:22:54+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraAutopilotoFix188\\runs\\20261013-221858-9fa1c8\\reports\\20261013-221931",
+  "campaignState": "COMPLETED_WITH_ISSUES",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "09388ee55fda8651758bd184c17b6386e51be95950e91604ba91038010405896",
+  "reportCheckpointName": "0006-01791922973567653600-9bf0d81ac9284fc49e7082ba169811d8.json",
+  "testResults": [
+    {
+      "id": "S080",
+      "title": "E2E V3 preflight for 12 external targets",
+      "group": "native-readiness",
+      "status": "BLOCKED",
+      "exitCode": 2,
+      "durationSeconds": 0.44,
+      "logSha256": "4554eedbc37fc8731c0fd45fd26ede5586d5d6132849ed2ae3d8c73e2352970d",
+      "logRelativePath": "logs/S080.log"
+    },
+    {
+      "id": "S087",
+      "title": "Frontend Playwright keyboard/focus/zoom",
+      "group": "a11y",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 81.68,
+      "logSha256": "7ff225b32fa02069ef865d2c0f1c8af9a126290b809c84c037d15e575bea45f1",
+      "logRelativePath": "logs/S087.log"
+    },
+    {
+      "id": "S109",
+      "title": "Verificar r5c13 final transformation toolchains",
+      "group": "transformation",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 58.65,
+      "logSha256": "82cad03e0ec1a54ba596bd0a1fd125bc8f41285a0f43cc6b81853f1bafb64945",
+      "logRelativePath": "logs/S109.log"
+    },
+    {
+      "id": "S129",
+      "title": "Verificar r5c13 fix46 java python go native execution",
+      "group": "distribution",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 35.67,
+      "logSha256": "1ef7c1220f397f2a5375e707e079cf6b6334a759fe488d997f894fcf40c83088",
+      "logRelativePath": "logs/S129.log"
+    },
+    {
+      "id": "S130",
+      "title": "Verificar r5c13 fix47 java python go native m2t",
+      "group": "transformation",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 21.64,
+      "logSha256": "7b1f29b0b851b98b5860eec358fc4c8fed92ede81de3ab4d3bd6c3272929e3f5",
+      "logRelativePath": "logs/S130.log"
+    },
+    {
+      "id": "S182",
+      "title": "Verificar v43314 self contained editor dependencies",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 3.07,
+      "logSha256": "9047e52204cfcd4e2647a5e068ae46eedf4d1f4fae8ea99037340034adf4307e",
+      "logRelativePath": "logs/S182.log"
+    }
+  ],
+  "summary": {
+    "PASS": 2,
+    "FAIL": 3,
+    "BLOCKED": 1,
+    "TIMEOUT": 0
+  }
+}

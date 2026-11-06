@@ -1,0 +1,44 @@
+[
+  {
+    "id": "pw:e2e/real/project/editor-definition-structure-edit.spec.ts",
+    "name": { "es": "Editar un nodo desde el árbol de estructura y guardar solo ese cambio", "en": "Edit a node from the structure tree and save only that change" },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "caps": ["model_editor", "persistence"],
+    "procs": [
+      { "id": "model_editor_author_structure", "stages": ["sel", "ed"], "match": "direct" }
+    ],
+    "pre": null,
+    "executes": { "es": "Navegador real sobre la aplicación compilada y el backend real: abre una definición de editor guardada, entra en el árbol de estructura, elige el nodo de un mapeo, cambia su nombre en el panel de propiedades y guarda.", "en": "Real browser on the built application and the real backend: opens a saved editor definition, enters the structure tree, chooses a mapping node, changes its name in the properties panel and saves." },
+    "asserts": { "es": "Sin cambios no se puede guardar; el panel muestra los datos del nodo elegido; tras guardar, la definición que sirve el backend tiene el nombre nuevo y todo lo demás (vistas, mapeos, herramientas, grupos, formularios) igual que antes.", "en": "Without changes saving is not possible; the panel shows the chosen node's data; after saving, the definition served by the backend has the new name and everything else (views, mappings, tools, groups, forms) as before." },
+    "behavior": { "es": "El usuario elige un elemento del árbol de la definición, edita directamente sus campos y guarda; solo cambia lo editado.", "en": "The user picks an element of the definition tree, edits its fields directly and saves; only what was edited changes." },
+    "rule": { "es": "La edición solo se guarda cuando hay un cambio y no altera el resto de la definición.", "en": "An edit is only saved when there is a change and it does not alter the rest of the definition." },
+    "scenario": { "es": "Editor guardado con un mapeo para Persona: se abre el árbol de estructura, se elige el mapeo, se cambia su nombre visible a «Persona» y se guarda.", "en": "A saved editor with a Person mapping: the structure tree is opened, the mapping is chosen, its visible name is changed to Persona and it is saved." },
+    "result": { "es": "El mapeo guardado se llama Persona y el resto de la definición queda idéntico.", "en": "The saved mapping is named Persona and the rest of the definition is identical." },
+    "expected": { "es": "Guardado bloqueado sin cambios, panel con los datos del nodo y diferencia mínima respecto a la versión anterior.", "en": "Saving blocked without changes, a panel with the node's data and a minimal difference from the previous version." },
+    "guarantee": { "es": "Editar un nodo desde el árbol de estructura persiste exactamente ese cambio en la definición del editor.", "en": "Editing a node from the structure tree persists exactly that change in the editor definition." },
+    "limits": { "es": "Solo edita un campo de un tipo de nodo (mapeo de nodo); no recorre los demás tipos de elemento del árbol. La comparación de «lo demás igual» usa una proyección de los elementos editables, no cada campo interno que el servidor pueda completar. Interfaz en inglés.", "en": "It edits one field of one node kind (node mapping); it does not walk the other element kinds in the tree. The 'rest unchanged' comparison uses a projection of the editable elements, not every internal field the server may fill in. English interface." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Selección y edición hechas por el usuario en navegador, backend real y comparación de la definición guardada antes y después.", "en": "Selection and editing done by the user in a browser, real backend and a comparison of the saved definition before and after." },
+    "external": "none",
+    "cases": [
+      { "n": "guardar sin cambios", "scenario": { "es": "Abrir el menú de cambios sin editar nada.", "en": "Open the changes menu without editing anything." }, "result": { "es": "Guardar está bloqueado.", "en": "Saving is blocked." } },
+      { "n": "editar el nodo", "scenario": { "es": "Elegir el mapeo y cambiar su nombre.", "en": "Choose the mapping and change its name." }, "result": { "es": "Solo ese nombre cambia en lo guardado.", "en": "Only that name changes in what is saved." } }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/project/editor-definition-structure-edit.spec.ts", "line": 40 },
+      { "path": "frontend/e2e/real/project/editor-definition-structure-edit.spec.ts", "line": 48 },
+      { "path": "frontend/e2e/real/project/editor-definition-structure-edit.spec.ts", "line": 49 },
+      { "path": "frontend/e2e/real/project/editor-definition-structure-edit.spec.ts", "line": 61 }
+    ],
+    "prod": [
+      "frontend/src/editor-definition/EditorDefinitionDesigner.tsx",
+      "frontend/src/editor-definition/EditorDefinitionTree.tsx",
+      "frontend/src/editor-definition/EditorDefinitionDesignerParts.tsx",
+      "src/main/java/com/example/editor/definition/web/CanonicalEditorDefinitionController.java",
+      "src/main/java/com/example/editor/definition/persistence/JsonEditorDefinitionRepository.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

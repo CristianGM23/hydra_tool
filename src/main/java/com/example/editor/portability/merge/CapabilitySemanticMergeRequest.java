@@ -16,7 +16,7 @@ public record CapabilitySemanticMergeRequest(HydraCapabilityPackage existingPack
         targetMetamodelId = text(targetMetamodelId);
         expectedEtags = expectedEtags == null ? Map.of() : Collections.unmodifiableMap(new LinkedHashMap<>(expectedEtags));
         layerOrder = layerOrder == null ? List.of() : List.copyOf(layerOrder);
-        defaultDecision = defaultDecision == null ? CapabilitySemanticMergeDecision.MERGE : defaultDecision;
+        // Sin MERGE implícito: defaultDecision solo afecta a entidades sin conflicto; un conflicto exige siempre una decisión explícita en `decisions`.
         decisions = decisions == null ? Map.of() : Collections.unmodifiableMap(new LinkedHashMap<>(decisions));
     }
     /** Descripción: Ejecuta la operación «text» correspondiente a la responsabilidad de CapabilitySemanticMergeRequest. Entradas: value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ private static String text(String value){return value == null ? "" : value.trim();}

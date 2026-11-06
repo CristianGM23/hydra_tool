@@ -1,0 +1,41 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "generatedUtc": "2026-10-15T10:52:25+00:00",
+  "catalogDiscovery": "ARCHIFY_TEST_CATALOG_NO_RECOGNIZED_TEST_STATES",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "policy": "LOCAL_PASS_NEVER_AUTO_CLOSES_ARCHIFY",
+  "observationsSummary": {
+    "imports": 41,
+    "results": 2019,
+    "linked": 0,
+    "pending": 0,
+    "unmappedPending": 0
+  },
+  "archifyMappings": [],
+  "executionPlan": {
+    "pendingMappedIds": [],
+    "regressionIds": [
+      "S052",
+      "S080",
+      "S099",
+      "S101",
+      "S102",
+      "S105",
+      "S109",
+      "S119",
+      "S129",
+      "S130",
+      "S138",
+      "S139",
+      "S143",
+      "S148",
+      "S156",
+      "S157",
+      "S163",
+      "S182"
+    ],
+    "requiresStrongerEvidence": [],
+    "unmappedPending": []
+  }
+}

@@ -1,0 +1,166 @@
+[
+  {
+    "id": "java:com.example.editor.integration.web.TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Vista previa, aplicación y registro de reversión de una tecnología generada",
+      "en": "Preview, application and undo record of a generated technology"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "layers2": [
+      "platform"
+    ],
+    "caps": [
+      "integration",
+      "security"
+    ],
+    "procs": [
+      {
+        "id": "integration_author_views",
+        "stages": [
+          "pv"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "integration_author_wizard",
+        "stages": [
+          "dl"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "integration_deliver",
+        "stages": [
+          "rb"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java",
+      "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+      "src/main/java/com/example/editor/integration/injection/SafeTechnologyInjectionService.java",
+      "src/main/java/com/example/editor/integration/injection/TechnologyInjectionRequest.java",
+      "src/main/java/com/example/editor/integration/InjectionManifest.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring completo con todos los directorios dsl.* y la carpeta de destinos autorizados en un directorio temporal; metamodelo y perfil de integración creados por la API.",
+      "en": "Full Spring context with every dsl.* directory and the authorised targets folder in a temporary directory; metamodel and integration profile created through the API."
+    },
+    "setup": {
+      "es": "Cada escenario usa su propia carpeta de destino y su propio perfil. El oráculo son los ZIP que genera el mismo perfil (dos versiones), cuyos hashes se recalculan en la prueba, y los ficheros que el anfitrión tiene en disco.",
+      "en": "Each scenario uses its own target folder and its own profile. The oracle is the ZIPs the same profile generates (two versions), whose hashes are recomputed in the test, and the files the host has on disk."
+    },
+    "executes": {
+      "es": "POST de vista previa, aplicación y reversión por el controlador, la fachada y el servicio de inyección segura reales, sobre una carpeta nueva, sobre ficheros gestionados modificados por un cambio de perfil y sobre un fichero gestionado editado a mano.",
+      "en": "Preview, apply and rollback POSTs through the real controller, facade and safe injection service, on a new folder, on managed files modified by a profile change and on a managed file edited by hand."
+    },
+    "asserts": {
+      "es": "La vista previa lista cada fichero con su hash y no crea ni la carpeta; aplicar deja un registro con los hashes de los ficheros y el índice de gestionados; un cambio de perfil se previsualiza como modificación con hash original y nuevo, se guarda copia y revertir devuelve los bytes anteriores; un fichero editado a mano bloquea y no se escribe nada.",
+      "en": "The preview lists each file with its hash and does not even create the folder; apply leaves a record with the file hashes and the managed index; a profile change is previewed as a modification with original and new hash, a copy is kept and rollback returns the previous bytes; a hand-edited file blocks and nothing is written."
+    },
+    "behavior": {
+      "es": "Los cambios se ven antes de aplicarse, solo se aplican si la vista previa está lista y cada aplicación queda registrada de forma que se puede deshacer, restaurando exactamente lo que había antes.",
+      "en": "Changes are shown before being applied, applied only if the preview is ready, and each application is recorded so it can be undone, restoring exactly what was there before."
+    },
+    "rule": {
+      "es": "La vista previa no escribe; un fichero gestionado se modifica solo si nadie lo editó a mano; antes de modificar se guarda copia; revertir restaura copias y borra lo añadido; un destino fuera de la carpeta autorizada se rechaza.",
+      "en": "The preview writes nothing; a managed file is modified only if nobody edited it by hand; a copy is kept before modifying; rollback restores copies and deletes what was added; a target outside the authorised folder is rejected."
+    },
+    "scenario": {
+      "es": "Previsualizar, aplicar y revertir sobre una carpeta nueva; cambiar el perfil y repetir sobre ficheros ya aplicados; editar un fichero a mano y volver a previsualizar y aplicar; pedir destinos fuera de la carpeta autorizada.",
+      "en": "Preview, apply and undo on a new folder; change the profile and repeat on already applied files; edit a file by hand and preview and apply again; request targets outside the authorised folder."
+    },
+    "result": {
+      "es": "La carpeta del anfitrión refleja cada paso con exactitud: inexistente tras la vista previa, igual al ZIP tras aplicar, con los bytes originales tras revertir una modificación, y sin cambios tras un bloqueo o un destino prohibido.",
+      "en": "The host folder reflects each step exactly: nonexistent after the preview, equal to the ZIP after apply, with the original bytes after undoing a modification, and unchanged after a block or a forbidden target."
+    },
+    "expected": {
+      "es": "Estados HTTP, hashes, conjuntos de ficheros añadidos, modificados y sin cambios, copias de seguridad e índice de gestionados coinciden con lo calculado a partir de los dos ZIP y de las ediciones de la prueba.",
+      "en": "HTTP statuses, hashes, sets of added, modified and unchanged files, backups and managed index match what is computed from the two ZIPs and the test's edits."
+    },
+    "guarantee": {
+      "es": "Evidencia real de la vista previa sin efectos, de la aplicación registrada con hashes y de la reversión que restaura bytes exactos sobre disco real.",
+      "en": "Real evidence of the side-effect-free preview, of the application recorded with hashes and of the rollback that restores exact bytes on a real disk."
+    },
+    "limits": {
+      "es": "Solo EMF; no cubre fallos de escritura a mitad de aplicar ni la sincronización posterior; los botones del asistente no se recorren, solo la API que los alimenta; no ejecuta herramientas nativas.",
+      "en": "EMF only; it does not cover write failures mid-apply or later synchronization; the wizard buttons are not traversed, only the API that feeds them; no native tools are run."
+    },
+    "strengthWhy": {
+      "es": "Cadena HTTP e inyección reales, oráculo independiente (ZIP y hashes recalculados, ficheros leídos del disco) y rechazos reales.",
+      "en": "Real HTTP and injection chain, independent oracle (ZIPs and recomputed hashes, files read from disk) and real rejections."
+    },
+    "cases": [
+      {
+        "n": "modifiedManagedFilesArePlannedBackedUpAndRestoredByRollback",
+        "scenario": {
+          "es": "Cambio de perfil sobre ficheros ya aplicados, aplicar y revertir.",
+          "en": "Profile change on already applied files, apply and undo."
+        },
+        "result": {
+          "es": "Modificaciones con hash original y nuevo, copia de seguridad y bytes anteriores restaurados.",
+          "en": "Modifications with original and new hash, backup copy and previous bytes restored."
+        }
+      },
+      {
+        "n": "aManuallyEditedManagedFileBlocksApplyAndUnsafeTargetsAreRejected",
+        "scenario": {
+          "es": "Fichero gestionado editado a mano y destinos fuera de la carpeta autorizada.",
+          "en": "Hand-edited managed file and targets outside the authorised folder."
+        },
+        "result": {
+          "es": "Vista previa bloqueada, 422 al aplicar sin tocar nada y 400 para los destinos prohibidos.",
+          "en": "Preview blocked, 422 on apply with nothing touched and 400 for the forbidden targets."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests.java",
+        "line": 132
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests.java",
+        "line": 133
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests.java",
+        "line": 146
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests.java",
+        "line": 153
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests.java",
+        "line": 156
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests.java",
+        "line": 185
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests.java",
+        "line": 195
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests.java",
+        "line": 202
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests.java",
+        "line": 219
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/web/TechnologyInjectionPreviewApplyRollbackHttpIntegrationTests.java",
+        "line": 226
+      }
+    ]
+  }
+]

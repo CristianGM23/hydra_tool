@@ -1,0 +1,47 @@
+[
+  {
+    "id": "pw:e2e/real/project/editor-compile-runtime-view.spec.ts",
+    "name": { "es": "Compilar el editor y pasar a la vista de ejecución con el plan del backend", "en": "Compile the editor and switch to the runtime view with the backend plan" },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "caps": ["model_editor", "persistence"],
+    "procs": [
+      { "id": "model_editor_author_runtime", "stages": ["vw"], "match": "direct" },
+      { "id": "model_editor_compile", "stages": ["vw"], "match": "direct" }
+    ],
+    "pre": null,
+    "executes": { "es": "Navegador real sobre la aplicación compilada y el backend real: abre una definición de editor guardada, intenta compilar con un cambio sin guardar, guarda y pulsa «Compile runtime».", "en": "Real browser on the built application and the real backend: opens a saved editor definition, tries to compile with an unsaved change, saves and presses 'Compile runtime'." },
+    "asserts": { "es": "Con cambios sin guardar la orden de compilar está bloqueada y la vista no cambia; tras guardar y compilar la pestaña de ejecución queda activa y muestra el nombre y las vistas del plan, que coinciden con el plan que sirve el backend para la versión guardada.", "en": "With unsaved changes the compile command is blocked and the view does not change; after saving and compiling the runtime tab is active and shows the plan's name and views, which match the plan the backend serves for the saved version." },
+    "behavior": { "es": "El usuario guarda su editor, lo compila y la pantalla pasa a mostrar el resultado compilado listo para probarse.", "en": "The user saves their editor, compiles it and the screen switches to the compiled result ready to try." },
+    "rule": { "es": "No se puede compilar con cambios pendientes de guardar; el resultado mostrado corresponde a la versión guardada.", "en": "Compiling is not possible with pending unsaved changes; the result shown corresponds to the saved version." },
+    "scenario": { "es": "Editor guardado, renombrado sin guardar (compilar bloqueado), guardado de nuevo y compilado.", "en": "A saved editor, renamed without saving (compile blocked), saved again and compiled." },
+    "result": { "es": "La interfaz salta a la vista de ejecución con el nombre guardado y una vista, y el backend sirve el mismo plan para la versión guardada.", "en": "The interface jumps to the runtime view with the saved name and one view, and the backend serves the same plan for the saved version." },
+    "expected": { "es": "Orden bloqueada con cambios pendientes, vista de ejecución activa tras compilar y plan del backend coincidente con la definición guardada.", "en": "Command blocked with pending changes, runtime view active after compiling and a backend plan matching the saved definition." },
+    "guarantee": { "es": "Tras compilar, el usuario ve el plan que corresponde exactamente a la última versión guardada de su editor.", "en": "After compiling, the user sees the plan that corresponds exactly to the last saved version of their editor." },
+    "limits": { "es": "La igualdad entre la huella del plan y la de la definición se compara con el formato que devuelva el servicio, tras quitar comillas; si el formato difiere, la prueba lo mostrará como fallo a revisar. No prueba el contenido del plan más allá de nombre y número de vistas ni el uso del editor compilado. Interfaz en inglés.", "en": "Equality between the plan's fingerprint and the definition's is compared in whatever format the service returns, after stripping quotes; if the format differs the test will show it as a failure to review. It does not test the plan content beyond name and number of views, nor the use of the compiled editor. English interface." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Acción real del usuario en navegador, backend real y plan leído por separado del servicio, con un rechazo comprobado.", "en": "Real user action in a browser, real backend and a plan read separately from the service, with a checked rejection." },
+    "external": "none",
+    "cases": [
+      { "n": "compilar con cambios sin guardar", "scenario": { "es": "Renombrar el editor sin guardar y abrir el menú de generación.", "en": "Rename the editor without saving and open the generation menu." }, "result": { "es": "Compilar está bloqueado y la vista sigue en definición.", "en": "Compile is blocked and the view stays on the definition." } },
+      { "n": "guardar y compilar", "scenario": { "es": "Guardar y pulsar compilar.", "en": "Save and press compile." }, "result": { "es": "Se muestra la vista de ejecución con el plan guardado.", "en": "The runtime view is shown with the saved plan." } }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/project/editor-compile-runtime-view.spec.ts", "line": 33 },
+      { "path": "frontend/e2e/real/project/editor-compile-runtime-view.spec.ts", "line": 45 },
+      { "path": "frontend/e2e/real/project/editor-compile-runtime-view.spec.ts", "line": 60 },
+      { "path": "frontend/e2e/real/project/editor-compile-runtime-view.spec.ts", "line": 62 },
+      { "path": "frontend/e2e/real/project/editor-compile-runtime-view.spec.ts", "line": 63 }
+    ],
+    "prod": [
+      "frontend/src/editor-definition/EditorDefinitionDesigner.tsx",
+      "frontend/src/editor-definition/EditorRuntimePreview.tsx",
+      "frontend/src/editor-definition/api.ts",
+      "src/main/java/com/example/editor/definition/web/CanonicalEditorDefinitionController.java",
+      "src/main/java/com/example/editor/definition/runtime/ExecutableEditorPlan.java",
+      "src/main/java/com/example/editor/definition/runtime/EditorDefinitionCompilationResult.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

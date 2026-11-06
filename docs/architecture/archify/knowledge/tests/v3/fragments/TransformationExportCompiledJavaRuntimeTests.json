@@ -1,0 +1,133 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.export.TransformationExportCompiledJavaRuntimeTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Exportar una transformación a Java, compilar la clase exportada y ejecutar su plan",
+      "en": "Exporting a transformation to Java, compiling the exported class and running its plan"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "layers2": [
+      "behavior"
+    ],
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "x_transformation_run_and_sync",
+        "stages": [
+          "exp"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/export/JavaTransformationLanguageAdapter.java",
+      "src/main/java/com/example/editor/transformation/export/NativeCodeTransformationLanguageAdapterSupport.java",
+      "src/main/java/com/example/editor/transformation/export/TransformationExportService.java"
+    ],
+    "pre": {
+      "es": "Un JDK con el compilador del sistema disponible (si no, la prueba se omite); directorio temporal escribible; metamodelo de prueba guardado.",
+      "en": "A JDK with the system compiler available (otherwise the test is skipped); writable temporary directory; test metamodel saved."
+    },
+    "setup": {
+      "es": "Servicio de exportación, comprobador, adaptador de Java y catálogo de metamodelos reales. Los ficheros exportados se escriben en una carpeta temporal y se compilan con el compilador del propio JDK. Ninguna simulación.",
+      "en": "Real export service, checker, Java adapter and metamodel catalogue. The exported files are written to a temporary folder and compiled with the JDK's own compiler. No mocks."
+    },
+    "executes": {
+      "es": "Exportación a Java de una transformación de modelo a modelo y de una de generación de texto; compilación real de la clase exportada, carga y llamada a sus métodos; lectura del plan exportado y ejecución con un intérprete mínimo escrito en la prueba; exportación bloqueada de una regla con condición.",
+      "en": "Java export of a model-to-model and a text-generation transformation; real compilation of the exported class, loading and calling its methods; reading the exported plan and running it with a minimal interpreter written in the test; blocked export of a rule with a condition."
+    },
+    "asserts": {
+      "es": "La clase exportada compila y devuelve el identificador, el tipo y la ruta de la definición exportada; el plan, interpretado aparte, produce el modelo esperado escrito a mano (incluida la herencia) y los ficheros de texto esperados; una regla con condición queda bloqueada, con diagnóstico y sin ficheros que compilar.",
+      "en": "The exported class compiles and returns the identifier, kind and path of the exported definition; the plan, interpreted separately, produces the expected hand-written model (including inheritance) and the expected text files; a rule with a condition is blocked, with a diagnostic and no files to compile."
+    },
+    "behavior": {
+      "es": "Exportar a Java entrega un paquete cuya clase compila de verdad y cuyo plan, ejecutado por un lector independiente de HYDRA, produce el mismo resultado que se espera de la transformación; lo que no se puede expresar queda bloqueado con una explicación.",
+      "en": "Exporting to Java delivers a package whose class really compiles and whose plan, run by a reader independent of HYDRA, produces the result expected from the transformation; what cannot be expressed is blocked with an explanation."
+    },
+    "rule": {
+      "es": "Una exportación solo es compatible si se puede expresar de forma exacta en el lenguaje elegido; si no, queda bloqueada con diagnóstico y sin ficheros.",
+      "en": "An export is only compatible if it can be expressed exactly in the chosen language; otherwise it is blocked with a diagnostic and no files."
+    },
+    "scenario": {
+      "es": "Exportar a Java una transformación de personas con dos atributos y una generación de ficheros de texto; compilar y cargar la clase; ejecutar el plan sobre un modelo con una persona y un empleado; probar una regla con condición.",
+      "en": "Export to Java a people transformation with two attributes and a text-file generation; compile and load the class; run the plan on a model with a person and an employee; try a rule with a condition."
+    },
+    "result": {
+      "es": "La clase compila y responde; el plan produce dos personas con los nombres y edades esperados y los ficheros Hello Ana y Hello Luis; la regla con condición no genera nada.",
+      "en": "The class compiles and answers; the plan produces two people with the expected names and ages and the files Hello Ana and Hello Luis; the rule with a condition generates nothing."
+    },
+    "expected": {
+      "es": "Compilación sin errores, valores devueltos por la clase, modelo y ficheros esperados y ausencia de ficheros en la exportación bloqueada coinciden con los literales de la prueba.",
+      "en": "Compilation without errors, values returned by the class, expected model and files and absence of files in the blocked export match the test literals."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que el código Java exportado es compilable y de que su plan describe fielmente el resultado esperado, sin depender del motor de HYDRA para calcularlo.",
+      "en": "Real evidence that the exported Java code is compilable and that its plan faithfully describes the expected result, without relying on the HYDRA engine to compute it."
+    },
+    "limits": {
+      "es": "La clase exportada solo expone identificador, tipo y ruta: no ejecuta la transformación, que corresponde al puente Java oficial (herramienta gestionada externa) y aquí lo sustituye un intérprete de la prueba; ATL, ETL, EGL y Acceleo siguen sin ejecutarse.",
+      "en": "The exported class only exposes identifier, kind and path: it does not run the transformation, which belongs to the official Java bridge (an external managed tool) and is replaced here by a test interpreter; ATL, ETL, EGL and Acceleo are still not executed."
+    },
+    "strengthWhy": {
+      "es": "Compilación real e intérprete independiente, pero no se ejecuta el puente oficial de ejecución, por lo que no demuestra la ejecución nativa de punta a punta.",
+      "en": "Real compilation and an independent interpreter, but the official execution bridge is not run, so it does not prove end-to-end native execution."
+    },
+    "cases": [
+      {
+        "n": "theExportedJavaClassCompilesAndItsPlanProducesTheExpectedModel",
+        "scenario": {
+          "es": "Exportar, compilar la clase y ejecutar el plan sobre una persona y un empleado.",
+          "en": "Export, compile the class and run the plan on a person and an employee."
+        },
+        "result": {
+          "es": "Dos personas con nombre y edad esperados; el empleado entra por herencia.",
+          "en": "Two people with the expected name and age; the employee comes in through inheritance."
+        }
+      },
+      {
+        "n": "aGuardedRuleIsBlockedAndLeavesNothingToCompile",
+        "scenario": {
+          "es": "Regla con condición exportada a Java.",
+          "en": "Rule with a condition exported to Java."
+        },
+        "result": {
+          "es": "Exportación bloqueada con diagnóstico y sin ficheros.",
+          "en": "Blocked export with a diagnostic and no files."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportCompiledJavaRuntimeTests.java",
+        "line": 76
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportCompiledJavaRuntimeTests.java",
+        "line": 79
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportCompiledJavaRuntimeTests.java",
+        "line": 92
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportCompiledJavaRuntimeTests.java",
+        "line": 111
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportCompiledJavaRuntimeTests.java",
+        "line": 121
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportCompiledJavaRuntimeTests.java",
+        "line": 133
+      }
+    ]
+  }
+]

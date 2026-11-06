@@ -1,0 +1,156 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.application.CanonicalMetamodelSaveValidationAuditIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Guardado de metamodelo: validación bloqueante, documento versionado y auditoría en disco",
+      "en": "Metamodel save: blocking validation, versioned document and on-disk audit"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "layers2": [
+      "platform"
+    ],
+    "caps": [
+      "metamodel",
+      "persistence",
+      "audit"
+    ],
+    "procs": [
+      {
+        "id": "x_metamodel_save_and_cascade",
+        "stages": [
+          "val",
+          "vok",
+          "doc",
+          "saved",
+          "aud"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_project_lifecycle_overview",
+        "stages": [
+          "mm",
+          "d2"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_language_to_published_editor",
+        "stages": [
+          "m1"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java",
+      "src/main/java/com/example/editor/metamodel/validation/NeutralMetamodelValidator.java",
+      "src/main/java/com/example/editor/audit/DefaultAuditEventPublisher.java",
+      "src/main/java/com/example/editor/audit/JsonlAuditLogStore.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío con almacenamiento de metamodelos y de auditoría propios.",
+      "en": "Empty temporary directory with its own metamodel and audit storage."
+    },
+    "setup": {
+      "es": "Servicio y repositorio reales con el publicador de auditoría asíncrono real y el almacén JSONL real; el oráculo lee los ficheros del disco.",
+      "en": "Real service and repository with the real asynchronous audit publisher and real JSONL store; the oracle reads the files on disk."
+    },
+    "executes": {
+      "es": "create/replace del servicio de aplicación con validador neutral real y repositorio JSON real que publica en el pipeline de auditoría real (no el observador genérico de documentos).",
+      "en": "Application-service create/replace with the real neutral validator and real JSON repository publishing to the real audit pipeline (not the generic document observer)."
+    },
+    "asserts": {
+      "es": "Un ciclo de herencia se rechaza (INHERITANCE_CYCLE) sin fichero ni línea de auditoría; el documento válido queda con ETag igual al SHA-256 de sus bytes; una ETag obsoleta da conflicto con disco intacto; cada guardado correcto añade una línea metamodel.created o metamodel.updated.",
+      "en": "An inheritance cycle is rejected (INHERITANCE_CYCLE) with no file and no audit line; the valid document is stored with an ETag equal to the SHA-256 of its bytes; a stale ETag conflicts with disk intact; each successful save appends one metamodel.created or metamodel.updated line."
+    },
+    "behavior": {
+      "es": "Un metamodelo solo se guarda si supera la validación estructural; al guardarse queda versionado y se anota en la auditoría.",
+      "en": "A metamodel is only saved if it passes structural validation; once saved it is versioned and recorded in the audit log."
+    },
+    "rule": {
+      "es": "Con errores no se escribe nada; guardar con una versión antigua es un conflicto; cada guardado correcto deja exactamente una entrada de auditoría.",
+      "en": "With errors nothing is written; saving with an old version is a conflict; each successful save leaves exactly one audit entry."
+    },
+    "scenario": {
+      "es": "Guardar un metamodelo con herencia cíclica (alta y modificación), guardar uno válido, reemplazarlo con ETag vigente y con ETag obsoleta, y leer disco y auditoría.",
+      "en": "Save a cyclic-inheritance metamodel (create and update), save a valid one, replace it with the current and with a stale ETag, and read disk and audit."
+    },
+    "result": {
+      "es": "Sin fichero ni auditoría en los rechazos; documento con ETag verificable; conflicto sin cambios en disco; dos líneas de auditoría para alta y modificación.",
+      "en": "No file or audit on rejections; document with verifiable ETag; conflict without disk changes; two audit lines for create and update."
+    },
+    "expected": {
+      "es": "Las aserciones sobre ficheros, ETag y líneas JSONL se cumplen en los cinco casos.",
+      "en": "Assertions on files, ETag and JSONL lines hold in all five cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real del guardado de metamodelos con validación bloqueante, control de versión y rastro de auditoría.",
+      "en": "Real evidence of metamodel saving with blocking validation, version control and an audit trail."
+    },
+    "limits": {
+      "es": "La auditoría pasa por el publicador de auditoría del repositorio, no por el observador genérico de documentos; sin HTTP ni proyecciones ni concurrencia entre guardados.",
+      "en": "Audit goes through the repository's the audit publisher, not the generic document observer; no HTTP, projections or concurrent saves."
+    },
+    "strengthWhy": {
+      "es": "Colaboradores reales (validador, repositorio, auditoría), oráculo independiente en disco y casos negativos reales.",
+      "en": "Real collaborators (validator, repository, audit), independent on-disk oracle and real negative cases."
+    },
+    "cases": [
+      {
+        "n": "cyclicInheritanceIsRejectedWithoutDocumentNorAuditLine",
+        "scenario": {
+          "es": "Alta con herencia cíclica.",
+          "en": "Create with cyclic inheritance."
+        },
+        "result": {
+          "es": "VALIDATION_ERROR; sin fichero ni auditoría.",
+          "en": "VALIDATION_ERROR; no file or audit."
+        }
+      },
+      {
+        "n": "successfulSavesAppendOneAuditLineEach",
+        "scenario": {
+          "es": "Alta y modificación válidas.",
+          "en": "Valid create and update."
+        },
+        "result": {
+          "es": "Líneas metamodel.created y metamodel.updated.",
+          "en": "metamodel.created and metamodel.updated lines."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/metamodel/application/CanonicalMetamodelSaveValidationAuditIntegrationTests.java",
+        "line": 142
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/application/CanonicalMetamodelSaveValidationAuditIntegrationTests.java",
+        "line": 147
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/application/CanonicalMetamodelSaveValidationAuditIntegrationTests.java",
+        "line": 178
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/application/CanonicalMetamodelSaveValidationAuditIntegrationTests.java",
+        "line": 194
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/application/CanonicalMetamodelSaveValidationAuditIntegrationTests.java",
+        "line": 210
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/application/CanonicalMetamodelSaveValidationAuditIntegrationTests.java",
+        "line": 145
+      }
+    ]
+  }
+]

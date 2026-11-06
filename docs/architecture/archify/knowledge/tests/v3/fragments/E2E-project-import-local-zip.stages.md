@@ -1,0 +1,4 @@
+E2E-project-import-local-zip - stage mapping (pw:e2e/real/project/import-local-zip.spec.ts)
+- project_author_import.b (seleccionar el contenido): el archivo ZIP elegido en el dialogo se importa; L61 proyecto activo con el id del ZIP, L68 y L73 bytes y arbol identicos al ZIP.
+- project_open_organize.a3 (Importar): la accion de importar desde Inicio termina con el proyecto en disco y activo (L61-L73); rechazos L80 (destino repetido) y L92 (archivo invalido sin carpeta residual).
+- project_author_import.a y project_import_export.i1 (elegir el origen): DIRECT, test 2: L113-L119 cambiar de origen cambia el formulario; L125 repositorio sin ruta se rechaza; L134 proyecto externo exige analisis previo; L152 la carpeta de proyecto se importa con los mismos bytes (y el origen no cambia). ZIP: test 1. Importar con exito desde repositorio o proyecto externo NO se prueba.

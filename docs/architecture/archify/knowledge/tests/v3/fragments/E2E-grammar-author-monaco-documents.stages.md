@@ -1,0 +1,3 @@
+- grammar_author_monaco.ad: «+ File» crea source-2.langium y el documento aparece con la extensión de la tecnología; tras guardar, API y fichero lo traen (líneas 23-24 y 47-49).
+- grammar_author_monaco.rm: «Remove file» quita el sobrante (la de entrada no ofrece quitarse); el guardado no lo contiene (líneas 19, 34-38 y 47).
+- grammar_author_monaco.wr NO se reclama: solo se prueba que el texto tecleado llega literal al servidor (línea 49), no el resaltado ni el completado.

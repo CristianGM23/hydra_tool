@@ -3,7 +3,7 @@ import { HydraActionableErrorNotice, HydraButton, HydraCheckbox, HydraFormField,
 import { applyCapabilitySemanticMerge, compareCapabilityPerformanceReports, createOfflineP2Mirror,
     downloadOfflineP2Mirror, downloadReleaseGateHtml, evaluateReleaseGate, previewCapabilitySemanticMerge,
     runAdapterBench } from './api';
-import type { CapabilityPerformanceComparison, CapabilitySemanticMergePreview,
+import type { CapabilityPerformanceComparison, CapabilitySemanticMergeDecision, CapabilitySemanticMergePreview,
     CapabilitySemanticMergeRequest, HydraCapabilityPackage, HydraReleaseGateReport,
     UpdateSiteAdapterBenchCase, UpdateSiteAdapterBenchReport, UpdateSiteP2MirrorResult } from './types';
 
@@ -42,15 +42,34 @@ export function UpdateSiteReleaseGovernancePanel() {
     const [busy, setBusy] = useState('');
     const [error, setError] = useState('');
 
+    const [decisions, setDecisions] = useState<Record<string, CapabilitySemanticMergeDecision>>({});
+    const [previewedDecisions, setPreviewedDecisions] = useState('');
+
     const unresolved = useMemo(() => mergePreview?.dependencies.filter(item => !item.resolved).length ?? 0, [mergePreview]);
+    const decisionsKey = useMemo(() => JSON.stringify(Object.entries(decisions).sort(([a], [b]) => a.localeCompare(b))), [decisions]);
+    const stalePreview = mergePreview !== null && previewedDecisions !== decisionsKey;
+    const pendingConflicts = mergePreview?.unresolvedConflictKeys?.length ?? 0;
+
+    function decide(key: string, decision: CapabilitySemanticMergeDecision | ''): void {
+        setDecisions(current => {
+            const next = { ...current };
+            if (decision === '') delete next[key]; else next[key] = decision;
+            return next;
+        });
+    }
 
     async function previewMerge(persist: boolean): Promise<void> {
         setBusy(persist ? 'MERGE_APPLY' : 'MERGE_PREVIEW');
         try {
-            const request = mergeRequest(existingText, recoveredText, targetMetamodelId, expectedEtagsText, layerOrderText, persist);
+            // Al aplicar solo se envían las decisiones de elementos que existen en la última vista previa: una decisión que quedó obsoleta
+            // (p. ej. la de un conflicto anidado cuyo elemento padre se decidió de otra forma) no debe bloquear ni confundir la aplicación.
+            const knownKeys = new Set((mergePreview?.items ?? []).map(item => item.key));
+            const sent = persist && mergePreview !== null ? Object.fromEntries(Object.entries(decisions).filter(([key]) => knownKeys.has(key))) : decisions;
+            const request = mergeRequest(existingText, recoveredText, targetMetamodelId, expectedEtagsText, layerOrderText, sent, persist);
             if (persist) {
                 const result = await applyCapabilitySemanticMerge(request); setMergePreview(result.preview);
             } else setMergePreview(await previewCapabilitySemanticMerge(request));
+            setPreviewedDecisions(decisionsKey);
             setError('');
         } catch (exception) { setError(message(exception, 'Could not evaluate the semantic merge')); }
         finally { setBusy(''); }
@@ -121,9 +140,10 @@ export function UpdateSiteReleaseGovernancePanel() {
             <div className="update-site-v38-grid two"><JsonField id="v38-etags" label="Expected ETags by HYDRA document path" value={expectedEtagsText} setValue={setExpectedEtagsText} />
                 <JsonField id="v38-layer-order" label="Optional HYDRA layer order" value={layerOrderText} setValue={setLayerOrderText} /></div>
             <div className="hydra-center-actions"><HydraButton loading={busy === 'MERGE_PREVIEW'} onClick={() => void previewMerge(false)}>Preview semantic merge</HydraButton>
-                <HydraButton variant="primary" loading={busy === 'MERGE_APPLY'} disabled={mergePreview === null || !mergePreview.applicable} onClick={() => void previewMerge(true)}>Apply through transaction</HydraButton></div>
-            {mergePreview !== null && <ResultState valid={mergePreview.applicable} title={mergePreview.applicable ? 'Merge is applicable' : 'Merge is blocked'}
-                details={`${mergePreview.items.length} entities · ${mergePreview.conflicts.length} conflicts · ${unresolved} unresolved references`} diagnostics={mergePreview.diagnostics} />}
+                <HydraButton variant="primary" loading={busy === 'MERGE_APPLY'} disabled={mergePreview === null || !mergePreview.applicable || stalePreview || pendingConflicts > 0} onClick={() => void previewMerge(true)}>Apply through transaction</HydraButton></div>
+            {mergePreview !== null && <ResultState valid={mergePreview.applicable && !stalePreview} title={stalePreview ? 'Preview is out of date' : mergePreview.applicable ? 'Merge is applicable' : 'Merge is blocked'}
+                details={`${mergePreview.items.length} entities · ${mergePreview.conflicts.length} conflicts (${pendingConflicts} without decision) · ${unresolved} unresolved references`} diagnostics={mergePreview.diagnostics} />}
+            {mergePreview !== null && <ConflictDecisions preview={mergePreview} decisions={decisions} stale={stalePreview} onDecide={decide} />}
         </EvolutionBlock>
 
         <EvolutionBlock code="AN" title="Offline p2 mirror" description="Regenerate content and artifact indexes from verified bytes and export a reproducible repository only after license review.">
@@ -174,10 +194,46 @@ function JsonField({ id, label, value, setValue }: { id: string; label: string; 
 function ResultState({ valid, title, details, diagnostics }: { valid: boolean; title: string; details: string; diagnostics: string[] }) {
     return <div className={`update-site-adapter-validation ${valid ? 'valid' : 'invalid'}`}><strong>{title}</strong><small>{details}</small>{diagnostics.slice(0, 8).map(item => <p key={item}>{item}</p>)}</div>;
 }
-function mergeRequest(existingText: string, recoveredText: string, targetMetamodelId: string, expectedEtagsText: string, layerOrderText: string, persist: boolean): CapabilitySemanticMergeRequest {
+function mergeRequest(existingText: string, recoveredText: string, targetMetamodelId: string, expectedEtagsText: string, layerOrderText: string,
+    decisions: Record<string, CapabilitySemanticMergeDecision>, persist: boolean): CapabilitySemanticMergeRequest {
     return { existingPackage: parseJson(existingText, 'existing package'), recoveredPackage: parseJson(recoveredText, 'recovered package'),
         targetMetamodelId, expectedEtags: parseJson<Record<string, string>>(expectedEtagsText, 'ETag map'),
-        layerOrder: parseJson<string[]>(layerOrderText, 'layer order'), defaultDecision: 'MERGE', decisions: {}, persist };
+        layerOrder: parseJson<string[]>(layerOrderText, 'layer order'), decisions, persist };
+}
+const DECISION_OPTIONS: CapabilitySemanticMergeDecision[] = ['KEEP_EXISTING', 'USE_RECOVERED', 'MERGE', 'SKIP'];
+function describeDecision(decision: CapabilitySemanticMergeDecision | ''): string {
+    switch (decision) {
+        case 'KEEP_EXISTING': return 'Keeps the existing version and discards the recovered one.';
+        case 'USE_RECOVERED': return 'Replaces the existing version with the recovered one.';
+        case 'MERGE': return 'Combines both versions; differences nested inside need their own decision.';
+        case 'SKIP': return 'Leaves this element out of the result.';
+        default: return 'No decision yet: this blocks applying the merge.';
+    }
+}
+function ConflictDecisions({ preview, decisions, stale, onDecide }: { preview: CapabilitySemanticMergePreview;
+    decisions: Record<string, CapabilitySemanticMergeDecision>; stale: boolean;
+    onDecide: (key: string, decision: CapabilitySemanticMergeDecision | '') => void }) {
+    if (preview.conflicts.length === 0) return null;
+    const items = new Map(preview.items.map(item => [item.key, item]));
+    const missing = preview.conflicts.filter(conflict => decisions[conflict.key] === undefined).length;
+    return <div className="update-site-merge-conflicts" role="group" aria-label="Merge conflicts">
+        <strong>{preview.conflicts.length} conflict(s): choose how to resolve each one</strong>
+        <small>{missing === 0 ? (stale ? 'Decisions changed: preview the merge again before applying.' : 'Every conflict has an explicit decision.')
+            : `${missing} conflict(s) still need a decision before the merge can be applied.`}</small>
+        {preview.conflicts.map(conflict => {
+            const item = items.get(conflict.key); const selected = decisions[conflict.key] ?? '';
+            return <article key={conflict.key} className="update-site-merge-conflict">
+                <code>{conflict.key}</code><p>{conflict.explanation}</p>
+                {item !== undefined && <small>{item.existingPresent ? 'Existing: present' : 'Existing: absent'} · {item.recoveredPresent ? 'Recovered: present' : 'Recovered: absent'}</small>}
+                <select aria-label={`Decision for ${conflict.key}`} value={selected}
+                    onChange={event => onDecide(conflict.key, event.target.value as CapabilitySemanticMergeDecision | '')}>
+                    <option value="">Select a decision…</option>
+                    {DECISION_OPTIONS.map(option => <option key={option} value={option}>{option}</option>)}
+                </select>
+                <small>{describeDecision(selected)}</small>
+            </article>;
+        })}
+    </div>;
 }
 function parseJson<T>(value: string, label: string): T { try { return JSON.parse(value) as T; } catch (exception) { throw new Error(`Invalid ${label}: ${exception instanceof Error ? exception.message : 'JSON parse error'}`, { cause: exception }); } }
 function download(blob: Blob, name: string): void { const url = URL.createObjectURL(blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = name; anchor.click(); URL.revokeObjectURL(url); }

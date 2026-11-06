@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { buildDependencyRelationId, buildInheritanceRelationId, buildMetamodelDiagramDocument, buildMetamodelEdges, buildMetamodelNodes, chooseConnectionHandles, createEmptyMetamodelDiagram, formatMultiplicity, isDependencyRelationId, parseInheritanceRelationId } from './diagram';
-import { createMetaModel, deleteMetamodel, getMetamodelExportUrl, loadMetaModel, replaceMetaModel, saveMetamodelDiagram } from './api';
+import { createMetaModel, deleteMetamodel, describeOmittedMetamodels, getMetamodelExportUrl, listCanonicalMetamodels, listCanonicalMetamodelsWithOmissions, loadMetaModel, replaceMetaModel, saveMetamodelDiagram } from './api';
 import { canonicalDiagramFixture, canonicalMetaModelFixture } from './test-fixtures/canonicalMetaModelFixture';
 
 afterEach(() => vi.restoreAllMocks());
@@ -30,4 +30,20 @@ describe('canonical API contract', () => {
     it('saves the diagram below the canonical resource', async () => { const d=canonicalDiagramFixture(); const fetchMock=vi.fn().mockResolvedValue(response(d)); vi.stubGlobal('fetch',fetchMock); await saveMetamodelDiagram('shop',d); expect(fetchMock.mock.calls[0][0]).toBe('/api/canonical-metamodels/shop/diagram'); });
     it('deletes lifecycle artifacts with explicit options and ETag', async () => { const fetchMock=vi.fn().mockResolvedValue(response({metamodelId:'shop',deletedFiles:[]})); vi.stubGlobal('fetch',fetchMock); await deleteMetamodel('shop',true,false,'v3'); expect(fetchMock.mock.calls[0][0]).toContain('/api/canonical-metamodels/shop/lifecycle?'); const init=fetchMock.mock.calls[0]?.[1] as RequestInit; expect(init.method).toBe('DELETE'); expect(new Headers(init.headers).get('If-Match')).toBe('v3'); });
     it('keeps export URLs independent from the former designer endpoint', () => expect(getMetamodelExportUrl('shop','markdown')).toBe('/api/metamodels/shop/exports/markdown'));
+    // D-MM-CORRUPT-CONTRATO: the listing keeps its JSON array; the stored metamodels it leaves out are named only in two headers
+    it('reads the metamodels omitted from the listing from its headers and keeps the array for the other consumers', async () => {
+        const summaries=[{id:'shop',name:'Shop',schemaVersion:'2.1',etag:'v1'}];
+        vi.stubGlobal('fetch',vi.fn().mockImplementation(async () => new Response(JSON.stringify(summaries),{status:200,headers:{'Content-Type':'application/json','X-Hydra-Omitted-Count':'2','X-Hydra-Omitted-Items':'orders'}})));
+        const listing=await listCanonicalMetamodelsWithOmissions();
+        expect(listing).toEqual({metamodels:summaries,omittedCount:2,omittedIds:['orders']});
+        expect(describeOmittedMetamodels(listing)).toContain('2 stored metamodel(s) cannot be used and are not listed: orders.');
+        expect(describeOmittedMetamodels(listing)).toContain('left unchanged');
+        await expect(listCanonicalMetamodels()).resolves.toEqual(summaries);
+    });
+    it('reports nothing when the listing omitted nothing', async () => {
+        vi.stubGlobal('fetch',vi.fn().mockResolvedValue(response([])));
+        const listing=await listCanonicalMetamodelsWithOmissions();
+        expect(listing).toEqual({metamodels:[],omittedCount:0,omittedIds:[]});
+        expect(describeOmittedMetamodels(listing)).toBe('');
+    });
 });

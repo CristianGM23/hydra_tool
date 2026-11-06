@@ -1,0 +1,204 @@
+[
+  {
+    "id": "java:com.example.editor.portability.merge.CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Fusión de capas con decisiones por conflicto, aplicación real y reversión",
+      "en": "Layer merge with per-conflict decisions, real application and rollback"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "portability"
+    ],
+    "procs": [
+      {
+        "id": "portability_package_merge",
+        "stages": [
+          "a2",
+          "a3",
+          "a4",
+          "d1",
+          "d2"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_package_and_move_capabilities",
+        "stages": [
+          "m1",
+          "d2",
+          "p1"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeService.java",
+      "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionService.java",
+      "src/main/java/com/example/editor/portability/CapabilityPackageChecker.java",
+      "src/main/java/com/example/editor/project/storage/ProjectWorkspaceContributionRegistry.java",
+      "src/main/java/com/example/editor/project/storage/CoreProjectWorkspaceContributor.java",
+      "src/main/java/com/example/editor/project/storage/ProjectArtifactClassifier.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal con una capa de metamodelo ya presente; sin red ni credenciales.",
+      "en": "Temporary directory with a metamodel layer already present; no network or credentials."
+    },
+    "setup": {
+      "es": "Servicios reales de fusión y de transacción con el registro real de carpetas de trabajo apuntando a @TempDir; paquete existente y paquete recuperado construidos con JSON literal.",
+      "en": "Real merge and transaction services with the real workspace folder registry pointing to @TempDir; existing and recovered packages built from literal JSON."
+    },
+    "executes": {
+      "es": "CapabilitySemanticMergeService.preview/apply/rollback sobre CapabilityLayerTransactionService real, CapabilityPackageChecker y ProjectWorkspaceContributionRegistry con CoreProjectWorkspaceContributor, sobre ficheros reales.",
+      "en": "CapabilitySemanticMergeService.preview/apply/rollback over a real CapabilityLayerTransactionService, CapabilityPackageChecker and ProjectWorkspaceContributionRegistry with CoreProjectWorkspaceContributor, on real files."
+    },
+    "asserts": {
+      "es": "Conflictos por clave y tipo; documentos fusionados comparados con JSON literal; contadores por decisión; SHA-256 de los ficheros aplicados recalculado; bytes originales del diario decodificados; bytes restaurados idénticos; IllegalArgumentException y ausencia de ficheros al rechazar.",
+      "en": "Conflicts by key and type; merged documents compared with literal JSON; counters per decision; applied files' SHA-256 recomputed; journal original bytes decoded; restored bytes identical; IllegalArgumentException and no files written when rejecting."
+    },
+    "behavior": {
+      "es": "La previsualización detecta los choques entre la capa existente y la recuperada sin tocar el proyecto; cada decisión (conservar, usar lo recuperado, fusionar, omitir) gobierna el documento resultante; al aplicar, las capas quedan en disco con su versión y un diario; una versión obsoleta o una referencia sin resolver no escriben nada; la reversión devuelve los bytes originales.",
+      "en": "The preview detects clashes between the existing and the recovered layer without touching the project; each decision (keep, use recovered, merge, skip) governs the resulting document; on apply, layers land on disk with their version and a journal; an obsolete version or an unresolved reference writes nothing; rollback restores the original bytes."
+    },
+    "rule": {
+      "es": "Sustituir una capa existente exige su versión vigente; un plan con referencias sin resolver no se aplica; la reversión no pisa lo cambiado después de aplicar.",
+      "en": "Replacing an existing layer requires its current version; a plan with unresolved references is not applied; rollback does not overwrite what changed after applying."
+    },
+    "scenario": {
+      "es": "Metamodelo existente en disco y paquete recuperado con escalar distinto, entidad distinta, entidades solo en un lado y una capa de validaciones nueva; previsualizar, decidir por clave, aplicar, intentar con versión obsoleta o ausente, con referencia colgante, y revertir (también tras un cambio posterior).",
+      "en": "Existing metamodel on disk and a recovered package with a different scalar, a different entity, entities on one side only and a new validations layer; preview, decide by key, apply, try with an obsolete or missing version, with a dangling reference, and roll back (also after a later change)."
+    },
+    "result": {
+      "es": "Cuatro conflictos exactos, documentos fusionados iguales a los literales esperados, capas aplicadas con huellas verificadas, rechazos sin escrituras parciales ni diario, y reversión byte a byte que omite la capa cambiada después y deja el diario abierto.",
+      "en": "Four exact conflicts, merged documents equal to the expected literals, applied layers with verified fingerprints, rejections without partial writes or journal, and byte-for-byte rollback that skips a layer changed later and leaves the journal open."
+    },
+    "expected": {
+      "es": "Las aserciones sobre conflictos, documentos, huellas, bytes y diario se cumplen en los siete casos.",
+      "en": "The assertions on conflicts, documents, fingerprints, bytes and journal hold in the seven cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la fusión por decisiones y la aplicación con versión comprobada y reversión funcionan sobre ficheros reales y no dejan estados a medias.",
+      "en": "Real evidence that decision-based merge and application with checked version and rollback work on real files and leave no half-applied states."
+    },
+    "limits": {
+      "es": "Solo capas de metamodelo y validaciones, en un proceso; las capas se guardan directamente en las carpetas de trabajo, sin pasar por el almacén de documentos versionados ni dejar línea de auditoría (por eso no se certifica el guardado con auditoría); solo se ejercita una referencia colgante de tipo «depende de».",
+      "en": "Only metamodel and validation layers, in one process; layers are written straight into the workspace folders, without going through the versioned document store or leaving an audit line (so audited saving is not certified); only one dangling reference of the \"depends on\" kind is exercised."
+    },
+    "strengthWhy": {
+      "es": "Servicios y ficheros reales, oráculo independiente (JSON literal, SHA-256 y bytes propios), casos negativos y mapeo directo a las etapas de fusión.",
+      "en": "Real services and files, independent oracle (literal JSON, own SHA-256 and bytes), negative cases and direct mapping to the merge stages."
+    },
+    "cases": [
+      {
+        "n": "previewDetectsConflictsAndProposesTheMergeWithoutTouchingTheProject",
+        "scenario": {
+          "es": "Previsualizar y aplicar sin persistir.",
+          "en": "Preview and apply without persisting."
+        },
+        "result": {
+          "es": "Cuatro conflictos; ficheros y diario sin cambios.",
+          "en": "Four conflicts; files and journal unchanged."
+        }
+      },
+      {
+        "n": "eachDecisionGovernsTheResultingDocument",
+        "scenario": {
+          "es": "Conservar, recuperar, fusionar y omitir por entidad, propiedad y documento.",
+          "en": "Keep, recover, merge and skip per entity, property and document."
+        },
+        "result": {
+          "es": "Documento resultante y contadores según la decisión.",
+          "en": "Resulting document and counters according to the decision."
+        }
+      },
+      {
+        "n": "anUnresolvedReferenceBlocksTheMergeAndNothingIsWritten",
+        "scenario": {
+          "es": "Referencia a una regla inexistente.",
+          "en": "Reference to a rule that does not exist."
+        },
+        "result": {
+          "es": "Plan no aplicable y ninguna escritura.",
+          "en": "Plan not applicable and no writes."
+        }
+      },
+      {
+        "n": "aStaleOrMissingVersionIsRejectedWithoutPartialWrites",
+        "scenario": {
+          "es": "Capa cambiada por otra persona o versión no indicada.",
+          "en": "Layer changed by someone else or version not supplied."
+        },
+        "result": {
+          "es": "Rechazo sin escribir ni siquiera la capa libre.",
+          "en": "Rejection without writing even the free layer."
+        }
+      },
+      {
+        "n": "rollbackSkipsALayerChangedAfterTheApplyAndKeepsTheJournalOpen",
+        "scenario": {
+          "es": "Capa editada después de aplicar y reversión.",
+          "en": "Layer edited after applying and rollback."
+        },
+        "result": {
+          "es": "Se omite la capa editada, se revierte la otra y el diario sigue abierto.",
+          "en": "The edited layer is skipped, the other is reverted and the journal stays open."
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.portability.merge.CapabilitySemanticMergeServiceTests",
+      "java:com.example.editor.portability.transaction.CapabilityLayerTransactionServiceTests",
+      "java:com.example.editor.portability.orchestration.CapabilityOrchestrationServiceTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 112
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 134
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 154
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 180
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 195
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 218
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 248
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 274
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 294
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 207
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests.java",
+        "line": 275
+      }
+    ]
+  }
+]

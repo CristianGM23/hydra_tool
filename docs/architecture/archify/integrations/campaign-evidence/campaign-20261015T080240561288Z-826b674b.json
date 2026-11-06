@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-15T08:02:40+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261015-095920",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "4b3f92cc6ae64d30788956fb2dea67f3f00a980dc2ff73f7693b57c6154c70bd",
+  "reportCheckpointName": "0024-01792051359554987900-e39c67cdd3ee45c1ac68aca0be896b75.json",
+  "testResults": [
+    {
+      "id": "S370",
+      "title": "Vitest file: src/metamodel-designer/importApi.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.35,
+      "logSha256": "9b851e5cdcd9e7c1524775dd76b3f6e8b7a8a475d5528e441e16f837304da3cd",
+      "logRelativePath": "logs/S370.log"
+    },
+    {
+      "id": "S371",
+      "title": "Vitest file: src/metamodel-designer/layoutToolbar.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.67,
+      "logSha256": "ae56c6a9700f4560792350c097c6b977c5d232113e80c2dffcb36219a29fd8c6",
+      "logRelativePath": "logs/S371.log"
+    },
+    {
+      "id": "S372",
+      "title": "Vitest file: src/metamodel-designer/lifecycleApi.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.23,
+      "logSha256": "78346fa5dbf5f17636f758f8ac29d085a6074d1556a3c255a9ceafdc2ee737fc",
+      "logRelativePath": "logs/S372.log"
+    },
+    {
+      "id": "S373",
+      "title": "Vitest file: src/metamodel-designer/lifecycleDialogs.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.57,
+      "logSha256": "cceef8df9db474c104cbd5092431918bd65e4cd667cc68a20718e75a9c27acc1",
+      "logRelativePath": "logs/S373.log"
+    },
+    {
+      "id": "S374",
+      "title": "Vitest file: src/metamodel-designer/nodeSizeUtils.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.65,
+      "logSha256": "962ba440b9be92e602320150ee2409b37055f116c583b909b268fa89f584b275",
+      "logRelativePath": "logs/S374.log"
+    },
+    {
+      "id": "S375",
+      "title": "Vitest file: src/metamodel-designer/numericValidation.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.74,
+      "logSha256": "86f2b2917947726e6d24af62dafed97dcf349a99ed784bd429b3c1995e7c2b8c",
+      "logRelativePath": "logs/S375.log"
+    },
+    {
+      "id": "S376",
+      "title": "Vitest file: src/metamodel-designer/paletteLayout.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.2,
+      "logSha256": "40d40650100ca80bae739364aaa062d750d04df532c3e522eb3944dd4223b9d9",
+      "logRelativePath": "logs/S376.log"
+    },
+    {
+      "id": "S377",
+      "title": "Vitest file: src/metamodel-designer/relationSelection.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.37,
+      "logSha256": "cc8219b448c93ba396a72c330eaffc56c4fd05bf4cb765e8ac36b85585f53ed9",
+      "logRelativePath": "logs/S377.log"
+    },
+    {
+      "id": "S378",
+      "title": "Vitest file: src/model-codegen/SelectionCodeGenerationContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.03,
+      "logSha256": "2e45d1ca388503a300b459614a44b06ed384778acf69d21c5eddb274280c13eb",
+      "logRelativePath": "logs/S378.log"
+    },
+    {
+      "id": "S379",
+      "title": "Vitest file: src/model-editor/ContextualModelEditor.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.86,
+      "logSha256": "a0c1c00eb4c0c86d4a9487d2305640130e4c01a60d913ae9e0f3bf1727e9b389",
+      "logRelativePath": "logs/S379.log"
+    },
+    {
+      "id": "S380",
+      "title": "Vitest file: src/operation-runtime/OperationRuntimePanel.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.06,
+      "logSha256": "acee8c9d0a3c6518ceeaa6a9a3c8ae4a6094cd0da036a38b697429d0dc7f8f93",
+      "logRelativePath": "logs/S380.log"
+    },
+    {
+      "id": "S381",
+      "title": "Vitest file: src/operation-runtime/operationRuntimeApi.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.42,
+      "logSha256": "30e6d84773c91ac7600e7a558130b7787b5f3f57a7dff701894d80eb95fce531",
+      "logRelativePath": "logs/S381.log"
+    },
+    {
+      "id": "S383",
+      "title": "Vitest file: src/problems/problemsApi.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.59,
+      "logSha256": "aa18cee78cdf63884f22046fe57af776aba726b149162fbbe672eb03d16b042b",
+      "logRelativePath": "logs/S383.log"
+    },
+    {
+      "id": "S384",
+      "title": "Vitest file: src/project-explorer/MetamodelWorkbenchLayout.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.7,
+      "logSha256": "2762661a7cf76fd3666a7cc54022c94a6802de66e5041a393de6c836535845f5",
+      "logRelativePath": "logs/S384.log"
+    },
+    {
+      "id": "S387",
+      "title": "Vitest file: src/project-explorer/ProjectFileEditor.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 14.66,
+      "logSha256": "9b6a5196e76d2d51e52128071bec5e9cf00ec819944b8d56c3391c56334c0e52",
+      "logRelativePath": "logs/S387.log"
+    },
+    {
+      "id": "S394",
+      "title": "Vitest file: src/publication-center/api.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 9.02,
+      "logSha256": "a9e75efc078c4dbfe3373698e9430639bd4476da15b72862e9463630cc2298ae",
+      "logRelativePath": "logs/S394.log"
+    },
+    {
+      "id": "S397",
+      "title": "Vitest file: src/remote-storage/RemoteStorageContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 10.63,
+      "logSha256": "0a477386834e7a456ef3e6dbfdd7f2c5d56d8ecf7bc2742a0d2cf99f0ba78a62",
+      "logRelativePath": "logs/S397.log"
+    },
+    {
+      "id": "S398",
+      "title": "Vitest file: src/repository-connections/RepositoryConnectionsUxContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 11.72,
+      "logSha256": "ce2b6e5c654a8106a7f3dfc8f5ed35d52503d1054c36976ebf4ba1ea67258871",
+      "logRelativePath": "logs/S398.log"
+    },
+    {
+      "id": "S399",
+      "title": "Vitest file: src/representable-import-center/api.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 9.36,
+      "logSha256": "f2662df820c6ada2fcdb2d4dd08dcfb0e70d20a03039b341c7204f12bae77b91",
+      "logRelativePath": "logs/S399.log"
+    },
+    {
+      "id": "S400",
+      "title": "Vitest file: src/representable-import-center/representableImportGuidance.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.83,
+      "logSha256": "d7c06edb929c232abc9e4f96774cb50673b6bd9df3605684c17165c750fa1a0f",
+      "logRelativePath": "logs/S400.log"
+    },
+    {
+      "id": "S401",
+      "title": "Vitest file: src/roundtrip-center/api.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 13.67,
+      "logSha256": "249e8fe477dc9303ccaffc5e53751f83b0d9e4fea3df443a8a2c71479464b34f",
+      "logRelativePath": "logs/S401.log"
+    },
+    {
+      "id": "S410",
+      "title": "Vitest file: src/textual-model-editor/TextualModelEditorUxContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.01,
+      "logSha256": "91c8c5429f06707b5da665bec0902cec8b9629d9535e2c543880d659468b3896",
+      "logRelativePath": "logs/S410.log"
+    },
+    {
+      "id": "S411",
+      "title": "Vitest file: src/textual-model-editor/textualModelCompletion.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.94,
+      "logSha256": "c03cbcb688c9dbf29837f61c72568464347f332171041a644401b91379a79140",
+      "logRelativePath": "logs/S411.log"
+    },
+    {
+      "id": "S412",
+      "title": "Vitest file: src/transformation-designer/TransformationDesignerContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.29,
+      "logSha256": "b1c6525a981f4bb681b38693c07be46ef2c531491595ce94a24216a7c2ea9cda",
+      "logRelativePath": "logs/S412.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

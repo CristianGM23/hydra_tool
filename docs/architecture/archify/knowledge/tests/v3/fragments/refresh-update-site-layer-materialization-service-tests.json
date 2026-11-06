@@ -1,0 +1,187 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteLayerMaterializationServiceTests",
+    "name": {
+      "es": "Materialización de capas recuperadas en un editor canónico",
+      "en": "Materialising recovered layers into a canonical editor"
+    },
+    "type": "BEHAVIOR",
+    "layer": "definition",
+    "layers2": [
+      "platform"
+    ],
+    "caps": [
+      "metamodel",
+      "recovery",
+      "model_editor"
+    ],
+    "procs": [
+      {
+        "id": "recovery_lifecycle",
+        "stages": [
+          "a3",
+          "a4"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "recovery_persist_rollback",
+        "stages": [
+          "a1"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+      "src/main/java/com/example/editor/definition/EditorDefinitionChecker.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerSelection.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveredLayers.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "Mockito para UpdateSiteImportApplicationService, EditorDefinitionApplicationService, CanonicalMetamodelApplicationService, UpdateSiteArchiveReader y ExternalProjectSemanticMaterializationService; análisis sintéticos.",
+      "en": "Mockito for UpdateSiteImportApplicationService, EditorDefinitionApplicationService, CanonicalMetamodelApplicationService, UpdateSiteArchiveReader and ExternalProjectSemanticMaterializationService; synthetic analyses."
+    },
+    "executes": {
+      "es": "UpdateSiteLayerMaterializationService.preview con EditorDefinitionChecker real; materialize y rollback con servicios de importación, editores, metamodelos, validación y pipeline profundo simulados con Mockito.",
+      "en": "UpdateSiteLayerMaterializationService.preview with a real EditorDefinitionChecker; materialize and rollback with import, editor, metamodel, validation and deep-pipeline services mocked with Mockito."
+    },
+    "asserts": {
+      "es": "La vista previa genera un editor con paleta y representación seleccionadas; solo se materializan las herramientas elegidas; una selección vacía queda vacía; la persistencia delega al pipeline profundo, no guarda el borrador; sin fidelidad completa se lanza error y se borra el metamodelo; el rollback borra capas antes que el metamodelo.",
+      "en": "Preview builds an editor with selected palette and representation; only chosen tools are materialised; an empty selection stays empty; persistence delegates to the deep pipeline, not the draft; without full fidelity it errors and deletes the metamodel; rollback deletes layers before the metamodel."
+    },
+    "behavior": {
+      "es": "HYDRA previsualiza las capas recuperadas como un editor canónico, respeta la selección del usuario, usa el pipeline profundo para persistir y deshace todo si no puede garantizar fidelidad completa.",
+      "en": "HYDRA previews recovered layers as a canonical editor, honours the user's selection, uses the deep pipeline to persist and rolls everything back if full fidelity cannot be guaranteed."
+    },
+    "rule": {
+      "es": "Si una definición Sirius seleccionada no puede materializarse en profundidad, no se acepta un borrador con pérdida y se revierte el metamodelo importado.",
+      "en": "If a selected Sirius definition cannot be deeply materialised, a lossy draft is not accepted and the imported metamodel is rolled back."
+    },
+    "scenario": {
+      "es": "Selección total, selección parcial, selección vacía, persistencia con éxito profundo, fallo del pipeline profundo y reversión con varios editores.",
+      "en": "Full selection, partial selection, empty selection, successful deep persistence, deep pipeline failure and rollback with several editors."
+    },
+    "result": {
+      "es": "Contadores y editor de vista previa correctos; id/etag del editor rico; error 'full fidelity'; llamadas verificadas con Mockito (delete, never create).",
+      "en": "Correct preview counters and editor; rich editor id/etag; 'full fidelity' error; Mockito-verified calls (delete, never create)."
+    },
+    "expected": {
+      "es": "La materialización y su reversión se comportan según la selección y la fidelidad.",
+      "en": "Materialisation and its rollback follow the selection and fidelity."
+    },
+    "guarantee": {
+      "es": "Evidencia de que la lógica de orquestación decide correctamente, dados colaboradores con respuestas fijadas.",
+      "en": "Evidence that the orchestration logic decides correctly, given collaborators with fixed answers."
+    },
+    "limits": {
+      "es": "Persistencia, pipeline profundo y validación simulados: no se escribe nada real ni se prueba que los artefactos sean válidos fuera del verificador; sin HTTP.",
+      "en": "Persistence, deep pipeline and validation are mocked: nothing real is written and artefact validity is not proven beyond the checker; no HTTP."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Las colaboradoras de persistencia están simuladas; solo la previsualización es real.",
+      "en": "Persistence collaborators are mocked; only the preview is real."
+    },
+    "external": "mocked",
+    "cases": [
+      {
+        "n": "previewsSelectedRecoveredLayersAsACanonicalEditorWithoutPersisting",
+        "scenario": {
+          "es": "Selección total con paleta, representación y mapeo.",
+          "en": "Full selection with palette, representation and mapping."
+        },
+        "result": {
+          "es": "Editor 'library-editor' con 1 grupo, 1 herramienta y 1 representación.",
+          "en": "Editor 'library-editor' with 1 group, 1 tool and 1 representation."
+        }
+      },
+      {
+        "n": "materializesOnlyExplicitlySelectedPaletteTools",
+        "scenario": {
+          "es": "Dos herramientas, se selecciona una.",
+          "en": "Two tools, one selected."
+        },
+        "result": {
+          "es": "Solo 'Create book'.",
+          "en": "Only 'Create book'."
+        }
+      },
+      {
+        "n": "keepsAnExplicitlyEmptySelectionEmptyWithoutGeneratingADefaultRepresentation",
+        "scenario": {
+          "es": "Selección explícitamente vacía.",
+          "en": "Explicitly empty selection."
+        },
+        "result": {
+          "es": "0 herramientas, 0 representaciones y sin grupos.",
+          "en": "0 tools, 0 representations and no groups."
+        }
+      },
+      {
+        "n": "persistedMaterializationDelegatesToTheDeepExternalPipelineInsteadOfSavingTheLossyDraftEditor",
+        "scenario": {
+          "es": "Persistencia con pipeline profundo simulado.",
+          "en": "Persistence with mocked deep pipeline."
+        },
+        "result": {
+          "es": "Se devuelve el editor rico y nunca se crea el borrador.",
+          "en": "The rich editor is returned and the draft is never created."
+        }
+      },
+      {
+        "n": "refusesLossyFallbackWhenASelectedSiriusDefinitionCannotBeMaterializedDeeply",
+        "scenario": {
+          "es": "El pipeline profundo no produce nada.",
+          "en": "The deep pipeline produces nothing."
+        },
+        "result": {
+          "es": "IllegalStateException 'full fidelity' y metamodelo eliminado.",
+          "en": "IllegalStateException 'full fidelity' and metamodel deleted."
+        }
+      },
+      {
+        "n": "rollbackRemovesEveryCanonicalLayerBeforeDeletingTheImportedMetamodel",
+        "scenario": {
+          "es": "Rollback con dos editores y capas de validación/acción/expresión.",
+          "en": "Rollback with two editors and validation/action/expression layers."
+        },
+        "result": {
+          "es": "Se borran editores y capas y después el metamodelo.",
+          "en": "Editors and layers deleted, then the metamodel."
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationServiceTests.java",
+        "line": 55
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationServiceTests.java",
+        "line": 90
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationServiceTests.java",
+        "line": 115
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationServiceTests.java",
+        "line": 160
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationServiceTests.java",
+        "line": 203
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationServiceTests.java",
+        "line": 231
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

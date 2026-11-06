@@ -1,0 +1,4 @@
+- transformation_author_generation.cc: lines 29-31 (create-rule button disabled until the context class is selected) and line 63 (persisted context class id).
+- transformation_author_generation.df: lines 37-39 (initial path, template and collision policy shown by the UI) and lines 64-66 (the same values persisted by the backend and on disk).
+- transformation_author_generation.art: lines 24-25 and 44-45 (no rule, or an unsafe path, blocks the save), lines 60-61, 67 (rule saved with the definition, with a simple condition as workaround) and line 75 (independent checker finds no errors), line 84 (reload shows it).
+- Production defect: a saved M2T rule without a condition comes back with guard null and the designer crashes ("Cannot read properties of null (reading 'root')"); the spec adds a condition before the final save.

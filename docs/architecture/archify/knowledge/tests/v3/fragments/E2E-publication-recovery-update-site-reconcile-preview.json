@@ -1,0 +1,95 @@
+[
+  {
+    "id": "pw:e2e/real/publication/recovery-update-site-reconcile-preview.spec.ts",
+    "name": {
+      "es": "Reconciliar y previsualizar la recuperación de un update-site de extremo a extremo, sin guardar",
+      "en": "Reconciling and previewing an update-site recovery end to end, without saving"
+    },
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": ["recovery"],
+    "procs": [
+      { "id": "recovery_author_workspace", "stages": ["d", "f"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/update-site-import-center/UpdateSiteImportCenter.tsx",
+      "frontend/src/update-site-import-center/UpdateSiteImportCenterPanels.tsx",
+      "frontend/src/update-site-import-center/UpdateSiteLayerSelectionPanel.tsx",
+      "frontend/src/update-site-import-center/api.ts",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryController.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerRecoveryService.java"
+    ],
+    "pre": {
+      "es": "Servidor real con almacenamiento temporal propio; el proyecto de ejemplo de Sirius del repositorio se sube como carpeta desde el navegador.",
+      "en": "Real server with its own temporary storage; the repository's Sirius sample project is uploaded as a folder from the browser."
+    },
+    "setup": {
+      "es": "Navegador real, interfaz en inglés, sin simulaciones. Las peticiones del navegador se leen y se repiten directamente contra el servidor real; se comparan los almacenes del disco antes y después.",
+      "en": "Real browser, interface in English, no simulations. The browser requests are read and repeated directly against the real server; the disk stores are compared before and after."
+    },
+    "executes": {
+      "es": "Abre #/update-site-imports, entra en 'Advanced workspace', sube la carpeta y analiza; en 'Reconciliation' elige en cada conflicto una evidencia y pulsa 'Build reconciled preview'; en 'Materialization' pulsa 'Clear', marca una sola representación y pulsa 'Preview materialization'.",
+      "en": "Opens #/update-site-imports, enters 'Advanced workspace', uploads the folder and analyzes; in 'Reconciliation' picks one evidence per conflict and presses 'Build reconciled preview'; in 'Materialization' presses 'Clear', ticks a single representation and presses 'Preview materialization'."
+    },
+    "asserts": {
+      "es": "Las decisiones elegidas viajan en la petición; la respuesta de la reconciliación coincide con la llamada directa con las mismas decisiones y la vista previa muestra sus recuentos; la materialización con una sola representación no guarda y su resultado coincide con la llamada directa; no hay mensaje de importación ni reversión y ningún almacén del disco cambia.",
+      "en": "The chosen decisions travel in the request; the reconciliation answer matches the direct call with the same decisions and the preview shows its counts; materialization with a single representation does not save and its result matches the direct call; there is no import message or rollback and no disk store changes."
+    },
+    "behavior": {
+      "es": "Una persona decide qué evidencia conservar en cada conflicto, construye la vista previa reconciliada, elige una sola representación y previsualiza lo que se crearía, sin que se guarde nada.",
+      "en": "A person decides which evidence to keep in each conflict, builds the reconciled preview, picks a single representation and previews what would be created, with nothing saved."
+    },
+    "rule": {
+      "es": "Reconciliar y previsualizar la materialización nunca guardan: solo la importación explícita escribe.",
+      "en": "Reconciling and previewing materialization never save: only the explicit import writes."
+    },
+    "scenario": {
+      "es": "Carpeta completa del proyecto de ejemplo ya analizada: decisiones de evidencia, vista previa reconciliada y previsualización con una representación seleccionada.",
+      "en": "Complete sample project folder already analyzed: evidence decisions, reconciled preview and preview with one representation selected."
+    },
+    "result": {
+      "es": "La vista previa reconciliada y la de materialización coinciden con el servidor y los almacenes quedan intactos.",
+      "en": "The reconciled and materialization previews match the server and the stores stay intact."
+    },
+    "expected": {
+      "es": "Una ejecución correcta envía las decisiones y la selección tal cual, muestra el resultado del servidor y no deja ficheros nuevos.",
+      "en": "A passing run sends the decisions and selection as chosen, shows the server's result and leaves no new files."
+    },
+    "guarantee": {
+      "es": "Las decisiones del usuario en el espacio de recuperación determinan la vista previa del servidor real, y previsualizar no guarda.",
+      "en": "The user's decisions in the recovery workspace determine the real server's preview, and previewing does not save."
+    },
+    "limits": {
+      "es": "La elección de evidencia solo se ejerce si el ejemplo produce conflictos; sin ellos solo se comprueba la vista previa reconciliada. No se pulsa el guardado, la reversión ni la fusión. La comparación de almacenes asume que no hay otras escrituras simultáneas.",
+      "en": "The evidence choice is only exercised if the sample produces conflicts; without them only the reconciled preview is checked. Saving, rollback and merge are not pressed. The store comparison assumes no other simultaneous writes."
+    },
+    "strength": "MEDIUM",
+    "strengthWhy": {
+      "es": "Acción real y oráculo independiente, pero la decisión por conflicto depende de que el ejemplo genere conflictos.",
+      "en": "Real action and an independent oracle, but the per-conflict decision depends on the sample producing conflicts."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "elegir evidencia por conflicto y construir la vista previa reconciliada, y previsualizar una sola representación sin guardar nada",
+        "scenario": { "es": "Se eligen decisiones, se reconcilia, se deja una representación y se previsualiza.", "en": "Decisions are chosen, reconciliation runs, one representation is kept and previewed." },
+        "result": { "es": "Los resultados coinciden con el servidor y ningún almacén cambia.", "en": "Results match the server and no store changes." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRecoveryHttpLifecycleIntegrationTests"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/publication/recovery-update-site-reconcile-preview.spec.ts", "line": 32 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-reconcile-preview.spec.ts", "line": 44 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-reconcile-preview.spec.ts", "line": 54 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-reconcile-preview.spec.ts", "line": 69 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-reconcile-preview.spec.ts", "line": 75 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-reconcile-preview.spec.ts", "line": 81 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-reconcile-preview.spec.ts", "line": 87 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

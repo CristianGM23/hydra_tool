@@ -1,15 +1,18 @@
 package com.example.editor.project.storage;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import org.springframework.stereotype.Component;
 import com.example.editor.io.AtomicFiles;
+import com.example.editor.io.FileSystemBoundaries;
 import com.example.editor.project.ProjectException;
 
 /** Operaciones reutilizables de copia, borrado y escritura atómica. */
@@ -34,12 +37,44 @@ public class ProjectFileOperations {
         catch(IOException exception) { throw storage("Could not copy "+source,exception); }
     }
 
+    /** Descripción: Como copyRegularBounded, para un destino dentro de una raíz que puede recibir rutas del usuario: el temporal queda fijado y comprobado dentro de la raíz hasta publicarse (T-SEC-JUNCTION-AMPLIAR, AtomicFiles.copyReplacingBoundedWithin). Entradas: source: fichero origen; root: raíz que contiene el destino; destination: destino; maximumBytes: presupuesto máximo. Salida: devuelve los bytes copiados; INVALID_REQUEST si el destino resuelve fuera de la raíz. */ public long copyRegularBoundedWithin(Path source,Path root,Path destination,long maximumBytes) {
+        if(source==null||root==null||destination==null) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Source, root and destination are required");
+        if(Files.isSymbolicLink(source)||!Files.isRegularFile(source,LinkOption.NOFOLLOW_LINKS)) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Source must be a regular file without symbolic links");
+        try { return AtomicFiles.copyReplacingBoundedWithin(source,destination,root,maximumBytes); }
+        catch(FileSystemBoundaries.EscapeException escape) { throw escaped(escape); }
+        catch(IOException exception) { throw storage("Could not copy "+source,exception); }
+    }
+
+    /** Descripción: Como writeAtomic, para un destino dentro de una raíz que puede recibir rutas del usuario (T-SEC-JUNCTION-AMPLIAR, AtomicFiles.writeReplacingWithin). Entradas: root: raíz que contiene el destino; destination: destino; content: bytes a persistir. Salida: no devuelve valor; INVALID_REQUEST si el destino resuelve fuera de la raíz. */ public void writeAtomicWithin(Path root,Path destination,byte[] content) {
+        try { AtomicFiles.writeReplacingWithin(destination,content,root); }
+        catch(FileSystemBoundaries.EscapeException escape) { throw escaped(escape); }
+        catch(IOException exception) { throw storage("Could not write " + destination,exception); }
+    }
+
+    /** Descripción: Rechazo de una escritura que saldría de su raíz, con la misma clasificación que el resto de rechazos de enlaces y uniones. Entradas: escape: excepción de contención. Salida: la excepción de proyecto. */ private ProjectException escaped(FileSystemBoundaries.EscapeException escape) {
+        return new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Symbolic links and directory junctions are not allowed in write destinations: "+escape.getMessage(),escape);
+    }
+
     /** Descripción: Elimina o libera el recurso gestionado por «deleteRecursively» de forma controlada. Entradas: path: ruta o ubicación utilizada por la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void deleteRecursively(Path path) {
         if(path==null||!Files.exists(path,LinkOption.NOFOLLOW_LINKS)) return;
         try {
+            Path realRoot=FileSystemBoundaries.realRoot(path);
             Files.walkFileTree(path,new SimpleFileVisitor<>() {
-                /** Descripción: Elimina cada fichero visitado sin seguir enlaces simbólicos. Entradas: file: fichero visitado; attrs: atributos básicos. Salida: continúa el recorrido tras eliminar el fichero. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
-                    Files.deleteIfExists(file);
+                /** Descripción: SEC-WIN-JUNCTION: un directorio que resuelve fuera de lo que se borra (unión o punto de montaje de Windows) se elimina como enlace, sin entrar en él ni tocar lo que contiene su destino. Entradas: dir: directorio visitado; attrs: atributos básicos. Salida: salta su subárbol o continúa. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) throws IOException {
+                    if(!dir.equals(path)&&FileSystemBoundaries.escapes(dir,realRoot)) {
+                        Files.delete(dir);
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+                /** Descripción: Elimina cada fichero visitado sin seguir enlaces simbólicos; si su ruta ya resuelve fuera de lo que se borra no lo toca (TOCTOU: Windows deja renombrar un directorio mientras se enumera y poner una unión en su lugar, y los nombres restantes se resolverían a través de ella). Un fichero regular se fija antes de comprobarlo para que ningún antecesor cambie entre la comprobación y el borrado. Entradas: file: fichero visitado; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
+                    if(!attrs.isRegularFile()) {
+                        if(!FileSystemBoundaries.escapes(file,realRoot)) Files.deleteIfExists(file);
+                        return FileVisitResult.CONTINUE;
+                    }
+                    try(Closeable pin=FileSystemBoundaries.pin(file)) {
+                        if(!FileSystemBoundaries.escapes(file,realRoot)) Files.deleteIfExists(file);
+                    } catch(NoSuchFileException gone) { /* ya no existe: nada que borrar */ }
                     return FileVisitResult.CONTINUE;
                 }
                 /** Descripción: Elimina un directorio después de procesar sus hijos y propaga cualquier fallo previo. Entradas: dir: directorio visitado; exception: fallo del recorrido si existe. Salida: continúa el recorrido tras eliminar el directorio. */ @Override public FileVisitResult postVisitDirectory(Path dir,IOException exception) throws IOException {
@@ -52,16 +87,21 @@ public class ProjectFileOperations {
     }
 
     /** Descripción: Copia recursivamente un directorio sin materializar todo el árbol en memoria y sin seguir enlaces simbólicos. Entradas: source: raíz origen; destination: raíz destino. Salida: no devuelve valor; preserva la estructura visitada. */ private void copyDirectory(Path source,Path destination) throws IOException {
+        Path realSource=FileSystemBoundaries.realRoot(source);
         Files.walkFileTree(source,new SimpleFileVisitor<>() {
-            /** Descripción: Crea el directorio equivalente antes de visitar sus hijos. Entradas: dir: directorio origen; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) throws IOException {
+            /** Descripción: Crea el directorio equivalente antes de visitar sus hijos; rechaza un directorio que resuelve fuera del origen (SEC-WIN-JUNCTION). Entradas: dir: directorio origen; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) throws IOException {
+                if(FileSystemBoundaries.escapes(dir,realSource)) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Links to directories outside the copied directory are not allowed: "+source.relativize(dir));
                 Files.createDirectories(destination.resolve(source.relativize(dir).toString()));
                 return FileVisitResult.CONTINUE;
             }
-            /** Descripción: Copia un fichero o enlace visitado conservando el enlace como enlace en lugar de seguirlo. Entradas: file: entrada origen; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
+            /** Descripción: Copia un fichero o enlace visitado conservando el enlace como enlace en lugar de seguirlo; rechaza un fichero cuya ruta ya resuelve fuera del origen (TOCTOU: su directorio se sustituyó por una unión después de entrar en él). Un fichero regular se fija antes de comprobarlo para que la copia lea el mismo fichero comprobado. Entradas: file: entrada origen; attrs: atributos básicos. Salida: continúa el recorrido. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
                 Path target=destination.resolve(source.relativize(file).toString());
                 if(target.getParent()!=null) Files.createDirectories(target.getParent());
-                if(attrs.isSymbolicLink()) Files.copy(file,target,LinkOption.NOFOLLOW_LINKS,StandardCopyOption.REPLACE_EXISTING);
-                else Files.copy(file,target,StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.COPY_ATTRIBUTES);
+                if(attrs.isSymbolicLink()) { Files.copy(file,target,LinkOption.NOFOLLOW_LINKS,StandardCopyOption.REPLACE_EXISTING); return FileVisitResult.CONTINUE; }
+                try(Closeable pin=attrs.isRegularFile()?FileSystemBoundaries.pin(file):() -> {}) {
+                    if(FileSystemBoundaries.escapes(file,realSource)) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,"Links to directories outside the copied directory are not allowed: "+source.relativize(file));
+                    Files.copy(file,target,StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.COPY_ATTRIBUTES);
+                }
                 return FileVisitResult.CONTINUE;
             }
         });

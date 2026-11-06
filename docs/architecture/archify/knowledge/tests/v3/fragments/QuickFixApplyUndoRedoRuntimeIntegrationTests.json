@@ -1,0 +1,176 @@
+[
+  {
+    "id": "java:com.example.editor.validation.quickfix.QuickFixApplyUndoRedoRuntimeIntegrationTests",
+    "name": {
+      "es": "Ciclo completo de una Quick Fix sobre un modelo vivo: vista previa, aplicar, revalidar, deshacer y rehacer",
+      "en": "Full quick-fix cycle on a live model: preview, apply, revalidate, undo and redo"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "validation"
+    ],
+    "procs": [
+      {
+        "id": "validation_apply_quickfix",
+        "stages": [
+          "list",
+          "par",
+          "pv",
+          "ap",
+          "rb",
+          "rv",
+          "st",
+          "hist",
+          "evq",
+          "undo",
+          "pick",
+          "fail",
+          "res"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_validate_fix_revalidate_reward",
+        "stages": [
+          "pick",
+          "pv",
+          "ap",
+          "rv",
+          "evt",
+          "undo",
+          "fail",
+          "st"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_validate_fix_revalidate_reward",
+        "stages": [
+          "d1"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "x_language_to_published_editor",
+        "stages": [
+          "fx"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "validation_apply_quickfix",
+        "stages": [
+          "ok"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/validation/quickfix/QuickFixRuntimeService.java",
+      "src/main/java/com/example/editor/validation/action/CanonicalActionExecutor.java",
+      "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrator.java",
+      "src/main/java/com/example/editor/validation/quickfix/CanonicalModelChangeAnalyzer.java",
+      "src/main/java/com/example/editor/operation/runtime/CanonicalModelRuntimeAdapter.java",
+      "src/main/java/com/example/editor/model/ModelDocumentService.java",
+      "src/main/java/com/example/editor/validation/runtime/ValidationRuntimeApplicationService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible; recurso real introspection.ecore registrado con la cadena EMF real; documentos JSON de metamodelo, expresiones, acciones y validaciones guardados de verdad.",
+      "en": "Writable temp directory; the real introspection.ecore registered with the real EMF chain; metamodel, expression, action and validation JSON documents really saved."
+    },
+    "setup": {
+      "es": "Sin mocks: ModelDocumentService EMF, repositorios JSON, ValidationRuntimeApplicationService, ValidationOrchestrator, QuickFixRuntimeService y bus de eventos real con un suscriptor que anota los tipos de evento.",
+      "en": "No mocks: EMF ModelDocumentService, JSON repositories, ValidationRuntimeApplicationService, ValidationOrchestrator, QuickFixRuntimeService and a real event bus with a subscriber recording event types."
+    },
+    "executes": {
+      "es": "resolve, preview, apply, undo y redo reales de QuickFixRuntimeService contra una sesion EMF con dos reglas y dos nodos; guardado del XMI en disco para leerlo aparte; orquestacion desactivada a proposito para forzar un fallo tras mutar el modelo.",
+      "en": "Real resolve, preview, apply, undo and redo of QuickFixRuntimeService against an EMF session with two rules and two nodes; the XMI is saved and read back separately; orchestration is disabled on purpose to force a failure after the model was mutated."
+    },
+    "asserts": {
+      "es": "Lista de seis correcciones ofrecidas; la vista previa no cambia el XMI; apply cambia el XMI, resuelve el diagnostico y revalida en modo INCREMENTAL conservando el otro problema; undo/redo y hasUndo/hasRedo; argumentos o precondicion invalidos y fallo tras mutar dejan el XMI identico byte a byte y publican failed.",
+      "en": "Six offered fixes listed; preview leaves the XMI unchanged; apply changes the XMI, resolves the diagnostic and revalidates in INCREMENTAL mode keeping the other problem; undo/redo and hasUndo/hasRedo; invalid arguments, a false precondition and a failure after mutation leave the XMI byte-identical and publish failed."
+    },
+    "behavior": {
+      "es": "Aplicar una correccion rapida modifica el modelo de verdad, revalida solo lo afectado, avisa por eventos y se puede deshacer y rehacer; si algo falla, el modelo vuelve exactamente a como estaba.",
+      "en": "Applying a quick fix really changes the model, revalidates only what is affected, announces it through events and can be undone and redone; if anything fails the model returns exactly to how it was."
+    },
+    "rule": {
+      "es": "Un apply nuevo vacia el historial de rehacer; una accion sin soporte de deshacer no guarda historial; el estado resultante distingue resuelto, sin resolver y sin cambios.",
+      "en": "A new apply clears the redo history; an action without undo support keeps no history; the resulting status tells resolved, unresolved and no-change apart."
+    },
+    "scenario": {
+      "es": "Modelo con un nodo que incumple la regla A (con seis correcciones) y otro que incumple la regla B; se previsualiza, aplica, deshace, rehace, se rechazan argumentos, se falla tras mutar y se prueban estados sin cambios y applied unresolved.",
+      "en": "A model with one node violating rule A (offering six fixes) and another violating rule B; preview, apply, undo, redo, argument rejection, failure after mutation and the no changes and applied unresolved statuses are exercised."
+    },
+    "result": {
+      "es": "El XMI en disco refleja cada paso; el informe incremental solo resuelve el diagnostico corregido; los eventos started/applied/failed/undone/redone se publican; tras un fallo el XMI es identico al anterior.",
+      "en": "The XMI on disk reflects each step; the incremental report only resolves the fixed diagnostic; started/applied/failed/undone/redone events are published; after a failure the XMI equals the previous one."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan con la cadena real, sin simulaciones ni esperas.",
+      "en": "All assertions pass against the real chain, with no mocks or waits."
+    },
+    "guarantee": {
+      "es": "El ciclo aplicar-revalidar-deshacer-rehacer y la reversion ante fallo funcionan de punta a punta sobre persistencia y EMF reales.",
+      "en": "The apply-revalidate-undo-redo cycle and rollback on failure work end to end over real persistence and EMF."
+    },
+    "limits": {
+      "es": "No cubre la recompensa de gamificacion, la API HTTP ni acciones que creen o borren elementos; el fallo tras mutar se provoca desactivando la orquestacion, no con un error espontaneo.",
+      "en": "Does not cover gamification rewards, the HTTP API or actions that create or delete elements; the failure after mutation is provoked by disabling orchestration, not by a spontaneous error."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Colaboradores y persistencia reales sin mocks, oraculo independiente (XMI leido de disco) y mapeo directo a cada etapa.",
+      "en": "Real collaborators and persistence without mocks, an independent oracle (XMI read from disk) and direct mapping to each stage."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 218
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 235
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 243
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 251
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 267
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 297
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 339
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 359
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 367
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 240
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/quickfix/QuickFixApplyUndoRedoRuntimeIntegrationTests.java",
+        "line": 245
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

@@ -14,6 +14,7 @@ import com.example.editor.metamodel.core.MetaPrimitiveType;
 import com.example.editor.metamodel.core.MetaRelation;
 import com.example.editor.metamodel.core.MetaTypeReference;
 import com.example.editor.metamodel.core.MetaTypeReferenceKind;
+import com.example.editor.validation.support.CanonicalMetamodelIndex;
 import com.example.editor.transformation.core.TransformationBinding;
 import com.example.editor.transformation.core.TransformationBindingKind;
 import com.example.editor.transformation.core.TransformationCollectionMode;
@@ -305,6 +306,9 @@ public class TransformationDefinitionChecker {
             List<TransformationDiagnostic> diagnostics, String path) {
         Set<String> ids = new HashSet<>();
         Set<String> mappedTargets = new HashSet<>();
+        // Same feature resolution as validations and actions: a class owns the attributes and relations of its supertypes.
+        CanonicalMetamodelIndex sourceIndex = new CanonicalMetamodelIndex(source);
+        CanonicalMetamodelIndex targetIndex = new CanonicalMetamodelIndex(target);
         for(int index = 0; index < rule.bindings().size(); index++) {
             TransformationBinding binding = rule.bindings().get(index);
             String bindingPath = path + ".bindings[" + index + "]";
@@ -323,20 +327,18 @@ public class TransformationDefinitionChecker {
             if(!mappedTargets.add(targetKey)) diagnostics.add(warning("DUPLICATE_TARGET_BINDING", rule.id(), binding.id(), bindingPath,
                     "Target property is mapped more than once", "More than one binding writes the same target feature.",
                     "Keep a single deterministic binding for this target feature."));
-            if(binding.kind() == TransformationBindingKind.DIRECT) checkDirect(binding, rule, sourceClass, targetClass, diagnostics, bindingPath);
-            else if(binding.kind() == TransformationBindingKind.TRACE_EQUIVALENT) checkTrace(binding, rule, source, target, targetClass, diagnostics, bindingPath);
-            else if(binding.kind() == TransformationBindingKind.CONSTANT) checkTargetAttribute(binding, rule, targetClass, diagnostics, bindingPath);
-            else if(binding.kind() == TransformationBindingKind.EXPRESSION) checkExpressionBinding(binding, rule, source, targetClass, diagnostics, bindingPath);
+            if(binding.kind() == TransformationBindingKind.DIRECT) checkDirect(binding, rule, sourceClass, targetClass, source, target, sourceIndex, targetIndex, diagnostics, bindingPath);
+            else if(binding.kind() == TransformationBindingKind.TRACE_EQUIVALENT) checkTrace(binding, rule, source, target, sourceIndex, targetIndex, targetClass, diagnostics, bindingPath);
+            else if(binding.kind() == TransformationBindingKind.CONSTANT) checkTargetAttribute(binding, rule, targetClass, target, targetIndex, diagnostics, bindingPath);
+            else if(binding.kind() == TransformationBindingKind.EXPRESSION) checkExpressionBinding(binding, rule, source, targetClass, target, targetIndex, diagnostics, bindingPath);
         }
         warnRequiredTargets(rule, target, mappedTargets, diagnostics, path);
     }
 
     /** Descripción: Valida las condiciones necesarias para «checkDirect» y rechaza entradas no válidas. Entradas: binding: dato de entrada necesario para la operación; rule: dato de entrada necesario para la operación; sourceClass: dato de entrada necesario para la operación; targetClass: dato de entrada necesario para la operación; diagnostics: dato de entrada necesario para la operación; path: ruta o ubicación utilizada por la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void checkDirect(TransformationBinding binding, TransformationRule rule, MetaClass sourceClass, MetaClass targetClass,
-            List<TransformationDiagnostic> diagnostics, String path) {
-        MetaAttribute sourceAttribute = sourceClass == null ? null : sourceClass.attributes().stream()
-                .filter(item -> item.id().equals(binding.sourceFeatureId())).findFirst().orElse(null);
-        MetaAttribute targetAttribute = targetClass == null ? null : targetClass.attributes().stream()
-                .filter(item -> item.id().equals(binding.targetFeatureId())).findFirst().orElse(null);
+            MetaModel source, MetaModel target, CanonicalMetamodelIndex sourceIndex, CanonicalMetamodelIndex targetIndex, List<TransformationDiagnostic> diagnostics, String path) {
+        MetaAttribute sourceAttribute = attributeOf(source, sourceIndex, sourceClass, binding.sourceFeatureId());
+        MetaAttribute targetAttribute = attributeOf(target, targetIndex, targetClass, binding.targetFeatureId());
         if(sourceAttribute == null) diagnostics.add(error("UNKNOWN_SOURCE_ATTRIBUTE", rule.id(), binding.id(), path + ".sourceFeatureId",
                 "Source attribute not found", "The direct binding references an attribute that does not exist on the source class.",
                 "Select an existing source attribute."));
@@ -370,17 +372,16 @@ public class TransformationDefinitionChecker {
     }
 
     /** Descripción: Valida las condiciones necesarias para «checkTargetAttribute» y rechaza entradas no válidas. Entradas: binding: dato de entrada necesario para la operación; rule: dato de entrada necesario para la operación; targetClass: dato de entrada necesario para la operación; diagnostics: dato de entrada necesario para la operación; path: ruta o ubicación utilizada por la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void checkTargetAttribute(TransformationBinding binding, TransformationRule rule, MetaClass targetClass,
-            List<TransformationDiagnostic> diagnostics, String path) {
-        MetaAttribute targetAttribute = targetClass == null ? null : targetClass.attributes().stream()
-                .filter(item -> item.id().equals(binding.targetFeatureId())).findFirst().orElse(null);
+            MetaModel target, CanonicalMetamodelIndex targetIndex, List<TransformationDiagnostic> diagnostics, String path) {
+        MetaAttribute targetAttribute = attributeOf(target, targetIndex, targetClass, binding.targetFeatureId());
         if(targetAttribute == null) diagnostics.add(error("UNKNOWN_TARGET_ATTRIBUTE", rule.id(), binding.id(), path + ".targetFeatureId",
                 "Target attribute not found", "The binding references an attribute that does not exist on the target class.",
                 "Select an existing target attribute."));
     }
 
     /** Descripción: Valida las condiciones necesarias para «checkExpressionBinding» y rechaza entradas no válidas. Entradas: binding: dato de entrada necesario para la operación; rule: dato de entrada necesario para la operación; source: dato de entrada necesario para la operación; targetClass: dato de entrada necesario para la operación; diagnostics: dato de entrada necesario para la operación; path: ruta o ubicación utilizada por la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void checkExpressionBinding(TransformationBinding binding, TransformationRule rule, MetaModel source, MetaClass targetClass,
-            List<TransformationDiagnostic> diagnostics, String path) {
-        checkTargetAttribute(binding, rule, targetClass, diagnostics, path);
+            MetaModel target, CanonicalMetamodelIndex targetIndex, List<TransformationDiagnostic> diagnostics, String path) {
+        checkTargetAttribute(binding, rule, targetClass, target, targetIndex, diagnostics, path);
         if(binding.expression() == null) {
             diagnostics.add(error("BINDING_EXPRESSION_REQUIRED", rule.id(), binding.id(), path + ".expression", "Expression required",
                     "Expression bindings need an expression tree.", "Define the expression that calculates the target value."));
@@ -400,16 +401,27 @@ public class TransformationDefinitionChecker {
                 item.message(), "Correct the expression before executing the transformation.")));
     }
 
-    /** Descripción: Valida las condiciones necesarias para «checkTrace» y rechaza entradas no válidas. Entradas: binding: dato de entrada necesario para la operación; rule: dato de entrada necesario para la operación; source: dato de entrada necesario para la operación; target: dato de entrada necesario para la operación; targetClass: dato de entrada necesario para la operación; diagnostics: dato de entrada necesario para la operación; path: ruta o ubicación utilizada por la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void checkTrace(TransformationBinding binding, TransformationRule rule, MetaModel source, MetaModel target,
-            MetaClass targetClass, List<TransformationDiagnostic> diagnostics, String path) {
-        MetaRelation sourceRelation = source == null ? null : source.relations().stream()
-                .filter(item -> item.id().equals(binding.sourceFeatureId()) && item.sourceTypeId().equals(rule.sourceTypeId())).findFirst().orElse(null);
-        MetaRelation targetRelation = target == null || targetClass == null ? null : target.relations().stream()
-                .filter(item -> item.id().equals(binding.targetFeatureId()) && item.sourceTypeId().equals(targetClass.id())).findFirst().orElse(null);
+    /** Descripción: Valida las condiciones necesarias para «checkTrace» y rechaza entradas no válidas. Entradas: binding: dato de entrada necesario para la operación; rule: dato de entrada necesario para la operación; source: dato de entrada necesario para la operación; target: dato de entrada necesario para la operación; targetClass: dato de entrada necesario para la operación; diagnostics: dato de entrada necesario para la operación; path: ruta o ubicación utilizada por la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void checkTrace(TransformationBinding binding, TransformationRule rule, MetaModel source, MetaModel target, CanonicalMetamodelIndex sourceIndex,
+            CanonicalMetamodelIndex targetIndex, MetaClass targetClass, List<TransformationDiagnostic> diagnostics, String path) {
+        MetaRelation sourceRelation = relationOf(source, sourceIndex, rule.sourceTypeId(), binding.sourceFeatureId());
+        MetaRelation targetRelation = targetClass == null ? null : relationOf(target, targetIndex, targetClass.id(), binding.targetFeatureId());
         if(sourceRelation == null) diagnostics.add(error("UNKNOWN_SOURCE_RELATION", rule.id(), binding.id(), path + ".sourceFeatureId",
                 "Source relation not found", "Trace-equivalent bindings need a navigable source relation.", "Select a relation owned by the source class."));
         if(targetRelation == null) diagnostics.add(error("UNKNOWN_TARGET_RELATION", rule.id(), binding.id(), path + ".targetFeatureId",
                 "Target relation not found", "Trace-equivalent bindings need a target relation.", "Select a relation owned by the target class."));
+    }
+
+    /** Descripción: Resuelve un atributo de la clase indicada: primero los propios y después los de sus supertipos (INHERITANCE/IMPLEMENTATION), sin depender de que los ids de atributo sean únicos en todo el metamodelo. Entradas: model: metamodelo; index: índice de supertipos; owner: clase de contexto; attributeId: atributo buscado. Salida: devuelve el atributo o null si la clase no lo tiene. */ private static MetaAttribute attributeOf(MetaModel model, CanonicalMetamodelIndex index, MetaClass owner, String attributeId) {
+        if(owner == null) return null;
+        MetaAttribute own = owner.attributes().stream().filter(item -> item.id().equals(attributeId)).findFirst().orElse(null);
+        if(own != null || model == null) return own;
+        return model.classes().stream().filter(candidate -> !candidate.id().equals(owner.id()) && index.isSameOrSubtype(owner.id(), candidate.id()))
+                .flatMap(candidate -> candidate.attributes().stream()).filter(item -> item.id().equals(attributeId)).findFirst().orElse(null);
+    }
+
+    /** Descripción: Resuelve una relación cuyo origen es la clase indicada o uno de sus supertipos. Entradas: model: metamodelo; index: índice de supertipos; ownerId: clase de contexto; relationId: relación buscada. Salida: devuelve la relación o null. */ private static MetaRelation relationOf(MetaModel model, CanonicalMetamodelIndex index, String ownerId, String relationId) {
+        if(model == null || ownerId == null) return null;
+        return model.relations().stream().filter(item -> item.id().equals(relationId) && index.isSameOrSubtype(ownerId, item.sourceTypeId())).findFirst().orElse(null);
     }
 
     /** Descripción: Ejecuta la operación «warnRequiredTargets» correspondiente a la responsabilidad de TransformationDefinitionChecker. Entradas: rule: dato de entrada necesario para la operación; target: dato de entrada necesario para la operación; mappedTargets: dato de entrada necesario para la operación; diagnostics: dato de entrada necesario para la operación; path: ruta o ubicación utilizada por la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void warnRequiredTargets(TransformationRule rule, MetaModel target, Set<String> mappedTargets,

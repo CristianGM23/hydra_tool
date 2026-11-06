@@ -91,7 +91,7 @@ public class TextualQuickFixRuntimeService {
 
     /** Descripción: Valida las condiciones necesarias para «requireCurrentValid» y rechaza entradas no válidas. Entradas: id: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ private StoredCanonicalDocument<TextualModelSession> requireCurrentValid(String id){
         StoredCanonicalDocument<TextualModelSession> stored=sessions.find(id);TextualModelSession session=stored.document();
-        if(!session.draftValid()||session.lastValidSemanticModel()==null||session.lastParsedRevision()!=session.draftRevision())throw new IllegalStateException("A shared quick fix requires the current textual draft to parse successfully");
+        if(!session.draftValid()||session.lastValidSemanticModel()==null||session.lastParsedRevision()!=session.draftRevision())throw new TextualDraftNotReadyException("A shared quick fix requires the current textual draft to parse successfully");
         return stored;
     }
     /** Descripción: Ejecuta la operación «validationReport» correspondiente a la responsabilidad de ExecutionContext. Entradas: session: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private ModelValidationReport validationReport(TextualModelSession session){return validationReport(session.lastValidSemanticModel());}

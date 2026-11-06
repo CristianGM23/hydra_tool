@@ -1,0 +1,86 @@
+[
+  {
+    "id": "pw:e2e/real/grammar/author-monaco-documents.spec.ts",
+    "name": {
+      "es": "Añadir, escribir y quitar documentos de una gramática y guardar lo escrito",
+      "en": "Adding, writing and removing a grammar's documents and saving what was typed"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["delivery"],
+    "caps": ["grammar", "persistence"],
+    "procs": [
+      { "id": "grammar_author_monaco", "stages": ["ad", "rm"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/grammar-designer/GrammarSourceExplorer.tsx",
+      "frontend/src/grammar-designer/GrammarMonacoEditor.tsx",
+      "frontend/src/grammar-designer/GrammarDesigner.tsx",
+      "src/main/java/com/example/editor/grammar/web/GrammarController.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarRepository.java"
+    ],
+    "pre": {
+      "es": "Backend real con almacenamiento temporal propio; no hace falta sembrar nada.",
+      "en": "Real backend with its own temporary storage; nothing needs to be seeded."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, sin simulaciones. El oráculo lee la API real de gramáticas y el fichero que escribe el servidor.",
+      "en": "Playwright with Chromium, no simulations. The oracle reads the real grammar API and the file the server writes."
+    },
+    "executes": {
+      "es": "Abre #/grammars, crea una gramática nueva, pulsa '+ File', escribe con el teclado en el editor Monaco del documento nuevo, añade un segundo documento y lo quita con 'Remove file', y pulsa 'Save grammar'; después reabre la gramática y selecciona el documento escrito.",
+      "en": "Opens #/grammars, creates a new grammar, presses '+ File', types into the new document's Monaco editor, adds a second document and removes it with 'Remove file', and presses 'Save grammar'; then reopens the grammar and selects the typed document."
+    },
+    "asserts": {
+      "es": "El documento de entrada no ofrece quitarse; el nuevo aparece con extensión .langium; tras guardar, API y fichero tienen exactamente los documentos main y source-2, este con el texto tecleado literal y la extensión de la tecnología, y sin el eliminado; al reabrir, el editor muestra ese texto.",
+      "en": "The entry document offers no removal; the new one appears with the .langium extension; after saving, the API and the file hold exactly the documents main and source-2, the latter with the typed text verbatim and the technology's extension, and without the removed one; on reopening, the editor shows that text."
+    },
+    "behavior": {
+      "es": "La persona reparte su gramática en varios ficheros: añade uno con la extensión de su tecnología, escribe en él, quita el que sobra y lo guardado es justo lo que quedó en pantalla.",
+      "en": "The person splits their grammar into several files: adds one with their technology's extension, writes in it, removes the surplus one and what is stored is exactly what was left on screen."
+    },
+    "rule": {
+      "es": "El documento de entrada no se puede quitar y los documentos nuevos usan la extensión de la tecnología elegida.",
+      "en": "The entry document cannot be removed and new documents use the chosen technology's extension."
+    },
+    "scenario": {
+      "es": "Una gramática nueva gana un documento con texto propio, gana otro que se elimina enseguida, se guarda y se reabre.",
+      "en": "A new grammar gains a document with its own text, gains another that is removed at once, is saved and reopened."
+    },
+    "result": {
+      "es": "El servidor guarda dos documentos, con el texto tecleado exacto en el añadido, y la pantalla lo recupera al reabrir.",
+      "en": "The server stores two documents, with the exact typed text in the added one, and the screen recovers it on reopening."
+    },
+    "expected": {
+      "es": "Una ejecución correcta termina con dos documentos guardados y sin rastro del eliminado.",
+      "en": "A passing run ends with two stored documents and no trace of the removed one."
+    },
+    "guarantee": {
+      "es": "Añadir, escribir y quitar documentos en el diseñador de gramáticas se guarda tal cual en un navegador real.",
+      "en": "Adding, writing and removing documents in the grammar designer is stored as is in a real browser."
+    },
+    "limits": {
+      "es": "Del paso de escribir solo se prueba que el texto tecleado llega intacto al servidor. El resaltado y el completado no se pueden demostrar aquí: el editor de la gramática no los ofrece (el completado solo existe en el editor de modelos en texto). Solo cubre Langium.",
+      "en": "Of the writing step only the typed text reaching the server intact is tested. Highlighting and completion cannot be shown here: the grammar editor does not offer them (completion only exists in the text model editor). It only covers Langium."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones reales en la lista de ficheros y el editor, servidor real y lectura independiente de API y fichero guardado.",
+      "en": "Real actions on the file list and the editor, real server and independent reading of the API and stored file."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/grammar/author-monaco-documents.spec.ts", "line": 19 },
+      { "path": "frontend/e2e/real/grammar/author-monaco-documents.spec.ts", "line": 23 },
+      { "path": "frontend/e2e/real/grammar/author-monaco-documents.spec.ts", "line": 29 },
+      { "path": "frontend/e2e/real/grammar/author-monaco-documents.spec.ts", "line": 38 },
+      { "path": "frontend/e2e/real/grammar/author-monaco-documents.spec.ts", "line": 47 },
+      { "path": "frontend/e2e/real/grammar/author-monaco-documents.spec.ts", "line": 49 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

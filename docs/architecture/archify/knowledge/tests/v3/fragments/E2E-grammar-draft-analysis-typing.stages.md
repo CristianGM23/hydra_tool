@@ -1,0 +1,2 @@
+- grammar_analyze_generate.fast: tras escribir con el teclado una referencia inexistente, la pantalla envía una petición FAST con ese texto, su respuesta coincide con una llamada directa a la API y el problema se ve (líneas 26-42).
+- grammar_analyze_generate.pn: la proyección de clases se pide con la misma revisión tras el análisis, se muestra el recuento (líneas 44-47) y durante el tecleo continuo no sale ninguna petición hasta la pausa (líneas 55-64). Matiz: la petición sale tras el primer análisis vigente (rápido), no solo el normal.

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.export.TransformationExportServiceRealIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Exportación a lenguajes de transformación con el servicio real",
+      "en": "Export to transformation languages with the real service"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "transformation_export_native",
+        "stages": [
+          "cp",
+          "ex",
+          "lg",
+          "art"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/export/TransformationExportService.java",
+      "src/main/java/com/example/editor/transformation/export/TransformationLanguageAdapterRegistry.java",
+      "src/main/java/com/example/editor/transformation/export/TransformationDirectionalExportView.java",
+      "src/main/java/com/example/editor/transformation/export/AtlTransformationLanguageAdapter.java",
+      "src/main/java/com/example/editor/transformation/export/JavaTransformationLanguageAdapter.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible; metamodelo de ejemplo guardado; sin red ni herramientas externas.",
+      "en": "Writable temporary directory; sample metamodel stored; no network or external tools."
+    },
+    "setup": {
+      "es": "TransformationExportService real con el registro real de diez adaptadores, comprobador real y metamodelo guardado en disco; sin mocks.",
+      "en": "Real TransformationExportService with the real registry of ten adapters, real checker and metamodel stored on disk; no mocks."
+    },
+    "executes": {
+      "es": "export de M2M, M2T, T2M y definiciones inválidas hacia ATL, ETL, JAVA y ACCELEO en dirección FORWARD y REVERSE, con definiciones unidireccionales y bidireccionales.",
+      "en": "export of M2M, M2T, T2M and invalid definitions to ATL, ETL, JAVA and ACCELEO in FORWARD and REVERSE direction, with unidirectional and bidirectional definitions."
+    },
+    "asserts": {
+      "es": "Los ficheros de ATL, ETL y JAVA coinciden con rutas y contenidos literales y con el plan JSON; REVERSE sin bidireccional, REVERSE en M2T/T2M y ATL con M2T quedan bloqueados sin ficheros; una definición inválida da CANONICAL_*; la vista inversa exporta la regla de vuelta.",
+      "en": "ATL, ETL and JAVA files match literal paths and contents and the JSON plan; REVERSE without bidirectional, REVERSE on M2T/T2M and ATL with M2T are blocked without files; an invalid definition gives CANONICAL_*; the reverse view exports the reverse rule."
+    },
+    "behavior": {
+      "es": "Al exportar, HYDRA comprueba primero que el tipo y la dirección sean compatibles con el lenguaje y solo entonces genera ficheros con ruta, contenido y fidelidad; lo incompatible se bloquea con un diagnóstico.",
+      "en": "When exporting, HYDRA first checks that the kind and direction are compatible with the language and only then generates files with path, content and fidelity; anything incompatible is blocked with a diagnostic."
+    },
+    "rule": {
+      "es": "La dirección inversa solo existe en M2M bidireccional; cada lenguaje admite solo ciertos tipos; una definición con errores no genera ficheros.",
+      "en": "The reverse direction exists only for bidirectional M2M; each language supports only certain kinds; a definition with errors generates no files."
+    },
+    "scenario": {
+      "es": "Exportar una M2M válida a tres lenguajes, pedir direcciones o tipos no admitidos, exportar una definición con origen inexistente y exportar la vista directa e inversa de una bidireccional.",
+      "en": "Export a valid M2M to three languages, request unsupported directions or kinds, export a definition with a missing source and export the forward and reverse views of a bidirectional one."
+    },
+    "result": {
+      "es": "Ficheros exactos y fidelidad SUBSET (ATL) o EXACT (JAVA) cuando es compatible; sin ficheros y con el código esperado cuando no lo es.",
+      "en": "Exact files and fidelity SUBSET (ATL) or EXACT (JAVA) when compatible; no files and the expected code when not."
+    },
+    "expected": {
+      "es": "Rutas, contenidos, plan JSON, códigos de diagnóstico y ausencia de artefactos coinciden con los literales.",
+      "en": "Paths, contents, JSON plan, diagnostic codes and absence of artifacts match the literals."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la puerta de compatibilidad decide antes de generar y de que los ficheros exportados tienen el contenido esperado.",
+      "en": "Real evidence that the compatibility gate decides before generating and that exported files have the expected content."
+    },
+    "limits": {
+      "es": "Solo comprueba texto y plan generados, no ejecuta ATL, ETL ni Java; el panel de elección de lenguaje (lg) no se ejercita; reglas directas simples.",
+      "en": "Only checks generated text and plan, does not run ATL, ETL or Java; the language-choice panel (lg) is not exercised; simple direct rules."
+    },
+    "strengthWhy": {
+      "es": "Servicio, registro y comprobador reales con oráculo literal y varios casos de bloqueo.",
+      "en": "Real service, registry and checker with a literal oracle and several blocking cases."
+    },
+    "cases": [
+      {
+        "n": "validM2mForwardExportsFilesForAtlEtlAndJava",
+        "scenario": {
+          "es": "M2M válida a ATL, ETL y JAVA.",
+          "en": "Valid M2M to ATL, ETL and JAVA."
+        },
+        "result": {
+          "es": "Ficheros literales, SUBSET y EXACT.",
+          "en": "Literal files, SUBSET and EXACT."
+        }
+      },
+      {
+        "n": "incompatibleDirectionOrKindIsBlockedWithoutFiles",
+        "scenario": {
+          "es": "REVERSE no bidireccional, M2T/T2M inverso, ATL con M2T.",
+          "en": "Non-bidirectional REVERSE, reverse M2T/T2M, ATL with M2T."
+        },
+        "result": {
+          "es": "Bloqueado sin ficheros con el código esperado.",
+          "en": "Blocked without files with the expected code."
+        }
+      },
+      {
+        "n": "invalidDefinitionIsReportedWithCanonicalCodesAndNoFiles",
+        "scenario": {
+          "es": "Tipo de origen inexistente.",
+          "en": "Missing source type."
+        },
+        "result": {
+          "es": "CANONICAL_UNKNOWN_SOURCE_TYPE sin ficheros.",
+          "en": "CANONICAL_UNKNOWN_SOURCE_TYPE without files."
+        }
+      },
+      {
+        "n": "bidirectionalDefinitionExportsTheRequestedDirectionalView",
+        "scenario": {
+          "es": "Bidireccional en FORWARD y REVERSE.",
+          "en": "Bidirectional in FORWARD and REVERSE."
+        },
+        "result": {
+          "es": "Se exporta solo la regla de la dirección pedida.",
+          "en": "Only the rule of the requested direction is exported."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 65
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 77
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 85
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 102
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 103
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 104
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 105
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 108
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 122
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 145
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 147
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/export/TransformationExportServiceRealIntegrationTests.java",
+        "line": 149
+      }
+    ]
+  }
+]

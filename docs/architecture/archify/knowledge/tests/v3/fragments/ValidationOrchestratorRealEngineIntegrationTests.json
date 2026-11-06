@@ -1,0 +1,84 @@
+[
+  {
+    "id": "java:com.example.editor.validation.orchestration.ValidationOrchestratorRealEngineIntegrationTests",
+    "name": {
+      "es": "Orquestador de validacion sobre el motor real: consolidar, publicar eventos y bloquear",
+      "en": "Validation orchestrator over the real engine: consolidate, publish events and block"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["validation"],
+    "procs": [
+      {
+        "id": "validation_execute",
+        "stages": ["cons", "ev", "blk"],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrator.java",
+      "src/main/java/com/example/editor/validation/orchestration/DefaultValidationBlockingPolicy.java",
+      "src/main/java/com/example/editor/validation/runtime/ValidationRuntimeApplicationService.java",
+      "src/main/java/com/example/editor/validation/runtime/ValidationEngine.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible con metamodelo, expresion, acciones y regla guardados en repositorios JSON reales.",
+      "en": "Writable temp directory with the metamodel, expression, actions and rule saved in real JSON repositories."
+    },
+    "setup": {
+      "es": "Sin mocks: ValidationRuntimeApplicationService real (relee del disco), ValidationEngine real, DefaultValidationBlockingPolicy real y bus de eventos real con un suscriptor que anota los tipos publicados.",
+      "en": "No mocks: real ValidationRuntimeApplicationService (rereads from disk), real ValidationEngine, real DefaultValidationBlockingPolicy and a real event bus with a subscriber recording published types."
+    },
+    "executes": {
+      "es": "ValidationOrchestrator.validate con modos FULL, INCREMENTAL y SELECTION sobre un modelo canonico editado entre ejecuciones, con las puertas NONE, SAVE y EXPORT.",
+      "en": "ValidationOrchestrator.validate in FULL, INCREMENTAL and SELECTION modes over a canonical model edited between runs, with the NONE, SAVE and EXPORT gates."
+    },
+    "asserts": {
+      "es": "El informe completo detecta al empleado con edad negativa; la revalidacion incremental lo resuelve y publica violation-resolved; SELECTION conserva el problema fuera de la seleccion; NONE no bloquea, SAVE y EXPORT bloquean con errores y EXPORT se libera por configuracion.",
+      "en": "The full report finds the employee with a negative age; incremental revalidation resolves it and publishes violation-resolved; SELECTION keeps the problem outside the selection; NONE never blocks, SAVE and EXPORT block on errors and EXPORT is released by configuration."
+    },
+    "behavior": {
+      "es": "Tras corregir un problema, la siguiente validacion parcial lo da por resuelto sin perder los demas, avisa por eventos y decide si se puede guardar o exportar.",
+      "en": "After fixing a problem, the next partial validation marks it resolved without losing the others, announces it through events and decides whether saving or exporting is allowed."
+    },
+    "rule": {
+      "es": "Los errores bloquean guardar y exportar salvo que la configuracion lo desactive; la puerta NONE nunca bloquea; bloquear no altera los diagnosticos.",
+      "en": "Errors block saving and exporting unless configuration disables it; the NONE gate never blocks; blocking does not alter the diagnostics."
+    },
+    "scenario": {
+      "es": "Dos ejecuciones sobre el mismo modelo (completa e incremental), una pareja completa/seleccion con dos problemas y una secuencia de puertas NONE, SAVE, EXPORT, EXPORT sin bloqueo y SAVE sobre modelo corregido.",
+      "en": "Two runs over the same model (full and incremental), a full/selection pair with two problems and a gate sequence NONE, SAVE, EXPORT, EXPORT unblocked and SAVE over a fixed model."
+    },
+    "result": {
+      "es": "Los diagnosticos, el delta (creados, sin cambios, resueltos), los eventos y la decision de bloqueo coinciden con los valores literales esperados.",
+      "en": "Diagnostics, the delta (created, unchanged, resolved), events and the blocking decision match the literal expected values."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan con el motor real sin simulaciones.",
+      "en": "All assertions pass with the real engine and no mocks."
+    },
+    "guarantee": {
+      "es": "La consolidacion de informes parciales, la publicacion de eventos y la politica de bloqueo funcionan con reglas realmente guardadas y evaluadas.",
+      "en": "Consolidation of partial reports, event publication and the blocking policy work with rules that are really saved and evaluated."
+    },
+    "limits": {
+      "es": "No usa sesion EMF viva (validateLive), ni la API HTTP, ni mas de una regla distinta; los eventos se comprueban por tipo y orden, no por contenido completo.",
+      "en": "Does not use a live EMF session (validateLive), the HTTP API or more than one distinct rule; events are checked by type and order, not by full payload."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Orquestador, motor, politica, repositorios y bus reales; oraculo con valores literales; mapeo directo a las tres etapas.",
+      "en": "Real orchestrator, engine, policy, repositories and bus; literal-value oracle; direct mapping to the three stages."
+    },
+    "external": "none",
+    "src": [
+      { "path": "src/test/java/com/example/editor/validation/orchestration/ValidationOrchestratorRealEngineIntegrationTests.java", "line": 126 },
+      { "path": "src/test/java/com/example/editor/validation/orchestration/ValidationOrchestratorRealEngineIntegrationTests.java", "line": 128 },
+      { "path": "src/test/java/com/example/editor/validation/orchestration/ValidationOrchestratorRealEngineIntegrationTests.java", "line": 138 },
+      { "path": "src/test/java/com/example/editor/validation/orchestration/ValidationOrchestratorRealEngineIntegrationTests.java", "line": 152 },
+      { "path": "src/test/java/com/example/editor/validation/orchestration/ValidationOrchestratorRealEngineIntegrationTests.java", "line": 167 },
+      { "path": "src/test/java/com/example/editor/validation/orchestration/ValidationOrchestratorRealEngineIntegrationTests.java", "line": 178 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

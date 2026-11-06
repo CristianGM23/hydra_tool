@@ -1,0 +1,2 @@
+RepresentableImportApplicabilityGateTests (grupo B3)
+- recovery_persist_rollback.d2 (direct): aPreviewThatIsNotApplicableIsRefusedWhenApplyingAndNothingIsWritten (l.45-67, rechazo l.52 y destino sin indicar l.62, directorio vacio); anApplicablePreviewIsRecomputedAndSavedAsOneNeutralPackage (l.71-108, previewId igual l.84 y paquete literal l.99); theStrictStrategyRefusesPartiallyRepresentableChangesThatTheSafeStrategyAccepts (l.112-132, estricta rechaza l.120, segura guarda l.129).

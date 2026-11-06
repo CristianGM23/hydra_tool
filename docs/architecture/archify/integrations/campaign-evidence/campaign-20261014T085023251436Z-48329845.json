@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-14T08:50:23+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261014-103048",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "582a25a31d44969a72fb9cc47ebada0e6780c27ebb812bad6338dadcd841f16f",
+  "reportCheckpointName": "0024-01791967821673366100-e90099013d7a47ebbf5a134b98c51df4.json",
+  "testResults": [
+    {
+      "id": "S068",
+      "title": "Fix185 native certification gate security tests",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 17.93,
+      "logSha256": "6820b10f24ae6eca9fc0aed09635072eb640b5595686fcd5624ebdc3346664d4",
+      "logRelativePath": "logs/S068.log"
+    },
+    {
+      "id": "S075",
+      "title": "Fix180 data migration tests",
+      "group": "persistence",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.82,
+      "logSha256": "d831d8918bfe5ca5216a0eb3e0f7acf0582135eddc0d3e152ab0d8bd01f5f91a",
+      "logRelativePath": "logs/S075.log"
+    },
+    {
+      "id": "S076",
+      "title": "Fix180 executable Node runtime semantics",
+      "group": "events",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.39,
+      "logSha256": "612de2f711e4d17f567602e380040013df6bafb701ea38a064c2be7adc76834e",
+      "logRelativePath": "logs/S076.log"
+    },
+    {
+      "id": "S077",
+      "title": "E2E reference project fixtures",
+      "group": "reference",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.62,
+      "logSha256": "c5371c2e18ad62654fb62f5468552aad666f448a9abe87edad3814c105e96a5a",
+      "logRelativePath": "logs/S077.log"
+    },
+    {
+      "id": "S081",
+      "title": "E2E V3 official coverage report (no certification)",
+      "group": "native-readiness",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.34,
+      "logSha256": "10c3c5fbaf7229e7d19e33c3feb6c965ceb98dd96dd4b837a081a1fb1f16bc57",
+      "logRelativePath": "logs/S081.log"
+    },
+    {
+      "id": "S090",
+      "title": "Verificar bd block1",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.72,
+      "logSha256": "f007f162bdee025ffae9b518ffb60b11bfa538ff9dc0b2de4808ca949b4cf115",
+      "logRelativePath": "logs/S090.log"
+    },
+    {
+      "id": "S091",
+      "title": "Verificar bd block2",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 44.59,
+      "logSha256": "ec4ffcc73ea94ee272b7947835b6fa62f8aff5db5951021bc9774285b7c1d6b7",
+      "logRelativePath": "logs/S091.log"
+    },
+    {
+      "id": "S092",
+      "title": "Verificar bd block3",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 3.54,
+      "logSha256": "50bc83fa9e16fef856156e9ecf6f04b093379485a468dc2f33ce22374e0360ae",
+      "logRelativePath": "logs/S092.log"
+    },
+    {
+      "id": "S093",
+      "title": "Verificar bd block4",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.63,
+      "logSha256": "1cbb3ceee52f3a932b617879aa1f9377ede922fe4cd0790737efea4a87478cd7",
+      "logRelativePath": "logs/S093.log"
+    },
+    {
+      "id": "S094",
+      "title": "Verificar bd block5",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.3,
+      "logSha256": "e59326925446179839844a8957e6ce2ad03df69c8dfc464cd72f201a33763a8b",
+      "logRelativePath": "logs/S094.log"
+    },
+    {
+      "id": "S095",
+      "title": "Verificar bd megablock6 7",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.69,
+      "logSha256": "cd5acbe67e58f440e238ba63a137ea03cca24940a7eaa7499bb24decd8146c14",
+      "logRelativePath": "logs/S095.log"
+    },
+    {
+      "id": "S096",
+      "title": "Verificar fix180 generated model lifecycle",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.15,
+      "logSha256": "7f4f641c4d6604854666a9586348afb24ffc064d70a84b0db6cfc18be8af160e",
+      "logRelativePath": "logs/S096.log"
+    },
+    {
+      "id": "S097",
+      "title": "Verificar fix182 stage1",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.74,
+      "logSha256": "d18e06ab872aa158ea2115d947661b847d24c4b58164dce12dcf05478b416ebf",
+      "logRelativePath": "logs/S097.log"
+    },
+    {
+      "id": "S103",
+      "title": "Verificar process completion contracts",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 63.63,
+      "logSha256": "befd924b0147ecf460b624021c4c109b0d9cb5ed07ba5c82a74bf3f51eb5a1e0",
+      "logRelativePath": "logs/S103.log"
+    },
+    {
+      "id": "S108",
+      "title": "Verificar r14 vitest unexpected worker exit",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.4,
+      "logSha256": "33a4680491e3933df10142d148c40a579955acf503c3c7ebce43a607e8e782bd",
+      "logRelativePath": "logs/S108.log"
+    },
+    {
+      "id": "S152",
+      "title": "Verificar r6c4 fix171 logical size",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 26.15,
+      "logSha256": "aba1502264b74884ccf919b0538c48a197eaf39aedb0b3142d0ee6eb427e0b36",
+      "logRelativePath": "logs/S152.log"
+    },
+    {
+      "id": "S442",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/EditorApplicationTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 195.64,
+      "logSha256": "95b459a0ca9e9376b63908c4be1b34b5c2eab3d8d24b726452b9a85e52e8b7f5",
+      "logRelativePath": "logs/S442.log"
+    },
+    {
+      "id": "S443",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/architecture/ApplicationPropertiesUniquenessTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 125.61,
+      "logSha256": "4cfe860c6fec94235686e95e195fbe45b7c4e87b4ccaac9724ecfaab42c69099",
+      "logRelativePath": "logs/S443.log"
+    },
+    {
+      "id": "S444",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/artifact/registry/HydraArtifactCompatibilityServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 106.51,
+      "logSha256": "59f3097bf28dfdc29246e542db06dc696ed693851804cf302f303a476a487933",
+      "logRelativePath": "logs/S444.log"
+    },
+    {
+      "id": "S445",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/artifact/transaction/HydraArtifactTransactionServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 108.32,
+      "logSha256": "86a4bff2e04e25d6a8aa93927a3354b06c097e56f8d1816d82b73ae86a4f4e4e",
+      "logRelativePath": "logs/S445.log"
+    },
+    {
+      "id": "S446",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/audit/AuditComprehensiveCaptureTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 110.17,
+      "logSha256": "72a5b1dfcd0c137ca01d499115b5ff7c42bdd51c8b0544c6b3eaa884fd8c2b7c",
+      "logRelativePath": "logs/S446.log"
+    },
+    {
+      "id": "S447",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/codegen/ModelCodeGenerationRendererRegistryTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 119.79,
+      "logSha256": "888eddb58b795bf5a6ed3582a9e0012b696662400ecffdec8de90aa4315113d4",
+      "logRelativePath": "logs/S447.log"
+    },
+    {
+      "id": "S448",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/concurrent/ResourceStripedLockTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 111.34,
+      "logSha256": "77e80b5c0a17a3e2ac4f7cda7a49a476261c5dc18cf853f17d24a1b8376c25cd",
+      "logRelativePath": "logs/S448.log"
+    },
+    {
+      "id": "S449",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/definition/EditorDefinitionCheckerTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 95.51,
+      "logSha256": "41c743baef23de2536a145f85b0070a0b5f02b1c1b672619843293e0b8d36fe3",
+      "logRelativePath": "logs/S449.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

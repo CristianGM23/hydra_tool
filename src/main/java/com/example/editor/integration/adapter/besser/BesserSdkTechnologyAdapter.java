@@ -126,9 +126,9 @@ public class BesserSdkTechnologyAdapter implements TechnologyAdapter {
         source.append("from besser.BUML.metamodel.structural import DomainModel, Class, Property, Multiplicity, BinaryAssociation, Generalization, Enumeration, EnumerationLiteral, StringType, IntegerType, FloatType, BooleanType, DateType, AnyType\n\n");
         for(var metaEnum : metamodel.enums()){
             String variable = py(metaEnum.name());
-            source.append(variable).append("_literals={");
-            source.append(String.join(",", metaEnum.literals().stream().map(value -> "EnumerationLiteral(name='" + escape(value.name()) + "')").toList()));
-            source.append("}\n").append(variable).append("=Enumeration(name='").append(escape(metaEnum.name())).append("',literals=").append(variable).append("_literals)\n\n");
+            source.append(variable).append("_literals=");
+            source.append(pySet(metaEnum.literals().stream().map(value -> "EnumerationLiteral(name='" + escape(value.name()) + "')").toList()));
+            source.append("\n").append(variable).append("=Enumeration(name='").append(escape(metaEnum.name())).append("',literals=").append(variable).append("_literals)\n\n");
         }
         for(MetaClass metaClass : metamodel.classes()){
             String variable = py(metaClass.name());
@@ -138,8 +138,8 @@ public class BesserSdkTechnologyAdapter implements TechnologyAdapter {
                         .append(attribute.defaultValue().isBlank() ? "" : ",default_value='" + escape(attribute.defaultValue()) + "'")
                         .append(")\n");
             }
-            source.append(variable).append("=Class(name='").append(escape(metaClass.name())).append("',attributes={")
-                    .append(String.join(",", metaClass.attributes().stream().map(value -> variable + "_" + py(value.name())).toList())).append("}")
+            source.append(variable).append("=Class(name='").append(escape(metaClass.name())).append("',attributes=")
+                    .append(pySet(metaClass.attributes().stream().map(value -> variable + "_" + py(value.name())).toList()))
                     .append(metaClass.kind() != MetaClassKind.CLASS ? ",is_abstract=True" : "").append(")\n\n");
         }
         List<String> associationVariables = new ArrayList<>();
@@ -167,12 +167,13 @@ public class BesserSdkTechnologyAdapter implements TechnologyAdapter {
         List<String> typeVariables = new ArrayList<>();
         metamodel.classes().forEach(value -> typeVariables.add(py(value.name())));
         metamodel.enums().forEach(value -> typeVariables.add(py(value.name())));
-        source.append("hydra_domain_model=DomainModel(name='").append(escape(metamodel.name())).append("',types={")
-                .append(String.join(",", typeVariables)).append("},associations={").append(String.join(",", associationVariables))
-                .append("},generalizations={").append(String.join(",", generalizationVariables)).append("})\n");
+        source.append("hydra_domain_model=DomainModel(name='").append(escape(metamodel.name())).append("',types=")
+                .append(pySet(typeVariables)).append(",associations=").append(pySet(associationVariables))
+                .append(",generalizations=").append(pySet(generalizationVariables)).append(")\n");
         source.append("hydra_domain_model.validate()\n");
         return source.toString();
     }
+    /** Descripción: Escribe un literal de conjunto de Python. Entradas: values: expresiones de los elementos. Salida: «{a,b}», o «set()» si no hay elementos, porque «{}» es un diccionario vacío y BESSER espera conjuntos. */ private String pySet(List<String> values){return values.isEmpty() ? "set()" : "{" + String.join(",", values) + "}";}
     /** Descripción: Ejecuta la operación «classVar» correspondiente a la responsabilidad de BesserSdkTechnologyAdapter. Entradas: metamodel: dato de entrada necesario para la operación; id: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ private String classVar(MetaModel metamodel, String id){return metamodel.classes().stream().filter(value -> value.id().equals(id)).map(value -> py(value.name())).findFirst().orElse("AnyType");}
     /** Descripción: Ejecuta la operación «besserType» correspondiente a la responsabilidad de BesserSdkTechnologyAdapter. Entradas: type: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String besserType(MetaTypeReference type, MetaModel metamodel){
         if(type == null){return "AnyType";}

@@ -1,0 +1,2 @@
+- grammar_author_look.f / .k / .ro / .h: validLookSettingsSurviveSaveAndRestore (lines 134-143: font, size, colours, keywords, role and rule styles and hovers restored) and dangerousLookSettingsAreBoundedOnRestoreAndForeignKeysAreKept (lines 163-173: dangerous values bounded to defaults).
+- grammar_author_look.sv: lines 131 and 160 (settings re-read from the store equal the saved ones), 146 and 176 (foreign key kept) and changingTheLookDoesNotAffectTheGeneratedProject (line 198, identical generated files with and without look settings).

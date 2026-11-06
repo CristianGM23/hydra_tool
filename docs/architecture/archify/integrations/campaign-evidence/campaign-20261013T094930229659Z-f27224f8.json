@@ -1,0 +1,162 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-13T09:49:30+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraAutopilotoGitHubV2\\runs\\20261013-111409-c0aedc\\reports\\20261013-111410",
+  "campaignState": "COMPLETED_WITH_ISSUES",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "5a19aaf0a9e912ba6c66a605066f2359f7bdb3f0ab249ee42fa7240a0dcbbc43",
+  "reportCheckpointName": "0014-01791884968424048300-d2a43e2ed9854d58b6e83940763f9043.json",
+  "testResults": [
+    {
+      "id": "S080",
+      "title": "E2E V3 preflight for 12 external targets",
+      "group": "native-readiness",
+      "status": "BLOCKED",
+      "exitCode": 2,
+      "durationSeconds": 0.48,
+      "logSha256": "bf562fff30417c5b07e9dfb64b12fa2fd39cfce8b38afac207d38b352244c509",
+      "logRelativePath": "logs/S080.log"
+    },
+    {
+      "id": "S085",
+      "title": "Frontend Vitest all unit/integration tests",
+      "group": "tests",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1981.02,
+      "logSha256": "048e714baa00759c963624749365ca0ef07e40da197e3e8845e2c9d618d70bfa",
+      "logRelativePath": "logs/S085.log"
+    },
+    {
+      "id": "S092",
+      "title": "Verificar bd block3",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.11,
+      "logSha256": "34cb782eaf9b61c41e0be03f2cafe3b266f2fdd81c601d314079e93d2687fdf6",
+      "logRelativePath": "logs/S092.log"
+    },
+    {
+      "id": "S109",
+      "title": "Verificar r5c13 final transformation toolchains",
+      "group": "transformation",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 40.59,
+      "logSha256": "82cad03e0ec1a54ba596bd0a1fd125bc8f41285a0f43cc6b81853f1bafb64945",
+      "logRelativePath": "logs/S109.log"
+    },
+    {
+      "id": "S129",
+      "title": "Verificar r5c13 fix46 java python go native execution",
+      "group": "distribution",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 20.52,
+      "logSha256": "1ef7c1220f397f2a5375e707e079cf6b6334a759fe488d997f894fcf40c83088",
+      "logRelativePath": "logs/S129.log"
+    },
+    {
+      "id": "S130",
+      "title": "Verificar r5c13 fix47 java python go native m2t",
+      "group": "transformation",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 20.91,
+      "logSha256": "7b1f29b0b851b98b5860eec358fc4c8fed92ede81de3ab4d3bd6c3272929e3f5",
+      "logRelativePath": "logs/S130.log"
+    },
+    {
+      "id": "S148",
+      "title": "Verificar r6c2 fix127 132 delivery readiness",
+      "group": "regression",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 0.59,
+      "logSha256": "8decc3d0c330257955a4325ccca0326b4642cbec424ab469ffa3dbb8a7e4ae89",
+      "logRelativePath": "logs/S148.log"
+    },
+    {
+      "id": "S156",
+      "title": "Verificar v43283 reported regressions",
+      "group": "regression",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 0.61,
+      "logSha256": "f6052c520ed861e74133659214fb36bfd001176eee6ec2b8bc724c3eca5e1209",
+      "logRelativePath": "logs/S156.log"
+    },
+    {
+      "id": "S157",
+      "title": "Verificar v43284 ux regressions",
+      "group": "frontend",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 2.79,
+      "logSha256": "306cbc0235bbbb47e0450ca17acf3fc57f3524daa2d60ea8f8957160ab130df5",
+      "logRelativePath": "logs/S157.log"
+    },
+    {
+      "id": "S182",
+      "title": "Verificar v43314 self contained editor dependencies",
+      "group": "frontend",
+      "status": "FAIL",
+      "exitCode": 1,
+      "durationSeconds": 0.85,
+      "logSha256": "0ed543ec09edddbea0708cc2dc050ec4a5f40638e54036638f554b98edfee0a7",
+      "logRelativePath": "logs/S182.log"
+    },
+    {
+      "id": "S184",
+      "title": "Vitest file: src/accessibility/accessibilityAudit.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.68,
+      "logSha256": "45ccaf232b9842c3b648c297b910f8094906acdd29af34007e0f3297256656b7",
+      "logRelativePath": "logs/S184.log"
+    },
+    {
+      "id": "S315",
+      "title": "Vitest file: src/hooks/useHydraDialogs.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 13.49,
+      "logSha256": "2dc336f7ca0894d303ca3f705987a7f697158a9823392fc693d0be0ae3bb7efa",
+      "logRelativePath": "logs/S315.log"
+    },
+    {
+      "id": "S380",
+      "title": "Vitest file: src/operation-runtime/OperationRuntimePanel.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 10.02,
+      "logSha256": "b913cc79f53397e6436d9411e4b24ca056c0c09d62de7f911a42acd446ec75e9",
+      "logRelativePath": "logs/S380.log"
+    },
+    {
+      "id": "S522",
+      "title": "Fix186 generated-code viewer real interaction Vitest",
+      "group": "frontend-regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 14.21,
+      "logSha256": "6481d6a4d67773f49309353d0c935441604f57d68ff06cf73c088244fb617c17",
+      "logRelativePath": "logs/S522.log"
+    }
+  ],
+  "summary": {
+    "PASS": 6,
+    "FAIL": 7,
+    "BLOCKED": 1,
+    "TIMEOUT": 0
+  }
+}

@@ -18,6 +18,12 @@ public final class EcoreImportMetadata {
     public static final String SERIALIZABLE = PREFIX + "serializable";
     public static final String CHANGEABLE = PREFIX + "changeable";
     public static final String RESOLVE_PROXIES = PREFIX + "resolveProxies";
+    // EMF feature flags of an imported Ecore (informes/DISENO_INDICADORES_EMF.md): recorded only when true, so ordinary features keep their annotations
+    public static final String TRANSIENT = PREFIX + "transient";
+    public static final String VOLATILE = PREFIX + "volatile";
+    public static final String DERIVED = PREFIX + "derived";
+    public static final String UNSETTABLE = PREFIX + "unsettable";
+    public static final String ID = PREFIX + "iD";
 
     /** Descripción: Inicializa una instancia de EcoreImportMetadata con sus dependencias y datos de entrada. Entradas: no requiere parámetros de entrada. Salida: deja la instancia inicializada y lista para su uso. */ private EcoreImportMetadata() {
     }
@@ -48,6 +54,31 @@ public final class EcoreImportMetadata {
         result.put(CHANGEABLE, Boolean.toString(changeable));
         result.put(RESOLVE_PROXIES, Boolean.toString(resolveProxies));
         return Map.copyOf(result);
+    }
+
+    /** Descripción: Metadatos de un atributo Ecore importado con todos sus indicadores EMF. Entradas: anotaciones de origen e indicadores. Salida: anotaciones con changeable siempre y los demás indicadores solo si valen true. */
+    public static Map<String, String> attribute(Map<String, String> source, boolean changeable, boolean transientFeature, boolean volatileFeature, boolean derived, boolean unsettable, boolean id) {
+        Map<String, String> result = new LinkedHashMap<>(attribute(source, changeable));
+        flag(result, TRANSIENT, transientFeature);
+        flag(result, VOLATILE, volatileFeature);
+        flag(result, DERIVED, derived);
+        flag(result, UNSETTABLE, unsettable);
+        flag(result, ID, id);
+        return Map.copyOf(result);
+    }
+
+    /** Descripción: Metadatos de una referencia Ecore importada con todos sus indicadores EMF. Entradas: anotaciones de origen e indicadores. Salida: anotaciones con changeable y resolveProxies siempre y los demás indicadores solo si valen true. */
+    public static Map<String, String> relation(Map<String, String> source, boolean changeable, boolean resolveProxies, boolean transientFeature, boolean volatileFeature, boolean derived, boolean unsettable) {
+        Map<String, String> result = new LinkedHashMap<>(relation(source, changeable, resolveProxies));
+        flag(result, TRANSIENT, transientFeature);
+        flag(result, VOLATILE, volatileFeature);
+        flag(result, DERIVED, derived);
+        flag(result, UNSETTABLE, unsettable);
+        return Map.copyOf(result);
+    }
+
+    /** Descripción: Ejecuta la operación «flag» correspondiente a la responsabilidad de EcoreImportMetadata. Entradas: target: dato de entrada necesario para la operación; key: identificador que delimita el recurso objetivo; value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private static void flag(Map<String, String> target, String key, boolean value) {
+        if(value) target.put(key, "true");
     }
 
     /** Descripción: Ejecuta la operación «text» correspondiente a la responsabilidad de EcoreImportMetadata. Entradas: annotations: dato de entrada necesario para la operación; key: identificador que delimita el recurso objetivo; fallback: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public static String text(Map<String, String> annotations, String key, String fallback) {

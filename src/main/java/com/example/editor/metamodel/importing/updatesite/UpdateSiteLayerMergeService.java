@@ -77,22 +77,28 @@ public class UpdateSiteLayerMergeService {
                 current.editorDefinition().name(), request.strict(), false, request.selection());
         UpdateSiteLayerMaterializationPreview recoveredPreview = materializationService.preview(analysis, materializationRequest);
         MergeComputation computation = compute(current.editorDefinition(), recoveredPreview.editorDefinition(), request);
+        requireKnownDecisionKeys(request, computation.items());
+        List<String> unresolved = unresolvedConflicts(request, computation.items());
         EditorDefinitionCheckReport report = editorService.checkDefinition(request.targetMetamodelId(), computation.editor());
         List<String> diagnostics = new ArrayList<>(recoveredPreview.diagnostics());
         diagnostics.addAll(report.diagnostics().stream().map(item -> item.code() + ": " + item.message()).toList());
+        if(!unresolved.isEmpty()) diagnostics.add(unresolved.size() + " collision(s) need an explicit decision before the merge can be applied: "
+                + String.join(", ", unresolved));
         String transactionId = "merge-" + UUID.randomUUID();
         UpdateSiteLayerMergePreview preview = new UpdateSiteLayerMergePreview(transactionId,
                 request.targetMetamodelId(), request.targetEditorId(), current.etag(), computation.editor(), report,
                 computation.items(), computation.kept(), computation.recovered(), computation.skipped(),
-                recoveredPreview.applicable() && report.valid(), diagnostics);
+                recoveredPreview.applicable() && report.valid() && unresolved.isEmpty(), diagnostics, unresolved);
         if(!request.persist()) return new UpdateSiteLayerMergeResult(preview, false, "", false, diagnostics);
+        if(!unresolved.isEmpty()) throw new IllegalArgumentException(unresolved.size()
+                + " collision(s) need an explicit decision before the merge can be applied: " + String.join(", ", unresolved));
         if(!preview.applicable()) throw new IllegalArgumentException("The selected merge contains blocking editor references");
 
         EditorDefinitionSaveResponse saved = editorService.replace(request.targetMetamodelId(),
                 request.targetEditorId(), computation.editor(), request.expectedEtag());
         UpdateSiteLayerMergeJournal journal = new UpdateSiteLayerMergeJournal(transactionId, Instant.now(),
                 request.targetMetamodelId(), request.targetEditorId(), current.etag(), saved.etag(),
-                current.editorDefinition());
+                current.editorDefinition(), appliedDecisions(request, computation.items()));
         writeJournal(journal);
         return new UpdateSiteLayerMergeResult(preview, true, saved.etag(), true, diagnostics);
     }
@@ -113,7 +119,7 @@ public class UpdateSiteLayerMergeService {
         EditorDefinitionSaveResponse restored = editorService.replace(journal.targetMetamodelId(),
                 journal.targetEditorId(), journal.originalEditor(), expected);
         deleteJournal(journal.transactionId());
-        return new UpdateSiteLayerMergeRollbackResult(true, restored.etag(), List.of());
+        return new UpdateSiteLayerMergeRollbackResult(true, restored.etag(), List.of(), journal.decisions());
     }
 
     /** Descripción: Ejecuta la operación «compute» correspondiente a la responsabilidad de UpdateSiteLayerMergeService. Entradas: existing: dato de entrada necesario para la operación; recovered: dato de entrada necesario para la operación; request: solicitud con los datos necesarios para ejecutar la operación. Salida: devuelve el resultado definido por el contrato del método. */ private MergeComputation compute(EditorDefinitionModel existing, EditorDefinitionModel recovered,
@@ -188,7 +194,7 @@ public class UpdateSiteLayerMergeService {
         return mergeList(kind, kind, existingValues, recoveredValues, id, label, request, items);
     }
 
-    /** Descripción: Actualiza el estado gestionado por UpdateSiteLayerMergeService mediante la operación «mergeList». Entradas: keyPrefix: dato de entrada necesario para la operación; kind: dato de entrada necesario para la operación; existingValues: dato de entrada necesario para la operación; recoveredValues: dato de entrada necesario para la operación; id: identificador que delimita el recurso objetivo; label: dato de entrada necesario para la operación; request: solicitud con los datos necesarios para ejecutar la operación; items: colección de elementos que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ private <T> List<T> mergeList(String keyPrefix, String kind, List<T> existingValues,
+    /** Descripción: Actualiza el estado gestionado por UpdateSiteLayerMergeService mediante la operación «mergeList». Entradas: keyPrefix: dato de entrada necesario para la operación; kind: dato de entrada necesario para la operación; existingValues: dato de entrada necesario para la operación; recoveredValues: dato de entrada necesario para la operación; id: identificador que delimita el recurso objetivo; label: dato de entrada necesario para la operación; request: solicitud con los datos necesarios para ejecutar la operación; items: colección de elementos que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ <T> List<T> mergeList(String keyPrefix, String kind, List<T> existingValues,
             List<T> recoveredValues, Function<T, String> id, Function<T, String> label,
             UpdateSiteLayerMergeRequest request, List<UpdateSiteLayerMergeItem> items) {
         Map<String, T> existing = index(existingValues, id);
@@ -202,10 +208,23 @@ public class UpdateSiteLayerMergeService {
                     : newValue == null ? UpdateSiteMergeDecision.KEEP_EXISTING
                     : conflict ? UpdateSiteMergeDecision.KEEP_EXISTING : UpdateSiteMergeDecision.KEEP_EXISTING;
             String key = keyPrefix + ":" + elementId;
-            UpdateSiteMergeDecision selected = request.decisions().getOrDefault(key,
-                    oldValue == null ? UpdateSiteMergeDecision.USE_RECOVERED : request.defaultDecision());
-            if(newValue == null && selected == UpdateSiteMergeDecision.USE_RECOVERED) selected = UpdateSiteMergeDecision.KEEP_EXISTING;
-            if(oldValue == null && selected == UpdateSiteMergeDecision.KEEP_EXISTING) selected = UpdateSiteMergeDecision.SKIP;
+            UpdateSiteMergeDecision explicit = request.decisions().get(key);
+            UpdateSiteMergeDecision selected;
+            if(explicit != null) {
+                // Una decisión explícita nunca se reinterpreta en silencio: si no tiene sentido para el elemento, se rechaza.
+                if(newValue == null && explicit == UpdateSiteMergeDecision.USE_RECOVERED) throw new IllegalArgumentException(
+                        "USE_RECOVERED is not valid for '" + key + "': there is no recovered element");
+                if(oldValue == null && explicit == UpdateSiteMergeDecision.KEEP_EXISTING) throw new IllegalArgumentException(
+                        "KEEP_EXISTING is not valid for '" + key + "': there is no existing element");
+                selected = explicit;
+            } else if(conflict) {
+                // Sin decisión explícita una colisión no se resuelve: se previsualiza conservando lo existente y se marca como pendiente.
+                selected = UpdateSiteMergeDecision.KEEP_EXISTING;
+            } else {
+                selected = oldValue == null ? UpdateSiteMergeDecision.USE_RECOVERED : request.defaultDecision();
+                if(newValue == null && selected == UpdateSiteMergeDecision.USE_RECOVERED) selected = UpdateSiteMergeDecision.KEEP_EXISTING;
+                if(oldValue == null && selected == UpdateSiteMergeDecision.KEEP_EXISTING) selected = UpdateSiteMergeDecision.SKIP;
+            }
             T chosen = switch(selected) {
                 case KEEP_EXISTING -> oldValue;
                 case USE_RECOVERED -> newValue;
@@ -220,6 +239,29 @@ public class UpdateSiteLayerMergeService {
                     conflict, recommended, selected, explanation));
         }
         return List.copyOf(result);
+    }
+
+    /** Colisiones (mismo ID, contenido distinto) sin decisión explícita en la solicitud. */
+    /** Descripción: Ejecuta la operación «unresolvedConflicts» correspondiente a la responsabilidad de UpdateSiteLayerMergeService. Entradas: request: solicitud con los datos necesarios para ejecutar la operación; items: colección de elementos que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ List<String> unresolvedConflicts(UpdateSiteLayerMergeRequest request, List<UpdateSiteLayerMergeItem> items) {
+        return items.stream().filter(UpdateSiteLayerMergeItem::conflict).map(UpdateSiteLayerMergeItem::key)
+                .filter(key -> !request.decisions().containsKey(key)).toList();
+    }
+
+    /** Rechaza decisiones que no corresponden a ningún elemento de esta fusión (obsoletas o inventadas). */
+    /** Descripción: Valida las condiciones necesarias para «requireKnownDecisionKeys» y rechaza entradas no válidas. Entradas: request: solicitud con los datos necesarios para ejecutar la operación; items: colección de elementos que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void requireKnownDecisionKeys(UpdateSiteLayerMergeRequest request, List<UpdateSiteLayerMergeItem> items) {
+        Set<String> known = items.stream().map(UpdateSiteLayerMergeItem::key).collect(java.util.stream.Collectors.toSet());
+        List<String> unknown = request.decisions().keySet().stream().filter(key -> !known.contains(key)).sorted().toList();
+        if(!unknown.isEmpty()) throw new IllegalArgumentException("Merge decision(s) do not match any element of this merge: " + String.join(", ", unknown));
+    }
+
+    /** Decisiones que gobiernan elementos reales de la fusión (explícitas), para el diario. */
+    /** Descripción: Ejecuta la operación «appliedDecisions» correspondiente a la responsabilidad de UpdateSiteLayerMergeService. Entradas: request: solicitud con los datos necesarios para ejecutar la operación; items: colección de elementos que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ Map<String, String> appliedDecisions(UpdateSiteLayerMergeRequest request, List<UpdateSiteLayerMergeItem> items) {
+        Map<String, String> applied = new java.util.TreeMap<>();
+        for(UpdateSiteLayerMergeItem item : items) {
+            UpdateSiteMergeDecision explicit = request.decisions().get(item.key());
+            if(explicit != null) applied.put(item.key(), explicit.name());
+        }
+        return applied;
     }
 
     /** Descripción: Actualiza el estado gestionado por UpdateSiteLayerMergeService mediante la operación «mergeIds». Entradas: existing: dato de entrada necesario para la operación; recovered: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private List<String> mergeIds(List<String> existing, List<String> recovered) {

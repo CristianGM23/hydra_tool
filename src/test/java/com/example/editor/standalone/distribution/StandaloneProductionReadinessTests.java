@@ -62,8 +62,38 @@ class StandaloneProductionReadinessTests {
         Files.createDirectories(root.resolve("dist"));
         Files.writeString(root.resolve("dist/index.html"), "<main>editor</main>");
         assertThat(readiness.assess(root, profile, accepted()).valid()).isFalse();
+
         new StandaloneDistributionMaterializer().materialize(root, new StandaloneDistributionPlanner().plan(profile));
-        assertThat(readiness.assess(root, profile, accepted()).valid()).isTrue();
+        // Fix183: el proyecto Rust por si solo no basta: la distribucion necesita el transporte
+        // compartido y la configuracion del editor realmente incluidos en el frontend construido.
+        StandaloneDistributionValidationReport incomplete = readiness.assess(root, profile, accepted());
+        assertThat(incomplete.valid()).isFalse();
+        assertThat(incomplete.diagnostics()).extracting(StandaloneDistributionDiagnostic::code)
+                .contains("TAURI_FRONTEND_TRANSPORT", "TAURI_BUNDLED_CONFIG")
+                .doesNotContain("TAURI_MODEL_IPC");
+
+        // Usamos recursos de produccion para representar la salida de preparacion Tauri,
+        // sin aceptar un archivo vacio como prueba del puente nativo.
+        try (var bridge = java.util.Objects.requireNonNull(
+                getClass().getResourceAsStream("/standalone-template/frontend/native-transport.js"),
+                "Missing production native-transport.js")) {
+            Files.copy(bridge, root.resolve("dist/native-transport.js"));
+        }
+        try (var descriptor = java.util.Objects.requireNonNull(
+                getClass().getResourceAsStream("/examples/standalone/people-standalone-editor.json"),
+                "Missing example standalone editor descriptor")) {
+            Files.copy(descriptor, root.resolve("dist/standalone-editor.json"));
+        }
+        StandaloneDistributionValidationReport ready = readiness.assess(root, profile, accepted());
+        assertThat(ready.valid()).isTrue();
+        assertThat(ready.metadata()).containsEntry("nativeInstallerCertified", "false");
+
+        // La desaparicion posterior del puente debe bloquear de nuevo la preparacion.
+        Files.delete(root.resolve("dist/native-transport.js"));
+        StandaloneDistributionValidationReport missingBridge = readiness.assess(root, profile, accepted());
+        assertThat(missingBridge.valid()).isFalse();
+        assertThat(missingBridge.diagnostics()).extracting(StandaloneDistributionDiagnostic::code)
+                .contains("TAURI_FRONTEND_TRANSPORT");
     }
 
     @Test void remoteExecutableAssetsMustNotBeClaimedOffline() throws Exception {

@@ -1,0 +1,240 @@
+[
+  {
+    "id": "java:com.example.editor.portability.archive.CapabilityPackageArchiveServiceTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Exportación e importación de paquetes de capacidades en archivo ZIP",
+      "en": "Export and import of capability packages as an archive"
+    },
+    "type": "BEHAVIOR",
+    "layer": "platform",
+    "caps": [
+      "portability"
+    ],
+    "procs": [
+      {
+        "id": "portability_package_merge",
+        "stages": [
+          "a1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "portability_author_export",
+        "stages": [
+          "c",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_package_and_move_capabilities",
+        "stages": [
+          "r1",
+          "i2"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_project_lifecycle_overview",
+        "stages": [
+          "ex2"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_package_and_move_capabilities",
+        "stages": [
+          "a1",
+          "d1"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "portability_author_export",
+        "stages": [
+          "b"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/portability/archive/CapabilityPackageArchiveService.java",
+      "src/main/java/com/example/editor/portability/archive/CapabilityPackageArchiveProperties.java",
+      "src/main/java/com/example/editor/portability/archive/CapabilityPackageDependencyResolver.java",
+      "src/main/java/com/example/editor/portability/CapabilityPackageChecker.java",
+      "src/main/java/com/example/editor/portability/archive/CapabilityPackageArchiveException.java",
+      "src/main/java/com/example/editor/portability/HydraCapabilityPackage.java",
+      "src/main/java/com/example/editor/portability/HydraCapabilityPackageManifest.java",
+      "src/main/java/com/example/editor/portability/CapabilitySelection.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal con permisos de escritura.",
+      "en": "Writable temporary directory."
+    },
+    "executes": {
+      "es": "CapabilityPackageArchiveService real con comprobador y resolvedor de dependencias reales exporta un paquete (metamodelo, validación, correcciones) a bytes y lo importa; caché en un directorio temporal.",
+      "en": "Real CapabilityPackageArchiveService with real checker and dependency resolver exports a package (metamodel, validation, fixes) to bytes and imports it; cache in a temp dir."
+    },
+    "asserts": {
+      "es": "Informe válido, documentos y recursos recuperados, hash de contenido igual, bytes idénticos entre exportaciones, orden de dependencias, recursos diferidos, acierto de caché y un solo fichero, firma HmacSHA256, rechazos por secreto, firma obligatoria, corrupción, ruta insegura y tamaño excesivo.",
+      "en": "Valid report, documents and resources recovered, equal content hash, identical bytes across exports, dependency order, deferred resources, cache hit and a single file, HmacSHA256 signature, rejections for wrong secret, required signature, tampering, unsafe path and excessive size."
+    },
+    "behavior": {
+      "es": "Un paquete de capacidades se exporta a un archivo reproducible con las dependencias antes que sus consumidores, se importa recuperando su contenido, se cachea por hash, se puede firmar y verificar, y se rechazan archivos manipulados, rutas inseguras o entradas demasiado grandes.",
+      "en": "A capability package is exported to a reproducible archive with dependencies placed before their consumers, imported recovering its content, cached by hash, signable and verifiable, and tampered archives, unsafe paths or oversized entries are rejected."
+    },
+    "rule": {
+      "es": "Con firma obligatoria un archivo sin firmar se rechaza; una firma con otro secreto o una entrada alterada se rechaza; las rutas \"../\" y los tamaños sobre el límite no se aceptan.",
+      "en": "With a required signature an unsigned archive is rejected; a signature under another secret or an altered entry is rejected; \"../\" paths and sizes over the limit are not accepted."
+    },
+    "scenario": {
+      "es": "Paquete parcial de tres capacidades con recurso SVG, exportación repetida, firma con secreto, secreto distinto, manipulación de un byte, ruta \"../secret\" y entrada de 2048 bytes con límite 1024.",
+      "en": "A partial three-capability package with an SVG resource, repeated export, signing with a secret, a different secret, a flipped byte, path \"../secret\" and a 2048-byte entry with a 1024 limit."
+    },
+    "result": {
+      "es": "Paquete reimportado equivalente y válido, archivo idéntico byte a byte, orden metamodel-validation-fixes y rechazos claros por firma, ruta insegura y tamaño.",
+      "en": "Equivalent, valid reimported package, byte-for-byte identical archive, order metamodel-validation-fixes and clear rejections for signature, unsafe path and size."
+    },
+    "expected": {
+      "es": "Los archivos exportados, las importaciones y los rechazos coinciden con lo esperado.",
+      "en": "Exported archives, imports and rejections match expectations."
+    },
+    "guarantee": {
+      "es": "Evidencia de que el empaquetado, la verificación y las defensas del archivo funcionan en estos escenarios con bytes reales.",
+      "en": "Evidence that packaging, verification and archive defenses work in these scenarios with real bytes."
+    },
+    "limits": {
+      "es": "Un único paquete pequeño; no prueba aplicar el paquete a un proyecto, la fusión ni archivos de otras herramientas.",
+      "en": "A single small package; does not test applying the package to a project, merging or archives from other tools."
+    },
+    "strengthWhy": {
+      "es": "Reclasificación honesta tras releer la prueba (needs-verification del plan de cierre): integración real sin mocks (traits.mocks=false) de CapabilityPackageArchiveService real con CapabilityPackageChecker y CapabilityPackageDependencyResolver reales sobre bytes y ficheros reales en @TempDir, cubriendo de forma extensa y genuina 'b' (resolver dependencias: orden real metamodel/validation/fixes) y 'c' (exportar: generación real de archivo reproducible, firma, caché y defensas reales), trece casos sin ningún colaborador simulado.",
+      "en": "Honest reclassification after rereading the test (the closure plan's own needs-verification flag): real, mock-free integration (traits.mocks=false) of a real CapabilityPackageArchiveService with a real CapabilityPackageChecker and CapabilityPackageDependencyResolver over real bytes and files on @TempDir, extensively and genuinely covering 'b' (resolve dependencies: real metamodel/validation/fixes order) and 'c' (export: real reproducible archive generation, signing, caching and real defenses), thirteen cases with no simulated collaborator at all."
+    },
+    "cases": [
+      {
+        "n": "exportsAndImportsAPartialPackage",
+        "scenario": {
+          "es": "Exportar con caché y reimportar",
+          "en": "Export with cache and re-import"
+        },
+        "result": {
+          "es": "Paquete válido con documentos, recursos y el mismo hash",
+          "en": "Valid package with documents, resources and the same hash"
+        }
+      },
+      {
+        "n": "exportIsByteForByteReproducible",
+        "scenario": {
+          "es": "Dos exportaciones del mismo paquete",
+          "en": "Two exports of the same package"
+        },
+        "result": {
+          "es": "Bytes idénticos",
+          "en": "Identical bytes"
+        }
+      },
+      {
+        "n": "placesDependenciesBeforeTheirConsumers",
+        "scenario": {
+          "es": "fixes depende de validation y esta de metamodel",
+          "en": "fixes depends on validation which depends on metamodel"
+        },
+        "result": {
+          "es": "Orden metamodel, validation, fixes",
+          "en": "Order metamodel, validation, fixes"
+        }
+      },
+      {
+        "n": "rejectsSignedPackagesWithTheWrongSecret",
+        "scenario": {
+          "es": "Importar con otro secreto",
+          "en": "Import with a different secret"
+        },
+        "result": {
+          "es": "Importación rechazada por firma",
+          "en": "Import rejected for its signature"
+        }
+      },
+      {
+        "n": "rejectsTamperedEntries",
+        "scenario": {
+          "es": "Se invierte un bit del archivo",
+          "en": "One archive bit is flipped"
+        },
+        "result": {
+          "es": "Importación rechazada",
+          "en": "Import rejected"
+        }
+      },
+      {
+        "n": "rejectsUnsafeResourcePaths",
+        "scenario": {
+          "es": "Recurso \"../secret\"",
+          "en": "Resource \"../secret\""
+        },
+        "result": {
+          "es": "Exportación rechazada por ruta insegura",
+          "en": "Export rejected for an unsafe path"
+        }
+      },
+      {
+        "n": "enforcesExpandedEntryLimits",
+        "scenario": {
+          "es": "Entrada de 2048 bytes con máximo 1024",
+          "en": "2048-byte entry with a 1024 maximum"
+        },
+        "result": {
+          "es": "Exportación rechazada por tamaño",
+          "en": "Export rejected for its size"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.portability.CapabilityPackageTests",
+      "java:com.example.editor.portability.transaction.CapabilityLayerTransactionServiceTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveServiceTests.java",
+        "line": 42
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveServiceTests.java",
+        "line": 50
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveServiceTests.java",
+        "line": 56
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveServiceTests.java",
+        "line": 70
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveServiceTests.java",
+        "line": 85
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveServiceTests.java",
+        "line": 94
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveServiceTests.java",
+        "line": 102
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveServiceTests.java",
+        "line": 112
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/archive/CapabilityPackageArchiveServiceTests.java",
+        "line": 118
+      }
+    ]
+  }
+]

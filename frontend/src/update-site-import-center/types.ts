@@ -184,7 +184,8 @@ export type UpdateSiteMergeDecision = 'KEEP_EXISTING' | 'USE_RECOVERED' | 'SKIP'
 export interface UpdateSiteLayerMergeRequest {
     targetMetamodelId: string; targetEditorId: string; expectedEtag: string; candidateId: string;
     strict: boolean; persist: boolean; selection: UpdateSiteLayerSelection;
-    defaultDecision: UpdateSiteMergeDecision; decisions: Record<string, UpdateSiteMergeDecision>;
+    /** Solo afecta a elementos sin colisión; una colisión exige siempre una decisión explícita en `decisions`. */
+    defaultDecision?: UpdateSiteMergeDecision; decisions: Record<string, UpdateSiteMergeDecision>;
 }
 export interface UpdateSiteLayerMergeItem {
     key: string; kind: string; displayName: string; existingPresent: boolean; recoveredPresent: boolean;
@@ -196,13 +197,15 @@ export interface UpdateSiteLayerMergePreview {
     mergedEditorDefinition: unknown; checkReport: { editorDefinitionId: string; diagnostics: Array<{ severity: string; code: string; message: string }> };
     items: UpdateSiteLayerMergeItem[]; keptElements: number; recoveredElements: number; skippedElements: number;
     applicable: boolean; diagnostics: string[];
+    /** Colisiones sin decisión explícita; mientras haya alguna la fusión no es aplicable. */
+    unresolvedConflictKeys?: string[];
 }
 export interface UpdateSiteLayerMergeResult {
     preview: UpdateSiteLayerMergePreview; persisted: boolean; editorEtag: string;
     rollbackAvailable: boolean; diagnostics: string[];
 }
 export interface UpdateSiteLayerMergeRollbackRequest { transactionId: string; expectedCurrentEtag: string; }
-export interface UpdateSiteLayerMergeRollbackResult { restored: boolean; editorEtag: string; diagnostics: string[]; }
+export interface UpdateSiteLayerMergeRollbackResult { restored: boolean; editorEtag: string; diagnostics: string[]; decisions?: Record<string, string>; }
 export interface UpdateSiteRemoteAnalysisRequest {
     repositoryUrl: string; expectedSha256: string; maximumDepth: number; useCache: boolean;
     options: UpdateSiteImportOptions;
@@ -289,7 +292,8 @@ export type CapabilitySemanticMergeDecision = 'KEEP_EXISTING' | 'USE_RECOVERED' 
 export interface CapabilitySemanticMergeRequest {
     existingPackage: HydraCapabilityPackage; recoveredPackage: HydraCapabilityPackage;
     targetMetamodelId: string; expectedEtags: Record<string, string>; layerOrder: string[];
-    defaultDecision: CapabilitySemanticMergeDecision; decisions: Record<string, CapabilitySemanticMergeDecision>;
+    /** Solo afecta a entidades sin conflicto; un conflicto exige siempre una decisión explícita en `decisions`. */
+    defaultDecision?: CapabilitySemanticMergeDecision; decisions: Record<string, CapabilitySemanticMergeDecision>;
     persist: boolean;
 }
 export interface CapabilitySemanticMergeItem {
@@ -310,6 +314,8 @@ export interface CapabilitySemanticMergePreview {
     conflicts: CapabilitySemanticMergeConflict[]; dependencies: CapabilitySemanticMergeDependency[];
     keptElements: number; recoveredElements: number; mergedElements: number; skippedElements: number;
     applicable: boolean; diagnostics: string[];
+    /** Conflictos sin decisión explícita; mientras haya alguno la vista previa no es aplicable. */
+    unresolvedConflictKeys?: string[];
 }
 export interface CapabilityLayerTransactionResult {
     preview: unknown; transactionId: string; persisted: boolean; rollbackAvailable: boolean;
@@ -403,7 +409,7 @@ export interface HydraReleaseGateReport {
 
 export interface CapabilityOrchestrationSource {
     sourceId: string; precedence: number; afterSourceIds: string[];
-    capabilityPackage: HydraCapabilityPackage; defaultDecision: CapabilitySemanticMergeDecision;
+    capabilityPackage: HydraCapabilityPackage; defaultDecision?: CapabilitySemanticMergeDecision;
     decisions: Record<string, CapabilitySemanticMergeDecision>;
 }
 export interface CapabilityOrchestrationRequest {

@@ -1,0 +1,113 @@
+[
+  {
+    "id": "java:com.example.editor.gamification.EditorSessionEventToRewardIntegrationTests",
+    "name": {
+      "es": "De guardar en el editor a una recompensa vía bus y gamificación",
+      "en": "From saving in the editor to a reward via bus and gamification"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "model_editor",
+      "events",
+      "gamification"
+    ],
+    "procs": [
+      {
+        "id": "x_event_flow_to_reward",
+        "stages": [
+          "build",
+          "sv",
+          "bus",
+          "match",
+          "act",
+          "pub",
+          "fb"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java",
+      "src/main/java/com/example/editor/definition/runtime/session/EditorSessionEventPublisher.java",
+      "src/main/java/com/example/editor/definition/runtime/session/EditorSessionPendingEventBuffer.java",
+      "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java",
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+      "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackProjector.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "Sesión de editor real sin autoguardado con repositorio JSON, publicador, buffer y bus reales; catálogo y runtime de gamificación reales con JSON en @TempDir; el plan del editor lo compila el compilador real.",
+      "en": "Real editor session without autosave with JSON repository, real publisher, buffer and bus; real gamification catalog and runtime with JSON in @TempDir; the editor plan is compiled by the real compiler."
+    },
+    "executes": {
+      "es": "Crear sesión, tres elementos y una edición, y guardar; el guardado libera los eventos retenidos al bus real, el runtime apunta el libro y publica concesiones o rechazos.",
+      "en": "Create a session, three elements and one edit, then save; saving releases the held events to the real bus, the runtime records the ledger and publishes grants or rejections."
+    },
+    "asserts": {
+      "es": "Antes de guardar el libro no tiene apuntes; después hay 3 apuntes (+5, +5, rechazo con 0 y motivo del máximo), ninguno del evento sin regla, 10 puntos en el estado, 2 concesiones y 1 rechazo publicados, avisos coincidentes y reenviar un evento no duplica; con la publicación desactivada no hay eventos ni libro.",
+      "en": "Before saving the ledger has no entries; afterwards there are 3 entries (+5, +5, rejection with 0 and the maximum reason), none from the rule-less event, 10 points in state, 2 grants and 1 rejection published, matching notices and replaying an event does not duplicate; with publication disabled there are no events or ledger."
+    },
+    "behavior": {
+      "es": "Una acción del editor solo cuenta tras guardar: los eventos salen al guardar, la regla que encaja concede y el límite por persona rechaza con motivo.",
+      "en": "An editor action counts only after saving: events are released on save, the matching rule grants and the per-person limit rejects with a reason."
+    },
+    "rule": {
+      "es": "Solo tras guardar con éxito salen los eventos retenidos; un evento repetido nunca concede dos veces; sin regla no hay puntos.",
+      "en": "Held events are released only after a successful save; a repeated event never grants twice; no rule means no points."
+    },
+    "scenario": {
+      "es": "Sesión sin autoguardado, tres creaciones y una edición, guardado, lectura del libro y estado de disco, avisos y reenvío; y una sesión con la publicación desactivada.",
+      "en": "Session without autosave, three creations and one edit, save, reading the ledger and state from disk, notices and replay; and a session with publication disabled."
+    },
+    "result": {
+      "es": "El libro y el estado de disco coinciden con los literales y los eventos de gamificación aparecen en el bus tras guardar.",
+      "en": "The ledger and state on disk match the literals and gamification events appear on the bus after saving."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan: libro sin apuntes antes, tres apuntes después, puntos 10, avisos esperados.",
+      "en": "All assertions pass: ledger without entries before, three entries after, 10 points, expected notices."
+    },
+    "guarantee": {
+      "es": "El camino editor-bus-gamificación concede y rechaza solo tras confirmar el guardado.",
+      "en": "The editor-bus-gamification path grants and rejects only after the save is confirmed."
+    },
+    "limits": {
+      "es": "No ejercita los enlaces de eventos (el servicio de enlaces de eventos) ni los flujos; la regla no tiene condición; la búsqueda del plan del editor usa un servicio de runtime que entrega planes compilados.",
+      "en": "Does not exercise event bindings (the event binding service) or flows; the rule has no condition; the editor plan lookup uses a runtime service that serves compiled plans."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Sesión, bus, runtime y persistencia reales de extremo a extremo con oráculo independiente (JSON de disco y literales) y casos negativos.",
+      "en": "Real session, bus, runtime and persistence end to end with an independent oracle (disk JSON and literals) and negative cases."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/gamification/EditorSessionEventToRewardIntegrationTests.java",
+        "line": 108
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/EditorSessionEventToRewardIntegrationTests.java",
+        "line": 114
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/EditorSessionEventToRewardIntegrationTests.java",
+        "line": 122
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/EditorSessionEventToRewardIntegrationTests.java",
+        "line": 140
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/EditorSessionEventToRewardIntegrationTests.java",
+        "line": 144
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/EditorSessionEventToRewardIntegrationTests.java",
+        "line": 157
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

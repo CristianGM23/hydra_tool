@@ -1,0 +1,41 @@
+[
+  {
+    "id": "java:com.example.editor.textual.TextualLanguageServiceHttpQueriesIntegrationTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": { "es": "Editor textual: consultas del servicio de lenguaje por HTTP", "en": "Textual editor: language service queries over HTTP" },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["grammar"],
+    "procs": [{ "id": "grammar_language_service", "stages": ["q"], "match": "direct" }],
+    "prod": [
+      "src/main/java/com/example/editor/textual/interaction/TextualInteractionFacade.java",
+      "src/main/java/com/example/editor/textual/interaction/TextualLanguageFeatureService.java",
+      "src/main/java/com/example/editor/textual/web/TextualModelSessionController.java"
+    ],
+    "pre": { "es": "Gramática compilada y activada, editor textual y sesión con dos elementos válidos en un directorio temporal.", "en": "Compiled and activated grammar, textual editor and a session with two valid elements in a temporary directory." },
+    "setup": { "es": "Contexto completo, servidor web, analizador neutral, índice semántico y almacenes en disco reales.", "en": "Full context, web layer, neutral parser, semantic index and on-disk stores, all real." },
+    "executes": { "es": "Consultar por HTTP la información al pasar el cursor, la definición, las referencias, el plegado, los tokens semánticos, la invalidación y la compatibilidad de instantáneas.", "en": "Query over HTTP hover information, definition, references, folding, semantic tokens, invalidation and snapshot compatibility." },
+    "asserts": { "es": "Identificadores y posiciones coinciden con el texto fuente literal; sin símbolo bajo el cursor se responde que no hay; la sesión se relee igual.", "en": "Identifiers and positions match the literal source text; with no symbol under the cursor the answer is none; the session is re-read unchanged." },
+    "behavior": { "es": "El editor textual responde a las consultas del lenguaje con la información exacta del texto sin modificar el borrador.", "en": "The textual editor answers language queries with the exact information in the text without modifying the draft." },
+    "rule": { "es": "Las consultas del servicio de lenguaje solo leen el borrador válido.", "en": "Language service queries only read the valid draft." },
+    "scenario": { "es": "Un documento con dos nodos, alpha y beta, consultado en distintas posiciones.", "en": "A document with two nodes, alpha and beta, queried at different positions." },
+    "result": { "es": "Definición de beta en la línea 1 desde la columna 0 (declaración completa); tokens de alpha y beta sobre su línea; sesión intacta.", "en": "Definition of beta on line 1 from column 0 (whole declaration); tokens for alpha and beta on their line; session intact." },
+    "expected": { "es": "Las respuestas coinciden con los literales del texto.", "en": "Responses match the text literals." },
+    "guarantee": { "es": "Las consultas restantes del servicio de lenguaje funcionan de extremo a extremo con el contexto real.", "en": "The remaining language service queries work end to end with the real context." },
+    "limits": { "es": "Un solo documento: plegado e invalidación se comprueban de forma superficial y la compatibilidad solo con identificadores de ejemplo; no cubre varios documentos ni lenguajes con imports.", "en": "A single document: folding and invalidation are checked only shallowly and compatibility only with sample identifiers; does not cover several documents or languages with imports." },
+    "strengthWhy": { "es": "Pila real con literales del texto, pero con comprobaciones superficiales en plegado e invalidación.", "en": "Real stack with literals from the text, but shallow checks for folding and invalidation." },
+    "cases": [
+      { "n": "hoverDefinitionReferencesAndTokensAnswerWithTheLiteralPositionsOfTheText", "scenario": { "es": "Cursor, definición, referencias y tokens.", "en": "Hover, definition, references and tokens." }, "result": { "es": "Posiciones literales.", "en": "Literal positions." } },
+      { "n": "foldingInvalidationAndSnapshotCompatibilityAnswerWithoutChangingTheSession", "scenario": { "es": "Plegado, invalidación y compatibilidad.", "en": "Folding, invalidation and compatibility." }, "result": { "es": "Respuestas válidas, sesión intacta.", "en": "Valid answers, session intact." } }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/textual/TextualLanguageServiceHttpQueriesIntegrationTests.java", "line": 123 },
+      { "path": "src/test/java/com/example/editor/textual/TextualLanguageServiceHttpQueriesIntegrationTests.java", "line": 129 },
+      { "path": "src/test/java/com/example/editor/textual/TextualLanguageServiceHttpQueriesIntegrationTests.java", "line": 143 },
+      { "path": "src/test/java/com/example/editor/textual/TextualLanguageServiceHttpQueriesIntegrationTests.java", "line": 179 }
+    ]
+  }
+]

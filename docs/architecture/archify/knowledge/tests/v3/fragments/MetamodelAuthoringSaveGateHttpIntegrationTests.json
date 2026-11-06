@@ -1,0 +1,213 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.web.MetamodelAuthoringSaveGateHttpIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Puerta de guardado de metamodelos por HTTP: validación, 422, ETag y recibo",
+      "en": "Metamodel save gate over HTTP: validation, 422, ETag and receipt"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "layers2": [
+      "delivery"
+    ],
+    "caps": [
+      "metamodel",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "metamodel_author_wizard",
+        "stages": [
+          "va",
+          "sv",
+          "d1",
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "metamodel_define_save",
+        "stages": [
+          "ok",
+          "fix",
+          "art",
+          "rev"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/metamodel/web/CanonicalMetamodelController.java",
+      "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java",
+      "src/main/java/com/example/editor/metamodel/web/MetamodelValidationController.java",
+      "src/main/java/com/example/editor/metamodel/validation/MetamodelValidationApplicationService.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring completo con todos los directorios dsl.* en un directorio temporal.",
+      "en": "Full Spring context with every dsl.* directory in a temporary directory."
+    },
+    "setup": {
+      "es": "@SpringBootTest + MockMvc y @DynamicPropertySource hacia @TempDir; el oráculo lee los ficheros del metamodelo y del recibo.",
+      "en": "@SpringBootTest + MockMvc and @DynamicPropertySource to @TempDir; the oracle reads the metamodel and receipt files."
+    },
+    "executes": {
+      "es": "POST/PUT/GET de /api/canonical-metamodels y POST validation/run por el controlador, servicio, validador y repositorio reales.",
+      "en": "POST/PUT/GET on /api/canonical-metamodels and POST validation/run through the real controller, service, validator and repository."
+    },
+    "asserts": {
+      "es": "Ciclo de herencia + nombres duplicados da 422 con los códigos del validador y sin fichero; el modelo corregido da 201, ETag igual al SHA-256 del fichero; PUT con ETag obsoleto da 412 y bytes intactos; la validación del guardado escribe un recibo válido.",
+      "en": "Inheritance cycle + duplicate names give 422 with the validator codes and no file; the corrected model gives 201 and an ETag equal to the file's SHA-256; PUT with a stale ETag gives 412 and intact bytes; validating the saved model writes a valid receipt."
+    },
+    "behavior": {
+      "es": "El guardado de un metamodelo está protegido: con errores se rechaza y no se escribe nada; corregido, se guarda con su marca de versión y se puede validar.",
+      "en": "Saving a metamodel is guarded: with errors it is rejected and nothing is written; once corrected it is saved with its version mark and can be validated."
+    },
+    "rule": {
+      "es": "Los errores de validación bloquean el guardado (422); una versión obsoleta da 412; guardar correctamente devuelve 201 con ETag.",
+      "en": "Validation errors block the save (422); an obsolete version gives 412; a correct save returns 201 with an ETag."
+    },
+    "scenario": {
+      "es": "Enviar un metamodelo inválido por POST y PUT, enviar el corregido, reemplazar con ETag vigente y obsoleta, y ejecutar la validación del metamodelo guardado.",
+      "en": "Send an invalid metamodel by POST and PUT, send the corrected one, replace with current and stale ETag, and run validation of the stored metamodel."
+    },
+    "result": {
+      "es": "422 sin fichero, 201 con fichero y ETag verificable, 412 sin cambios y recibo de validación válido y vigente.",
+      "en": "422 with no file, 201 with file and verifiable ETag, 412 with no changes and a valid, current validation receipt."
+    },
+    "expected": {
+      "es": "Estados HTTP, códigos del validador, ficheros y recibo coinciden en los cuatro casos.",
+      "en": "HTTP statuses, validator codes, files and receipt match in all four cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real, en contexto completo, de que la puerta de guardado bloquea metamodelos inválidos y versiona los válidos.",
+      "en": "Real evidence, in full context, that the save gate blocks invalid metamodels and versions valid ones."
+    },
+    "limits": {
+      "es": "No cubre el clic del asistente ni el diseñador visual (UI); solo una combinación de errores de validación.",
+      "en": "Does not cover the wizard click or visual designer (UI); only one combination of validation errors."
+    },
+    "strengthWhy": {
+      "es": "Cadena HTTP completa con persistencia real, oráculo independiente en disco y rechazos reales.",
+      "en": "Full HTTP chain with real persistence, independent on-disk oracle and real rejections."
+    },
+    "cases": [
+      {
+        "n": "invalidMetamodelIsRejectedWithValidatorCodesAndNoFile",
+        "scenario": {
+          "es": "POST y PUT con ciclo y duplicados.",
+          "en": "POST and PUT with cycle and duplicates."
+        },
+        "result": {
+          "es": "422 y sin fichero.",
+          "en": "422 and no file."
+        }
+      },
+      {
+        "n": "obsoleteEtagAnswers412AndKeepsTheStoredContent",
+        "scenario": {
+          "es": "PUT con ETag antigua.",
+          "en": "PUT with an old ETag."
+        },
+        "result": {
+          "es": "412 y contenido intacto.",
+          "en": "412 and intact content."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/metamodel/web/MetamodelAuthoringSaveGateHttpIntegrationTests.java",
+        "line": 94
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/web/MetamodelAuthoringSaveGateHttpIntegrationTests.java",
+        "line": 98
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/web/MetamodelAuthoringSaveGateHttpIntegrationTests.java",
+        "line": 132
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/web/MetamodelAuthoringSaveGateHttpIntegrationTests.java",
+        "line": 157
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/web/MetamodelAuthoringSaveGateHttpIntegrationTests.java",
+        "line": 183
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/web/MetamodelAuthoringSaveGateHttpIntegrationTests.java",
+        "line": 97
+      }
+    ]
+  },
+  {
+    "id": "java:com.example.editor.metamodel.web.MetamodelHttpTestEnvironment",
+    "name": {
+      "es": "Entorno HTTP real compartido de metamodelos",
+      "en": "Shared real metamodel HTTP environment"
+    },
+    "type": "OTHER",
+    "layer": "behavior",
+    "caps": [
+      "metamodel"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "No contiene casos de prueba: es un soporte que construye el entorno real que usan las pruebas de integración nuevas.",
+      "en": "Contains no test cases: it is support code that builds the real environment used by the new integration tests."
+    },
+    "asserts": {
+      "es": "No hay aserciones.",
+      "en": "There are no assertions."
+    },
+    "behavior": {
+      "es": "No verifica comportamiento por sí mismo; prepara colaboradores reales sobre directorios temporales.",
+      "en": "Verifies no behaviour by itself; it prepares real collaborators over temporary directories."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Ninguno: es un soporte de pruebas, sin ejecución propia.",
+      "en": "None: it is test support, with no execution of its own."
+    },
+    "result": {
+      "es": "No produce resultado de prueba.",
+      "en": "Produces no test result."
+    },
+    "expected": {
+      "es": "No aplica: no es un caso ejecutable.",
+      "en": "Not applicable: not an executable case."
+    },
+    "guarantee": {
+      "es": "Ninguna por sí solo; se ejerce en los tests que lo usan.",
+      "en": "None by itself; it is exercised in the tests that use it."
+    },
+    "limits": {
+      "es": "No es una prueba y no debe contarse como evidencia.",
+      "en": "It is not a test and must not be counted as evidence."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Es una utilidad de soporte sin aserciones.",
+      "en": "It is a support utility without assertions."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.metamodel.web.MetamodelAuthoringSaveGateHttpIntegrationTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/metamodel/web/MetamodelHttpTestEnvironment.java",
+        "line": 20
+      }
+    ],
+    "confidence": "SKIMMED"
+  }
+]

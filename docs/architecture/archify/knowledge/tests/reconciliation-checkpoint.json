@@ -1,0 +1,2743 @@
+{
+ "schemaVersion": 1,
+ "generatedAt": "2026-10-16T19:28:25.074Z",
+ "note": "Checkpoint for exhaustive test-to-stage reconciliation (user-requested full pass). reviewed: id -> {decision, procs, reasoning, ts}. pending: ids not yet reviewed.",
+ "reviewed": {
+  "java:com.example.editor.project.ProjectDeletionServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Prueba real de borrado de proyecto (confirmación de dependencias, cierre de sesión), pero no existe ningún proceso/etapa modelado para \"borrar un proyecto\" en los 7 procesos de la capacidad project. Vacío de modelo, no de prueba.",
+   "ts": "2026-10-16T19:14:02.363Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.project.ProjectWorkspaceBridgeTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Prueba real de sincronización workspace<->proyecto (preview/apply/merge/replace, symlinks, presupuesto de entradas), pero no hay proceso modelado para esa sincronización en project_*.",
+   "ts": "2026-10-16T19:14:02.365Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.project.ProjectContractTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Pruebas unitarias del modelo de datos (ProjectLayout/Descriptor/TreeNode/SyncPlan) sin ejercitar un paso de usuario concreto.",
+   "ts": "2026-10-16T19:14:02.365Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.project.HydraProjectPresetTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Modelo de datos de presets de proyecto; no hay elemento \"preset\" en los elems de ningún proceso project_*.",
+   "ts": "2026-10-16T19:14:02.365Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.project.ProjectDrawioExportTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Exporta el proyecto como diagrama Drawio, una funcionalidad distinta de \"exportar el proyecto\" (ZIP/repositorio) que modela project_author_export.",
+   "ts": "2026-10-16T19:14:02.365Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.project.ProjectPathPickerContractTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato del selector de ruta (modo headless/Swing); no ejercita el flujo de usuario de importar/crear.",
+   "ts": "2026-10-16T19:14:02.365Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.project.storage.ProjectPathPickerConditionalBeanTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Selección condicional de bean (headless vs Swing) según entorno; infraestructura, no comportamiento funcional de un paso.",
+   "ts": "2026-10-16T19:14:02.365Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.project.web.ProjectControllerPathPickerFallbackTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Fallback del selector de ruta vía controlador; mismo motivo que ProjectPathPickerContractTests.",
+   "ts": "2026-10-16T19:14:02.365Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.project.ProjectResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "STATIC_VERIFICATION sin prod[]; comprobación de recursos del módulo, no de un paso.",
+   "ts": "2026-10-16T19:14:02.365Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.project.storage.ProjectVisualAssetPolicyTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Política de activos visuales (seguridad/tamaño), transversal a varias capacidades, no un paso de project.",
+   "ts": "2026-10-16T19:14:02.365Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.workbench.capability.HydraCapabilityReadinessServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Comprobación cruzada de qué capacidades están listas (metamodel+event+gamification+...); no corresponde a un paso concreto de ningún proceso.",
+   "ts": "2026-10-16T19:14:02.365Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.audit.AuditRetentionDeletionTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Retención/borrado de auditoría; audit_record_mutation no modela retención, solo observar->crear->anotar->consultar.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.gamification.GamificationApplicationServiceCatalogTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Carga del catálogo (definiciones+bindings) a nivel de servicio; no es el paso interactivo de edición/aplicación de los micro-procesos de autoría.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.gamification.GamificationCorruptDocumentRecoveryTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Resiliencia ante documento corrupto al arrancar; no corresponde a ningún paso de autoría modelado.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.integration.bridge.HostFeedbackPresentationServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Presentación de feedback en tiempo de ejecución (host UI bridge); no es el panel de \"ajustar política de avisos\" (gamification_author_policy edita configuración, no la presentación en vivo).",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "vitest:src/gamification-designer/GamificationStructureTree.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Árbol de estructura del catálogo; vista auxiliar, no un paso modelado explícitamente.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "vitest:src/gamification-designer/GamificationVisualLayoutContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato visual/CSS del editor; sin comportamiento funcional ligado a un paso.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteGitRepositoryLocatorTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Localizador Git para update-sites; función específica de recuperación de metamodelos (capacidad recovery/metamodel), no \"conectar un repositorio genérico\" (external_repositories).",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRemoteRepositoryServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: servicio de repositorio remoto específico de update-site, no de los procesos repos_* genéricos.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRemoteSnapshotServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: snapshot remoto de update-site, función distinta de repos_* genéricos.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.rc1.Rc1ReferenceProjectTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Prueba de referencia de release (RC1), STATIC_VERIFICATION de alto nivel; no ejercita una etapa concreta de transformation_*.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.semantic.expression.ExpressionTypeCheckerTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Chequeo de tipos de expresiones, usado transversalmente por validation/transformation/events/gamification; no corresponde específicamente a transformation_batch_both/parity/author_generation/author_text2model (sus clases reales: TransformationSyncPolicy, generador de reglas, text2model, no aparecen en prod[]).",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "java:com.example.editor.semantic.expression.OperationCallExpressionTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo que ExpressionTypeCheckerTests.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "vitest:src/aggressive-testing/HydraAggressiveSemanticMutation.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Prueba transversal de mutación semántica sobre 7 capacidades a la vez (metaModelOperations, editorDefinitionValidation, validationDesignerValidation, eventDesignerValidation, gamificationValidation, transformationDesignerModel, integrationProfileValidation); no aporta evidencia específica y justificada de una etapa concreta sin forzar.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "vitest:src/transformation-designer/TransformationDesignerContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato de UI del diseñador de transformación (estructura de paneles); no ejercita batch/parity/generación/text2model específicamente.",
+   "ts": "2026-10-16T19:14:02.375Z",
+   "round": "pre-existing (rounds 1-3)"
+  },
+  "vitest:src/metamodel-designer/MetamodelPalette.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_canvas",
+     "stages": [
+      "pal"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Componente exacto de la paleta (Clase, Abstracta, Interfaz, Enumerado, Tipo de datos) que el nodo \"pal\" describe.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/MetamodelClassNode.operations.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_canvas",
+     "stages": [
+      "pal"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Comportamiento del nodo de clase tras crearlo desde la paleta (salida de \"pal\": nodo en el lienzo).",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/canvasNodeSelection.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_canvas",
+     "stages": [
+      "ed"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Selección de nodo en el lienzo, paso previo a \"completar en el panel de propiedades\" (ed).",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/canvasSelection.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_canvas",
+     "stages": [
+      "ed"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Mismo motivo: selección en el lienzo, soporte indirecto de \"ed\".",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/connectionGeometry.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_canvas",
+     "stages": [
+      "cc",
+      "dr"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Geometría de la conexión dibujada tras clic-clic o arrastrar (cc/dr).",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/relationSelection.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_canvas",
+     "stages": [
+      "kind"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Selección del tipo de relación, justo lo que describe el nodo \"kind\".",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/paletteLayout.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_canvas",
+     "stages": [
+      "pal"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Organización/layout de la propia paleta que alimenta el nodo \"pal\".",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/diagram.operations.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_canvas",
+     "stages": [
+      "pal",
+      "ed"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Operaciones genéricas de diagrama (crear/mover/borrar nodo) usadas por los pasos de creación y edición del lienzo.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/lifecycleDialogs.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_export_generate",
+     "stages": [
+      "in"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Prueba el MetamodelExportDialog.tsx, el diálogo exacto donde se elige modelo y destino (nodo \"in\").",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/MetamodelExportDialog.window.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_export_generate",
+     "stages": [
+      "in"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Mismo diálogo de exportación/generación, comportamiento de ventana.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/exportFormats.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_export_generate",
+     "stages": [
+      "in"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Catálogo de formatos de exportación disponibles para elegir destino.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.export.MetamodelExportFormatRegistryTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_export_generate",
+     "stages": [
+      "in"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Registro de formatos/categorías de exportación que sustenta la elección de destino.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.export.MetamodelExportOptionsTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_export_generate",
+     "stages": [
+      "in"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Opciones de exportación (modelo que se puede elegir).",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.export.project.MetamodelProjectExportProviderRegistryTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_export_generate",
+     "stages": [
+      "in"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Registro de proveedores de exportación de proyecto, parte de la elección de destino.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.export.project.MetamodelProjectGenerationSnapshotTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_export_generate",
+     "stages": [
+      "gen"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Snapshot de la generación realizada, evidencia parcial del nodo \"gen\" (generar el código).",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.adapter.ecore.DefaultEcoreMetamodelAdapterTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_import",
+     "stages": [
+      "an"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "El adaptador Ecore es el motor real de análisis/propuesta cuando el formato de origen es Ecore (nodo \"an\").",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.adapter.ecore.EcoreOperationRoundTripTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_import",
+     "stages": [
+      "an"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Mismo adaptador, ida y vuelta de operaciones; soporte indirecto de \"an\" para Ecore.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.adapter.ecore.EcoreLocalReferenceSerializationTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_import",
+     "stages": [
+      "an"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Serialización de referencias locales del adaptador Ecore; soporte indirecto de \"an\".",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.importing.ImportParsingSupportTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_import",
+     "stages": [
+      "an"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Soporte de parseo genérico usado durante el análisis del origen importado.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.architecture.DesignerArchitectureContractTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato de arquitectura transversal (8 clases de varias capacidades); no corresponde a un paso concreto.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.architecture.RuntimeAndPersistenceHardeningTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: endurecimiento transversal de runtime/persistencia sobre múltiples servicios.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.emf.EmfResourceSetFactoryTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Infraestructura EMF compartida por carga de metamodelos y modelos; no es un paso de autoría ni de uso, es un factory técnico de bajo nivel.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.adapter.ecore.EcoreNeutralMetadataSupportTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Soporte de metadatos neutral del adaptador Ecore, a nivel de detalle demasiado fino para un nodo de proceso.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.adapter.ecore.EcorePrimitiveTypeRegistryTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Registro de tipos primitivos del adaptador; infraestructura de bajo nivel.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.core.MetaOperationContractTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato de datos de operaciones del metamodelo; no ejercita un paso de usuario.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.core.NeutralMetamodelJsonRoundTripTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Ida y vuelta JSON del modelo de datos neutral; contrato de esquema, no un paso.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.core.OperationContractResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Recursos del contrato de operaciones; esquema, no paso de usuario.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.MetamodelIdPolicyTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Política de generación de ids; detalle interno sin paso de usuario asociado.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.validation.OperationBehaviorModelValidatorTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Validador de modelo de comportamiento de operaciones; pertenece más a validation/behavior que a un paso de metamodel_*.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.design.MetamodelDiagramDocumentTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Persistencia/documento del diagrama del lienzo; infraestructura de almacenamiento, no un nodo discreto del proceso de interacción metamodel_author_canvas.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.design.MetamodelDiagramResourceBudgetTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: presupuesto de recursos del almacenamiento del diagrama, infraestructura.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.design.MetamodelDiagramStyleContractTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato de estilo del diagrama; sin paso de usuario asociado.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.layout.MetamodelDiagramLayoutEngineRegistryTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Registro del motor de layout; infraestructura de render, no un paso.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.layout.MetamodelLayoutOptionsTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Opciones de layout; infraestructura de render.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.layout.routing.MetamodelDiagramRoutingContractTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato de enrutado de aristas del diagrama; infraestructura de render.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.layout.routing.MetamodelRoutingMetricsAndPipelineTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Métricas y pipeline de enrutado; infraestructura de render, no un paso de interacción.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.layout.routing.OrthogonalMetamodelEdgeRoutingEngineTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Motor de enrutado ortogonal; infraestructura de render.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/MetamodelNodeSizeEditor.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Redimensionar nodos no es un elemento modelado (elems de metamodel_author_canvas no incluye \"resize\").",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/nodeSizeUtils.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: utilidad de tamaño de nodo sin elemento modelado.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/numericValidation.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Validación numérica genérica reutilizada en varios formularios de varias capacidades; demasiado genérica para atribuir a un paso concreto sin forzar.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/ValidatedNumberInput.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: input numérico genérico compartido.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/layoutToolbar.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Barra de herramientas de layout/organización automática; no es un elemento modelado en metamodel_author_canvas.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/MetamodelSelectionActionsDialog.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Diálogo de acciones sobre selección múltiple; ambiguo sin lectura más profunda del propósito exacto, no se fuerza.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/MetamodelValidationDialog.style.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Solo contrato de estilo/CSS del diálogo de validación; sin comportamiento funcional.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/canonicalMetaModel.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Fábrica/selectores del modelo en memoria; infraestructura de datos compartida, no un paso de usuario.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/designer-ui/MetamodelStructureTree.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Vista de árbol de estructura; vista auxiliar sin nodo discreto correspondiente en los procesos de metamodel.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/layer-io/LayerInterchangeDialog.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Intercambio entre capas (metamodel+validation+events); concierne a un proceso cruzado no identificado con certeza, se difiere.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "vitest:src/layer-io/metamodelAssociation.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Asociación entre capas; mismo motivo, concierne a un proceso cruzado no identificado con certeza.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "gate:readiness:01:fix82-85-lifecycle-persistence-jobs-consolidation": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad de ciclo de vida/persistencia a nivel de release; demasiado amplia para un paso concreto.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "gate:readiness:20:operations-core": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad de operaciones core; demasiado amplia.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.emf.DynamicModelServiceTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Carga dinámica de modelos para uso en el editor; podría pertenecer a procesos de model_editor (sesión/compilación) en vez de a metamodel_*. Diferido hasta revisar model_editor.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.emf.MetamodelLoaderTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Mismo motivo: carga de metamodelo para uso en runtime del editor; diferido a la revisión de model_editor.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.MetamodelIntrospectionServiceTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Introspección de metamodelo cargado; podría pertenecer a model_editor_session. Diferido.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.application.SemanticContextMetamodelResolverTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Resolución de metamodelo activo por contexto semántico; concierne a grammar+metamodel+model_editor, proceso cruzado no identificado con certeza. Diferido.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.export.project.MetamodelProjectArtifactAssemblerSelectionTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Ensamblado de artefactos de proyecto a partir del metamodelo guardado; podría relacionarse con x_project_lifecycle_overview (proceso cruzado, actualmente sin evidencia). Diferido.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.projection.EcoreMirrorServiceTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Proyección/mirror a Ecore; no existe ningún proceso modelado para \"proyectar/sincronizar Ecore\" en metamodel_* (solo define_save/delete_cascade/export_generate/4 de autoría). Vacío de modelo real, no de prueba — documentado como hallazgo.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.projection.JsonProjectionManifestRepositoryTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Mismo vacío de modelo: persistencia del manifiesto de proyección, sin proceso modelado.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.projection.ProjectionCoordinatorTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Mismo vacío de modelo: coordinación de proyecciones, sin proceso modelado.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.registry.MetamodelRegistryServiceTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Registro de metamodelos en runtime (listado, estado de proyección); no corresponde a definir/borrar/exportar ni a los 4 micro-procesos de autoría. Vacío de modelo (ya señalado en ronda 2).",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.web.MetamodelControllerTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Controlador HTTP que envuelve el registro; mismo vacío de modelo que MetamodelRegistryServiceTests.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteMirrorUpdateServiceTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Mirror de update-site; concierne a recovery_lifecycle/recovery_author_wizard. Diferido a revisión de recovery.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteP2MirrorServiceTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Mismo motivo: diferido a recovery.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteParserFuzzTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Fuzzing de seguridad del parser de update-site; concierne a security/recovery. Diferido.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRepositoryRootDetectorTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Detección de raíz de repositorio en update-site; concierne a recovery_lifecycle. Diferido.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.target.TargetConfigurationDocumentTests": {
+   "decision": "deferred",
+   "procs": [],
+   "reasoning": "Ya catalogado a mano en ronda 1 (sin proceso modelado para configuración de destino Ecore); se mantiene sin enlazar, ya documentado.",
+   "ts": "2026-10-16T19:16:30.952Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.export.NeutralExportContextLoaderIdentityTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_export_generate",
+     "stages": [
+      "in"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Carga del contexto de exportación (identidad/opciones); soporte indirecto de elegir modelo y destino.",
+   "ts": "2026-10-16T19:16:53.935Z",
+   "round": 4
+  },
+  "vitest:src/metamodel-designer/MetamodelConnectionGeometryEditor.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "metamodel_author_canvas",
+     "stages": [
+      "cc",
+      "dr"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Edición de la geometría de la conexión ya creada por clic-clic o arrastre.",
+   "ts": "2026-10-16T19:16:53.935Z",
+   "round": 4
+  },
+  "java:com.example.editor.metamodel.target.JsonTargetConfigurationRepositoryTests": {
+   "decision": "linked-round1",
+   "procs": [],
+   "reasoning": "Ya catalogada a mano en la ronda 1 con procs=[] documentado (sin proceso modelado para configuración de destino Ecore); confirmado, no se repite el análisis.",
+   "ts": "2026-10-16T19:16:53.935Z",
+   "round": 1
+  },
+  "java:com.example.editor.editor.EditorBootstrapTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_compile",
+     "stages": [
+      "chk",
+      "cmp"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Arranque del editor compilado a partir del metamodelo registrado: comprobación y generación del editor ejecutable.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.diagram.DiagramStorageTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "sv"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Persistencia del diagrama/modelo editado, justo lo que describe \"Guardar el modelo\" (sv).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.definition.runtime.session.EditorSessionMemoryHardeningTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "ev",
+      "ud"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Búfer de eventos pendientes (ev) e historial para deshacer (ud) de la sesión.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.definition.runtime.session.EditorVisualContainmentEndpointContractTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "op"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Controlador/servicio que crea la sesión del editor (op).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.definition.runtime.session.EditorSessionRuntimeContractsTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "ed"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Contratos de ejecución de herramientas durante la edición (crear/conectar/editar, ed).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.definition.runtime.session.EditorRuntimePolicyAndViewpointTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "op"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Política de runtime aplicada al abrir la sesión (op).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.definition.assets.EditorVisualAssetServiceTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_design",
+     "stages": [
+      "cs"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Activos visuales usados por los estilos condicionales del editor (cs).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.definition.EditorDefinitionContractTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_design_flow",
+     "stages": [
+      "rp",
+      "tf"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Contrato de datos de la definición (mapeos, representaciones, formularios) que sustenta los pasos de representaciones/herramientas.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/editor-definition/editorCapabilityHelp.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_guided",
+     "stages": [
+      "p4"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Ayuda contextual del paso de Capacidades del asistente guiado.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/editor-definition/editorDefinitionNormalization.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_design_flow",
+     "stages": [
+      "rv"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Normalización de la definición antes de la revisión de validez (rv).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/editor-definition/EditorNodeShapeFrame.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_design",
+     "stages": [
+      "cs"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Marco/forma del nodo, parte del estilo condicional (cs).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/editor-definition/editorNotationGeometry.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_design",
+     "stages": [
+      "cs"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Geometría de notación visual, parte del estilo (cs).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/editor-definition/editorVisualAssetUrl.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_design",
+     "stages": [
+      "cs"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Resolución de URL de activos visuales usados en estilos (cs).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/editor-definition/ModelEditorRuntimeWorkspaceContract.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "op",
+      "ed"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Contrato del espacio de trabajo de ejecución (abrir sesión y editar).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/editor-definition/ProjectAssetPicker.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_design",
+     "stages": [
+      "fm"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Selector de activo de proyecto usado en formularios (fm).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/editor-definition/ProjectImageFileField.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_design",
+     "stages": [
+      "fm"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Campo de imagen de proyecto usado en formularios (fm).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/editor-definition/standaloneCapabilityPackage.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_guided",
+     "stages": [
+      "p6"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Empaquetado para ejecución/despliegue independiente, paso de Ejecución (p6).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/model-codegen/SelectionCodeGenerationContract.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_code",
+     "stages": [
+      "tg",
+      "dt"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Contrato de la vista Código: elegir lenguaje/espacio de nombres y destinos de generación.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/model-editor/ContextualModelEditor.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "ed"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Componente real donde se crea, conecta y edita contenido del modelo.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/operation-runtime/OperationRuntimePanel.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "ed"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Panel de ejecución de operaciones usado durante la edición de la sesión.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/operation-runtime/operationRuntimeApi.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "ed"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "API de ejecución de operaciones que respalda el panel anterior.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/visual-style/styleAccordion.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_design",
+     "stages": [
+      "cs"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Editor de estilos de nodo/arista, exactamente el paso de estilo condicional (cs).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/visual-style/visualStyleUtils.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_author_design",
+     "stages": [
+      "cs"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Utilidades de estilo visual que respaldan \"cs\".",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/components/Palette.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "ed"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Paleta de herramientas para crear nodos/aristas durante la edición de la sesión.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/api/editorApi.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "model_editor_session",
+     "stages": [
+      "op"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Envoltorio de API usado para abrir/operar la sesión del editor.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.definition.EditorDefinitionResourceContractTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Solo comprueba la existencia/forma de ficheros de esquema JSON de fixture; no ejercita un paso de usuario.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.definition.EditorDefinitionResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: contrato de recursos de esquema.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.definition.runtime.EditorRuntimeResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: contrato de recursos de esquema runtime.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.definition.runtime.session.EditorSessionResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: contrato de recursos de esquema de sesión.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/diagram/diagramUtils.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Utilidades genéricas de diagrama (geometría/formato), demasiado infraestructurales para atribuir a un paso.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/diagram/elkStyleLayout.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Motor de layout ELK; infraestructura de render compartida, no un paso de usuario.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/editor-definition/editorRuntimeLayout.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Layout de ejecución; infraestructura de render.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "vitest:src/designer-ui/useHydraModelEditorNodeResize.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Redimensionar nodos no es un elemento modelado en ningún proceso de model_editor.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "gate:readiness:21:operations-persistence-runtime": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal; demasiado amplia para un paso concreto.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "gate:readiness:30:editor-runtime-capability": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "gate:readiness:31:editor-runtime-and-grammar-semantic-contexts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "gate:readiness:33:reported-semantic-frontend-test-contracts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "gate:readiness:34:model-editor-react-flow-selection-loop-closure": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (cierre de bucle de selección react-flow).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "gate:readiness:38:events-and-editor-definitions": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "gate:readiness:39:editor-definition-classpath-resources": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (recursos de classpath).",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "gate:readiness:40:unified-designer-ui": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal de UI unificada entre varios diseñadores.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "gate:readiness:42:external-multilayer-import": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:18:51.573Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.projection.canonical.CanonicalProjectionRoundTripTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_deliver",
+     "stages": [
+      "exp"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Ida y vuelta de la proyección canónica (PlantUML/Drawio); corresponde al paso \"Exportar\" (exp).",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.verification.ExternalToolProcessRunnerTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_deliver",
+     "stages": [
+      "exe"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Es el runner real de ejecución con herramienta externa que describe el nodo \"exe\".",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "vitest:src/roundtrip-center/api.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_deliver",
+     "stages": [
+      "rt"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "API del centro de ida y vuelta (roundtrip), el paso \"Sincronizar cambios nativos\" (rt).",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.workflow.TechnologyWorkflowControllerTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_readiness",
+     "stages": [
+      "stg"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Catálogo de flujos/madurez de tecnología que alimenta el cálculo del estado de cada etapa.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.workflow.TechnologyWorkflowServiceTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_readiness",
+     "stages": [
+      "stg"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Registro de adaptadores/validadores de estructura usado al calcular el estado de cada etapa.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.compatibility.NativeToolchainProbeCatalogTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_readiness",
+     "stages": [
+      "load"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Catálogo de sondas de toolchain nativo que alimenta la carga del perfil y su análisis.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.compatibility.TechnologyCompatibilityMatrixServiceTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_readiness",
+     "stages": [
+      "diag"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Matriz de compatibilidad usada para separar errores y avisos.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.compatibility.TechnologyCompatibilityMatrixWriterTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_readiness",
+     "stages": [
+      "diag"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Escritura de la matriz de compatibilidad, mismo paso de diagnóstico.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.verification.AggressiveSpecialIntegrationArtifactTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_deliver",
+     "stages": [
+      "gen",
+      "exp"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Generación de artefactos especiales (Antlr/PlantUML/archivo) usados en generar/exportar.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "vitest:src/integration-designer/api.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_author_wizard",
+     "stages": [
+      "id",
+      "tg"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Contrato de API del diseñador de integración, pasos de identidad y tecnología.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "vitest:src/integration-designer/integrationProfileNormalization.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_author_wizard",
+     "stages": [
+      "id"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Normalización del perfil, paso de identidad.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "vitest:src/integration-designer/integrationTechnologyNormalization.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_author_wizard",
+     "stages": [
+      "tg"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Normalización de tecnología, paso 2.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "vitest:src/integration-designer/technologyWorkflowNormalization.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_author_wizard",
+     "stages": [
+      "tg"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Normalización del flujo de tecnología, paso 2.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "vitest:src/integration-designer/integrationDiagnosticAdvice.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_author_wizard",
+     "stages": [
+      "vf"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Consejo de diagnóstico, parte del análisis de compatibilidad (vf).",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "vitest:src/integration-designer/generatedRootPath.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "integration_author_wizard",
+     "stages": [
+      "mp"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Ruta raíz generada, parte de los mapeos con el anfitrión (mp).",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.IntegrationContractResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato de esquema JSON/fixture; no ejercita un paso.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.verification.IntegrationContractResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: contrato de esquema.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.portability.CapabilityPackageTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Pertenece más a la capacidad portability (empaquetado de capacidades); se revisará en el módulo portability.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "vitest:src/aggressive-testing/HydraAggressiveDeliveryArtifactContracts.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Prueba transversal de contrato de entrega sobre 9 APIs de distintas capacidades; no aporta evidencia específica de una etapa sin forzar.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "vitest:src/aggressive-testing/HydraAggressiveRemoteIntegrationBrowserFlow.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Prueba transversal remote-storage+integration; demasiado genérica.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.representable.RepresentableImportServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Importación de representables; concierne más a recovery (ya revisado parcialmente) que a los 9 pasos de entrega de integration_deliver. Se mantiene sin enlazar hasta revisión de recovery.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "gate:readiness:22:integration-capability": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "gate:readiness:23:glsp-eclipse-transactional-runtime-lifecycle": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad específica de un adaptador tecnológico concreto, a nivel de suite completa, no de caso; demasiado gruesa para un paso.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "gate:readiness:24:xtext-langium-transactional-runtime-lifecycle": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "gate:readiness:25:sirius-transactional-runtime-lifecycle": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "gate:readiness:26:emf-transactional-runtime-lifecycle": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "gate:readiness:27:portable-host-transactional-runtime-lifecycle": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "gate:readiness:28:generated-portable-host-project-lifecycle-suites": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "gate:readiness:29:mxgraph-draw-io-injectable": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "gate:readiness:37:semantic-export-and-audit-closure": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:20:37.971Z",
+   "round": 4
+  },
+  "java:com.example.editor.validation.quickfix.QuickFixContractsTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "validation_apply_quickfix",
+     "stages": [
+      "list"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Citado literalmente por el propio modelo como prueba del nodo \"list\" (listar correcciones aplicables).",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "java:com.example.editor.validation.runtime.ValidationDrawioExportTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "validation_execute",
+     "stages": [
+      "rep"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Exporta el informe/plan de validación como Drawio; evidencia indirecta del nodo \"rep\" (informe de validación).",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "java:com.example.editor.validation.runtime.ValidationEngineSpringWiringTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "validation_execute",
+     "stages": [
+      "eval"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Cableado del motor que evalúa las condiciones de las reglas (eval).",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "java:com.example.editor.semantic.expression.ExpressionEvaluationContextTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "validation_execute",
+     "stages": [
+      "eval"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Contexto de evaluación de expresiones usado al evaluar la condición de una regla.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "vitest:src/validation-designer/OperationBindingDesigner.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "validation_define_quickfix",
+     "stages": [
+      "op"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Componente real para añadir operaciones a una Quick Fix (op).",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "vitest:src/validation-designer/ValidationFieldHelp.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "validation_author_guided",
+     "stages": [
+      "id"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Ayuda contextual de campos, usada en los pasos del asistente guiado.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "vitest:src/validation-designer/validationOverwriteIdentity.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "validation_author_guided",
+     "stages": [
+      "id"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Lógica de sobrescritura de identidad al editar una regla existente (paso 1 Identidad).",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "java:com.example.editor.validation.contract.CanonicalActionValidationSerializationTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Serialización de contrato de datos; sin paso de usuario.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "java:com.example.editor.validation.contract.CanonicalValidationContractExamplesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Ejemplos de contrato sin producción referenciada; infraestructura de pruebas.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "java:com.example.editor.validation.contract.ValidationContractResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Versiones de contrato; esquema, no paso.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "java:com.example.editor.validation.runtime.ValidationRuntimePropertiesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Propiedades de configuración runtime; infraestructura.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "java:com.example.editor.validation.runtime.ValidationRuntimeResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato de recursos; esquema, no paso.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "vitest:src/layer-io/layerInterchange.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Intercambio entre capas (validation+events); proceso cruzado no identificado con certeza, se difiere.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "vitest:src/layer-io/layerInterchangeEnvelope.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: envoltorio de intercambio entre capas, proceso cruzado no identificado.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "vitest:src/validation/api.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Envoltorio de API genérico reutilizado por varios diseñadores; demasiado genérico para atribuir a un paso concreto sin forzar.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "vitest:src/validation-designer/validationDesignerFactory.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Valores por defecto de fábrica; corresponden al nodo \"start\" de los asistentes, excluido del conteo de etapas.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "vitest:src/validation-designer/ValidationStructureTree.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Vista de árbol de estructura; vista auxiliar sin nodo discreto correspondiente.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "gate:readiness:14:core-metamodel-contracts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal de esquemas.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "gate:readiness:15:expression-capability": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "gate:readiness:16:validation-capability": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "gate:readiness:17:action-and-quick-fix-capability": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "gate:readiness:18:validation-quick-fix-ui": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal de UI.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "gate:readiness:19:validation-help-and-accessibility": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal de accesibilidad.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "gate:readiness:32:grammar-first-semantic-layers": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 4
+  },
+  "vitest:src/validation-designer/ValidationRuleManager.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Ya analizada en ronda 1: solo cubre el nodo \"start\" (excluido del conteo de etapas) y gestión de lista, sin corresponder a un paso contable.",
+   "ts": "2026-10-16T19:22:19.507Z",
+   "round": 1
+  },
+  "java:com.example.editor.architecture.CoreArchitectureContractTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.architecture.PersistenceArchitectureContractTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.artifact.registry.HydraArtifactCompatibilityServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.artifact.registry.HydraArtifactGraphImpactTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.artifact.registry.HydraArtifactGraphServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.artifact.registry.HydraArtifactScannerTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.artifact.transaction.HydraArtifactTransactionServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.concurrent.ResourceStripedLockTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.persistence.evolution.HydraSchemaEvolutionPlanningTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.persistence.evolution.HydraSchemaEvolutionServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.storage.StorageDirectoryInitializerTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "java:com.example.editor.validation.contract.StableIdentifierPolicyTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "vitest:src/hooks/hydraOverwritePolicy.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "vitest:src/hooks/useHydraDialogs.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "La capacidad persistence solo tiene un proceso modelado (persistence_save_etag: guardar con comprobación de versión); el registro/compatibilidad de artefactos, la evolución de esquema y los bloqueos de concurrencia son una infraestructura distinta sin proceso modelado todavía.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "gate:readiness:04:fix86-91-platform-evolution": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal de evolución de plataforma.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "gate:readiness:48:concurrency-state-budgets": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal de presupuestos de concurrencia.",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "gate:readiness:50:java-core-smoke": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (smoke test del núcleo Java).",
+   "ts": "2026-10-16T19:23:40.639Z",
+   "round": 4
+  },
+  "vitest:src/project-explorer/ProjectFileEditor.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "project_author_tree",
+     "stages": [
+      "c"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Editor que se abre al abrir un elemento del árbol (nodo \"c\").",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/project-explorer/ProjectTabs.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "project_author_tree",
+     "stages": [
+      "c"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Barra de pestañas de los elementos abiertos desde el árbol.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "java:com.example.editor.project.portability.ProjectPortableManifestTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/aggressive-testing/HydraAggressiveProcessCoverage.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/application-shell/HydraApplicationShell.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/application-shell/HydraHomeProjectDashboardContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/application-shell/moduleRegistry.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/capability-center/api.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/capability-center/CapabilityReadinessView.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/project-explorer/MetamodelWorkbenchLayout.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/project-explorer/projectBrowserArtifactUrlSecurity.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/project-explorer/ProjectCompleteDeletionContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/project-explorer/ProjectCreationArchitectureContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/project-explorer/ProjectManagerDialogLayoutContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/remote-storage/RemoteStorageContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Aspecto genérico de interfaz (arquitectura/layout/CSS/seguridad transversal) compartido por todo el shell o varios diseñadores; no corresponde a un paso discreto de un proceso de project.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "gate:readiness:02:fix85t-project-picker-context-recovery": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "gate:readiness:03:fix85u-project-picker-bootstrap-hardening": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:24:47.633Z",
+   "round": 4
+  },
+  "vitest:src/textual-model-editor/textualModelCompletion.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "grammar_author_textmodel",
+     "stages": [
+      "wr"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Autocompletado mientras se escribe el modelo textual (wr).",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "vitest:src/textual-model-editor/TextualModelEditorUxContract.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "grammar_author_textmodel",
+     "stages": [
+      "wr"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Contrato del editor de modelos textuales real, donde se escribe el modelo.",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "java:com.example.editor.grammar.core.GrammarTextualEditorCustomizationTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "grammar_author_textmodel",
+     "stages": [
+      "wr",
+      "pa"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Personalización del editor textual (documento fuente y mapa de enlace semántico) que sustenta escribir y analizar.",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "java:com.example.editor.textual.roundtrip.TextualInstanceAggressiveRoundTripTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "grammar_author_textmodel",
+     "stages": [
+      "pa"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Ida y vuelta de instancias textuales: analizar el texto y comprobar equivalencia semántica (pa).",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "java:com.example.editor.textual.roundtrip.TextualInstanceSemanticRoundTripTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "grammar_author_textmodel",
+     "stages": [
+      "pa"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Mismo motivo: ida y vuelta semántica del análisis del texto.",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "vitest:src/grammar-designer/grammarTextualExample.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "grammar_author_textmodel",
+     "stages": [
+      "ex"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Relleno del ejemplo inicial cuando el editor está vacío (ex).",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "java:com.example.editor.codegen.TextualModelPerspectiveCatalogTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Catálogo de destinos de generación de código (ModelCodeGenerationTarget); concierne más a transformation/codegen que a escribir un modelo como texto.",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "java:com.example.editor.grammar.GrammarPathPolicyTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Política de rutas; seguridad transversal, no un paso de usuario.",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "vitest:src/grammar-designer/generatedCodeLanguage.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Elección de lenguaje de código generado; no se identificó con certeza a qué etapa de grammar corresponde sin forzar.",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "vitest:src/grammar-designer/grammarClassDiagramExport.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Exportación del diagrama de clases de la gramática; función de visualización no mapeada a un proceso de autoría concreto sin forzar.",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "vitest:src/grammar-designer/grammarClassDiagramModel.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: modelo del diagrama de clases.",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "vitest:src/grammar-designer/grammarRuleSyntax.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Sintaxis de reglas de la gramática; no se identificó con certeza la etapa exacta de definición sin una lectura más profunda que no se completó esta ronda.",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "vitest:src/grammar-designer/GrammarStatusDockInformationContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Panel de estado (dock) informativo; aspecto de interfaz genérico, no un paso discreto.",
+   "ts": "2026-10-16T19:25:29.091Z",
+   "round": 4
+  },
+  "vitest:src/event-designer/eventModelNormalization.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "events_author_source",
+     "stages": [
+      "a3"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Citado literalmente por el propio modelo como prueba del nodo \"a3\" (normalizar y comprobar).",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "vitest:src/event-designer/api.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "events_author_source",
+     "stages": [
+      "a1",
+      "a2"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "API de edición de tipos y enlaces (a1) y de cambio de vista (a2).",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "java:com.example.editor.event.diagram.EventArchitectureDiagramVersionTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "events_author_source",
+     "stages": [
+      "a4"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Control de versiones del guardado (a4: \"se guarda con control de versiones\").",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "java:com.example.editor.event.diagram.EventArchitectureDiagramRepositoryTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "events_author_source",
+     "stages": [
+      "a4"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Persistencia real del guardado con control de versiones (a4).",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "pw:e2e/event-architecture-visibility.spec.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "events_author_source",
+     "stages": [
+      "a2"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "E2E real de visibilidad de la arquitectura de eventos al volver a la vista gráfica (a2).",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "vitest:src/event-designer/eventArchitecturePalette.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Paleta de la arquitectura de eventos; concierne a definir/componer el flujo (procesos cap-level ya con evidencia), no a los micro-procesos de autoría source/run.",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "vitest:src/event-designer/eventDesignerFactory.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Valores por defecto de fábrica; corresponde al nodo \"start\", excluido del conteo de etapas.",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "vitest:src/event-designer/EventStructureTree.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Vista de árbol de estructura; aspecto de interfaz genérico.",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "vitest:src/event-designer/flow/EventFlowStructureTree.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo: árbol de estructura del flujo.",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "java:com.example.editor.event.EventContractResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato de esquema; sin paso de usuario.",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "java:com.example.editor.event.flow.EventFlowRuntimeResourcesTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Contrato de esquema del snapshot de runtime; sin paso de usuario.",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "gate:readiness:36:semantic-runtime-execution-closure": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:26:52.886Z",
+   "round": 4
+  },
+  "java:com.example.editor.codegen.ModelCodeGenerationTargetTest": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "publication_author_codegen",
+     "stages": [
+      "t"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Elección del destino/lenguaje de generación, exactamente el nodo \"t\".",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "java:com.example.editor.codegen.ModelCodeGenerationSpringConstructorContractTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "publication_author_codegen",
+     "stages": [
+      "t"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Contrato de construcción de los generadores registrados para el paso \"t\".",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "java:com.example.editor.provenance.HydraDistributionProvenanceServiceTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "publication_author_release",
+     "stages": [
+      "va"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Informe de procedencia/SBOM usado al validar el release (va).",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "java:com.example.editor.standalone.publication.DistributionPublicationServiceTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "publication_author_release",
+     "stages": [
+      "rv"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Servicio real de publicación, el paso \"revisar y publicar\" (rv).",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "java:com.example.editor.registry.federation.HydraCatalogFederationServiceTests": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "publication_author_release",
+     "stages": [
+      "up"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Federación de catálogo para comprobar versiones más nuevas por canal (up).",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/artifact-registry-center/api.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "publication_author_release",
+     "stages": [
+      "ar"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "API del centro de registro de artefactos, paso \"Artefacto y plataforma\" (ar).",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/publication-center/api.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "publication_author_release",
+     "stages": [
+      "ch"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "API del centro de publicación, paso de canal de entrega (ch).",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/update-site-import-center/UpdateSiteImportDashboard.test.tsx": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "recovery_author_workspace",
+     "stages": [
+      "a"
+     ],
+     "match": "direct"
+    }
+   ],
+   "reasoning": "Panel real donde se eligen los candidatos (nodo \"a\").",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/representable-import-center/representableImportGuidance.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "recovery_author_wizard",
+     "stages": [
+      "f"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "Guía de revisión al importar un representable (paso 4 Revisar).",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/representable-import-center/api.test.ts": {
+   "decision": "linked",
+   "procs": [
+    {
+     "id": "recovery_author_wizard",
+     "stages": [
+      "a"
+     ],
+     "match": "indirect"
+    }
+   ],
+   "reasoning": "API de origen del asistente de recuperación (paso 1 Origen).",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/update-site-import-center/UpdateSiteDiagnosticKnowledge.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Base de conocimiento de diagnóstico; no se identificó con certeza el nodo exacto sin forzar.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/update-site-import-center/UpdateSiteExtensionAdapterPanel.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Panel de catálogo de adaptadores de extensión; concierne a integración/extensibilidad, no a elegir candidato ni resolver conflicto.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/update-site-import-center/UpdateSiteImportLogPanel.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Panel de registro/log; no corresponde con certeza a un nodo discreto adicional.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/update-site-import-center/UpdateSiteReleaseComparisonPanel.test.tsx": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Comparación de releases; no se identificó con certeza el nodo \"d\" (conflictos) sin forzar.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "gate:readiness:41:external-project-recovery": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/api/backendFetch.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Envoltorio HTTP genérico compartido por toda la aplicación; no específico de auditoría.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/audit-log/ActivityCaptureContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Visor de Activity Log (actividad de navegación de usuario), función distinta del registro de auditoría de mutaciones canónicas que modela audit_record_mutation (ya razonado en rondas anteriores).",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/audit-log/ActivityLogContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/audit-log/ActivityRetentionContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Mismo motivo (ya razonado en ronda 2).",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "java:com.example.editor.integration.verification.ExternalToolResourcePolicyTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "No se identificó un proceso/etapa modelado al que corresponda directamente esta prueba (infraestructura transversal de seguridad/toolchains/portabilidad); revisar en una futura sesión si se documenta el proceso correspondiente.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "java:com.example.editor.io.BoundedIoTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "No se identificó un proceso/etapa modelado al que corresponda directamente esta prueba (infraestructura transversal de seguridad/toolchains/portabilidad); revisar en una futura sesión si se documenta el proceso correspondiente.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "java:com.example.editor.policy.bundle.HydraPolicyBundleServiceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "No se identificó un proceso/etapa modelado al que corresponda directamente esta prueba (infraestructura transversal de seguridad/toolchains/portabilidad); revisar en una futura sesión si se documenta el proceso correspondiente.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "java:com.example.editor.portability.CapabilityVersionRangeTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "No se identificó un proceso/etapa modelado al que corresponda directamente esta prueba (infraestructura transversal de seguridad/toolchains/portabilidad); revisar en una futura sesión si se documenta el proceso correspondiente.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "java:com.example.editor.web.ApiErrorAdviceTests": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "No se identificó un proceso/etapa modelado al que corresponda directamente esta prueba (infraestructura transversal de seguridad/toolchains/portabilidad); revisar en una futura sesión si se documenta el proceso correspondiente.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/aggressive-testing/HydraAggressiveRecoverySecurity.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "No se identificó un proceso/etapa modelado al que corresponda directamente esta prueba (infraestructura transversal de seguridad/toolchains/portabilidad); revisar en una futura sesión si se documenta el proceso correspondiente.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/blockly/blocklyInterchange.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "No se identificó un proceso/etapa modelado al que corresponda directamente esta prueba (infraestructura transversal de seguridad/toolchains/portabilidad); revisar en una futura sesión si se documenta el proceso correspondiente.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/compatibility-center/api.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "No se identificó un proceso/etapa modelado al que corresponda directamente esta prueba (infraestructura transversal de seguridad/toolchains/portabilidad); revisar en una futura sesión si se documenta el proceso correspondiente.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "vitest:src/remote-auth/RemoteAuthenticationSecurityContract.test.ts": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "No se identificó un proceso/etapa modelado al que corresponda directamente esta prueba (infraestructura transversal de seguridad/toolchains/portabilidad); revisar en una futura sesión si se documenta el proceso correspondiente.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "gate:readiness:05:fix92-98-platform-hardening": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (suite completa), demasiado gruesa para un paso concreto.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "gate:readiness:08:fix108-qualification-bootstrap": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (suite completa), demasiado gruesa para un paso concreto.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "gate:readiness:09:fix109-windows-toolchain-resolution": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (suite completa), demasiado gruesa para un paso concreto.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "gate:readiness:10:fix110-java-24-25-qualification": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (suite completa), demasiado gruesa para un paso concreto.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "gate:readiness:11:fix111-117-rc2-stabilization": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (suite completa), demasiado gruesa para un paso concreto.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "gate:readiness:43:navigation-and-repository-security": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (suite completa), demasiado gruesa para un paso concreto.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "gate:readiness:62:external-process-security": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (suite completa), demasiado gruesa para un paso concreto.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  },
+  "gate:readiness:65:toolchain-java-24-25-prerequisites": {
+   "decision": "rejected",
+   "procs": [],
+   "reasoning": "Puerta de calidad transversal (suite completa), demasiado gruesa para un paso concreto.",
+   "ts": "2026-10-16T19:28:25.074Z",
+   "round": 4
+  }
+ },
+ "pending": []
+}

@@ -32,6 +32,7 @@ import tools.jackson.databind.ObjectMapper;
 final class BlocklyMetamodelImportSupport {
     private static final Pattern DEFINE_ARRAY = Pattern.compile("(?:(?:Blockly\\.)?common\\.)?defineBlocksWithJsonArray\\s*\\(");
     private static final Pattern JSON_INIT = Pattern.compile("\\.jsonInit\\s*\\(");
+    private static final Pattern HYDRA_LAYER = Pattern.compile("\\bconst\\s+layer\\s*=");
     private final ObjectMapper objectMapper;
     /** Descripción: Inicializa una instancia de BlocklyMetamodelImportSupport con sus dependencias y datos de entrada. Entradas: objectMapper: componente de conversión utilizado durante el procesamiento. Salida: deja la instancia inicializada y lista para su uso. */ BlocklyMetamodelImportSupport(ObjectMapper objectMapper) { this.objectMapper = objectMapper; }
 
@@ -58,11 +59,11 @@ final class BlocklyMetamodelImportSupport {
             JsonNode args = definition.get("args0");
             if(args != null && args.isArray()) for(JsonNode arg : args) {
                 String argType = text(arg, "type"); String name = text(arg, "name"); if(name.isBlank()) name = "part" + (attributes.size() + 1);
-                if(argType.startsWith("field_")) { fieldCount++; attributes.add(new MetaAttribute(classId + ":attribute:" + safeId(name), name, primitiveFor(argType), Multiplicity.optional(), true, true, text(arg, "value"), Map.of("blockly:fieldType", argType, "blockly:source", arg.toString()))); }
+                if(argType.startsWith("field_")) { fieldCount++; attributes.add(new MetaAttribute(classId + ":attribute:" + safeId(name), name, primitiveFor(argType), Multiplicity.optional(), true, true, text(arg, "value"), ordered("blockly:fieldType", argType, "blockly:source", arg.toString()))); }
                 if(argType.equals("input_value") || argType.equals("input_statement")) {
                     inputCount++; List<String> checks = checks(arg.get("check")); constraintCount += checks.size();
                     String target = checks.stream().map(classByBlockType::get).filter(java.util.Objects::nonNull).findFirst().orElse(baseId);
-                    relations.add(new MetaRelation(classId + ":input:" + safeId(name), name, classId, target, MetaRelationKind.REFERENCE, null, Multiplicity.optional(), "", true, true, Map.of("blockly:inputType", argType, "blockly:check", String.join(",", checks), "blockly:source", arg.toString())));
+                    relations.add(new MetaRelation(classId + ":input:" + safeId(name), name, classId, target, MetaRelationKind.REFERENCE, null, Multiplicity.optional(), "", true, true, ordered("blockly:inputType", argType, "blockly:check", String.join(",", checks), "blockly:source", arg.toString())));
                 }
             }
             Map<String,String> annotations = new LinkedHashMap<>();
@@ -71,7 +72,7 @@ final class BlocklyMetamodelImportSupport {
             classes.add(new MetaClass(classId, className(type), MetaClassKind.CLASS, attributes, List.of(), annotations));
             relations.add(new MetaRelation("inherits:" + classId, "", classId, baseId, MetaRelationKind.INHERITANCE, null, null, "", true, true, Map.of("blockly:generated", "true")));
         }
-        Map<String,String> annotations = Map.of("hydra:importFormat", javascript ? "blockly-javascript" : "blockly-json", "hydra:blockly:blockCount", String.valueOf(classes.size() - 1), "hydra:blockly:fieldCount", String.valueOf(fieldCount), "hydra:blockly:inputCount", String.valueOf(inputCount), "hydra:blockly:connectionConstraintCount", String.valueOf(constraintCount), "hydra:blockly:javascriptExecuted", "false");
+        Map<String,String> annotations = ordered("hydra:importFormat", javascript ? "blockly-javascript" : "blockly-json", "hydra:blockly:blockCount", String.valueOf(classes.size() - 1), "hydra:blockly:fieldCount", String.valueOf(fieldCount), "hydra:blockly:inputCount", String.valueOf(inputCount), "hydra:blockly:connectionConstraintCount", String.valueOf(constraintCount), "hydra:blockly:javascriptExecuted", "false");
         warnings.add(new TransformationWarning("IMPORT_INFO_BLOCKLY_DECLARATIVE", source.fileName(), "Blockly definitions were parsed declaratively. JavaScript source was not executed. Connection checks are preserved as neutral annotations and input relations."));
         return new MetamodelImportOutput(new MetaModel(MetaModel.CURRENT_SCHEMA_VERSION, modelId, className(modelId), classes, List.of(), List.of(), relations, annotations), null, warnings);
     }
@@ -86,8 +87,24 @@ final class BlocklyMetamodelImportSupport {
             result.addAll(readJson(value));
         }
         result.addAll(readClassicExternalJsonInit(text));
+        result.addAll(readHydraLayer(text));
         return result;
     }
+
+    /** Descripción: FIND-INT-BLOCKLY-JS-OWN-EXPORT: the blockly-javascript file HYDRA exports keeps its definitions in the literal assigned to «layer» and
+     *  registers them through that variable. Only a literal whose kind is HYDRA_BLOCKLY_LAYER is read; nothing in the script is executed. Entradas: text: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */
+    private List<JsonNode> readHydraLayer(String text) {
+        List<JsonNode> result = new ArrayList<>();
+        for(String value : balanced(text, HYDRA_LAYER, '{', '}')) {
+            try { JsonNode layer = objectMapper.readTree(value); if(layer.isObject() && "HYDRA_BLOCKLY_LAYER".equals(text(layer, "kind"))) result.addAll(readJson(value)); }
+            catch(JacksonException ignored) { /* a dynamic layer is not static JSON and stays unsupported */ }
+        }
+        return result;
+    }
+
+    /** Descripción: OBS-DET-BLOCKLY-ANNOTATIONS-ORDER: the metamodel copies annotations in iteration order and Map.of iterates in an order seeded per JVM,
+     *  so annotations are built in their declared order. Entradas: keysAndValues: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
+    private static Map<String,String> ordered(String... keysAndValues) { Map<String,String> result = new LinkedHashMap<>(); for(int i = 0; i < keysAndValues.length; i += 2) result.put(keysAndValues[i], keysAndValues[i + 1]); return result; }
 
     /** Descripción: Obtiene la información correspondiente a «readClassicExternalJsonInit» dentro de BlocklyMetamodelImportSupport. Entradas: text: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ private List<JsonNode> readClassicExternalJsonInit(String text) {
         List<JsonNode> result = new ArrayList<>();

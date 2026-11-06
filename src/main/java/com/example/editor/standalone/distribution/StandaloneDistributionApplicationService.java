@@ -67,7 +67,8 @@ public class StandaloneDistributionApplicationService {
             StandaloneDistributionPackageResult result = packager.packageProject(editorRoot, archive, readiness);
             return new StandaloneDistributionDownload(archive.getFileName().toString(), result.sha256(),
                     com.example.editor.io.BoundedIo.readInternal(result.archive()));
-        } catch(IOException exception) { throw new IllegalStateException("Could not read standalone release-source archive", exception); }
+        } catch(StandaloneDistributionRejectedException rejected) { throw new IllegalArgumentException(rejected.getMessage(), rejected); }
+        catch(IOException exception) { throw new IllegalStateException("Could not read standalone release-source archive", exception); }
     }
 
     /** Descripción: Empaqueta solo recursos web compilados con integridad verificada. Entradas: solicitud de distribución. Salida: ZIP web descargable sin afirmar que sea instalador nativo. */
@@ -95,7 +96,8 @@ public class StandaloneDistributionApplicationService {
             Files.createDirectories(packageRoot);
             StandaloneDistributionPackageResult result = packager.packageProject(editorRoot, archive, validation);
             return new StandaloneDistributionDownload(fileName, result.sha256(), com.example.editor.io.BoundedIo.readInternal(result.archive()));
-        }catch(IOException exception){throw new IllegalStateException("Could not read packaged standalone editor", exception);}
+        }catch(StandaloneDistributionRejectedException rejected){throw new IllegalArgumentException(rejected.getMessage(), rejected);}
+        catch(IOException exception){throw new IllegalStateException("Could not read packaged standalone editor", exception);}
     }
 
     /** Descripción: Obtiene la información correspondiente a «resolveEditorRoot» dentro de StandaloneDistributionApplicationService. Entradas: value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ private Path resolveEditorRoot(String value){

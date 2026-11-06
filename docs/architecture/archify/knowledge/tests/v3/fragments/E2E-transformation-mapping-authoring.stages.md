@@ -1,0 +1,7 @@
+- transformation_author_mapping.sc: lines 46-49 (create-rule button disabled until one class on each side is selected) and lines 101-102 (persisted source and target types).
+- transformation_author_mapping.bi + dr: lines 40-42 (direction selector absent when unidirectional, present when bidirectional) and lines 103-105 (backward rule persisted, same correspondence as the forward one).
+- transformation_author_mapping.ar: lines 51-61 (rule cards created per direction) and line 98 (two rules persisted).
+- transformation_author_mapping.mp + kd: lines 65-66 and 107-110, 112 (compatible names mapped as direct, constant, direct from another property, calculated).
+- transformation_author_mapping.vp: line 111 (conversion, collection, error policy and fallback persisted) with the gate at lines 78-80 (undeclared conversion blocks the save).
+- transformation_author_mapping.gd: lines 114-115 (persisted application condition of boolean type).
+- transformation_author_mapping.rl: second test; lines 173 and 181 (relations panel absent for a rule whose target class has no relations, present for one that has) and lines 203 and 205 (persisted trace-equivalence link source relation -> target relation, none on the rule without relations); line 187 clears the mapping.

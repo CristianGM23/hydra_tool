@@ -1,0 +1,91 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalProjectRecoveryReopenIntegrationTests",
+    "name": {
+      "es": "Reabrir un proyecto recuperado y seguir editando su metamodelo",
+      "en": "Reopen a recovered project and keep editing its metamodel"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["recovery", "project", "metamodel"],
+    "procs": [
+      {"id": "x_recover_external_project", "stages": ["pj"], "match": "direct"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryController.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+      "src/main/java/com/example/editor/project/web/ProjectController.java",
+      "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java",
+      "src/main/java/com/example/editor/metamodel/web/CanonicalMetamodelController.java"
+    ],
+    "pre": {
+      "es": "Fixture src/test/resources/fixtures/sirius-complete empaquetado como ZIP; directorio temporal vacío para el proyecto y todos los almacenes.",
+      "en": "Fixture src/test/resources/fixtures/sirius-complete packaged as a ZIP; empty temporary directory for the project and every store."
+    },
+    "setup": {
+      "es": "Contexto Spring real con el transporte web de pruebas y todos los almacenes en un directorio temporal. Los pasos son ordenados: importar, cerrar y reabrir, editar y volver a reabrir.",
+      "en": "Real Spring context with the test web transport and every store in a temp directory. Steps are ordered: import, close and reopen, edit and reopen again."
+    },
+    "executes": {
+      "es": "Importa el ZIP en /api/external-project-recovery/import, cierra y abre el proyecto con /api/projects/close y /open, carga el metamodelo con GET /api/canonical-metamodels/{id}, le añade una clase y lo guarda con PUT e If-Match, y repite cierre y apertura.",
+      "en": "Imports the ZIP at /api/external-project-recovery/import, closes and opens the project with /api/projects/close and /open, loads the metamodel with GET /api/canonical-metamodels/{id}, adds a class and saves it with PUT and If-Match, then repeats close and open."
+    },
+    "asserts": {
+      "es": "Tras cerrar no hay proyecto activo y al reabrir es el mismo proyecto con su carpeta de recuperación y el original preservado; el metamodelo recuperado trae las clases del fichero de expectativas; el documento en disco contiene la clase añadida y las originales; un guardado con versión obsoleta da 4xx con los bytes intactos; tras otra reapertura la clase sigue.",
+      "en": "After closing there is no active project and on reopening it is the same project with its recovery folder and the preserved original; the recovered metamodel has the classes of the expectations file; the on-disk document contains the added class and the original ones; a save with a stale version gives 4xx with bytes untouched; after another reopening the class remains."
+    },
+    "behavior": {
+      "es": "Un proyecto creado al recuperar un proyecto externo se puede cerrar y reabrir, y su metamodelo recuperado se puede cargar, ampliar con una clase y guardar.",
+      "en": "A project created by recovering an external project can be closed and reopened, and its recovered metamodel can be loaded, extended with a class and saved."
+    },
+    "rule": {
+      "es": "El resultado de la recuperación sobrevive al cierre y la reapertura; guardar el metamodelo con una versión obsoleta es un conflicto y no cambia el documento.",
+      "en": "The recovery result survives closing and reopening; saving the metamodel with a stale version is a conflict and does not change the document."
+    },
+    "scenario": {
+      "es": "Importar el fixture Sirius como proyecto externo, cerrar y reabrir el proyecto, añadir una clase al metamodelo recuperado, guardar, intentar guardar con una versión vieja y reabrir otra vez.",
+      "en": "Import the Sirius fixture as an external project, close and reopen the project, add a class to the recovered metamodel, save, try to save with an old version and reopen again."
+    },
+    "result": {
+      "es": "El proyecto reabierto es el mismo y conserva sus ficheros; el documento del metamodelo en disco gana la clase nueva sin perder las doce originales; el guardado obsoleto se rechaza y la clase persiste tras reabrir.",
+      "en": "The reopened project is the same and keeps its files; the on-disk metamodel document gains the new class without losing the twelve original ones; the stale save is refused and the class persists after reopening."
+    },
+    "expected": {
+      "es": "Las aserciones sobre sesión, ficheros del proyecto, clases y códigos de respuesta se cumplen en los tres pasos.",
+      "en": "Assertions on session, project files, classes and response codes hold in the three steps."
+    },
+    "guarantee": {
+      "es": "El resultado de recuperar un proyecto externo queda disponible y editable tras cerrar y reabrir el proyecto, con el documento canónico en disco como prueba.",
+      "en": "The result of recovering an external project remains available and editable after closing and reopening the project, with the canonical document on disk as proof."
+    },
+    "limits": {
+      "es": "El metamodelo vive en el almacén canónico y no dentro de la carpeta del proyecto, así que la reapertura se comprueba por sesión y ficheros del proyecto; no prueba la etapa opcional de integración (el perfil sugerido), ni editores ni reglas recuperadas.",
+      "en": "The metamodel lives in the canonical store and not inside the project folder, so reopening is checked through session and project files; it does not test the optional integration stage (the suggested profile), nor recovered editors or rules."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Pila real completa, oráculo en disco y en el fichero de expectativas del fixture, y un conflicto de versión real.",
+      "en": "Full real stack, oracle on disk and in the fixture expectations file, and a real version conflict."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "theRecoveredMetamodelCanBeEditedAndSavedAfterReopening",
+        "scenario": {"es": "Añadir una clase y guardar con la versión vigente y con la obsoleta.", "en": "Add a class and save with the current and the stale version."},
+        "result": {"es": "La vigente se guarda; la obsoleta da 4xx sin cambiar el documento.", "en": "The current one is saved; the stale one gives 4xx without changing the document."}
+      }
+    ],
+    "src": [
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryReopenIntegrationTests.java", "line": 129},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryReopenIntegrationTests.java", "line": 140},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryReopenIntegrationTests.java", "line": 173},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryReopenIntegrationTests.java", "line": 190},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryReopenIntegrationTests.java", "line": 211},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryReopenIntegrationTests.java", "line": 217},
+      {"path": "src/test/java/com/example/editor/project/recovery/ExternalProjectRecoveryReopenIntegrationTests.java", "line": 231}
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

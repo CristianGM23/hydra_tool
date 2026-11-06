@@ -1,0 +1,123 @@
+[
+  {
+    "id": "java:com.example.editor.generated.project.GeneratedProjectLifecycleRealProcessIntegrationTests",
+    "name": {
+      "es": "Ciclo de vida de proyectos generados con procesos reales",
+      "en": "Generated-project lifecycle with real processes"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "caps": [
+      "generated_projects",
+      "toolchains"
+    ],
+    "procs": [
+      {
+        "id": "generated_projects_lifecycle",
+        "stages": [
+          "rg",
+          "ge",
+          "va",
+          "op",
+          "la"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "generated_projects_author_wizard",
+        "stages": [
+          "rg",
+          "pv",
+          "ru"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "generated_projects_author_wizard",
+        "stages": [
+          "pj"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleService.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleController.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectRuntimeProfileCatalog.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectRegistryStore.java",
+      "src/main/java/com/example/editor/integration/compatibility/ExternalToolchainCommandRunner.java",
+      "src/main/java/com/example/editor/integration/verification/ExternalToolProcessRunner.java",
+      "src/main/java/com/example/editor/security/process/HydraExternalProcessRunner.java",
+      "src/main/java/com/example/editor/security/process/HydraExternalProcessPolicy.java"
+    ],
+    "pre": {
+      "es": "Una JVM con el binario java en java.home; sin node, npm ni mvn.",
+      "en": "A JVM with the java binary in java.home; no node, npm or mvn needed."
+    },
+    "executes": {
+      "es": "Controlador, servicio, almacén y runner de procesos reales (política por defecto) con MockMvc independiente. Un perfil de pruebas lanza la propia JVM con java Fichero.java; un test adicional comprueba que los comandos del perfil de producción pasan la política de procesos por defecto.",
+      "en": "Real controller, service, store and process runner (default policy) through standalone MockMvc. A test profile launches the JVM itself with java File.java; an extra test checks that the production profile commands pass the default process policy."
+    },
+    "asserts": {
+      "es": "Registro persistido en disco; simulación = PLANNED con comandos y sin marcadores; ejecución real = PASSED con marcadores escritos por el proceso hijo; VALIDATE con exit 1 = FAILED y siguientes SKIPPED; LAUNCH opcional omitido sin permiso; rutas con ../ o enlace rechazadas.",
+      "en": "Registry persisted on disk; dry run = PLANNED with commands and no markers; real run = PASSED with markers written by the child process; VALIDATE exit 1 = FAILED and later stages SKIPPED; optional LAUNCH skipped without permission; ../ or link paths rejected."
+    },
+    "behavior": {
+      "es": "HYDRA ejecuta de verdad las etapas generar, validar y abrir de un proyecto registrado, informa del código de salida real y no lanza la etapa opcional sin permiso explícito.",
+      "en": "HYDRA genuinely runs the generate, validate and open stages of a registered project, reports the real exit code and does not run the optional stage without explicit permission."
+    },
+    "rule": {
+      "es": "Tras un fallo, las etapas siguientes se omiten; el lanzamiento es opcional y requiere permiso.",
+      "en": "After a failure the following stages are skipped; launching is optional and requires permission."
+    },
+    "scenario": {
+      "es": "Registrar por HTTP, previsualizar, ejecutar de verdad, forzar un fallo con código 1, probar rutas inseguras y confirmar que los comandos del perfil standalone-web de producción pasan la política de procesos.",
+      "en": "Register over HTTP, preview, run for real, force a failure with code 1, try unsafe paths and confirm that the production standalone-web commands pass the process policy."
+    },
+    "result": {
+      "es": "Los marcadores en disco y los códigos de salida demuestran que los procesos se ejecutaron (o no) tal como informa el informe.",
+      "en": "Markers on disk and exit codes show the processes ran (or not) exactly as the report states."
+    },
+    "expected": {
+      "es": "Todos los casos pasan, incluida la comprobación de que el perfil de producción solo usa lanzadores permitidos.",
+      "en": "All cases pass, including the check that the production profile only uses allowed launchers."
+    },
+    "guarantee": {
+      "es": "El motor de ciclo de vida lanza procesos reales acotados, propaga su resultado y respeta la raíz de proyectos.",
+      "en": "The lifecycle engine launches real bounded processes, propagates their result and respects the projects root."
+    },
+    "limits": {
+      "es": "Usa un perfil de pruebas basado en java, no los de producción. La ejecución real del perfil standalone-web de producción está en otro test. El rechazo por enlace simbólico va en un caso aparte, omitido en este host: no cuenta como cubierto.",
+      "en": "Uses a java-based test profile, not the production ones. The real run of the production standalone-web profile is in another test. Symbolic-link rejection is a separate case, skipped on this host: it does not count as covered."
+    },
+    "strength": "MEDIUM",
+    "external": "real",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/generated/project/GeneratedProjectLifecycleRealProcessIntegrationTests.java",
+        "line": 118
+      },
+      {
+        "path": "src/test/java/com/example/editor/generated/project/GeneratedProjectLifecycleRealProcessIntegrationTests.java",
+        "line": 132
+      },
+      {
+        "path": "src/test/java/com/example/editor/generated/project/GeneratedProjectLifecycleRealProcessIntegrationTests.java",
+        "line": 134
+      },
+      {
+        "path": "src/test/java/com/example/editor/generated/project/GeneratedProjectLifecycleRealProcessIntegrationTests.java",
+        "line": 180
+      },
+      {
+        "path": "src/test/java/com/example/editor/generated/project/GeneratedProjectLifecycleRealProcessIntegrationTests.java",
+        "line": 192
+      },
+      {
+        "path": "src/test/java/com/example/editor/generated/project/GeneratedProjectLifecycleRealProcessIntegrationTests.java",
+        "line": 236
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

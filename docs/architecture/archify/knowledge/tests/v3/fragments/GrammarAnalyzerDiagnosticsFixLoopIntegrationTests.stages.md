@@ -1,0 +1,4 @@
+- grammar_define_language.an: candidateBindingsCarryTheDocumentedConfidenceAndAreFlaggedAsCandidates (lines 86, 90, 94: confidence 0.72 / 0.60 / 0.82; line 99-100: candidateOnly / requiresReview / inferred).
+- grammar_diagnostics_actions.sa: directLeftRecursionOffersASafeAutomaticFixThatClearsTheErrorWhenApplied (line 117 safeAutomatic, 118 preferred == safeAutomatic, 123 repaired text, 126 zero errors after re-analysis).
+- grammar_diagnostics_actions.sa: indirectLeftRecursionRemainsABlockingErrorWithoutAnyAutomaticFix (lines 138-141: no automatic action for indirect recursion).
+- grammar_diagnostics_actions.sa: aMistypedReferenceOffersAReplacementThatClearsTheErrorWhenApplied (lines 151-160: replacement applied and re-analysed without errors).

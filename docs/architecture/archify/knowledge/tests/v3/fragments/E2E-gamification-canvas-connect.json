@@ -1,0 +1,94 @@
+[
+  {
+    "id": "pw:e2e/real/gamification/canvas-connect.spec.ts",
+    "name": {
+      "es": "Lienzo de gamificación: conectar, rechazar y quitar relaciones con backend real",
+      "en": "Gamification canvas: connect, reject and remove relations with a real backend"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["gamification"],
+    "procs": [
+      { "id": "gamification_author_canvas", "stages": ["n", "dr", "ty", "wr", "rm"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/gamification-designer/GamificationDesigner.tsx",
+      "frontend/src/gamification-designer/GamificationVisualEditor.tsx",
+      "frontend/src/gamification-designer/gamificationConnections.ts",
+      "frontend/src/gamification-designer/GamificationDesignerParts.tsx",
+      "frontend/src/gamification-designer/api.ts",
+      "src/main/java/com/example/editor/gamification/web/CanonicalGamificationController.java",
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationDefinitionRepository.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationBindingRepository.java"
+    ],
+    "pre": {
+      "es": "Metamodelo mínimo sembrado por la API real; navegador real contra la aplicación compilada y el backend real con almacenamiento temporal propio.",
+      "en": "Minimal metamodel seeded through the real API; real browser against the built application and the real backend with its own temporary storage."
+    },
+    "setup": {
+      "es": "Sin simulaciones de la API. Solo se siembra el metamodelo; todo lo demás lo hace el usuario en el lienzo.",
+      "en": "No API simulation. Only the metamodel is seeded; everything else is done by the user on the canvas."
+    },
+    "executes": {
+      "es": "Abre el diseñador de gamificación, añade regla, dos tipos de puntos, nivel, logro, reto y recompensa desde la paleta, conecta con la herramienta de conexión, intenta una conexión prohibida, quita una relación, guarda y recarga.",
+      "en": "Opens the gamification designer, adds a rule, two point types, a level, an achievement, a challenge and a reward from the palette, connects with the connection tool, tries a forbidden link, removes a relation, saves and reloads."
+    },
+    "asserts": {
+      "es": "Los ficheros escritos por el backend llevan cada referencia creada por una conexión; la conexión prohibida no envía peticiones ni cambia el disco; al quitar la relación solo se vacía ese campo; tras recargar la pantalla muestra lo persistido.",
+      "en": "The files written by the backend carry each reference created by a connection; the forbidden link sends no requests and changes nothing on disk; removing a relation clears only that field; after reloading the screen shows what was persisted."
+    },
+    "behavior": {
+      "es": "El usuario construye un esquema de gamificación en el lienzo: cada conexión permitida rellena la referencia del elemento, la no permitida se rechaza sin cambios y quitar una relación vacía solo ese campo.",
+      "en": "The user builds a gamification scheme on the canvas: each allowed connection fills the element reference, a disallowed one is refused without changes and removing a relation clears only that field."
+    },
+    "rule": {
+      "es": "Solo valen evento a regla, regla a puntos, logro, reto o recompensa, puntos a nivel, y nivel, logro o reto a recompensa.",
+      "en": "Only event to rule, rule to points, achievement, challenge or reward, points to level, and level, achievement or challenge to reward are valid."
+    },
+    "scenario": {
+      "es": "Siete elementos nuevos; cinco conexiones válidas (una sustituye el tipo de puntos de un nivel); un intento de puntos a regla; quitar regla a recompensa; guardar una vez y recargar.",
+      "en": "Seven new elements; five valid connections (one replaces a level's point type); one attempt from points to rule; removing rule to reward; saving once and reloading."
+    },
+    "result": {
+      "es": "El nivel y la regla quedan con los tipos de puntos y recompensas conectados; tras quitar la relación la regla no tiene recompensa y el nivel conserva la suya.",
+      "en": "The level and rule end up with the connected point types and rewards; after removal the rule has no reward and the level keeps its own."
+    },
+    "expected": {
+      "es": "El disco refleja exactamente lo conectado y quitado, y la conexión prohibida no deja rastro.",
+      "en": "Disk reflects exactly what was connected and removed, and the forbidden link leaves no trace."
+    },
+    "guarantee": {
+      "es": "Lo que el usuario conecta en el lienzo llega al backend como referencia persistida y lo rechazado no se guarda.",
+      "en": "What the user connects on the canvas reaches the backend as a persisted reference and what is refused is not saved."
+    },
+    "limits": {
+      "es": "El primer test conecta pulsando puertos con eventos de clic; el segundo conecta arrastrando el ratón, pero solo prueba tres conexiones permitidas y una pareja prohibida. Los nodos se seleccionan con eventos de clic. Un único guardado final por test, que incluye el diagrama.",
+      "en": "The first test connects by clicking ports with click events; the second connects by dragging the mouse, but only tests three allowed connections and one forbidden pair. Nodes are selected with click events. A single final save per test, which includes the diagram."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Navegador y backend reales, arrastre real del ratón entre puertos (permitido y prohibido), oráculo en disco y en el diagrama guardado, con rechazo sin ninguna escritura hacia el servidor.",
+      "en": "Real browser and backend, real mouse dragging between ports (allowed and forbidden), a disk oracle and the saved diagram, with a refusal that sends no write to the server."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 34 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 46 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 59 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 61 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 63 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 74 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 76 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 85 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 106 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 117 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 129 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 131 },
+      { "path": "frontend/e2e/real/gamification/canvas-connect.spec.ts", "line": 140 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

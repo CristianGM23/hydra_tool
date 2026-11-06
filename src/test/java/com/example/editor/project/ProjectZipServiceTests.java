@@ -49,6 +49,33 @@ class ProjectZipServiceTests {
                 .isInstanceOf(ProjectException.class).extracting("reason").isEqualTo(ProjectException.Reason.FILE_TOO_LARGE);
     }
 
+    @Test void rejectsTruncatedArchiveAsInvalidRequestAndMaterializesNothing() throws Exception {
+        // incompressible content: the cut lands inside the entry data (as in a download that stopped half-way), not in the central directory
+        StringBuilder noise=new StringBuilder(); java.util.Random random=new java.util.Random(7); for(int i=0;i<40_000;i++) noise.append((char)('!'+random.nextInt(90)));
+        Map<String,String> entries=new LinkedHashMap<>(); entries.put("modeling-project.json","{}"); entries.put("docs/readme.md",noise.toString());
+        byte[] complete=zip(entries); byte[] truncated=java.util.Arrays.copyOf(complete,complete.length/2);
+        Path destination=temporary.resolve("truncated");
+        assertThatThrownBy(() -> service(new LocalProjectProperties()).importProject(truncated,destination))
+                .isInstanceOf(ProjectException.class).extracting("reason").isEqualTo(ProjectException.Reason.INVALID_REQUEST);
+        assertThat(destination).doesNotExist();
+    }
+
+    @Test void rejectsManagedArtifactThatIsNotJsonAndMaterializesNothing() throws Exception {
+        Map<String,String> entries=new LinkedHashMap<>(); entries.put("modeling-project.json","{}"); entries.put("metamodels/shop.metamodel.json","{ not json");
+        Path destination=temporary.resolve("corrupt");
+        assertThatThrownBy(() -> service(new LocalProjectProperties()).importProject(zip(entries),destination))
+                .isInstanceOf(ProjectException.class).hasMessageContaining("metamodels/shop.metamodel.json")
+                .extracting("reason").isEqualTo(ProjectException.Reason.INVALID_REQUEST);
+        assertThat(destination).doesNotExist();
+    }
+
+    @Test void userAssetsAreNotInterpretedAsArtifacts() throws Exception {
+        Map<String,String> entries=new LinkedHashMap<>(); entries.put("modeling-project.json","{}"); entries.put("assets/sample-broken.json","{ user data, not parsed by HYDRA");
+        Path destination=temporary.resolve("assets");
+        service(new LocalProjectProperties()).importProject(zip(entries),destination);
+        assertThat(destination.resolve("assets/sample-broken.json")).hasContent("{ user data, not parsed by HYDRA");
+    }
+
     @Test void exportsAndImportsPortableProjectButSkipsCache() throws Exception {
         Path source=temporary.resolve("source"); Files.createDirectories(source.resolve(".modeling/cache")); Files.createDirectories(source.resolve("docs"));
         Files.writeString(source.resolve("modeling-project.json"),"{}"); Files.writeString(source.resolve("docs/readme.md"),"portable"); Files.writeString(source.resolve(".modeling/cache/temp.bin"),"cache");

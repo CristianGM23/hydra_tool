@@ -1,0 +1,191 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.GrammarAnalyzerDiagnosticsFixLoopIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Analizar una gramática, proponer la corrección y comprobar que al aplicarla desaparece el error",
+      "en": "Analyse a grammar, propose the fix and check the error disappears once applied"
+    },
+    "type": "BEHAVIOR",
+    "layer": "definition",
+    "caps": [
+      "grammar"
+    ],
+    "procs": [
+      {
+        "id": "grammar_define_language",
+        "stages": [
+          "an",
+          "ok",
+          "fix"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_diagnostics_actions",
+        "stages": [
+          "c"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_analyze_generate",
+        "stages": [
+          "dg"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_author_fix",
+        "stages": [
+          "rc"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_language_to_published_editor",
+        "stages": [
+          "g1"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "grammar_diagnostics_actions",
+        "stages": [
+          "sa"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "grammar_author_monaco",
+        "stages": [
+          "ok"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarRuleGraphAnalyzer.java",
+      "src/main/java/com/example/editor/grammar/diagnostic/GrammarCodeAction.java",
+      "src/main/java/com/example/editor/grammar/diagnostic/GrammarDiagnosticCatalog.java"
+    ],
+    "pre": {
+      "es": "Ninguna: el analizador se ejecuta en memoria, sin herramientas externas ni disco.",
+      "en": "None: the analyser runs in memory, with no external tools or disk."
+    },
+    "setup": {
+      "es": "Analizador neutral real sobre gramáticas Langium y ANTLR escritas en el test; el aplicador de ediciones del propio test es independiente del código de producción.",
+      "en": "Real neutral analyser over Langium and ANTLR grammars written in the test; the test's own edit applier is independent of production code."
+    },
+    "executes": {
+      "es": "GrammarSourceAnalyzer.analyze con petición NORMAL sobre cuatro gramáticas; lectura de semanticCandidate, diagnostics, codeActions y metadata; aplicación manual de los GrammarTextEdit y segundo análisis.",
+      "en": "GrammarSourceAnalyzer.analyze with a NORMAL request over four grammars; reads semanticCandidate, diagnostics, codeActions and metadata; manual application of the GrammarTextEdit and a second analysis."
+    },
+    "asserts": {
+      "es": "Confianza 0,72 (Langium sin metamodelo), 0,60 (ANTLR) y 0,82 (enlazada) con candidateOnly/requiresReview; recursión directa: acción quickfix.grammar.left-recursion con safeAutomatic=preferred, texto reparado literal y 0 errores al reanalizar; indirecta sin acción; referencia mal escrita reparada.",
+      "en": "Confidence 0.72 (Langium without metamodel), 0.60 (ANTLR) and 0.82 (linked) with candidateOnly/requiresReview; direct recursion: quickfix.grammar.left-recursion action with safeAutomatic=preferred, literal repaired text and 0 errors on re-analysis; indirect has no action; mistyped reference repaired."
+    },
+    "behavior": {
+      "es": "HYDRA propone correspondencias candidatas con una confianza distinta según el contexto y las marca para revisión; solo ofrece corrección automática de la recursión por la izquierda cuando es segura, y al aplicarla el problema desaparece.",
+      "en": "HYDRA proposes candidate mappings with a context-dependent confidence and flags them for review; it only offers automatic left-recursion repair when it is safe, and applying it makes the problem disappear."
+    },
+    "rule": {
+      "es": "Las correspondencias deducidas son candidatas (0,60 / 0,72 / 0,82); la recursión indirecta no tiene corrección automática; la directa y simple sí.",
+      "en": "Deduced mappings are candidates (0.60 / 0.72 / 0.82); indirect recursion has no automatic fix; direct, simple recursion does."
+    },
+    "scenario": {
+      "es": "Analizar tres gramáticas para ver la confianza, una con recursión directa, otra con indirecta y otra con una referencia mal escrita; aplicar las ediciones propuestas y volver a analizar.",
+      "en": "Analyse three grammars to see the confidence, one with direct recursion, one with indirect recursion and one with a mistyped reference; apply the proposed edits and analyse again."
+    },
+    "result": {
+      "es": "Confianzas exactas y marcadas como candidatas; texto reparado idéntico al esperado; segundo análisis sin errores; sin acción automática en la recursión indirecta.",
+      "en": "Exact confidences flagged as candidates; repaired text identical to the expected one; second analysis without errors; no automatic action for indirect recursion."
+    },
+    "expected": {
+      "es": "Todas las aserciones se cumplen: confianzas, acciones, textos reparados y ausencia de errores tras reanalizar.",
+      "en": "All assertions hold: confidences, actions, repaired texts and no errors after re-analysis."
+    },
+    "guarantee": {
+      "es": "Evidencia real del análisis neutral: confianza de las candidatas, seguridad de la corrección automática y que aplicar la corrección resuelve el problema.",
+      "en": "Real evidence of the neutral analysis: candidate confidence, safety of the automatic fix and that applying the fix resolves the problem."
+    },
+    "limits": {
+      "es": "Solo el analizador neutral en memoria: no compila con las herramientas reales ni usa un editor de texto; la corrección insegura (con asignaciones) no se ejerce.",
+      "en": "Only the in-memory neutral analyser: it does not compile with the real tools or use a text editor; the unsafe fix (with assignments) is not exercised."
+    },
+    "strengthWhy": {
+      "es": "Analizador real, valores literales como oráculo y un aplicador de ediciones independiente que reanaliza el resultado.",
+      "en": "Real analyser, literal values as oracle and an independent edit applier whose result is re-analysed."
+    },
+    "cases": [
+      {
+        "n": "directLeftRecursionOffersASafeAutomaticFixThatClearsTheErrorWhenApplied",
+        "scenario": {
+          "es": "Recursión directa de una expresión.",
+          "en": "Direct recursion of an expression."
+        },
+        "result": {
+          "es": "Acción segura; tras aplicarla, cero errores.",
+          "en": "Safe action; after applying it, zero errors."
+        }
+      },
+      {
+        "n": "indirectLeftRecursionRemainsABlockingErrorWithoutAnyAutomaticFix",
+        "scenario": {
+          "es": "Recursión indirecta entre dos reglas.",
+          "en": "Indirect recursion between two rules."
+        },
+        "result": {
+          "es": "Error bloqueante sin acción automática.",
+          "en": "Blocking error with no automatic action."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/grammar/GrammarAnalyzerDiagnosticsFixLoopIntegrationTests.java",
+        "line": 86
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/GrammarAnalyzerDiagnosticsFixLoopIntegrationTests.java",
+        "line": 90
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/GrammarAnalyzerDiagnosticsFixLoopIntegrationTests.java",
+        "line": 94
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/GrammarAnalyzerDiagnosticsFixLoopIntegrationTests.java",
+        "line": 117
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/GrammarAnalyzerDiagnosticsFixLoopIntegrationTests.java",
+        "line": 126
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/GrammarAnalyzerDiagnosticsFixLoopIntegrationTests.java",
+        "line": 140
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/GrammarAnalyzerDiagnosticsFixLoopIntegrationTests.java",
+        "line": 120
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/GrammarAnalyzerDiagnosticsFixLoopIntegrationTests.java",
+        "line": 160
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/GrammarAnalyzerDiagnosticsFixLoopIntegrationTests.java",
+        "line": 112
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/GrammarAnalyzerDiagnosticsFixLoopIntegrationTests.java",
+        "line": 141
+      }
+    ]
+  }
+]

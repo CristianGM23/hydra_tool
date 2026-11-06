@@ -1,0 +1,6 @@
+- model_editor_visual_import.tc: tras recorrer las tecnologías y fijar Sirius Desktop (líneas 39-41), la petición real va a .../editors/imports/sirius con el metamodelo elegido y responde 200 (líneas 51-53).
+- model_editor_visual_import.tc (oráculo): la respuesta que recibe el navegador trae el mismo metamodelo y la misma tecnología que una llamada directa a la API real (líneas 66-67).
+- model_editor_visual_import.tc (sin persistencia): la vista previa no añade editores ni ficheros (líneas 72-73).
+- Retirado: la aserción sobre el panel de calidad en pantalla (no apareció tras el análisis en la tercera pasada real; el backend sí respondió 200).
+- model_editor_visual_import.tc (otras tecnologías): segundo test; draw.io, GMF y Sirius Web envían su petición a /imports/drawio, /gmf y /sirius-web (línea 110) y no guardan editores (línea 116). El resultado del análisis de esos ficheros mínimos no se afirma.
+- Fuera de alcance: la confirmación de la importación no se pulsa.

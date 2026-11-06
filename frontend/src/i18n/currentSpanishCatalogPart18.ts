@@ -49,7 +49,7 @@ export const CURRENT_SPANISH_PART_18: Readonly<Record<string, string>> = {
     'Apply only a READY preview and record the manifest required to undo generated changes.': 'Aplica únicamente una previsualización READY y registra el manifiesto necesario para deshacer los cambios generados.',
     'Run or open the generated integration in its native host. HYDRA keeps the execution boundary explicit.': 'Ejecuta o abre la integración generada en su host nativo. HYDRA mantiene explícito el límite de ejecución.',
     'Compare external changes with generated ownership and import only changes that can be represented safely.': 'Compara los cambios externos con la propiedad de los artefactos generados e importa únicamente los cambios que puedan representarse con seguridad.',
-    'Package the resulting technology artifact without coupling the canonical HYDRA model to the destination.': 'Empaqueta el artefacto tecnológico resultante sin acoplar el modelo canónico de HYDRA al destino.',
+    'Package the resulting technology artifact without coupling the canonical HYDRA model to the destination.': 'Empaqueta el artefacto tecnológico resultante sin acoplar el modelo de HYDRA al destino.',
     'A technology profile with explicit, editable decisions.': 'Un perfil tecnológico con decisiones explícitas y editables.',
     'An actionable compatibility report without modifying the host project.': 'Un informe de compatibilidad accionable sin modificar el proyecto anfitrión.',
     'A portable technology artifact that can be inspected independently from HYDRA.': 'Un artefacto tecnológico portable que puede inspeccionarse de forma independiente de HYDRA.',

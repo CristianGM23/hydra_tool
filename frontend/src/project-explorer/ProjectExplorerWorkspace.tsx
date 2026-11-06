@@ -68,6 +68,9 @@ export function ProjectExplorerWorkspace({ children, onWorkspaceReload, workbenc
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
     const [remoteSelectionExportOpen, setRemoteSelectionExportOpen] = useState(false);
     const [tabs, setTabs] = useState<ProjectTab[]>([]);
+    // Pestañas del último render: abrir varios ficheros seguidos no debe persistir la lista obsoleta del render que inició el bucle.
+    const tabsRef = useRef<ProjectTab[]>([]);
+    useEffect(() => { tabsRef.current = tabs; }, [tabs]);
     const [activeLocation, setActiveLocation] = useState<{ workbenchId: string; path: string }>({ workbenchId, path: '' });
     const activePath = activeLocation.workbenchId === workbenchId ? activeLocation.path : '';
     const setActivePath = (path: string): void => setActiveLocation({ workbenchId, path });
@@ -106,7 +109,7 @@ export function ProjectExplorerWorkspace({ children, onWorkspaceReload, workbenc
     }
 
     async function openFile(path: string, persist = true): Promise<void> {
-        const existing = tabs.find(tab => tab.path === path);
+        const existing = tabsRef.current.find(tab => tab.path === path);
         if (existing !== undefined) {
             setActivePath(path);
             return;
@@ -117,7 +120,7 @@ export function ProjectExplorerWorkspace({ children, onWorkspaceReload, workbenc
         try {
             const content = await loadProjectFile(path);
             setTabs(current => current.map(tab => tab.path === path ? { ...tab, content, draft: content.content, loading: false } : tab));
-            if (persist) await saveProjectTabs([...tabs.map(tab => tab.path), path]);
+            if (persist) await saveProjectTabs([...new Set([...tabsRef.current.map(tab => tab.path), path])]);
         } catch (exception) {
             const message = exception instanceof Error ? exception.message : 'Could not open project file';
             setTabs(current => current.map(tab => tab.path === path ? { ...tab, loading: false, error: message } : tab));
@@ -180,8 +183,8 @@ export function ProjectExplorerWorkspace({ children, onWorkspaceReload, workbenc
 
     async function handleImportRepository(request: { profileId: string; remotePath: string; parentDirectory: string; projectName: string }): Promise<void> { await applyImportedSession(await importRemoteProject(request)); }
 
-    async function handleImportExternal(parent: string, name: string, file: File): Promise<void> {
-        const result = await importExternalProjectArchive(parent, name, file);
+    async function handleImportExternal(parent: string, name: string, file: File, confirmedFingerprint: string): Promise<void> {
+        const result = await importExternalProjectArchive(parent, name, file, confirmedFingerprint);
         await applyImportedSession(result.session);
         setStatus(`External project imported · ${result.recovery.resourceCount} resources · metamodel ${result.materialization.metamodelId || 'pending review'} · ${result.materialization.editorIds.length} editor(s) · ${result.materialization.visualValidationsImported + result.materialization.validationRulesImported} validation(s) · ${result.materialization.quickFixesImported} quick fix(es)`);
     }
@@ -262,7 +265,7 @@ export function ProjectExplorerWorkspace({ children, onWorkspaceReload, workbenc
         } else setSelectedPath(node.relativePath);
         setContextMenu({
             x: Math.min(event.clientX, Math.max(8, window.innerWidth - 236)),
-            y: Math.min(event.clientY, Math.max(8, window.innerHeight - 304)),
+            y: Math.min(event.clientY, Math.max(8, window.innerHeight - 460)),
         });
     }
 

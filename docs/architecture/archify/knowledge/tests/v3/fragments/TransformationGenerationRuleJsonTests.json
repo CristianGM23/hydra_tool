@@ -1,0 +1,28 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.core.TransformationGenerationRuleJsonTests",
+    "name": { "es": "Regla de generación sin condición: no se devuelve un campo nulo", "en": "Generation rule without a condition: no null field is returned" },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": ["transformation"],
+    "procs": [],
+    "pre": null,
+    "executes": { "es": "Serializa una regla de generación sin condición y la vuelve a leer.", "en": "Serializes a generation rule without a condition and reads it back." },
+    "asserts": { "es": "El JSON no contiene el campo de la condición y la regla releída es igual a la original.", "en": "The JSON has no condition field and the re-read rule equals the original." },
+    "behavior": { "es": "Protege la corrección de un defecto: el diseñador de reglas de generación fallaba al recibir una condición nula.", "en": "Protects the fix of a defect: the generation rule designer failed when it received a null condition." },
+    "rule": null,
+    "scenario": { "es": "Regla de generación guardada sin condición.", "en": "Generation rule saved without a condition." },
+    "result": { "es": "El campo de la condición no aparece en la respuesta.", "en": "The condition field does not appear in the response." },
+    "expected": { "es": "Campo ausente y regla igual tras releer.", "en": "Field absent and the rule equal after re-reading." },
+    "guarantee": { "es": "La interfaz recibe el mismo formato que con el resto de reglas.", "en": "The interface receives the same format as with the other rules." },
+    "limits": { "es": "Es una prueba unitaria de serialización; no recorre el diseñador ni el servidor.", "en": "It is a serialization unit test; it does not walk the designer or the server." },
+    "strength": "LIMITED",
+    "strengthWhy": { "es": "Prueba unitaria de un formato de datos.", "en": "Unit test of a data format." },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [{ "path": "src/test/java/com/example/editor/transformation/core/TransformationGenerationRuleJsonTests.java", "line": 21 }],
+    "prod": ["src/main/java/com/example/editor/transformation/core/TransformationGenerationRule.java"],
+    "confidence": "ANALYZED"
+  }
+]

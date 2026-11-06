@@ -1,0 +1,102 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.runtime.TransformationIncrementalSynchronizationDirectionTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Sincronización incremental: solo se anuncian las direcciones aplicadas",
+      "en": "Incremental synchronization: only applied directions are announced"
+    },
+    "type": "BEHAVIOR",
+    "layer": "behavior",
+    "layers2": [],
+    "caps": [
+      "transformation"
+    ],
+    "procs": [],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/runtime/TransformationIncrementalSynchronizationEngine.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "Motor incremental real con modelos, traza y reglas reales; el ejecutor es un sustituto determinista que no genera contenido.",
+      "en": "Real incremental engine with real models, trace and rules; the executor is a deterministic stand-in that generates no content."
+    },
+    "executes": {
+      "es": "synchronize con ambos lados editados sobre el mismo elemento y política «gana el origen» o «gana el destino».",
+      "en": "synchronize with both sides edited on the same element under the source-wins or target-wins policy."
+    },
+    "asserts": {
+      "es": "Con «gana el origen» solo consta la dirección directa y con «gana el destino» solo la inversa; el lado perdedor conserva su edición.",
+      "en": "With source-wins only the forward direction is listed and with target-wins only the reverse one; the losing side keeps its edit."
+    },
+    "behavior": {
+      "es": "El resultado de una sincronización solo declara como aplicadas las direcciones que realmente propagaron cambios.",
+      "en": "A synchronization result only declares as applied the directions that really propagated changes."
+    },
+    "rule": {
+      "es": "Si todos los cambios de un lado se descartan por conflicto, esa dirección no se anuncia.",
+      "en": "If every change of one side is discarded because of a conflict, that direction is not announced."
+    },
+    "scenario": {
+      "es": "Una persona renombrada en el origen y en el destino con cada una de las dos políticas.",
+      "en": "A person renamed in the source and in the target under each of the two policies."
+    },
+    "result": {
+      "es": "Un conflicto detectado y una única dirección aplicada en cada caso.",
+      "en": "One conflict detected and a single direction applied in each case."
+    },
+    "expected": {
+      "es": "Las listas de direcciones y los nombres coinciden con los literales.",
+      "en": "The direction lists and names match the literals."
+    },
+    "guarantee": {
+      "es": "El informe de sincronización incremental no anuncia direcciones sin efecto.",
+      "en": "The incremental synchronization report does not announce direction without effect."
+    },
+    "limits": {
+      "es": "El ejecutor es un sustituto: no demuestra el contenido propagado, solo qué direcciones se declaran; un único elemento y una única regla.",
+      "en": "The executor is a stand-in: it does not prove the propagated content, only which directions are declared; one element and one rule."
+    },
+    "strengthWhy": {
+      "es": "Motor real pero con un ejecutor sustituto y un solo elemento.",
+      "en": "Real engine but with a stand-in executor and a single element."
+    },
+    "cases": [
+      {
+        "n": "sourceWinsDoesNotAnnounceTheReverseDirectionWhenEveryTargetChangeIsDiscarded",
+        "scenario": {
+          "es": "Gana el origen.",
+          "en": "Source wins."
+        },
+        "result": {
+          "es": "Solo directa.",
+          "en": "Forward only."
+        }
+      },
+      {
+        "n": "targetWinsDoesNotAnnounceTheForwardDirectionWhenEverySourceChangeIsDiscarded",
+        "scenario": {
+          "es": "Gana el destino.",
+          "en": "Target wins."
+        },
+        "result": {
+          "es": "Solo inversa.",
+          "en": "Reverse only."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationIncrementalSynchronizationDirectionTests.java",
+        "line": 47
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/runtime/TransformationIncrementalSynchronizationDirectionTests.java",
+        "line": 58
+      }
+    ]
+  }
+]

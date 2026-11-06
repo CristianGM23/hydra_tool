@@ -1,0 +1,4 @@
+- gamification_author_source.ed: el JSON editado en la pestaña de origen (anotaciones por regla) acaba aplicado y guardado (l.61, 71).
+- gamification_author_source.ap: «Aplicar» solo actualiza el borrador: mensaje de aplicado, ninguna escritura y servidor sin cambios (l.62-65).
+- gamification_author_source.lc: comprobación local con tres rechazos (metamodelo distinto, error bloqueante, JSON ilegible) sin escrituras y con catálogo intacto (l.25-28, 37-54).
+- gamification_author_source.sv: «Guardar» escribe el JSON aplicado en disco y en la API real (l.71-74) y gobierna el aviso real siguiente (l.80-81).

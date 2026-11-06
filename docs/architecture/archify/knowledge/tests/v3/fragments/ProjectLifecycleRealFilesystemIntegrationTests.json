@@ -1,0 +1,188 @@
+[
+  {
+    "id": "java:com.example.editor.project.ProjectLifecycleRealFilesystemIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Ciclo de vida del proyecto sobre disco real: crear o continuar, abrir destino y activar áreas",
+      "en": "Project lifecycle on a real file system: create or continue, open target and enable areas"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "project"
+    ],
+    "procs": [
+      {
+        "id": "x_project_lifecycle_overview",
+        "stages": [
+          "n1",
+          "ar",
+          "d0"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_package_and_move_capabilities",
+        "stages": [
+          "t0"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "project_open_organize",
+        "stages": [
+          "a2"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/storage/ProjectIndexService.java",
+      "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java",
+      "src/main/java/com/example/editor/project/ProjectApplicationService.java",
+      "src/main/java/com/example/editor/project/storage/ProjectRegistryStore.java",
+      "src/main/java/com/example/editor/project/storage/ProjectDescriptorStore.java",
+      "src/main/java/com/example/editor/project/ProjectLayout.java",
+      "src/main/java/com/example/editor/project/ProjectCapabilityDependencies.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío; sin red ni credenciales.",
+      "en": "Empty temporary directory; no network or credentials."
+    },
+    "setup": {
+      "es": "Almacenamiento local real (ProjectStorageTestFixture) con su servicio de índice sobre @TempDir; el oráculo lee el índice del disco y recalcula el SHA-256 de cada fichero.",
+      "en": "Real local storage (ProjectStorageTestFixture) with its index service over @TempDir; the oracle reads the index from disk and recomputes each file's SHA-256."
+    },
+    "executes": {
+      "es": "ProjectApplicationService sobre LocalDirectoryProjectStorage con ProjectIndexService real: create (completo y vacío), saveTabs, reinicio con instancia nueva, open, configure, tree LOGICAL y .modeling/project-index.json.",
+      "en": "ProjectApplicationService over LocalDirectoryProjectStorage with a real ProjectIndexService: create (complete and empty), saveTabs, restart with a new instance, open, configure, LOGICAL tree and .modeling/project-index.json."
+    },
+    "asserts": {
+      "es": "Estructura física literal; project-index.json con el SHA-256 de cada fichero recalculado aquí y sin él mismo; 24 grupos lógicos; la instancia nueva continúa el proyecto activo y sus pestañas; abrir una carpeta sin proyecto da ProjectException NOT_FOUND; índice y árbol tras reiniciar.",
+      "en": "Literal physical structure; project-index.json with each file's SHA-256 recomputed here and without itself; 24 logical groups; the new instance continues the active project and its tabs; opening a folder without a project gives ProjectException NOT_FOUND; index and tree after restart."
+    },
+    "behavior": {
+      "es": "Sin proyecto reciente se crea uno nuevo con su estructura e índice; con un proyecto activo, un reinicio lo continúa sin crear otro; abrir el proyecto destino muestra solo sus áreas activas; y activar áreas recalcula árbol e índice, que se mantienen al reiniciar y reabrir.",
+      "en": "With no recent project a new one is created with its structure and index; with an active project, a restart continues it without creating another; opening the target project shows only its active areas; and enabling areas recalculates tree and index, which persist across restart and reopen."
+    },
+    "rule": {
+      "es": "El árbol de trabajo solo muestra las áreas activas del proyecto, y el índice guardado refleja los ficheros reales con su huella.",
+      "en": "The work tree only shows the project's active areas, and the saved index reflects the real files with their fingerprint."
+    },
+    "scenario": {
+      "es": "Registro vacío y proyecto completo; reinicio con proyecto activo y pestañas; proyecto origen con validaciones y destino vacío al que se activa esa capacidad; carpeta sin proyecto; y modelado textual activado, un modelo añadido, cierre, reinicio y reapertura.",
+      "en": "Empty registry and complete project; restart with an active project and tabs; source project with validations and empty target where that capability is enabled; folder without a project; and textual modeling enabled, a model added, close, restart and reopen."
+    },
+    "result": {
+      "es": "Estructura, índice con huellas correctas y 24 grupos en el proyecto nuevo; el reinicio recupera proyecto y pestañas sin duplicar carpetas; el destino pasa de cero a tres grupos al activar el área; y el índice reescrito incluye el modelo nuevo con su tipo y huella.",
+      "en": "Structure, index with correct fingerprints and 24 groups in the new project; the restart restores project and tabs without duplicating folders; the target goes from zero to three groups when the area is enabled; and the rewritten index includes the new model with its type and fingerprint."
+    },
+    "expected": {
+      "es": "Las aserciones sobre disco, huellas recalculadas y nombres de grupo se cumplen en los cuatro escenarios.",
+      "en": "The assertions on disk, recomputed fingerprints and group names hold in the four scenarios."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que crear, continuar, abrir y activar áreas funciona sobre disco y de que el índice persistido es fiel a los ficheros.",
+      "en": "Real evidence that creating, continuing, opening and enabling areas works on disk and that the persisted index is faithful to the files."
+    },
+    "limits": {
+      "es": "Un solo proceso y un solo usuario; no pasa por la API web ni la interfaz; el índice se comprueba con proyectos pequeños, sin medir rendimiento ni límites de tamaño ni cambios externos concurrentes.",
+      "en": "Single process and single user; it does not go through the web API or the interface; the index is checked with small projects, without measuring performance, size limits or concurrent external changes."
+    },
+    "strengthWhy": {
+      "es": "Almacenamiento y servicio de índice reales sobre disco, oráculo independiente (JSON del índice y SHA-256 propios), caso negativo y mapeo directo.",
+      "en": "Real storage and index service on disk, independent oracle (index JSON and own SHA-256), negative case and direct mapping."
+    },
+    "cases": [
+      {
+        "n": "withoutRecentProjectANewOneIsCreatedWithItsTreeAndIndex",
+        "scenario": {
+          "es": "Registro vacío y creación de un proyecto completo.",
+          "en": "Empty registry and creation of a complete project."
+        },
+        "result": {
+          "es": "Estructura en disco, índice con huellas y 24 grupos.",
+          "en": "Structure on disk, index with fingerprints and 24 groups."
+        }
+      },
+      {
+        "n": "withActiveRecentProjectARestartContinuesItWithoutCreatingAnother",
+        "scenario": {
+          "es": "Proyecto activo con pestañas y reinicio.",
+          "en": "Active project with tabs and a restart."
+        },
+        "result": {
+          "es": "Mismo proyecto, mismas pestañas y una sola carpeta.",
+          "en": "Same project, same tabs and a single folder."
+        }
+      },
+      {
+        "n": "openingTheTargetProjectShowsOnlyItsActiveAreasAndRejectsAFolderWithoutProject",
+        "scenario": {
+          "es": "Abrir origen y destino vacío; activar el área; abrir carpeta sin proyecto.",
+          "en": "Open source and empty target; enable the area; open a folder without a project."
+        },
+        "result": {
+          "es": "Cero y luego tres grupos; la carpeta se rechaza y la sesión no cambia.",
+          "en": "Zero and then three groups; the folder is rejected and the session does not change."
+        }
+      },
+      {
+        "n": "activatingAreasPersistsDescriptorAndIndexAndSurvivesARestart",
+        "scenario": {
+          "es": "Activar modelado textual, añadir un modelo, cerrar y reabrir.",
+          "en": "Enable textual modeling, add a model, close and reopen."
+        },
+        "result": {
+          "es": "Mismas áreas y árbol; índice con el modelo y su huella.",
+          "en": "Same areas and tree; index with the model and its fingerprint."
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.project.ProjectIndexAndChangeTests",
+      "java:com.example.editor.project.ProjectCapabilityConfigurationReopenIntegrationTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectLifecycleRealFilesystemIntegrationTests.java",
+        "line": 65
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectLifecycleRealFilesystemIntegrationTests.java",
+        "line": 72
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectLifecycleRealFilesystemIntegrationTests.java",
+        "line": 90
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectLifecycleRealFilesystemIntegrationTests.java",
+        "line": 109
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectLifecycleRealFilesystemIntegrationTests.java",
+        "line": 125
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectLifecycleRealFilesystemIntegrationTests.java",
+        "line": 140
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectLifecycleRealFilesystemIntegrationTests.java",
+        "line": 161
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectLifecycleRealFilesystemIntegrationTests.java",
+        "line": 74
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/ProjectLifecycleRealFilesystemIntegrationTests.java",
+        "line": 92
+      }
+    ]
+  }
+]

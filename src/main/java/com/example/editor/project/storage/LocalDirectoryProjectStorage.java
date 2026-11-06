@@ -135,7 +135,7 @@ public class LocalDirectoryProjectStorage implements ProjectStoragePort {
             if(!Files.isRegularFile(path)) throw notFound("Project file was not found: " + relativePath);
             verifyEtag(path,request.expectedEtag());
             byte[] content=request.binary()?decode(request.content()):safeText(request.content()).getBytes(StandardCharsets.UTF_8);
-            verifyUploadSize(content.length); files.writeAtomic(path,content);
+            verifyUploadSize(content.length); files.writeAtomicWithin(activeRoot,path,content);
             ProjectTreeNode tree=afterMutation(relativePath);
             return result(relativePath,hashes.etag(content),tree);
         } finally { lock.writeLock().unlock(); }
@@ -149,7 +149,7 @@ public class LocalDirectoryProjectStorage implements ProjectStoragePort {
             if(Files.exists(target)) throw conflict("Project entry already exists: " + relative);
             try {
                 if(request.directory()) Files.createDirectories(target);
-                else files.writeAtomic(target,safeText(request.content()).getBytes(StandardCharsets.UTF_8));
+                else files.writeAtomicWithin(activeRoot,target,safeText(request.content()).getBytes(StandardCharsets.UTF_8));
             } catch(IOException exception) { throw storage("Could not create " + relative,exception); }
             ProjectTreeNode tree=afterMutation(relative);
             return result(relative,request.directory()?"":hashes.etag(readLimited(target,properties.getMaxUploadFileSizeBytes())),tree);
@@ -206,7 +206,7 @@ public class LocalDirectoryProjectStorage implements ProjectStoragePort {
             String relative=(directory==null||directory.isBlank()?"":directory.replace('\\','/')+"/")+safeName;
             Path target=paths.resolve(activeRoot,relative); if(Files.exists(target)) throw conflict("File already exists: " + relative);
             byte[] safeContent=content==null?new byte[0]:content;
-            files.writeAtomic(target,safeContent);
+            files.writeAtomicWithin(activeRoot,target,safeContent);
             ProjectTreeNode tree=afterMutation(relative);
             return result(relative,hashes.etag(safeContent),tree);
         } finally { lock.writeLock().unlock(); }
@@ -230,6 +230,8 @@ public class LocalDirectoryProjectStorage implements ProjectStoragePort {
                 Path nested=singleDirectoryChild(destination);
                 if(nested!=null&&Files.isRegularFile(nested.resolve(ProjectDescriptorStore.FILE_NAME),java.nio.file.LinkOption.NOFOLLOW_LINKS)) normalizeNestedImportedProject(destination,nested);
             }
+            // an uploaded archive without a project descriptor is an invalid request of the client (400), not a missing resource (404)
+            if(!Files.isRegularFile(descriptorPath,java.nio.file.LinkOption.NOFOLLOW_LINKS)) throw invalid("The archive is not a HYDRA project: "+ProjectDescriptorStore.FILE_NAME+" is missing at its root or in its single top-level folder");
             ProjectDescriptor descriptor=descriptors.read(destination); setActive(destination,descriptor,loadTabs(destination,descriptor));
             index.build(destination,descriptor,ProjectTreeView.LOGICAL); index.persist(destination, descriptor); changes.reset(destination,descriptor); return session();
         } catch(RuntimeException exception) {
@@ -339,6 +341,7 @@ public class LocalDirectoryProjectStorage implements ProjectStoragePort {
     /** Descripción: Valida un directorio importado mediante recorrido incremental, sin materializar el árbol, aplicando límites de entradas, profundidad, bytes y política de enlaces. Entradas: source: raíz importada. Salida: no devuelve valor. */ private void validateDirectoryImportSource(Path source) {
         int maximumEntries=Math.max(1,properties.getMaxArchiveEntries());int maximumDepth=Math.max(1,properties.getMaxTreeDepth());long maximumBytes=properties.getMaxArchiveSizeBytes();int[] entries={0};long[] total={0L};
         try {
+            Path realSource=com.example.editor.io.FileSystemBoundaries.realRoot(source);
             Files.walkFileTree(source,new java.nio.file.SimpleFileVisitor<>(){
                 /** Descripción: Acumula de forma acotada una entrada del árbol importado y valida profundidad, enlaces y bytes antes de aceptar el proyecto. Entradas: path y atributos de la entrada. Salida: no devuelve valor; actualiza los contadores o rechaza la entrada. */
                 /** Descripción: Ejecuta la operación «accept» correspondiente a la responsabilidad de LocalDirectoryProjectStorage. Entradas: path: ruta o ubicación utilizada por la operación; attrs: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void accept(Path path,java.nio.file.attribute.BasicFileAttributes attrs){
@@ -352,7 +355,10 @@ public class LocalDirectoryProjectStorage implements ProjectStoragePort {
                     }
                 }
                 /** Descripción: Valida cada directorio antes de recorrerlo para aplicar los límites del proyecto importado sin materializar el árbol completo. Entradas: directorio y atributos. Salida: devuelve la decisión de continuar el recorrido. */
-                /** Descripción: Ejecuta la operación «preVisitDirectory» correspondiente a la responsabilidad de LocalDirectoryProjectStorage. Entradas: dir: dato de entrada necesario para la operación; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public java.nio.file.FileVisitResult preVisitDirectory(Path dir,java.nio.file.attribute.BasicFileAttributes attrs){accept(dir,attrs);return java.nio.file.FileVisitResult.CONTINUE;}
+                /** Descripción: Ejecuta la operación «preVisitDirectory» correspondiente a la responsabilidad de LocalDirectoryProjectStorage. Entradas: dir: dato de entrada necesario para la operación; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public java.nio.file.FileVisitResult preVisitDirectory(Path dir,java.nio.file.attribute.BasicFileAttributes attrs){
+                    // SEC-WIN-JUNCTION: a directory junction is not a symbolic link for Java; one that leads outside the imported directory is refused
+                    if(!dir.equals(source)&&com.example.editor.io.FileSystemBoundaries.escapes(dir,realSource))throw invalid("Directory junctions and links outside the imported project directory are not allowed: "+source.relativize(dir));
+                    accept(dir,attrs);return java.nio.file.FileVisitResult.CONTINUE;}
                 /** Descripción: Valida cada fichero importado y acumula su coste dentro del presupuesto configurado. Entradas: fichero y atributos. Salida: devuelve la decisión de continuar el recorrido. */
                 /** Descripción: Ejecuta la operación «visitFile» correspondiente a la responsabilidad de LocalDirectoryProjectStorage. Entradas: file: archivo o contenido que debe procesarse; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public java.nio.file.FileVisitResult visitFile(Path file,java.nio.file.attribute.BasicFileAttributes attrs){accept(file,attrs);return java.nio.file.FileVisitResult.CONTINUE;}
             });

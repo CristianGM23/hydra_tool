@@ -21,6 +21,10 @@ class VsCodeExtensionTechnologyAdapterTests {
                 .doesNotContain("onStartupFinished");
     }
 
+    @Test void pinsViteSoNpmCanResolveVitest(){var result=adapter.compile(TechnologyAdapterTestFixtures.vscodeExtensionRequest());
+        assertThat(text(result,"package.json")).contains("\"vitest\": \"5.0.5\"","\"vite\": \"8.3.5\"","\"esbuild\": \"0.28.2\"").doesNotContain("\"overrides\"","4.1.10");
+        assertThat(result.dependencies()).extracting(value->value.coordinate()+"@"+value.version()).contains("vitest@5.0.5","vite@8.3.5","esbuild@0.28.2");}
+
     @Test void neverStartsXtextWhileHydraRuntimeIsDisabled(){
         String extension=text(adapter.compile(TechnologyAdapterTestFixtures.vscodeExtensionRequest()),"src/extension.ts");
         assertThat(extension).contains("if(activation.isEnabled())await languages.startXtext()","if(value){await languages.startXtext();}else{await languages.stop();}")

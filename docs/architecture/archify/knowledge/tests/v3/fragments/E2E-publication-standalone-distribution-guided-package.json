@@ -1,0 +1,106 @@
+[
+  {
+    "id": "pw:e2e/real/publication/standalone-distribution-guided-package.spec.ts",
+    "name": {
+      "es": "Centro de distribución de extremo a extremo: carpeta, identidad, destinos, opciones, generación y ZIP verificable",
+      "en": "Distribution center end to end: folder, identity, targets, options, generation and a verifiable ZIP"
+    },
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": ["publication"],
+    "procs": [
+      { "id": "publication_author_distribution", "stages": ["m", "so", "idn", "tg", "ad"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/distribution-center/StandaloneDistributionCenter.tsx",
+      "frontend/src/distribution-center/api.ts",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionController.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionApplicationService.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPlanner.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionMaterializer.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionValidationService.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPackager.java"
+    ],
+    "pre": {
+      "es": "Servidor real con almacenamiento temporal propio; la carpeta del editor con su página de entrada se prepara en disco como paso previo.",
+      "en": "Real server with its own temporary storage; the editor folder with its entry page is prepared on disk as a prior step."
+    },
+    "setup": {
+      "es": "Navegador real, interfaz en inglés, sin simulaciones. Carpetas únicas por ejecución; el ZIP descargado se lee y se hashea desde el propio test.",
+      "en": "Real browser, interface in English, no simulations. Folders unique per run; the downloaded ZIP is read and hashed by the test itself."
+    },
+    "executes": {
+      "es": "Abre #/distribution en modo guiado, escribe la carpeta, nombre 'E2E Editor' y versión 2.3.4, elige asociaciones 'HYDRA only' y canal beta, comprueba los destinos por defecto, pulsa 'Materialize and validate' y 'Package ZIP'. Otra jornada usa 'Full workspace' con solo web y sin conexión; otra deja la carpeta sin página de entrada.",
+      "en": "Opens #/distribution in guided mode, types the folder, name 'E2E Editor' and version 2.3.4, picks 'HYDRA only' associations and the beta channel, checks the default targets, presses 'Materialize and validate' and 'Package ZIP'. Another journey uses 'Full workspace' with web only and offline off; another leaves the folder without an entry page."
+    },
+    "asserts": {
+      "es": "Por defecto están marcados web y Windows; en disco el descriptor recoge nombre, versión, destinos, asociación .hydra y canal beta, el manifiesto web y la configuración de escritorio llevan nombre y versión; el SHA-256 mostrado es el del ZIP descargado y el de la petición independiente. Con solo web no se escribe nada de escritorio. Sin página de entrada se bloquea.",
+      "en": "Web and Windows are ticked by default; on disk the descriptor holds name, version, targets, the .hydra association and the beta channel, the web manifest and the desktop configuration carry name and version; the SHA-256 shown is that of the downloaded ZIP and of the independent request. With web only nothing desktop is written. Without an entry page it is blocked."
+    },
+    "behavior": {
+      "es": "Una persona prepara una distribución independiente de su editor: indica la carpeta, nombre, versión y destinos, ajusta asociaciones y canal, genera y valida, y empaqueta un ZIP cuya huella puede verificar.",
+      "en": "A person prepares an independent distribution of their editor: gives the folder, name, version and targets, adjusts associations and channel, generates and validates, and packages a ZIP whose fingerprint can be verified."
+    },
+    "rule": {
+      "es": "Solo se escriben los artefactos de los destinos marcados, y una carpeta sin página de entrada web no se puede empaquetar.",
+      "en": "Only the artifacts of the ticked targets are written, and a folder without a web entry page cannot be packaged."
+    },
+    "scenario": {
+      "es": "Asistente guiado con web y Windows, asociación solo .hydra y canal beta; modo completo con solo web y sin conexión; carpeta vacía sin punto de entrada.",
+      "en": "Guided wizard with web and Windows, .hydra-only association and beta channel; full mode with web only and offline off; empty folder with no entry point."
+    },
+    "result": {
+      "es": "Los ficheros escritos reflejan lo elegido, el ZIP descargado coincide con el del servidor y la carpeta incompleta queda bloqueada.",
+      "en": "The written files reflect the choices, the downloaded ZIP matches the server's and the incomplete folder is blocked."
+    },
+    "expected": {
+      "es": "Una ejecución correcta escribe exactamente los artefactos de los destinos marcados, empaqueta con huella coincidente y bloquea la carpeta sin entrada.",
+      "en": "A passing run writes exactly the artifacts of the ticked targets, packages with a matching fingerprint and blocks the folder with no entry."
+    },
+    "guarantee": {
+      "es": "Los datos del centro de distribución, en ambos modos, determinan en el servidor real los ficheros de distribución y el ZIP entregado.",
+      "en": "The distribution center data, in both modes, determines on the real server the distribution files and the delivered ZIP."
+    },
+    "limits": {
+      "es": "No se prueban asociaciones personalizadas, macOS ni Linux, los canales personalizados, la comprobación de preparación para publicar ni los ZIP de fuente de publicación o web. No se compila ningún instalador nativo.",
+      "en": "Custom associations, macOS and Linux, custom channels, the release readiness check and the release-source or web ZIPs are not tested. No native installer is built."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción real en ambos modos, servidor real y oráculo independiente (ficheros en disco, ZIP y huella) sobre el resultado de cada etapa, con un rechazo.",
+      "en": "Real action in both modes, real server and an independent oracle (files on disk, ZIP and fingerprint) on each stage's outcome, with a rejection."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "el modo guiado recorre origen, identidad, destinos y opciones y empaqueta un ZIP verificable",
+        "scenario": { "es": "Cinco pasos del asistente con asociación .hydra y canal beta.", "en": "Five wizard steps with the .hydra association and the beta channel." },
+        "result": { "es": "Descriptor, manifiesto y configuración de escritorio en disco; ZIP con huella coincidente.", "en": "Descriptor, manifest and desktop configuration on disk; ZIP with matching fingerprint." }
+      },
+      {
+        "n": "el modo completo con solo web y sin conexión escribe únicamente los artefactos de esos destinos",
+        "scenario": { "es": "Se desmarca Windows y la conexión y se genera.", "en": "Windows and offline are unticked and generation runs." },
+        "result": { "es": "No hay ficheros de escritorio y el trabajador de caché no guarda la página.", "en": "There are no desktop files and the cache worker does not store the page." }
+      },
+      {
+        "n": "una carpeta sin punto de entrada web queda bloqueada",
+        "scenario": { "es": "Se genera sobre una carpeta vacía.", "en": "Generation runs over an empty folder." },
+        "result": { "es": "La validación la bloquea y el botón de empaquetar queda desactivado.", "en": "Validation blocks it and the package button stays disabled." }
+      }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/publication/standalone-distribution-guided-package.spec.ts", "line": 45 },
+      { "path": "frontend/e2e/real/publication/standalone-distribution-guided-package.spec.ts", "line": 58 },
+      { "path": "frontend/e2e/real/publication/standalone-distribution-guided-package.spec.ts", "line": 62 },
+      { "path": "frontend/e2e/real/publication/standalone-distribution-guided-package.spec.ts", "line": 63 },
+      { "path": "frontend/e2e/real/publication/standalone-distribution-guided-package.spec.ts", "line": 74 },
+      { "path": "frontend/e2e/real/publication/standalone-distribution-guided-package.spec.ts", "line": 79 },
+      { "path": "frontend/e2e/real/publication/standalone-distribution-guided-package.spec.ts", "line": 111 },
+      { "path": "frontend/e2e/real/publication/standalone-distribution-guided-package.spec.ts", "line": 114 },
+      { "path": "frontend/e2e/real/publication/standalone-distribution-guided-package.spec.ts", "line": 125 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

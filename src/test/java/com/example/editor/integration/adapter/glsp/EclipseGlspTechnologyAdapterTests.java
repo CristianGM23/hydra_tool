@@ -67,6 +67,37 @@ class EclipseGlspTechnologyAdapterTests {
                 .contains("extends OperationHandler","createCommand","undo()","redo()","activationEpoch","rollbackRuntime","currentRuntime","throw error");
         assertThat(text(result,"server/package.json")).contains("@eclipse-glsp/server","@eclipse-glsp/graph","inversify","6.1.3").doesNotContain("server-node");
     }
+    @Test void clientUsesTheInversifyLineThatTheGlspClientRequires(){var result=adapter.compile(TechnologyAdapterTestFixtures.glspRequest());
+        assertThat(text(result,"client/package.json")).contains("\"inversify\":\"^6.1.3\"").doesNotContain("\"inversify\":\"^7");
+        assertThat(text(result,"client/offline/dependency-bundle.json")).contains("inversify@6.1.3").doesNotContain("inversify@7");
+        assertThat(text(result,"client/src/hydra-diagram-module.ts")).contains("new ContainerModule((bind,_unbind,isBound)=>","configureDefaultModelElements({bind,isBound})")
+                .doesNotContain("TYPES.","({bind,isBound})=>","as never");}
+    @Test void typeScriptServerDeclaresNodeTypesForTypeScript6(){var result=adapter.compile(configured(Map.of("serverLanguage","typescript")));
+        assertThat(text(result,"server/tsconfig.json")).contains("\"types\":[\"node\"]");assertThat(text(result,"client/tsconfig.json")).doesNotContain("\"types\"");}
+    @Test void nodePackagesPinViteSoNpmCanResolveVitest(){var result=adapter.compile(configured(Map.of("serverLanguage","typescript")));
+        for(String pkg:List.of("client/package.json","server/package.json"))assertThat(text(result,pkg)).contains("\"vite\":\"8.3.5\"","\"vitest\":\"5.0.5\"").doesNotContain("\"overrides\"","4.1.10","\"vitest\":\"^");}
+    @Test void exportsHonestScopedFidelityObligations(){
+        var result = adapter.compile(TechnologyAdapterTestFixtures.glspRequest());
+        String report = text(result,"hydra-fidelity-obligations.json");
+        assertThat(report).contains("\"nativeRuntimeExecuted\":false", "\"functionalParityCertified\":false",
+                "GENERATED_DIAGRAM_UNVERIFIED", "\"sourceSha256\"");
+        assertThat(report).doesNotContain("CERTIFIED_SCOPED");
+    }
+    @Test void reportsUnmaterializedRepresentationsInExportedManifest(){
+        var source = TechnologyAdapterTestFixtures.glspRequest();
+        var editor = EditorDefinitionTestFixtures.editor();
+        var table = new RepresentationDefinition("representation:table","Table",RepresentationKind.TABLE,List.of(),List.of(),List.of(),List.of(),true,Map.of());
+        var changed = new EditorDefinitionModel(editor.schemaVersion(),editor.id(),editor.metamodelId(),editor.name(),
+                List.of(editor.representations().getFirst(),table),editor.palette(),editor.forms(),editor.capabilityManifest(),editor.runtimePolicy(),editor.annotations());
+        var artifacts = new ArrayList<>(source.artifacts());
+        artifacts.removeIf(value -> value.kind() == IntegrationArtifactKind.EDITOR_DEFINITION);
+        artifacts.add(new CanonicalArtifactContent(IntegrationArtifactKind.EDITOR_DEFINITION,changed.id(),"application/json",
+                TechnologyAdapterTestFixtures.MAPPER.writeValueAsBytes(changed)));
+        String report = text(adapter.compile(new TechnologyCompilationRequest(source.profile(),artifacts,"test",Map.of())),
+                "hydra-fidelity-obligations.json");
+        assertThat(report).contains("representation:table", "CANONICAL_ONLY");
+    }
+
     private TechnologyCompilationRequest configured(Map<String,String> settings){var source=TechnologyAdapterTestFixtures.glspRequest();var t=source.profile().target();var target=new IntegrationTarget(t.technology(),t.kind(),t.technologyVersion(),t.projectId(),t.moduleName(),t.buildSystem(),t.sourceRoots(),t.configurationFiles(),t.endpoint(),settings);var p=source.profile();var profile=new IntegrationProfileModel(p.schemaVersion(),p.id(),p.metamodelId(),p.name(),target,p.deliveryMode(),p.features(),p.artifacts(),p.mappings(),p.injectionPolicy(),p.requiredCapabilities(),p.annotations());return new TechnologyCompilationRequest(profile,source.artifacts(),"test",Map.of());}
     private List<String> paths(com.example.editor.integration.compiler.TechnologyCompilationResult result){return result.files().stream().map(value->value.relativePath()).toList();}
     @Test void executesNeutralVisualCustomizationInGeneratedGlspClient(){var result=adapter.compile(TechnologyAdapterTestFixtures.glspRequest());assertThat(paths(result)).anyMatch(v->v.endsWith("client/src/hydra-visual-full-stack.ts")).anyMatch(v->v.endsWith("resources/hydra/visual-editor-definition.json")).anyMatch(v->v.endsWith("resources/hydra/visual-full-stack.json"));assertThat(text(result,"hydra-views.ts")).contains("createHydraGlspVisualRuntime","createHydraVisualFullStack");assertThat(text(result,"hydra-client.test.ts")).contains("executes HYDRA conditional visual personalization","resolveNodeAppearance","#fc0","ELLIPSE");assertThat(text(result,"hydra-visual-full-stack.ts")).contains("resolveNodeAppearance","resolveEdgeAppearance","applyModel","maximumConditionalStyles","VISUAL_CONDITION_EVALUATION_FAILED");}

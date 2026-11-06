@@ -1,0 +1,75 @@
+[
+  {
+    "id": "java:com.example.editor.release.HydraFinalVerifiedPublicationRealGateIntegrationTests",
+    "name": {"es": "Publicación verificada con puerta real", "en": "Verified publication with a real gate"},
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": ["publication"],
+    "procs": [
+      {"id": "publication_generate_publish", "stages": ["v"], "match": "direct"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/release/HydraFinalVerifiedPublicationService.java",
+      "src/main/java/com/example/editor/release/HydraFinalVerifiedPublicationController.java",
+      "src/main/java/com/example/editor/release/HydraReleaseCandidateService.java",
+      "src/main/java/com/example/editor/release/HydraReleaseGateService.java",
+      "src/main/java/com/example/editor/provenance/HydraDistributionProvenanceService.java",
+      "src/main/java/com/example/editor/system/HydraPlatformReadinessService.java",
+      "src/main/java/com/example/editor/standalone/publication/DistributionPublicationService.java"
+    ],
+    "pre": {"es": "Directorios temporales para distribuciones, publicaciones, informes de puerta y de procedencia.", "en": "Temporary directories for distributions, publications, gate reports and provenance reports."},
+    "executes": {
+      "es": "Controladores y servicios reales de puerta de release, procedencia, disponibilidad de la plataforma y publicación escribiendo en disco; sin simulaciones. Los colaboradores de procedencia para evidencias opcionales no se aportan porque ninguna petición los referencia.",
+      "en": "Real controllers and services for release gate, provenance, platform readiness and publication writing to disk; no simulations. The provenance collaborators for optional evidence are not supplied because no request references them."
+    },
+    "asserts": {
+      "es": "La vía sencilla escribe manifiesto y artefacto; la verificada publica con puerta apta, procedencia válida y plataforma lista; con puerta no apta, procedencia de otra versión, producto distinto o identificadores ausentes responde error y no existe directorio de publicación.",
+      "en": "The simple route writes manifest and artifact; the verified one publishes with a passing gate, valid provenance and ready platform; with a blocked gate, provenance of another version, a different product or missing identifiers it answers an error and no publication directory exists."
+    },
+    "behavior": {
+      "es": "La publicación verificada solo escribe una versión cuando la puerta de release es apta, el informe de procedencia es válido para ese producto y versión y la plataforma está lista; en otro caso no escribe nada.",
+      "en": "Verified publication only writes a version when the release gate passes, the provenance report is valid for that product and version and the platform is ready; otherwise it writes nothing."
+    },
+    "rule": {
+      "es": "La vía verificada exige puerta apta, procedencia válida y misma identidad de producto y versión; la vía sencilla no exige nada de eso.",
+      "en": "The verified route requires a passing gate, valid provenance and the same product and version identity; the simple route requires none of that."
+    },
+    "scenario": {
+      "es": "Publicar por la vía sencilla; publicar por la verificada con evidencias sanas; intentar con puerta bloqueada, procedencia de otra versión, producto ajeno, puerta desconocida e identificadores vacíos, y repetir al final la petición correcta.",
+      "en": "Publish by the simple route; publish by the verified one with sound evidence; try with a blocked gate, provenance of another version, a foreign product, an unknown gate and empty identifiers, and finally repeat the correct request."
+    },
+    "result": {
+      "es": "El manifiesto y el artefacto en disco con huella recalculada demuestran la publicación; la ausencia del directorio de publicación demuestra cada rechazo.",
+      "en": "The manifest and artifact on disk with recomputed fingerprint show the publication; the absence of the publication directory shows each rejection."
+    },
+    "expected": {
+      "es": "Todos los casos pasan; los rechazos no dejan rastro y la petición correcta final publica.",
+      "en": "All cases pass; rejections leave no trace and the final correct request publishes."
+    },
+    "guarantee": {
+      "es": "Una versión no puede publicarse por la vía verificada sin evidencia de release y procedencia que coincida con ella.",
+      "en": "A version cannot be published through the verified route without release and provenance evidence that matches it."
+    },
+    "limits": {
+      "es": "La procedencia se evalúa solo con el paquete y la puerta (sin espejo, adaptadores ni rendimiento opcionales). La puerta no apta se exige como conflicto (409) y el resto de rechazos como solicitud incorrecta (400); no se prueba la publicación de varios artefactos ni firmas externas.",
+      "en": "Provenance is evaluated with the package and the gate only (no optional mirror, adapters or performance). A blocked gate is required to be a conflict (409) and other rejections a bad request (400); neither multi-artifact publication nor external signatures are tested."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Todos los colaboradores del flujo son reales, el oráculo es el disco con huella recalculada y los rechazos tienen control positivo.",
+      "en": "All collaborators in the flow are real, the oracle is the disk with a recomputed fingerprint and rejections have a positive control."
+    },
+    "external": "none",
+    "src": [
+      {"path": "src/test/java/com/example/editor/release/HydraFinalVerifiedPublicationRealGateIntegrationTests.java", "line": 143},
+      {"path": "src/test/java/com/example/editor/release/HydraFinalVerifiedPublicationRealGateIntegrationTests.java", "line": 156},
+      {"path": "src/test/java/com/example/editor/release/HydraFinalVerifiedPublicationRealGateIntegrationTests.java", "line": 166},
+      {"path": "src/test/java/com/example/editor/release/HydraFinalVerifiedPublicationRealGateIntegrationTests.java", "line": 182},
+      {"path": "src/test/java/com/example/editor/release/HydraFinalVerifiedPublicationRealGateIntegrationTests.java", "line": 183},
+      {"path": "src/test/java/com/example/editor/release/HydraFinalVerifiedPublicationRealGateIntegrationTests.java", "line": 194},
+      {"path": "src/test/java/com/example/editor/release/HydraFinalVerifiedPublicationRealGateIntegrationTests.java", "line": 199},
+      {"path": "src/test/java/com/example/editor/release/HydraFinalVerifiedPublicationRealGateIntegrationTests.java", "line": 201}
+    ],
+    "confidence": "ANALYZED"
+  }
+]

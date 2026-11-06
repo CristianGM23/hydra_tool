@@ -1,0 +1,166 @@
+[
+  {
+    "id": "java:com.example.editor.remote.git.RemoteGitWorkspaceServiceLocalOperationsIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Operaciones Git reales de principio a fin, incluido un conflicto de fusion real",
+      "en": "Real end-to-end Git operations, including a real merge conflict"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "external_repositories",
+      "project"
+    ],
+    "procs": [
+      {
+        "id": "repos_connect_sync",
+        "stages": [
+          "a3"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "repos_author_git",
+        "stages": [
+          "c",
+          "d",
+          "f",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "repos_connect_sync",
+        "stages": [
+          "d2",
+          "a4",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_remote_repository_exchange",
+        "stages": [
+          "rc"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_remote_repository_exchange",
+        "stages": [
+          "g1",
+          "d3"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "x_project_lifecycle_overview",
+        "stages": [
+          "ex1"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "repos_author_git",
+        "stages": [
+          "a",
+          "b"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/remote/git/RemoteGitWorkspaceService.java",
+      "src/main/java/com/example/editor/remote/git/NativeGitRunner.java",
+      "src/main/java/com/example/editor/remote/git/GitRemoteUrlResolver.java",
+      "src/main/java/com/example/editor/remote/storage/ConfiguredRemoteStorageCredentialResolver.java"
+    ],
+    "pre": {
+      "es": "Directorio de trabajo temporal real con un proyecto HYDRA real ya creado; ningun colaborador simulado.",
+      "en": "Real temporary working directory with a real HYDRA project already created; no simulated collaborators."
+    },
+    "setup": {
+      "es": "RemoteGitWorkspaceService real con NativeGitRunner real (ejecuta el binario git real sin shell), GitRemoteUrlResolver real, ConfiguredRemoteStorageCredentialResolver real (constructor de pruebas sin autenticacion) y un perfil GitHub real (owner/repositorio publicos conocidos) registrado en RemoteStorageProperties real.",
+      "en": "Real RemoteGitWorkspaceService with a real NativeGitRunner (runs the real git binary without a shell), a real GitRemoteUrlResolver, a real ConfiguredRemoteStorageCredentialResolver (its test constructor, no authentication) and a real GitHub profile (well-known public owner/repository) registered in a real RemoteStorageProperties."
+    },
+    "executes": {
+      "es": "service.execute/.repositoryTree/.conflictView/.resolveConflict reales: INIT, COMMIT_ALL, CREATE_BRANCH, CHECKOUT, STATUS, arbol de ramas, un MERGE real entre dos ramas que cambian la misma linea (conflicto real), vista real del fichero y resolucion real guardada y preparada, y un commit real que completa la fusion.",
+      "en": "Real service.execute/.repositoryTree/.conflictView/.resolveConflict: INIT, COMMIT_ALL, CREATE_BRANCH, CHECKOUT, STATUS, a branch tree query, a real MERGE between two branches changing the same line (a real conflict), a real view of the file and a saved, staged real resolution, then a real commit completing the merge."
+    },
+    "asserts": {
+      "es": "El repositorio queda limpio tras cada paso; el arbol de ramas refleja la rama actual; un merge real produce un conflicto real con el fichero listado; la vista muestra el contenido local y remoto reales; la resolucion queda guardada y preparada sin conflictos restantes; el commit final deja el repositorio limpio con el contenido resuelto.",
+      "en": "The repository is clean after each step; the branch tree reflects the current branch; a real merge produces a real conflict with the file listed; the view shows the real local and remote content; the resolution is saved and staged with no remaining conflicts; the final commit leaves the repository clean with the resolved content."
+    },
+    "behavior": {
+      "es": "Operar con Git ejecuta de verdad el binario git para cada operacion elegida, incluida una fusion real que puede dejar un conflicto real; el conflicto se ve y se resuelve escribiendo de verdad el contenido resuelto en el repositorio real antes de completarlo con un commit real.",
+      "en": "Operating with Git genuinely runs the real git binary for each chosen operation, including a real merge that can leave a real conflict; the conflict is viewed and resolved by genuinely writing the resolved content into the real repository before completing it with a real commit."
+    },
+    "rule": {
+      "es": "Cada operacion local, incluida la fusion, se ejecuta como un comando git real sin shell; un conflicto real nunca se resuelve en silencio, requiere escribir y preparar de verdad el contenido resuelto.",
+      "en": "Each local operation, including the merge, runs as a real, shell-free git command; a real conflict is never silently resolved, it requires genuinely writing and staging the resolved content."
+    },
+    "scenario": {
+      "es": "Proyecto HYDRA real; init, commit, crear rama, checkout, status; arbol real de ramas; dos ramas reales que cambian la misma linea de un fichero real, fusion real con conflicto real, vista y resolucion reales del conflicto, commit real que completa la fusion.",
+      "en": "Real HYDRA project; init, commit, branch creation, checkout, status; a real branch tree; two real branches changing the same line of a real file, a real merge with a real conflict, a real view and resolution of the conflict, a real commit completing the merge."
+    },
+    "result": {
+      "es": "Repositorio real correcto en cada paso, incluido un conflicto real detectado, visto, resuelto y completado de verdad.",
+      "en": "Correct real repository at every step, including a real conflict genuinely detected, viewed, resolved and completed."
+    },
+    "expected": {
+      "es": "Las aserciones sobre el estado devuelto y el contenido real del repositorio, incluido el conflicto real, coinciden con lo esperado en cada paso.",
+      "en": "Assertions on the returned state and the repository's real content, including the real conflict, match expectations at every step."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que las operaciones Git locales de HYDRA, incluida la fusion con conflicto real, ejecutan de verdad git sobre un repositorio real, sin simular ningun resultado.",
+      "en": "Real evidence that HYDRA's local Git operations, including a real merge conflict, genuinely run git against a real repository, without simulating any outcome."
+    },
+    "limits": {
+      "es": "No cubre fetch, pull ni push contra un remoto real, que necesitan credenciales y acceso de red reales y quedan fuera de esta prueba a proposito.",
+      "en": "Does not cover fetch, pull or push against a real remote, which need real credentials and network access and are deliberately out of scope for this test."
+    },
+    "strengthWhy": {
+      "es": "Integracion real de extremo a extremo (traits.mocks=false): ejecuta el binario git real a traves de la cadena de produccion real, incluido un conflicto de fusion real producido, visto y resuelto de verdad, sin mocks, con un repositorio real verificable en disco en cada paso, cubriendo directamente repos_author_git a/b/c/d/f/r.",
+      "en": "Real end-to-end integration (traits.mocks=false): runs the real git binary through the real production chain, including a real merge conflict genuinely produced, viewed and resolved, with no mocks, with a real, independently verifiable on-disk repository at every step, directly covering repos_author_git a/b/c/d/f/r."
+    },
+    "cases": [
+      {
+        "n": "localGitOperationsRunARealRepositoryEndToEndWithoutAnyNetworkOrCredentials",
+        "scenario": {
+          "es": "init, commit, rama, checkout, status reales",
+          "en": "Real init, commit, branch, checkout, status"
+        },
+        "result": {
+          "es": "Repositorio real correcto en cada paso",
+          "en": "Correct real repository at every step"
+        }
+      },
+      {
+        "n": "mergingTwoRealBranchesWithAGenuineConflictCanBeViewedResolvedAndCompletedWithoutAnyNetworkOrCredentials",
+        "scenario": {
+          "es": "Dos ramas reales cambian la misma linea; fusion real con conflicto real",
+          "en": "Two real branches change the same line; a real merge with a real conflict"
+        },
+        "result": {
+          "es": "Conflicto real visto, resuelto y completado; repositorio real limpio",
+          "en": "Real conflict viewed, resolved and completed; clean real repository"
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/remote/git/RemoteGitWorkspaceServiceLocalOperationsIntegrationTests.java",
+        "line": 68
+      },
+      {
+        "path": "src/test/java/com/example/editor/remote/git/RemoteGitWorkspaceServiceLocalOperationsIntegrationTests.java",
+        "line": 111
+      }
+    ]
+  }
+]

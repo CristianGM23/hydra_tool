@@ -1,0 +1,90 @@
+[
+  {
+    "id": "pw:e2e/real/events/form-types.spec.ts",
+    "name": {
+      "es": "Formulario de eventos: espacio de nombres, tipos por defecto, categorías y campos, con backend real",
+      "en": "Events form: namespace, default types, categories and fields, with a real backend"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["events"],
+    "procs": [
+      { "id": "events_author_form", "stages": ["a1", "a2", "a3", "a4", "a5"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/event-designer/EventDesigner.tsx",
+      "frontend/src/event-designer/EventDesignerParts.tsx",
+      "frontend/src/event-designer/EventDataFieldsSection.tsx",
+      "frontend/src/event-designer/EventCategoryField.tsx",
+      "frontend/src/event-designer/eventDesignerValidation.ts",
+      "frontend/src/event-designer/api.ts",
+      "src/main/java/com/example/editor/event/web/CanonicalEventModelController.java",
+      "src/main/java/com/example/editor/event/EventModelApplicationService.java",
+      "src/main/java/com/example/editor/event/EventFieldDefinition.java",
+      "src/main/java/com/example/editor/event/persistence/JsonEventDefinitionModelRepository.java"
+    ],
+    "pre": {
+      "es": "Metamodelo mínimo sembrado por la API real y sin eventos guardados; navegador real contra la aplicación compilada y el backend real con almacenamiento propio.",
+      "en": "Minimal metamodel seeded through the real API and no saved events; real browser against the built application and the real backend with its own storage."
+    },
+    "setup": {
+      "es": "Sin simulaciones de la API. Solo se siembra el metamodelo; todo lo demás lo rellena el usuario en el formulario.",
+      "en": "No API simulation. Only the metamodel is seeded; everything else is filled in by the user in the form."
+    },
+    "executes": {
+      "es": "Abre el formulario de eventos, comprueba el espacio de nombres propuesto, prueba uno inválido, lo corrige, añade tres tipos (uno por defecto, uno con categoría de la lista, auditoría y tres campos, otro con categoría personalizada), intenta guardar con un enumerado sin tipo, lo completa, guarda y recarga.",
+      "en": "Opens the events form, checks the proposed namespace, tries an invalid one, fixes it, adds three types (one default, one with a listed category, audit and three fields, one with a custom category), tries to save with an enumeration without its type, completes it, saves and reloads."
+    },
+    "asserts": {
+      "es": "El fichero de definiciones escrito por el backend trae el espacio de nombres, el tipo por defecto (dominio, transitorio, versión 1.0), la categoría de la lista con auditoría y los tres campos con sus tipos, y la categoría personalizada; los intentos inválidos no escriben nada.",
+      "en": "The definitions file written by the backend holds the namespace, the default type (domain, transient, version 1.0), the listed category with audit and the three fields with their types, and the custom category; invalid attempts write nothing."
+    },
+    "behavior": {
+      "es": "El usuario define eventos propios: parte de un espacio de nombres propuesto, cada tipo nuevo nace con valores por defecto, elige categoría de la lista o propia y añade campos de texto, enumerado u objeto.",
+      "en": "The user defines custom events: starts from a proposed namespace, each new type starts with default values, picks a listed or own category and adds text, enumeration or object fields."
+    },
+    "rule": {
+      "es": "El espacio de nombres empieza por letra; un campo enumerado o de objeto necesita su tipo asociado para guardarse.",
+      "en": "The namespace starts with a letter; an enumeration or object field needs its associated type to be saved."
+    },
+    "scenario": {
+      "es": "Espacio de nombres inválido y corregido; tipo por defecto; tipo con categoría de la lista, auditoría y campos de documento, enumerado y objeto; tipo con categoría propia; guardar incompleto y completo; recargar.",
+      "en": "Invalid namespace then fixed; default type; type with a listed category, audit and document, enumeration and object fields; type with own category; incomplete and complete save; reload."
+    },
+    "result": {
+      "es": "Tres tipos guardados con exactamente lo introducido; el guardado incompleto no deja ningún fichero.",
+      "en": "Three types saved with exactly what was entered; the incomplete save leaves no file."
+    },
+    "expected": {
+      "es": "El disco refleja el formulario y lo rechazado no deja rastro.",
+      "en": "The disk reflects the form and what was refused leaves no trace."
+    },
+    "guarantee": {
+      "es": "Lo que el usuario rellena en el formulario de eventos llega al backend como definiciones persistidas, con los valores por defecto esperados.",
+      "en": "What the user fills in the events form reaches the backend as persisted definitions, with the expected default values."
+    },
+    "limits": {
+      "es": "No comprueba que la enumeración u objeto referenciados existan en el metamodelo; no prueba otros tipos de campo ni los ajustes de fuentes y sujetos permitidos. No prueba enlaces.",
+      "en": "It does not check that the referenced enumeration or object exists in the metamodel; it does not test other field types or the allowed sources and subjects settings. It does not test bindings."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones reales del usuario en el formulario, backend real y oráculo en disco que afirma el resultado de cada etapa, con rechazos local y del servidor.",
+      "en": "Real user actions in the form, real backend and a disk oracle that asserts the result of each stage, with local and server refusals."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/events/form-types.spec.ts", "line": 19 },
+      { "path": "frontend/e2e/real/events/form-types.spec.ts", "line": 23 },
+      { "path": "frontend/e2e/real/events/form-types.spec.ts", "line": 31 },
+      { "path": "frontend/e2e/real/events/form-types.spec.ts", "line": 65 },
+      { "path": "frontend/e2e/real/events/form-types.spec.ts", "line": 84 },
+      { "path": "frontend/e2e/real/events/form-types.spec.ts", "line": 90 },
+      { "path": "frontend/e2e/real/events/form-types.spec.ts", "line": 93 },
+      { "path": "frontend/e2e/real/events/form-types.spec.ts", "line": 98 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

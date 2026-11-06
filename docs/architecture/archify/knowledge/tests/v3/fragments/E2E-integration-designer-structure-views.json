@@ -1,0 +1,158 @@
+[
+  {
+    "id": "pw:e2e/real/integration/designer-structure-views.spec.ts",
+    "name": {
+      "es": "Vistas del diseñador de integración en el navegador real: formulario, árbol de estructura y propiedades",
+      "en": "Integration designer views in a real browser: form, structure tree and properties"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": [
+      "delivery"
+    ],
+    "caps": [
+      "integration",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "integration_author_views",
+        "stages": [
+          "sw",
+          "fm",
+          "tr",
+          "pn"
+        ],
+        "match": "direct"
+      }
+    ],
+    "pre": {
+      "es": "Un metamodelo guardado, sembrado con la API real; el perfil lo guarda el usuario desde la barra del diseñador.",
+      "en": "A saved metamodel, seeded through the real API; the profile is saved by the user from the designer toolbar."
+    },
+    "executes": {
+      "es": "Un navegador real guarda un perfil, alterna entre asistente, formulario y árbol de estructura, pulsa «analizar» para ver el informe de compatibilidad, elige nodos del árbol (destino, anfitrión, capacidades, entrada y mapeo), edita sus propiedades y guarda.",
+      "en": "A real browser saves a profile, switches between wizard, form and structure tree, presses 'analyse' to see the compatibility report, picks tree nodes (target, host, capabilities, input and mapping), edits their properties and saves."
+    },
+    "asserts": {
+      "es": "El informe tiene las mismas incidencias y documentos que calcula el servidor; cada nodo abre su panel con los valores del perfil guardado; tras editar, servidor y disco guardan el nuevo proyecto anfitrión y el nuevo elemento del mapeo; la preparación mostrada coincide con la del servidor.",
+      "en": "The report has the same findings and documents the server computes; each node opens its panel with the saved profile values; after editing, server and disk hold the new host project and mapping element; the readiness shown matches the server one."
+    },
+    "behavior": {
+      "es": "Las tres vistas muestran el mismo perfil, el informe de compatibilidad refleja el análisis real del servidor y lo editado en el árbol se guarda.",
+      "en": "The three views show the same profile, the compatibility report reflects the server real analysis and what is edited in the tree is saved."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Perfil guardado con un mapeo; se edita el proyecto anfitrión y el nombre del elemento del anfitrión.",
+      "en": "Saved profile with one mapping; the host project and the host element name are edited."
+    },
+    "result": {
+      "es": "Cambios del árbol guardados en el perfil; informe y preparación iguales a los del servidor.",
+      "en": "Tree changes saved in the profile; report and readiness equal to the server ones."
+    },
+    "expected": {
+      "es": "Lo mostrado y lo guardado coinciden con el servidor.",
+      "en": "What is shown and what is saved match the server."
+    },
+    "guarantee": {
+      "es": "El informe de compatibilidad, los paneles del árbol y su edición se corresponden con el perfil persistido.",
+      "en": "The compatibility report, the tree panels and their editing correspond to the persisted profile."
+    },
+    "limits": {
+      "es": "La elección de vista es estado de pantalla: se prueba que las vistas comparten borrador y que el servidor no cambia hasta guardar, no que se recuerde entre sesiones. No se comprueba que el informe esté libre de errores ni se genera o aplica la integración.",
+      "en": "The view choice is screen state: it is tested that the views share one draft and that the server does not change until saving, not that it is remembered across sessions. The report is not checked to be error-free and the integration is not generated or applied."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones reales de usuario, servidor real y contraste independiente con el análisis, la preparación, la API y el disco.",
+      "en": "Real user actions, real server and independent comparison with the analysis, readiness, API and disk."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "informe",
+        "scenario": {
+          "es": "Analizar desde el formulario completo.",
+          "en": "Analyse from the full form."
+        },
+        "result": {
+          "es": "Mismo recuento que el servidor.",
+          "en": "Same count as the server."
+        }
+      },
+      {
+        "n": "árbol",
+        "scenario": {
+          "es": "Elegir cinco tipos de nodo y editar dos.",
+          "en": "Pick five node types and edit two."
+        },
+        "result": {
+          "es": "Valores guardados en API y disco.",
+          "en": "Values saved in API and disk."
+        }
+      },
+      {
+        "n": "preparación",
+        "scenario": {
+          "es": "Resumen de preparación del asistente.",
+          "en": "Wizard readiness summary."
+        },
+        "result": {
+          "es": "Igual al del servidor.",
+          "en": "Equal to the server one."
+        }
+      }
+    ],
+    "related": [
+      "pw:e2e/real/integration/wizard-features-mappings.spec.ts"
+    ],
+    "src": [
+      {
+        "path": "frontend/e2e/real/integration/designer-structure-views.spec.ts",
+        "line": 14
+      },
+      {
+        "path": "frontend/e2e/real/integration/designer-structure-views.spec.ts",
+        "line": 29
+      },
+      {
+        "path": "frontend/e2e/real/integration/designer-structure-views.spec.ts",
+        "line": 36
+      },
+      {
+        "path": "frontend/e2e/real/integration/designer-structure-views.spec.ts",
+        "line": 65
+      },
+      {
+        "path": "frontend/e2e/real/integration/designer-structure-views.spec.ts",
+        "line": 81
+      },
+      {
+        "path": "frontend/e2e/real/integration/designer-structure-views.spec.ts",
+        "line": 93
+      },
+      {
+        "path": "frontend/e2e/real/integration/designer-structure-views.spec.ts",
+        "line": 117
+      },
+      {
+        "path": "frontend/e2e/real/integration/designer-structure-views.spec.ts",
+        "line": 121
+      },
+      {
+        "path": "frontend/e2e/real/integration/designer-structure-views.spec.ts",
+        "line": 126
+      }
+    ],
+    "prod": [
+      "frontend/src/integration-designer/IntegrationDesigner.tsx",
+      "frontend/src/integration-designer/IntegrationStructureTree.tsx",
+      "frontend/src/integration-designer/integrationStructureModel.ts",
+      "frontend/src/integration-designer/IntegrationTechnologyJourney.tsx",
+      "frontend/src/integration-designer/api.ts",
+      "src/main/java/com/example/editor/integration/web/CanonicalIntegrationProfileController.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

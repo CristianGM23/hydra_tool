@@ -1,0 +1,63 @@
+[
+  {
+    "id": "java:com.example.editor.portability.transaction.TransientFileAccessRetryTests",
+    "name": {
+      "es": "Un bloqueo transitorio de fichero se reintenta de forma acotada",
+      "en": "A transient file lock is retried in a bounded way"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "portability",
+      "persistence"
+    ],
+    "procs": [],
+    "prod": [
+      "src/main/java/com/example/editor/portability/transaction/TransientFileAccessRetry.java"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Ejecuta acciones que fallan con un bloqueo transitorio, con un bloqueo persistente, con otros errores y con una interrupción, sin esperar de verdad.",
+      "en": "Runs actions that fail with a transient lock, a persistent lock, other errors and an interruption, without really waiting."
+    },
+    "asserts": {
+      "es": "El bloqueo transitorio se reintenta con esperas crecientes hasta tener éxito; uno persistente se propaga al agotar los intentos con las esperas acotadas; cualquier otro error no se reintenta; una interrupción detiene los reintentos y conserva el fallo original.",
+      "en": "A transient lock is retried with growing pauses until it succeeds; a persistent one is propagated when the attempts run out with capped pauses; any other error is not retried; an interruption stops retrying and keeps the original failure."
+    },
+    "behavior": {
+      "es": "Publicar una capa tolera un bloqueo breve de otro programa y falla de forma segura si persiste.",
+      "en": "Publishing a layer tolerates a brief lock by another program and fails safely if it persists."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Cuatro tipos de fallo del acceso a ficheros.",
+      "en": "Four kinds of file-access failure."
+    },
+    "result": {
+      "es": "Reintentos o propagación según el tipo de fallo.",
+      "en": "Retries or propagation depending on the kind of failure."
+    },
+    "expected": {
+      "es": "Número de intentos y esperas esperados.",
+      "en": "Expected number of attempts and pauses."
+    },
+    "guarantee": {
+      "es": "Solo se reintenta el bloqueo transitorio y siempre de forma acotada.",
+      "en": "Only the transient lock is retried and always in a bounded way."
+    },
+    "limits": {
+      "es": "Prueba la política de reintento, no que el bloqueo real de Windows desaparezca: la intermitencia original sigue siendo un riesgo ambiental documentado.",
+      "en": "Tests the retry policy, not that the real Windows lock goes away: the original intermittency remains a documented environmental risk."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Prueba determinista de una política pequeña.",
+      "en": "Deterministic test of a small policy."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]

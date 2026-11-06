@@ -1,0 +1,385 @@
+{
+  "schemaVersion": 1,
+  "project": "HYDRA",
+  "specification": "B10_B11_B12_B13_D10_D11_D12_D13",
+  "cases": [
+    {
+      "id": "NATIVE-001",
+      "target": "EMF",
+      "scenario": "SOURCE_PROVENANCE",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-002",
+      "target": "EMF",
+      "scenario": "BUILD_OFFICIAL",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-003",
+      "target": "EMF",
+      "scenario": "STRUCTURE",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-004",
+      "target": "EMF",
+      "scenario": "VALIDATION",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-005",
+      "target": "EMF",
+      "scenario": "QUICK_FIX",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-006",
+      "target": "EMF",
+      "scenario": "EVENTS",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-007",
+      "target": "EMF",
+      "scenario": "GAMIFICATION",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-008",
+      "target": "EMF",
+      "scenario": "PERSISTENCE",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-009",
+      "target": "EMF",
+      "scenario": "TRANSFORMATIONS",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-010",
+      "target": "LANGIUM",
+      "scenario": "SOURCE_PROVENANCE",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-011",
+      "target": "LANGIUM",
+      "scenario": "BUILD_OFFICIAL",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-012",
+      "target": "LANGIUM",
+      "scenario": "STRUCTURE",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-013",
+      "target": "LANGIUM",
+      "scenario": "VALIDATION",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-014",
+      "target": "LANGIUM",
+      "scenario": "QUICK_FIX",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-015",
+      "target": "LANGIUM",
+      "scenario": "EVENTS",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-016",
+      "target": "LANGIUM",
+      "scenario": "GAMIFICATION",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-017",
+      "target": "LANGIUM",
+      "scenario": "PERSISTENCE",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-018",
+      "target": "LANGIUM",
+      "scenario": "TRANSFORMATIONS",
+      "process": "B10_B11"
+    },
+    {
+      "id": "NATIVE-019",
+      "target": "WINDOWS",
+      "scenario": "INSTALL",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-020",
+      "target": "WINDOWS",
+      "scenario": "GUI",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-021",
+      "target": "WINDOWS",
+      "scenario": "PERSISTENCE",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-022",
+      "target": "WINDOWS",
+      "scenario": "UPDATER_SIGNATURE",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-023",
+      "target": "WINDOWS",
+      "scenario": "DATA_MIGRATION",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-024",
+      "target": "LINUX",
+      "scenario": "INSTALL",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-025",
+      "target": "LINUX",
+      "scenario": "GUI",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-026",
+      "target": "LINUX",
+      "scenario": "PERSISTENCE",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-027",
+      "target": "LINUX",
+      "scenario": "UPDATER_SIGNATURE",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-028",
+      "target": "LINUX",
+      "scenario": "DATA_MIGRATION",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-029",
+      "target": "MACOS",
+      "scenario": "INSTALL",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-030",
+      "target": "MACOS",
+      "scenario": "GUI",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-031",
+      "target": "MACOS",
+      "scenario": "PERSISTENCE",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-032",
+      "target": "MACOS",
+      "scenario": "UPDATER_SIGNATURE",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-033",
+      "target": "MACOS",
+      "scenario": "DATA_MIGRATION",
+      "process": "D10_D11"
+    },
+    {
+      "id": "NATIVE-034",
+      "target": "SIRIUS_DESKTOP",
+      "scenario": "GENERATED_PROJECT",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-035",
+      "target": "SIRIUS_DESKTOP",
+      "scenario": "RUNTIME",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-036",
+      "target": "SIRIUS_DESKTOP",
+      "scenario": "GRAPH_EDITOR",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-037",
+      "target": "SIRIUS_DESKTOP",
+      "scenario": "VALIDATION",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-038",
+      "target": "SIRIUS_DESKTOP",
+      "scenario": "PERSISTENCE",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-039",
+      "target": "SIRIUS_DESKTOP",
+      "scenario": "ROUNDTRIP",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-040",
+      "target": "SIRIUS_DESKTOP",
+      "scenario": "EVENTS_GAMIFICATION",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-041",
+      "target": "ECLIPSE_GLSP",
+      "scenario": "GENERATED_PROJECT",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-042",
+      "target": "ECLIPSE_GLSP",
+      "scenario": "RUNTIME",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-043",
+      "target": "ECLIPSE_GLSP",
+      "scenario": "GRAPH_EDITOR",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-044",
+      "target": "ECLIPSE_GLSP",
+      "scenario": "VALIDATION",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-045",
+      "target": "ECLIPSE_GLSP",
+      "scenario": "PERSISTENCE",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-046",
+      "target": "ECLIPSE_GLSP",
+      "scenario": "ROUNDTRIP",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-047",
+      "target": "ECLIPSE_GLSP",
+      "scenario": "EVENTS_GAMIFICATION",
+      "process": "B12"
+    },
+    {
+      "id": "NATIVE-048",
+      "target": "XTEXT",
+      "scenario": "GENERATED_PROJECT",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-049",
+      "target": "XTEXT",
+      "scenario": "OFFICIAL_RUNTIME",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-050",
+      "target": "XTEXT",
+      "scenario": "ROUNDTRIP",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-051",
+      "target": "ANTLR",
+      "scenario": "GENERATED_PROJECT",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-052",
+      "target": "ANTLR",
+      "scenario": "OFFICIAL_RUNTIME",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-053",
+      "target": "ANTLR",
+      "scenario": "ROUNDTRIP",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-054",
+      "target": "BESSER_SDK",
+      "scenario": "GENERATED_PROJECT",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-055",
+      "target": "BESSER_SDK",
+      "scenario": "OFFICIAL_RUNTIME",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-056",
+      "target": "BESSER_SDK",
+      "scenario": "ROUNDTRIP",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-057",
+      "target": "BESSER_WEB",
+      "scenario": "GENERATED_PROJECT",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-058",
+      "target": "BESSER_WEB",
+      "scenario": "OFFICIAL_RUNTIME",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-059",
+      "target": "BESSER_WEB",
+      "scenario": "ROUNDTRIP",
+      "process": "B13"
+    },
+    {
+      "id": "NATIVE-060",
+      "target": "DISTRIBUTION",
+      "scenario": "RELEASE_GATE",
+      "process": "D12_D13"
+    },
+    {
+      "id": "NATIVE-061",
+      "target": "DISTRIBUTION",
+      "scenario": "TAMPERED_UPDATE",
+      "process": "D12_D13"
+    },
+    {
+      "id": "NATIVE-062",
+      "target": "DISTRIBUTION",
+      "scenario": "CRASH_CONCURRENCY",
+      "process": "D12_D13"
+    },
+    {
+      "id": "NATIVE-063",
+      "target": "DISTRIBUTION",
+      "scenario": "ACCURATE_STATUS",
+      "process": "D12_D13"
+    }
+  ]
+}

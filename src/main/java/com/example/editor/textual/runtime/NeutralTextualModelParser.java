@@ -79,29 +79,33 @@ public final class NeutralTextualModelParser {
         Map<String,CanonicalModelElement> elements=new LinkedHashMap<>();
         List<CanonicalModelRelation> relations=new ArrayList<>();
         if(diagnostics.size()<diagnosticLimit){
+            Map<String,SourceTextIndex> indexes=new HashMap<>();
+            Map<ElementMatch,List<int[]>> ownRegions=ownRegions(matches);
             matchLoop: for(ElementMatch match:matches){
                 checkInterrupted();
                 if(!StableIdentifierPolicy.isValidElementId(match.id()))continue;
-                SourceTextIndex index=new SourceTextIndex(match.document().content());
+                SourceTextIndex index=indexes.computeIfAbsent(match.document().id(),key->new SourceTextIndex(match.document().content()));
                 Map<String,Object> attributes=new LinkedHashMap<>();
                 Matcher assignment=ASSIGNMENT.matcher(match.document().content());
-                assignment.region(Math.max(0,match.bodyStart()),Math.min(match.document().content().length(),Math.max(match.bodyStart(),match.bodyEnd())));
-                while(assignment.find()){
-                    String property=assignment.group(1),raw=assignment.group(2);
-                    if(!StableIdentifierPolicy.isValidElementId(property))continue;
-                    int valueStart=assignment.start(2),valueEnd=assignment.end(2);
-                    if(isReference(property,raw,ids)){
-                        String target=unquote(raw);
-                        if(!ids.contains(target)){
-                            if(!addDiagnostic(diagnostics,diagnosticLimit,diag("TEXTUAL_REFERENCE_NOT_FOUND","Referencia de modelo no resuelta","\""+target+"\" no identifica ningún elemento del modelo actual.",match.document().id(),index.range(valueStart,valueEnd),Map.of("property",property,"target",target)))){diagnosticsTruncated=true;break matchLoop;}
+                for(int[] region:ownRegions.get(match)){ // the element's own text: nested elements own their assignments
+                    assignment.region(region[0],region[1]);
+                    while(assignment.find()){
+                        String property=assignment.group(1),raw=assignment.group(2);
+                        if(!StableIdentifierPolicy.isValidElementId(property))continue;
+                        int valueStart=assignment.start(2),valueEnd=assignment.end(2);
+                        if(isReference(property,raw,ids)){
+                            String target=unquote(raw);
+                            if(!ids.contains(target)){
+                                if(!addDiagnostic(diagnostics,diagnosticLimit,diag("TEXTUAL_REFERENCE_NOT_FOUND","Referencia de modelo no resuelta","\""+target+"\" no identifica ningún elemento del modelo actual.",match.document().id(),index.range(valueStart,valueEnd),Map.of("property",property,"target",target)))){diagnosticsTruncated=true;break matchLoop;}
+                            } else {
+                                String relationInstanceId=relationInstanceId(match.id(),property,target,relations.size());
+                                relations.add(new CanonicalModelRelation(relationInstanceId,property,match.id(),target,Map.of("source","TEXTUAL_MODEL")));
+                                sourceMap.add(new TextualSemanticSourceMapEntry(relationInstanceId,"MODEL_RELATION",match.document().id(),index.range(valueStart,valueEnd),property,match.binding()==null?"":match.binding().grammarRuleId(),Map.of("sourceElementId",match.id(),"targetElementId",target,"property",property)));
+                            }
                         } else {
-                            String relationInstanceId=relationInstanceId(match.id(),property,target,relations.size());
-                            relations.add(new CanonicalModelRelation(relationInstanceId,property,match.id(),target,Map.of("source","TEXTUAL_MODEL")));
-                            sourceMap.add(new TextualSemanticSourceMapEntry(relationInstanceId,"MODEL_RELATION",match.document().id(),index.range(valueStart,valueEnd),property,match.binding()==null?"":match.binding().grammarRuleId(),Map.of("sourceElementId",match.id(),"targetElementId",target,"property",property)));
+                            attributes.put(property,literalValue(raw));
+                            sourceMap.add(new TextualSemanticSourceMapEntry(match.id()+":"+property,"MODEL_FEATURE",match.document().id(),index.range(valueStart,valueEnd),property,match.binding()==null?"":match.binding().grammarRuleId(),Map.of("ownerId",match.id(),"property",property)));
                         }
-                    } else {
-                        attributes.put(property,literalValue(raw));
-                        sourceMap.add(new TextualSemanticSourceMapEntry(match.id()+":"+property,"MODEL_FEATURE",match.document().id(),index.range(valueStart,valueEnd),property,match.binding()==null?"":match.binding().grammarRuleId(),Map.of("ownerId",match.id(),"property",property)));
                     }
                 }
                 String classId=match.binding()==null?match.type():match.binding().semanticClassId();
@@ -124,6 +128,32 @@ public final class NeutralTextualModelParser {
         return new TextualParseResult(revision,hash(docs),valid,model,List.copyOf(sourceMap),List.copyOf(diagnostics),snapshot.id(),Map.copyOf(parseMetadata));
     }
 
+    /** Descripción: Texto propio de cada elemento: su cuerpo menos el de los elementos anidados que contiene, que son dueños de sus propias asignaciones y referencias. Entradas: matches: elementos en orden de aparición. Salida: por elemento, los intervalos [inicio, fin) que le pertenecen; el total es lineal en el tamaño del documento. */ private static Map<ElementMatch,List<int[]>> ownRegions(List<ElementMatch> matches){
+        Map<ElementMatch,List<ElementMatch>> children=new IdentityHashMap<>();
+        Deque<ElementMatch> open=new ArrayDeque<>();
+        TextualModelSourceDocument current=null;
+        for(ElementMatch match:matches){
+            if(match.document()!=current){open.clear();current=match.document();}
+            while(!open.isEmpty()&&open.peek().end()<=match.start())open.pop();
+            if(!open.isEmpty())children.computeIfAbsent(open.peek(),key->new ArrayList<>()).add(match);
+            open.push(match);
+        }
+        Map<ElementMatch,List<int[]>> regions=new IdentityHashMap<>();
+        for(ElementMatch match:matches){
+            int length=match.document().content().length();
+            int cursor=Math.max(0,match.bodyStart()),end=Math.min(length,Math.max(match.bodyStart(),match.bodyEnd()));
+            List<int[]> own=new ArrayList<>();
+            for(ElementMatch child:children.getOrDefault(match,List.of())){
+                int childStart=Math.max(cursor,Math.min(end,child.start()));
+                if(childStart>cursor)own.add(new int[]{cursor,childStart});
+                cursor=Math.max(cursor,Math.min(end,child.end()));
+            }
+            if(end>cursor)own.add(new int[]{cursor,end});
+            regions.put(match,own);
+        }
+        return regions;
+    }
+
     /** Descripción: Ejecuta la operación «allowedTypes» correspondiente a la responsabilidad de BindingInfo. Entradas: snapshot: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static Map<String,BindingInfo> allowedTypes(GrammarCompilationSnapshot snapshot,NeutralGrammarSyntaxContract syntaxContract){
         Map<String,BindingInfo> result=new LinkedHashMap<>();
         snapshot.semanticBindings().bindings().stream().filter(b->b.semanticElementKind().equalsIgnoreCase("CLASS")&& !b.semanticElementId().isBlank()).forEach(b->{
@@ -138,7 +168,7 @@ public final class NeutralTextualModelParser {
     /** Descripción: Ejecuta la operación «ruleName» correspondiente a la responsabilidad de BindingInfo. Entradas: grammarElementId: identificador que delimita el recurso objetivo; fallback: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static String ruleName(String grammarElementId,String fallback){int idx=grammarElementId.lastIndexOf(':');if(idx>0){String prefix=grammarElementId.substring(0,idx);int p=prefix.lastIndexOf(':');if(p>=0&&p+1<prefix.length())return prefix.substring(p+1);}return fallback;}
     /** Descripción: Evalúa la condición «canonicalMetamodelId» sin modificar el estado externo. Entradas: snapshot: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private static String canonicalMetamodelId(GrammarCompilationSnapshot snapshot){String id=snapshot.semanticContractId();if(StableIdentifierPolicy.isValidDocumentId(id))return id;String fallback="grammar."+snapshot.grammarId();return fallback.length()<=120&&StableIdentifierPolicy.isValidDocumentId(fallback)?fallback:"grammar.semantic";}
     /** Descripción: Obtiene la información correspondiente a «findBodyEnd» dentro de BindingInfo. Entradas: s: dato de entrada necesario para la operación; start: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static int findBodyEnd(String s,int start){int open=s.indexOf('{',Math.max(0,start-1));if(open<0||open>start+3){int nl=s.indexOf('\n',start);return nl<0?s.length():nl;}int depth=0;boolean quote=false,escape=false;for(int i=open;i<s.length();i++){char c=s.charAt(i);if(escape){escape=false;continue;}if(quote&&c=='\\'){escape=true;continue;}if(c=='\"'){quote=!quote;continue;}if(quote)continue;if(c=='{')depth++;else if(c=='}'&&--depth==0)return i+1;}return s.length();}
-    /** Descripción: Evalúa la condición «isReference» sin modificar el estado externo. Entradas: property: dato de entrada necesario para la operación; raw: dato de entrada necesario para la operación; ids: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private static boolean isReference(String property,String raw,Set<String>ids){String target=unquote(raw);return !raw.startsWith("\"")&&(ids.contains(target)||property.toLowerCase(Locale.ROOT).matches(".*(ref|target|source|parent|owner|customer|type|extends|super).*"));}
+    /** Descripción: Evalúa la condición «isReference» sin modificar el estado externo. Entradas: property: dato de entrada necesario para la operación; raw: dato de entrada necesario para la operación; ids: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private static boolean isReference(String property,String raw,Set<String>ids){String target=unquote(raw);if(raw.matches("[-+]?\\d+(?:\\.\\d+)?|true|false"))return false;/* a literal is a value: element identifiers never start with a digit */return !raw.startsWith("\"")&&(ids.contains(target)||property.toLowerCase(Locale.ROOT).matches(".*(ref|target|source|parent|owner|customer|type|extends|super).*"));}
     /** Descripción: Ejecuta la operación «literalValue» correspondiente a la responsabilidad de BindingInfo. Entradas: raw: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static Object literalValue(String raw){if(raw.startsWith("\"")&&raw.endsWith("\""))return unquote(raw);if(raw.equals("true")||raw.equals("false"))return Boolean.valueOf(raw);try{return raw.contains(".")?Double.valueOf(raw):Long.valueOf(raw);}catch(NumberFormatException ignored){return raw;}}
     /** Descripción: Ejecuta la operación «unquote» correspondiente a la responsabilidad de BindingInfo. Entradas: value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ private static String unquote(String value){if(value.length()>=2&&value.startsWith("\"")&&value.endsWith("\""))return value.substring(1,value.length()-1).replace("\\\"","\"").replace("\\\\","\\");return value;}
     /** Descripción: Ejecuta la operación «relationInstanceId» correspondiente a la responsabilidad de BindingInfo. Entradas: source: dato de entrada necesario para la operación; property: dato de entrada necesario para la operación; target: dato de entrada necesario para la operación; ordinal: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static String relationInstanceId(String source,String property,String target,int ordinal){String id=source+":"+property+":"+target+(ordinal==0?"":"-"+ordinal);return id.length()<=240?id:(source+":"+property+":"+ordinal);}

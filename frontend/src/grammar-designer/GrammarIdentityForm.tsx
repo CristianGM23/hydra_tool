@@ -5,6 +5,7 @@ import type { CanonicalMetamodelSummary } from '../metamodel-designer/types';
 import { GrammarMetamodelField } from './GrammarMetamodelField';
 import type { GrammarAnalysisResult, GrammarDefinitionModel, GrammarTechnology, GrammarToolchainProfile } from './types';
 import type { GrammarLocalInspection } from './grammarLocalInspection';
+import { toolchainProfileDescription } from './toolchainProfileDescription';
 
 interface Props{
     model:GrammarDefinitionModel;
@@ -30,7 +31,7 @@ export function GrammarIdentityForm({model,displayedTechnology,analysis,localIns
         {value:'LINKED',label:'Grammar linked to metamodel',description:'Keep grammar and selected HYDRA metamodel related and use the metamodel to strengthen semantic reconciliation.',category:'Available values'},
         {value:'METAMODEL_FIRST',label:'Metamodel first',description:'Treat the selected HYDRA metamodel as the structural reference the grammar must implement.',category:'Available values'}
     ];
-    const toolchainOptions=compatibleProfiles.map(profile=>({value:profile.id,label:`${profile.id} · ${profile.executionMode}`,description:`Provider ${profile.providerVersion} · ${profile.buildSystem} · target ${profile.targetLanguage}${profile.javaVersion?` · Java ${profile.javaVersion}`:''}${profile.nodeVersion?` · Node ${profile.nodeVersion}`:''}`,category:profile.executionMode==='HYBRID'?'Recommended':'Available values'}));
+    const toolchainOptions=compatibleProfiles.map(profile=>({value:profile.id,label:`${profile.id} · ${profile.executionMode}`,description:toolchainProfileDescription(profile),category:profile.executionMode==='HYBRID'?'Recommended':'Available values'}));
     const inferredEntryRule=analysis?.metadata['entryRule.inferred']??localInspection.inferredEntryRule;
     const inferenceConfidence=Math.round((analysis===null?localInspection.confidence:Number(analysis.metadata['entryRule.confidence']??localInspection.confidence))*100);
     const parserRules=(analysis?.metadata['entryRule.candidates']??'').split('|').map(value=>value.trim()).filter(Boolean);
@@ -65,7 +66,7 @@ export function GrammarIdentityForm({model,displayedTechnology,analysis,localIns
         <HydraFormField label="Authoring mode" targetId="grammar-authoring-mode" required help="Choose where semantic structure comes from. Grammar first infers it from the language; Linked reconciles both sides; Metamodel first treats the selected metamodel as the reference structure." example="Grammar first" options={authoringOptions}>
             <HydraAdaptiveSelect id="grammar-authoring-mode" ariaLabel="Authoring mode" value={model.authoringMode} options={authoringOptions} onChange={value=>onMutate({...model,authoringMode:value as GrammarDefinitionModel['authoringMode']})} showOptionHelp={false}/>
         </HydraFormField>
-        <HydraFormField label="Toolchain" targetId="grammar-toolchain" required help="Versioned provider/build profile used for native validation and project generation. Prefer the modern recommended profile unless an existing language must remain on a legacy runtime." example="langium-4.3-browser" options={toolchainOptions}>
+        <HydraFormField label="Toolchain" targetId="grammar-toolchain" required help="Versioned provider/build profile used for native validation and project generation. Prefer the modern recommended profile unless an existing language must remain on a legacy runtime." example="langium-4.4-browser" options={toolchainOptions}>
             <HydraAdaptiveSelect id="grammar-toolchain" ariaLabel="Toolchain" value={model.toolchainProfileId} options={toolchainOptions} onChange={value=>onMutate({...model,toolchainProfileId:value})} showOptionHelp={false}/>
         </HydraFormField>
         <HydraFormField label="Entry rule" targetId="grammar-entry-rule" required help="HYDRA analyzes the parser-rule graph and preselects the most likely document root. Explicit entry markers and native platform conventions take precedence; when several roots are possible, graph reachability and the configured entry document are used. You can always select another parser rule manually or return to automatic detection." example="Automatic · Model" options={entryOptions}>

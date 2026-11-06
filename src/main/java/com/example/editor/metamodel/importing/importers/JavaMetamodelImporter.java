@@ -51,6 +51,7 @@ import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.TypeParameterTree;
 import com.sun.source.tree.VariableTree;
@@ -151,6 +152,12 @@ public class JavaMetamodelImporter implements MetamodelImporter {
             return new ParsedJavaProject(List.copyOf(types), List.copyOf(packages));
         }
 
+        /** Descripción: Indica si un miembro de un enum es una de sus constantes. javac representa cada constante, con o sin argumentos, como una variable del tipo del enum inicializada con la construcción implícita del propio enum; un campo normal nunca puede construir el enum. Entradas: variable: miembro declarado; enumName: nombre simple del enum. Salida: devuelve true si es una constante. */ private static boolean isEnumConstant(VariableTree variable, String enumName) {
+            if(variable.getType() == null) return true;
+            return variable.getInitializer() instanceof NewClassTree creation && creation.getIdentifier() != null
+                    && creation.getIdentifier().toString().equals(enumName);
+        }
+
         /** Descripción: Ejecuta la operación «collectType» correspondiente a la responsabilidad de JavaFieldSpec. Entradas: tree: dato de entrada necesario para la operación; packageName: dato de entrada necesario para la operación; ownerName: dato de entrada necesario para la operación; sourcePath: ruta o ubicación utilizada por la operación; types: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void collectType(ClassTree tree, String packageName, String ownerName, String sourcePath, List<JavaTypeSpec> types) {
             String simpleName = tree.getSimpleName().toString();
             if(simpleName.isBlank()) return;
@@ -166,7 +173,7 @@ public class JavaMetamodelImporter implements MetamodelImporter {
 
             for(Tree member : tree.getMembers()) {
                 if(member instanceof VariableTree variable) {
-                    if(kind == JavaTypeKind.ENUM && variable.getType() == null) enumLiterals.add(variable.getName().toString());
+                    if(kind == JavaTypeKind.ENUM && isEnumConstant(variable, simpleName)) enumLiterals.add(variable.getName().toString());
                     else fields.add(field(variable));
                 } else if(member instanceof MethodTree method) {
                     if(method.getReturnType() != null) methods.add(method(method));
@@ -314,7 +321,19 @@ public class JavaMetamodelImporter implements MetamodelImporter {
                     attributes.add(new MetaAttribute(ImportParsingSupport.attributeId(classId, field.name()), field.name(), reference, use.multiplicity(), !use.collection(), true, field.initializer(), annotations));
                 }
             }
-            for(JavaMethodSpec method : type.methods()) operations.add(buildOperation(classId, type, method));
+            // the accessors of a recovered field and the java.lang.Object protocol represent the field, not a domain operation (MULTIGEN)
+            Set<String> fieldNames = new LinkedHashSet<>();
+            for(JavaFieldSpec field : type.fields()) if(!field.modifiers().contains(Modifier.STATIC)) fieldNames.add(field.name());
+            int omitted = 0;
+            for(JavaMethodSpec method : type.methods()) {
+                if(isAccessorOrObjectMethod(method, fieldNames)) {
+                    omitted++;
+                    continue;
+                }
+                operations.add(buildOperation(classId, type, method));
+            }
+            if(omitted > 0) warnings.add(new TransformationWarning("IMPORT_JAVA_ACCESSORS_OMITTED", "$.classes[" + classId + "]",
+                    omitted + " JavaBeans accessors of recovered fields and java.lang.Object methods were represented by the fields, not imported as operations"));
             for(String superType : type.superTypes()) {
                 JavaTypeUse use = parseType(superType);
                 String target = resolveKnownType(use.baseType(), type);
@@ -334,6 +353,27 @@ public class JavaMetamodelImporter implements MetamodelImporter {
                 warnings.add(new TransformationWarning("IMPORT_JAVA_STRUCTURAL_INTERFACE_ADAPTED", "$.classes[" + classId + "]", "Java interface was represented as an abstract class because HYDRA structural relations cannot target interfaces"));
             }
             return new MetaClass(classId, type.simpleName(), kind, attributes, operations, classAnnotations);
+        }
+
+        /** Descripción: Indica si un método es un accesor JavaBeans (getX/isX sin parámetros, setX(valor) void) de un campo recuperado de la misma clase, o equals/hashCode/toString. Entradas: method y nombres de campo. Salida: true si no es una operación de dominio. */
+        private static boolean isAccessorOrObjectMethod(JavaMethodSpec method, Set<String> fieldNames) {
+            String name = method.name();
+            String returnType = method.returnType().trim();
+            int parameters = method.parameters().size();
+            boolean voidType = "void".equals(returnType);
+            if("equals".equals(name)) return parameters == 1 && "boolean".equals(returnType);
+            if("hashCode".equals(name)) return parameters == 0 && "int".equals(returnType);
+            if("toString".equals(name)) return parameters == 0 && ("String".equals(returnType) || "java.lang.String".equals(returnType));
+            if(parameters == 0 && !voidType && name.startsWith("get") && name.length() > 3) return fieldNames.contains(decapitalize(name.substring(3)));
+            if(parameters == 0 && name.startsWith("is") && name.length() > 2 && ("boolean".equals(returnType) || "Boolean".equals(returnType))) return fieldNames.contains(decapitalize(name.substring(2)));
+            if(parameters == 1 && voidType && name.startsWith("set") && name.length() > 3) return fieldNames.contains(decapitalize(name.substring(3)));
+            return false;
+        }
+
+        /** Descripción: java.beans.Introspector.decapitalize: «Code» -> «code», «URL» -> «URL». Entradas: value: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */
+        private static String decapitalize(String value) {
+            if(value.length() > 1 && Character.isUpperCase(value.charAt(0)) && Character.isUpperCase(value.charAt(1))) return value;
+            return Character.toLowerCase(value.charAt(0)) + value.substring(1);
         }
 
         /** Descripción: Crea o prepara el resultado de «buildOperation» dentro de JavaFieldSpec. Entradas: classId: identificador que delimita el recurso objetivo; owner: dato de entrada necesario para la operación; method: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private MetaOperation buildOperation(String classId, JavaTypeSpec owner, JavaMethodSpec method) {

@@ -31,6 +31,8 @@ public final class StandaloneDistributionPlanner {
             artifacts.add(new StandaloneDistributionArtifact(
                     "src-tauri/src/main.rs", "text/x-rust", tauriMain()));
             artifacts.add(new StandaloneDistributionArtifact(
+                    "src-tauri/src/model_store.rs", "text/x-rust", TauriModelStoreTemplate.source()));
+            artifacts.add(new StandaloneDistributionArtifact(
                     "src-tauri/capabilities/default.json", "application/json", tauriCapabilities()));
         }
         return artifacts.stream().sorted(Comparator.comparing(StandaloneDistributionArtifact::path)).toList();
@@ -86,6 +88,7 @@ public final class StandaloneDistributionPlanner {
                 "  \"productName\": " + jsonString(profile.productName()) + ",\n" +
                 "  \"version\": " + jsonString(profile.version()) + ",\n" +
                 "  \"identifier\": " + jsonString(identifier(profile.productName())) + ",\n" +
+                "  \"app\": { \"withGlobalTauri\": true },\n" +
                 "  \"build\": { \"frontendDist\": \"../dist\" },\n" +
                 "  \"bundle\": {\n" +
                 "    \"active\": true,\n" +
@@ -105,13 +108,20 @@ public final class StandaloneDistributionPlanner {
         return "[package]\nname = \"hydra-" + packageName + "\"\nversion = \"" + version +
                 "\"\nedition = \"2021\"\nbuild = \"build.rs\"\n" +
                 "\n[build-dependencies]\ntauri-build = { version = \"2\", features = [] }\n" +
-                "\n[dependencies]\ntauri = { version = \"2\", features = [] }\n";
+                "\n[dependencies]\ntauri = { version = \"2\", features = [] }\n" +
+                "serde = { version = \"1\", features = [\"derive\"] }\n" +
+                "serde_json = \"1\"\nsha2 = \"0.10\"\nfs2 = \"0.4\"\n" +
+                "\n[target.'cfg(windows)'.dependencies]\n" +
+                "windows-sys = { version = \"0.59\", features = [\"Win32_Storage_FileSystem\"] }\n";
     }
 
     /**Descripción: Define el punto de entrada de escritorio reutilizando el build web generado. Entradas: datos validados por el contrato. Salida: resultado verificable de la operación. */
     private String tauriMain() {
         return "#![cfg_attr(not(debug_assertions), windows_subsystem = \"windows\")]\n" +
+                "mod model_store;\nuse model_store::ModelGuard;\nuse std::sync::Mutex;\n" +
                 "fn main() {\n    tauri::Builder::default()\n" +
+                "        .manage(ModelGuard(Mutex::new(())))\n" +
+                "        .invoke_handler(tauri::generate_handler![model_store::hydra_list_models, model_store::hydra_read_model, model_store::hydra_write_model, model_store::hydra_delete_model])\n" +
                 "        .run(tauri::generate_context!())\n" +
                 "        .expect(\"Could not start generated HYDRA editor\");\n}\n";
     }

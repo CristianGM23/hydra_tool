@@ -1,0 +1,195 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.TransformationDefinitionCheckAndSaveGateIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Puerta de comprobación y guardado de definiciones",
+      "en": "Definition check-and-save gate"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "transformation_author_mapping",
+        "stages": [
+          "ck",
+          "ok"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "transformation_define",
+        "stages": [
+          "chk",
+          "t2m",
+          "ok"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "transformation_author_text2model",
+        "stages": [
+          "ck",
+          "ok",
+          "art"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java",
+      "src/main/java/com/example/editor/transformation/persistence/JsonTransformationRepository.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible; metamodelo con Person.name obligatorio guardado en disco; sin red.",
+      "en": "Writable temporary directory; metamodel with required Person.name stored on disk; no network."
+    },
+    "setup": {
+      "es": "TransformationApplicationService real con repositorio JSON real y comprobador real; el repositorio se relee con una instancia independiente.",
+      "en": "Real TransformationApplicationService with real JSON repository and real checker; the repository is reread with an independent instance."
+    },
+    "executes": {
+      "es": "check y create con regla duplicada, alias repetido, tipo de origen desconocido, asignación mal tipada, aviso por atributo obligatorio sin asignar, bidireccional sin regla de vuelta y T2M con y sin gramática.",
+      "en": "check and create with a duplicate rule, repeated alias, unknown source type, mistyped assignment, warning for an unmapped required attribute, bidirectional without a reverse rule and T2M with and without a grammar."
+    },
+    "asserts": {
+      "es": "Cada error aparece con su código en check y create lanza INVALID_REQUEST sin dejar nada en disco; el aviso no bloquea (valid=true) y la definición se guarda; el T2M con gramática se relee con gramática, ruta y transformación posterior.",
+      "en": "Each error appears with its code in check and create throws INVALID_REQUEST leaving nothing on disk; the warning does not block (valid=true) and the definition is saved; the T2M with grammar is reread with grammar, path and post transformation."
+    },
+    "behavior": {
+      "es": "HYDRA revisa la definición antes de guardar: los errores impiden guardarla y los avisos solo se muestran; una transformación de texto a modelo exige una gramática.",
+      "en": "HYDRA checks the definition before saving: errors prevent saving and warnings are only shown; a text-to-model transformation requires a grammar."
+    },
+    "rule": {
+      "es": "Los errores bloquean el guardado; los avisos no; T2M sin gramática y bidireccional sin pareja inversa son errores.",
+      "en": "Errors block saving; warnings do not; T2M without a grammar and bidirectional without an inverse pair are errors."
+    },
+    "scenario": {
+      "es": "Intentar guardar cinco definiciones erróneas, guardar una con solo un aviso y guardar un T2M con gramática releyéndolo de disco.",
+      "en": "Try to save five faulty definitions, save one with only a warning and save a T2M with a grammar rereading it from disk."
+    },
+    "result": {
+      "es": "Las erróneas no se persisten y reportan su código; la que solo tiene aviso y el T2M con gramática se guardan y se releen.",
+      "en": "The faulty ones are not persisted and report their code; the warning-only one and the T2M with grammar are saved and reread."
+    },
+    "expected": {
+      "es": "Los códigos esperados, el motivo petición inválida, la ausencia en disco y los valores releídos coinciden con los literales.",
+      "en": "The expected codes, the invalid request reason, absence on disk and reread values match the literals."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la puerta de comprobación decide qué se puede guardar y de que no queda nada a medias en disco.",
+      "en": "Real evidence that the check gate decides what can be saved and that nothing is left half-written on disk."
+    },
+    "limits": {
+      "es": "Cubre un subconjunto de los códigos del comprobador y solo el metamodelo de ejemplo; no ejecuta las transformaciones ni valida la gramática compilada del T2M.",
+      "en": "Covers a subset of the checker codes and only the sample metamodel; does not run the transformations nor validate the T2M compiled grammar."
+    },
+    "strengthWhy": {
+      "es": "Servicio y persistencia reales, oráculo independiente (repositorio nuevo y códigos literales) y varios casos negativos.",
+      "en": "Real service and persistence, independent oracle (fresh repository and literal codes) and several negative cases."
+    },
+    "cases": [
+      {
+        "n": "blockingRuleErrorsAreReportedByCheckAndRejectedBySaveWithoutPersisting",
+        "scenario": {
+          "es": "Regla duplicada, alias repetido, origen desconocido, tipado erróneo.",
+          "en": "Duplicate rule, repeated alias, unknown source, wrong typing."
+        },
+        "result": {
+          "es": "Código en check, INVALID_REQUEST y nada en disco.",
+          "en": "Code in check, INVALID_REQUEST and nothing on disk."
+        }
+      },
+      {
+        "n": "aWarningOnlyDefinitionIsSavedAndCheckReportsWarningWithValidTrue",
+        "scenario": {
+          "es": "Atributo obligatorio de destino sin asignar.",
+          "en": "Unmapped required target attribute."
+        },
+        "result": {
+          "es": "Aviso, valid=true y guardada.",
+          "en": "Warning, valid=true and saved."
+        }
+      },
+      {
+        "n": "bidirectionalWithoutReverseRuleIsBlocked",
+        "scenario": {
+          "es": "Bidireccional solo con regla de ida.",
+          "en": "Bidirectional with only a forward rule."
+        },
+        "result": {
+          "es": "INCOMPLETE_BIDIRECTIONAL_CORRESPONDENCE y no se guarda.",
+          "en": "INCOMPLETE_BIDIRECTIONAL_CORRESPONDENCE and not saved."
+        }
+      },
+      {
+        "n": "textToModelNeedsAGrammarAndItsConfigurationIsReloadedFromDisk",
+        "scenario": {
+          "es": "T2M sin y con gramática.",
+          "en": "T2M without and with a grammar."
+        },
+        "result": {
+          "es": "GRAMMAR_REQUIRED / configuración releída.",
+          "en": "GRAMMAR_REQUIRED / configuration reread."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 87
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 88
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 89
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 90
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 102
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 112
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 131
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 148
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 163
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 113
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 158
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/TransformationDefinitionCheckAndSaveGateIntegrationTests.java",
+        "line": 159
+      }
+    ]
+  }
+]

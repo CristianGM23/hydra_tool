@@ -1,0 +1,151 @@
+[
+  {
+    "id": "java:com.example.editor.validation.action.QuickFixDefinitionPersistenceAndCheckIntegrationTests",
+    "name": {
+      "es": "Definir, guardar y comprobar una Quick Fix por la API y enlazarla a una regla",
+      "en": "Defining, saving and checking a quick fix through the API and linking it to a rule"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": [
+      "validation"
+    ],
+    "procs": [
+      {
+        "id": "validation_define_quickfix",
+        "stages": [
+          "id",
+          "pol",
+          "pre",
+          "par",
+          "op",
+          "lnk",
+          "chk",
+          "more",
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "validation_author_quickfix",
+        "stages": [
+          "sv"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "validation_author_quickfix",
+        "stages": [
+          "id",
+          "sf",
+          "op"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/validation/action/ActionModelChecker.java",
+      "src/main/java/com/example/editor/validation/action/ActionModelApplicationService.java",
+      "src/main/java/com/example/editor/validation/action/web/CanonicalActionController.java",
+      "src/main/java/com/example/editor/validation/validation/ValidationModelChecker.java",
+      "src/main/java/com/example/editor/validation/validation/ValidationModelApplicationService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible por caso, con metamodelo y expresiones guardados en repositorios JSON reales.",
+      "en": "Writable temp directory per case, with the metamodel and expressions saved in real JSON repositories."
+    },
+    "setup": {
+      "es": "MockMvc independiente sobre el controlador real de acciones; servicios, comprobadores y repositorios JSON reales, sin mocks de comportamiento.",
+      "en": "Standalone MockMvc over the real action controller; real services, checkers and JSON repositories, with no behaviour mocks."
+    },
+    "executes": {
+      "es": "POST y GET reales de /actions y /actions/check; reapertura del repositorio desde disco; comprobador de acciones con casos negativos; ValidationModelApplicationService.create con una regla enlazada a la accion.",
+      "en": "Real POST and GET of /actions and /actions/check; reopening the repository from disk; action checker with negative cases; ValidationModelApplicationService.create with a rule linked to the action."
+    },
+    "asserts": {
+      "es": "La accion guardada conserva nombre, descripcion, politicas ATOMIC/REQUIRED y BEST_EFFORT/NOT_SUPPORTED, precondicion, parametro y cinco operaciones, tanto por GET como en el JSON de disco; precondicion inexistente o no booleana, recursion y accion inexistente dan su codigo; una regla con enlace duplicado se senala y una valida se relee.",
+      "en": "The saved action keeps its name, description, ATOMIC/REQUIRED and BEST_EFFORT/NOT_SUPPORTED policies, precondition, parameter and five operations, both through GET and in the on-disk JSON; a missing or non-boolean precondition, recursion and an unknown action give their code; a rule with a duplicated link is flagged and a valid one is reread."
+    },
+    "behavior": {
+      "es": "Una Quick Fix definida con politicas, precondicion, parametros y operaciones se guarda de verdad, se reabre igual desde disco, el comprobador senala sus errores y una regla puede enlazarla.",
+      "en": "A quick fix defined with policies, precondition, parameters and operations is really saved, reopens identically from disk, the checker flags its mistakes and a rule can link to it."
+    },
+    "rule": {
+      "es": "Una accion sin operaciones solo es valida como Quick Fix importada, desactivada y de solo revision.",
+      "en": "An action without operations is only valid as an imported, disabled, review-only quick fix."
+    },
+    "scenario": {
+      "es": "Una accion completa con cinco tipos de operacion y otra secundaria, cuatro acciones defectuosas cada una en su directorio, una de solo revision y dos reglas (una con enlace duplicado, otra valida).",
+      "en": "A full action with five operation kinds plus a secondary one, four faulty actions each in its own directory, a review-only one and two rules (one with a duplicated link, one valid)."
+    },
+    "result": {
+      "es": "Estado HTTP 201 sin diagnosticos para la accion correcta, codigos exactos para las defectuosas, accion de revision conservada tal cual y enlace de la regla releido de disco.",
+      "en": "HTTP 201 with no diagnostics for the correct action, exact codes for the faulty ones, the review-only action preserved as is and the rule link reread from disk."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan con controlador, servicios y repositorios reales.",
+      "en": "All assertions pass with the real controller, services and repositories."
+    },
+    "guarantee": {
+      "es": "La definicion de una Quick Fix se persiste fielmente, se comprueba de forma estatica y se puede asociar a una regla.",
+      "en": "A quick-fix definition is persisted faithfully, statically checked and can be associated with a rule."
+    },
+    "limits": {
+      "es": "Usa cinco de las diez clases de operacion; no ejecuta la correccion ni la verifica con el servicio de ejecución de correcciones.resolve (eso requiere un modelo vivo y esta cubierto por otra clase).",
+      "en": "Uses five of the ten operation kinds; does not execute the fix nor verify it with the quick-fix runtime service.resolve (that needs a live model and is covered by another class)."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Capa HTTP, servicios y persistencia reales sin mocks, oraculo en el JSON de disco y casos negativos explicitos.",
+      "en": "Real HTTP layer, services and persistence without mocks, an on-disk JSON oracle and explicit negative cases."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 99
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 102
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 105
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 114
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 128
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 135
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 146
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 170
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 178
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 101
+      },
+      {
+        "path": "src/test/java/com/example/editor/validation/action/QuickFixDefinitionPersistenceAndCheckIntegrationTests.java",
+        "line": 121
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

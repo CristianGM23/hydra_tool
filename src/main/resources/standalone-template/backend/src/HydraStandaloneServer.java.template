@@ -47,11 +47,24 @@ public final class HydraStandaloneServer {
         String host = "127.0.0.1";
         Path root = Path.of(".");
         Path dataRoot = null;
+        boolean check = false;
         for(String argument : args) {
-            if(argument.startsWith("--port=")) port = Integer.parseInt(argument.substring("--port=".length()));
+            if(argument.equals("--check")) check = true;
+            else if(argument.startsWith("--port=")) port = Integer.parseInt(argument.substring("--port=".length()));
             else if(argument.startsWith("--host=")) host = safeHost(argument.substring("--host=".length()));
             else if(argument.startsWith("--root=")) root = Path.of(argument.substring("--root=".length()));
             else if(argument.startsWith("--data-root=")) dataRoot = Path.of(argument.substring("--data-root=".length()));
+        }
+        if(check) {
+            Path descriptor = root.resolve("standalone-editor.json");
+            Path index = root.resolve("frontend").resolve("index.html");
+            if(!Files.isRegularFile(descriptor) || !Files.isRegularFile(index)) {
+                System.err.println("HYDRA standalone editor is incomplete: standalone-editor.json and frontend/index.html are required");
+                System.exit(1);
+            }
+            new HydraStandaloneServer(root, dataRoot);
+            System.out.println("HYDRA standalone editor verified at " + root.toAbsolutePath().normalize());
+            return;
         }
         HydraStandaloneServer application = new HydraStandaloneServer(root, dataRoot);
         HttpServer server = HttpServer.create(new InetSocketAddress(host, port), 0);

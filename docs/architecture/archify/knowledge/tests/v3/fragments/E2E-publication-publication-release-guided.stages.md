@@ -1,0 +1,5 @@
+- publication_author_release.id: el producto escrito acaba en el manifiesto publicado en disco (línea 77).
+- publication_author_release.ar: carpeta, plataforma y ruta llegan al servidor; el paquete inexistente bloquea (líneas 54 y 59) y el correcto se publica con tamaño y SHA-256 recalculado (línea 79).
+- publication_author_release.up: 'Check channel' muestra lo mismo que la consulta independiente, con y sin versión publicada (líneas 109, 113 y 122).
+- publication_author_release.ch (direct): tercer test; Beta sin dirección bloquea (línea 147), y publicar con Beta + HTTPS + firma externa deja en disco el canal y la firma elegidos (líneas 175-176); además Beta bloquea el paso guiado (línea 46) e Internal queda en el manifiesto (línea 77).
+- Inmutabilidad: repetir una versión publicada se rechaza (línea 86).

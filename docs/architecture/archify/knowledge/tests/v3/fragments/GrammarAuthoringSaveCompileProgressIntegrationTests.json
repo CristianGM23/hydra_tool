@@ -1,0 +1,138 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.application.GrammarAuthoringSaveCompileProgressIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Guardar no compila y el progreso de la compilación llega a 12 de 12 etapas o falla con su etapa",
+      "en": "Saving does not compile and compilation progress reaches 12 of 12 stages or fails with its stage"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": [
+      "grammar",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "grammar_author_save_compile",
+        "stages": [
+          "sv",
+          "pg",
+          "ch"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarCompilationProgressService.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarCompilationRepository.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío; sin herramientas nativas instaladas (la comprobación nativa se difiere).",
+      "en": "Empty temporary directory; no native tools installed (the native check is deferred)."
+    },
+    "setup": {
+      "es": "Cableado real de la compilación de doce etapas: repositorios JSON, proveedores, coordinador de análisis, proyector de diagramas y registro de progreso reales.",
+      "en": "Real wiring of the twelve-stage compilation: JSON repositories, providers, analysis coordinator, diagram projector and progress registry."
+    },
+    "executes": {
+      "es": "GrammarApplicationService.create/replace con ETag vigente y caducada; GrammarCompilationService.list/active tras guardar; compile con activateOnSuccess falso y verdadero y requestId fijo; consulta de GrammarCompilationProgressService.find; compile de una gramática rota sobre una versión activa.",
+      "en": "GrammarApplicationService.create/replace with current and stale ETag; GrammarCompilationService.list/active after saving; compile with activateOnSuccess false and true and a fixed requestId; GrammarCompilationProgressService.find; compile of a broken grammar over an active version."
+    },
+    "asserts": {
+      "es": "ETag nueva distinta; ETag caducada rechazada y borrador intacto; cero snapshots, cero versión activa y cero ficheros de compilación tras guardar; progreso SUCCESS 12/12 en ambas compilaciones; con la gramática rota, FAILED con etapa y menos de 12 completadas y la versión activa original.",
+      "en": "New distinct ETag; stale ETag rejected and draft intact; zero snapshots, zero active version and zero compilation files after saving; progress SUCCESS 12/12 in both compilations; with the broken grammar, FAILED with a stage and fewer than 12 completed and the original active version."
+    },
+    "behavior": {
+      "es": "Guardar solo actualiza el borrador de la gramática y nunca compila; compilar deja un progreso que llega a 12 de 12 etapas, o falla indicando la etapa sin sustituir la versión activa.",
+      "en": "Saving only updates the grammar draft and never compiles; compiling leaves a progress record that reaches 12 of 12 stages, or fails naming the stage without replacing the active version."
+    },
+    "rule": {
+      "es": "Guardar con una versión caducada se rechaza; sin activar no hay versión activa; un fallo conserva la versión activa anterior.",
+      "en": "Saving with a stale version is rejected; without activation there is no active version; a failure keeps the previous active version."
+    },
+    "scenario": {
+      "es": "Crear y reemplazar una gramática, comprobar que no hay compilaciones, compilar sin activar y activando, consultar el progreso y compilar una versión rota sobre la activa.",
+      "en": "Create and replace a grammar, check there are no compilations, compile without and with activation, read the progress and compile a broken version over the active one."
+    },
+    "result": {
+      "es": "Sin compilaciones tras guardar; progreso SUCCESS 12/12; progreso FAILED con etapa para la rota; versión activa original intacta.",
+      "en": "No compilations after saving; progress SUCCESS 12/12; progress FAILED with a stage for the broken one; original active version intact."
+    },
+    "expected": {
+      "es": "Todas las aserciones se cumplen, incluidas las de ficheros de compilación inexistentes tras guardar.",
+      "en": "All assertions hold, including that no compilation files exist after saving."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que guardar no compila y de que el progreso refleja el resultado real de cada compilación.",
+      "en": "Real evidence that saving does not compile and that progress reflects the real outcome of each compilation."
+    },
+    "limits": {
+      "es": "Se consulta el registro de progreso en el servicio, no por HTTP; la comprobación nativa queda diferida, sin herramientas reales; sin concurrencia entre compilaciones.",
+      "en": "Progress is read at the service, not over HTTP; the native check is deferred, with no real tools; no concurrency between compilations."
+    },
+    "strengthWhy": {
+      "es": "Cableado real completo, oráculo en disco y literales, y casos de éxito y de fallo.",
+      "en": "Complete real wiring, on-disk and literal oracle, and success and failure cases."
+    },
+    "cases": [
+      {
+        "n": "savingUpdatesTheDraftHonoursTheETagAndNeverStartsACompilation",
+        "scenario": {
+          "es": "Guardar con ETag vigente y caducada.",
+          "en": "Save with current and stale ETag."
+        },
+        "result": {
+          "es": "Sin compilaciones ni ficheros de compilación.",
+          "en": "No compilations or compilation files."
+        }
+      },
+      {
+        "n": "progressOfABrokenCompilationFailsAtAStageAndKeepsTheActiveVersion",
+        "scenario": {
+          "es": "Compilar una gramática rota.",
+          "en": "Compile a broken grammar."
+        },
+        "result": {
+          "es": "FAILED con etapa; versión activa intacta.",
+          "en": "FAILED with a stage; active version intact."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringSaveCompileProgressIntegrationTests.java",
+        "line": 106
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringSaveCompileProgressIntegrationTests.java",
+        "line": 109
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringSaveCompileProgressIntegrationTests.java",
+        "line": 117
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringSaveCompileProgressIntegrationTests.java",
+        "line": 133
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringSaveCompileProgressIntegrationTests.java",
+        "line": 143
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringSaveCompileProgressIntegrationTests.java",
+        "line": 163
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringSaveCompileProgressIntegrationTests.java",
+        "line": 166
+      }
+    ]
+  }
+]

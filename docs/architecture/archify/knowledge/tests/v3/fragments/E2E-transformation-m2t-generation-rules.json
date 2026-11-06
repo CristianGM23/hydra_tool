@@ -1,0 +1,76 @@
+[
+  {
+    "id": "pw:e2e/real/transformation/m2t-generation-rules.spec.ts",
+    "name": { "es": "Reglas de generación de texto en navegador real", "en": "Text generation rules in a real browser" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["transformation"],
+    "procs": [
+      { "id": "transformation_author_generation", "stages": ["cc", "df", "art"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/transformation-designer/TransformationGenerationWorkspace.tsx",
+      "frontend/src/transformation-designer/transformationDesignerModel.ts",
+      "frontend/src/transformation-designer/TransformationDesigner.tsx",
+      "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java",
+      "src/main/java/com/example/editor/transformation/persistence/JsonTransformationRepository.java"
+    ],
+    "pre": { "es": "Un metamodelo con la clase Person y su atributo name sembrado por la API real; sin red.", "en": "A metamodel with class Person and its name attribute seeded through the real API; no network." },
+    "executes": {
+      "es": "En el modo avanzado de un navegador real el usuario crea una transformación de modelo a texto, intenta guardar sin reglas, elige la clase de contexto, crea la regla, lee sus valores iniciales, prueba una ruta insegura, la corrige, guarda y recarga.",
+      "en": "In advanced mode of a real browser the user creates a model-to-text transformation, tries to save without rules, picks the context class, creates the rule, reads its initial values, tries an unsafe path, fixes it, saves and reloads."
+    },
+    "asserts": {
+      "es": "Sin regla y con ruta que sale del paquete no se guarda nada; la regla nace con ruta basada en el primer atributo, plantilla con la clase y colisión que falla; el backend y el disco guardan esos valores y el comprobador no da errores; la pantalla los recarga.",
+      "en": "Without a rule or with a path that leaves the package nothing is saved; the rule starts with a path based on the first attribute, a template with the class and a failing collision policy; the backend and disk store those values and the checker reports no errors; the screen reloads them."
+    },
+    "behavior": {
+      "es": "Al elegir una clase de contexto el diseñador crea una regla de generación con ruta, plantilla y política de sobrescritura por defecto, y se guarda con la definición.",
+      "en": "When a context class is chosen the designer creates a generation rule with a default path, template and overwrite policy, and it is saved with the definition."
+    },
+    "rule": {
+      "es": "Una transformación a texto necesita al menos una regla y su ruta de salida debe quedarse dentro del paquete.",
+      "en": "A text transformation needs at least one rule and its output path must stay inside the package."
+    },
+    "scenario": {
+      "es": "Transformación a texto sobre un metamodelo con Person y su atributo name.",
+      "en": "Text transformation over a metamodel with Person and its name attribute."
+    },
+    "result": {
+      "es": "La regla guardada tiene los valores iniciales esperados y reaparece tras recargar; los intentos inválidos no dejan nada guardado.",
+      "en": "The saved rule has the expected initial values and reappears after reload; the invalid attempts leave nothing saved."
+    },
+    "expected": {
+      "es": "Los valores leídos del backend y del disco coinciden con los mostrados en pantalla.",
+      "en": "Values read from the backend and from disk match those shown on screen."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que las reglas de generación creadas en el diseñador son las que HYDRA guarda y valida.",
+      "en": "Real evidence that generation rules created in the designer are the ones HYDRA stores and validates."
+    },
+    "limits": {
+      "es": "No genera ficheros de texto ni prueba varias reglas; la regla se guarda con una condición simple porque sin ella la pantalla se rompe al recibir lo guardado; solo un metamodelo de una clase.",
+      "en": "It does not generate text files nor test several rules; the rule is saved with a simple condition because without it the screen breaks on receiving what was saved; only a one-class metamodel."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones reales del usuario en navegador, backend real, lectura independiente del disco y rechazos comprobados.",
+      "en": "Real user actions in a browser, real backend, independent disk reading and verified rejections."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/transformation/m2t-generation-rules.spec.ts", "line": 24 },
+      { "path": "frontend/e2e/real/transformation/m2t-generation-rules.spec.ts", "line": 29 },
+      { "path": "frontend/e2e/real/transformation/m2t-generation-rules.spec.ts", "line": 37 },
+      { "path": "frontend/e2e/real/transformation/m2t-generation-rules.spec.ts", "line": 39 },
+      { "path": "frontend/e2e/real/transformation/m2t-generation-rules.spec.ts", "line": 45 },
+      { "path": "frontend/e2e/real/transformation/m2t-generation-rules.spec.ts", "line": 64 },
+      { "path": "frontend/e2e/real/transformation/m2t-generation-rules.spec.ts", "line": 75 },
+      { "path": "frontend/e2e/real/transformation/m2t-generation-rules.spec.ts", "line": 84 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

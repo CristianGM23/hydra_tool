@@ -10,7 +10,7 @@ function documentFor(technology: GrammarTechnology): GrammarSourceDocument {
 export function defaultToolchain(technology: GrammarTechnology): string {
     if (technology === 'XTEXT') return 'xtext-2.44-lsp';
     if (technology === 'ANTLR') return 'antlr-4.13.2-java';
-    return 'langium-4.3-browser';
+    return 'langium-4.4-browser';
 }
 
 export function createGrammar(technology: GrammarTechnology='LANGIUM'): GrammarDefinitionModel {

@@ -1,0 +1,221 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.sync.TransformationSynchronizationSessionLifecycleIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Ciclo de vida de una sesión de sincronización incremental",
+      "en": "Incremental synchronization session lifecycle"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "transformation_sync",
+        "stages": [
+          "cr",
+          "sy",
+          "blk",
+          "ap",
+          "rev",
+          "rb",
+          "rs",
+          "nc",
+          "cf",
+          "pl",
+          "ot"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_transformation_run_and_sync",
+        "stages": [
+          "ses",
+          "sy",
+          "ap",
+          "sv",
+          "cf"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionService.java",
+      "src/main/java/com/example/editor/transformation/sync/JsonTransformationSynchronizationSessionRepository.java",
+      "src/main/java/com/example/editor/transformation/runtime/TransformationIncrementalSynchronizationEngine.java",
+      "src/main/java/com/example/editor/transformation/runtime/TransformationSynchronizationConsistencyValidator.java",
+      "src/main/java/com/example/editor/transformation/runtime/TransformationRuntimeService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible; metamodelo de ejemplo y transformación bidireccional Person↔Person guardados; reloj fijo.",
+      "en": "Writable temporary directory; sample metamodel and bidirectional Person↔Person transformation stored; fixed clock."
+    },
+    "setup": {
+      "es": "Servicio de sesiones, repositorio JSON, servicios de aplicación y runtime reales, con reloj fijo; la sesión se relee con una instancia nueva y con el JSON crudo.",
+      "en": "Real session service, JSON repository, application and runtime services with a fixed clock; the session is reread with a fresh instance and from the raw JSON."
+    },
+    "executes": {
+      "es": "create(SOURCE), synchronize sin cambios, con edición de un lado, de ambos lados bajo las tres políticas, rebase desde TARGET, restore y history; y rechazos por ETag, identidad, revisión de metamodelo y definición cambiada.",
+      "en": "create(SOURCE), synchronize with no changes, with one side edited, with both sides under the three policies, rebase from TARGET, restore and history; and rejections for ETag, identity, metamodel revision and changed definition."
+    },
+    "asserts": {
+      "es": "Revisión 1 con líneas base, rastro y punto de control; sin cambios no sube la revisión; editar un lado cambia solo su pareja (revisión 2); parada bloquea sin excepción; gana el origen o el destino; rebase y restore suben la revisión; los rechazos no avanzan y el disco conserva la revisión.",
+      "en": "Revision 1 with baselines, trace and checkpoint; no changes does not raise the revision; editing one side changes only its pair (revision 2); the stop policy blocks without an exception; source or target wins; rebase and restore raise the revision; rejections do not advance and disk keeps the revision."
+    },
+    "behavior": {
+      "es": "Una sesión guarda las líneas base de ambos lados; cada sincronización propaga solo lo que cambió, avisa de conflictos según la política, y cada revisión deja un punto de control al que se puede volver.",
+      "en": "A session stores the baselines of both sides; each synchronization propagates only what changed, reports conflicts according to the policy, and each revision leaves a checkpoint that can be restored."
+    },
+    "rule": {
+      "es": "Sin cambios la revisión no avanza; un conflicto con política de parada bloquea sin aplicar nada; con política de ganador el perdedor se descarta; una ETag, identidad, metamodelo o definición incoherentes se rechazan.",
+      "en": "With no changes the revision does not advance; a conflict under the stop policy blocks without applying anything; under a winner policy the loser is discarded; an inconsistent ETag, identity, metamodel or definition is rejected."
+    },
+    "scenario": {
+      "es": "Crear la sesión, editar Alice en un lado, editar Alice en ambos lados con tres políticas, editar elementos distintos, rebasar desde el destino, restaurar el punto 1 y probar ETag, identidad y huellas incoherentes.",
+      "en": "Create the session, edit Alice on one side, edit Alice on both sides with three policies, edit different elements, rebase from the target, restore checkpoint 1 and try inconsistent ETag, identity and fingerprints."
+    },
+    "result": {
+      "es": "Las revisiones y los nombres de los elementos coinciden con los literales esperados, los puntos de control quedan en disco y los rechazos dejan la sesión como estaba.",
+      "en": "Revisions and element names match the expected literals, checkpoints are on disk and rejections leave the session unchanged."
+    },
+    "expected": {
+      "es": "Todas las aserciones sobre revisiones, nombres, direcciones, conflictos, ficheros JSON y mensajes se cumplen.",
+      "en": "All assertions on revisions, names, directions, conflicts, JSON files and messages hold."
+    },
+    "guarantee": {
+      "es": "Evidencia real del ciclo completo de sesión: crear, sincronizar sin perder cambios, bloquear conflictos, rebasar, restaurar y persistir.",
+      "en": "Real evidence of the full session cycle: create, synchronize without losing changes, block conflicts, rebase, restore and persist."
+    },
+    "limits": {
+      "es": "Un solo metamodelo con un atributo asignado, sin relaciones ni borrados propagados; appliedDirections puede listar una dirección sin cambios aplicados (no se afirma); sin concurrencia real de escritores.",
+      "en": "A single metamodel with one mapped attribute, no relations or propagated deletions; appliedDirections may list a direction with no changes applied (not asserted); no real concurrent writers."
+    },
+    "strengthWhy": {
+      "es": "Servicios y persistencia reales, oráculos literales y JSON leído del disco, y casos negativos de cada puerta.",
+      "en": "Real services and persistence, literal oracles and JSON read from disk, and negative cases for each gate."
+    },
+    "cases": [
+      {
+        "n": "createsASessionDetectsNoChangesAndPropagatesOnlyTheEditedElement",
+        "scenario": {
+          "es": "Crear, sin cambios, editar Alice y recargar.",
+          "en": "Create, no changes, edit Alice and reload."
+        },
+        "result": {
+          "es": "Revisión 1, noOp, revisión 2 con solo Alice cambiada.",
+          "en": "Revision 1, noOp, revision 2 with only Alice changed."
+        }
+      },
+      {
+        "n": "stopPolicyBlocksAConflictWithoutAdvancingAndMergesDisjointEdits",
+        "scenario": {
+          "es": "Conflicto con parada y ediciones disjuntas.",
+          "en": "Conflict under stop and disjoint edits."
+        },
+        "result": {
+          "es": "Bloqueado sin avanzar / fusión en ambos sentidos.",
+          "en": "Blocked without advancing / merge in both directions."
+        }
+      },
+      {
+        "n": "sourceWinsPolicyAppliesTheSourceEditAndDiscardsTheTargetEdit",
+        "scenario": {
+          "es": "Conflicto con gana el origen.",
+          "en": "Conflict with source wins."
+        },
+        "result": {
+          "es": "Ambos lados quedan con el valor del origen.",
+          "en": "Both sides keep the source value."
+        }
+      },
+      {
+        "n": "targetWinsPolicyAppliesTheTargetEditAndDiscardsTheSourceEdit",
+        "scenario": {
+          "es": "Conflicto con gana el destino.",
+          "en": "Conflict with target wins."
+        },
+        "result": {
+          "es": "Ambos lados quedan con el valor del destino.",
+          "en": "Both sides keep the target value."
+        }
+      },
+      {
+        "n": "rebaseFromTargetAndRestoreCreateNewRevisions",
+        "scenario": {
+          "es": "Rebase desde TARGET y restore del punto 1.",
+          "en": "Rebase from TARGET and restore checkpoint 1."
+        },
+        "result": {
+          "es": "Revisiones 3 y 4 con el historial completo.",
+          "en": "Revisions 3 and 4 with the full history."
+        }
+      },
+      {
+        "n": "staleEtagInconsistentBaselineAndChangedDefinitionAreRejectedWithoutAdvancing",
+        "scenario": {
+          "es": "ETag, identidad, metamodelo y definición incoherentes.",
+          "en": "Inconsistent ETag, identity, metamodel and definition."
+        },
+        "result": {
+          "es": "PRECONDITION_FAILED, CONFLICT o error de ejecución; revisión 1.",
+          "en": "PRECONDITION_FAILED, CONFLICT or execution error; revision 1."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 89
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 107
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 117
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 126
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 136
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 141
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 162
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 168
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 181
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 185
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 208
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionLifecycleIntegrationTests.java",
+        "line": 230
+      }
+    ]
+  }
+]

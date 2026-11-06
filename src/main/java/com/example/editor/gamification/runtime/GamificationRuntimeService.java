@@ -85,7 +85,9 @@ public class GamificationRuntimeService {
                 && !event.context().metamodelId().isBlank(), event -> {
             try { process(event.context().metamodelId(), event); }
             catch(GamificationApplicationException exception) {
-                if(exception.getReason() != GamificationApplicationException.Reason.NOT_FOUND) LOGGER.warn("Gamification event processing failed", exception);
+                // a corrupt configuration is already logged by the read with its cause; the event is skipped and nothing is moved
+                if(exception.getReason() == GamificationApplicationException.Reason.CORRUPT_CONFIGURATION) LOGGER.warn("Gamification event {} skipped: the stored configuration of metamodel {} is corrupt", event.id(), event.context().metamodelId());
+                else if(exception.getReason() != GamificationApplicationException.Reason.NOT_FOUND) LOGGER.warn("Gamification event processing failed", exception);
             } catch(RuntimeException exception) { LOGGER.warn("Gamification event processing failed", exception); }
         });
     }

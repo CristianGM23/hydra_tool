@@ -1,0 +1,113 @@
+[
+  {
+    "id": "java:com.example.editor.remote.auth.RemoteOAuthLoopbackExchangeIntegrationTests",
+    "external": "mocked",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Conectar una cuenta con un proveedor de identidad simulado en local: código con PKCE y flujo de dispositivo",
+      "en": "Connecting an account with a locally simulated identity provider: code with PKCE and device flow"
+    },
+    "type": "INTEGRATION",
+    "layer": "external",
+    "layers2": ["platform"],
+    "caps": ["external_repositories", "security"],
+    "procs": [
+      { "id": "repos_connect_sync", "stages": ["a2"], "match": "direct" },
+      { "id": "repos_oauth_connect", "stages": ["a2", "a3", "a4", "r"], "match": "direct" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/remote/auth/RemoteAuthService.java",
+      "src/main/java/com/example/editor/remote/auth/RemoteOAuthHttpClient.java",
+      "src/main/java/com/example/editor/remote/auth/EncryptedFileRemoteCredentialVault.java",
+      "src/main/java/com/example/editor/remote/auth/provider/GitHubOAuthProvider.java",
+      "src/main/java/com/example/editor/remote/auth/RemotePkce.java",
+      "src/main/java/com/example/editor/remote/auth/RemoteAuthFlowStore.java",
+      "src/main/java/com/example/editor/remote/auth/RemoteOAuthProviderErrorMapper.java"
+    ],
+    "pre": {
+      "es": "Puerto local libre en 127.0.0.1 para el proveedor simulado; sin red externa ni cuentas reales.",
+      "en": "A free local port on 127.0.0.1 for the simulated provider; no external network or real accounts."
+    },
+    "setup": {
+      "es": "Servidor HTTP en 127.0.0.1 que reparte códigos, comprueba el reto PKCE por su cuenta, responde al flujo de dispositivo y a la consulta de cuenta; bóveda cifrada en @TempDir; el paso del intervalo de sondeo se reproduce adelantando la hora del siguiente sondeo.",
+      "en": "HTTP server on 127.0.0.1 that issues codes, checks the PKCE challenge by itself, answers the device flow and the account lookup; encrypted vault in @TempDir; the passing of the polling interval is reproduced by moving the next poll time forward."
+    },
+    "executes": {
+      "es": "RemoteAuthService.start/complete/poll/credential con GitHubOAuthProvider, RemoteOAuthHttpClient, RemoteAuthFlowStore, RemoteAuthOutcomeStore y EncryptedFileRemoteCredentialVault reales contra el servidor local.",
+      "en": "RemoteAuthService.start/complete/poll/credential with real GitHubOAuthProvider, RemoteOAuthHttpClient, RemoteAuthFlowStore, RemoteAuthOutcomeStore and EncryptedFileRemoteCredentialVault against the local server."
+    },
+    "asserts": {
+      "es": "URL de autorización con estado, reto S256 y callback; el verificador recibido por el servidor produce ese reto; datos de cuenta y caducidad; fichero .cred sin secretos en claro y releído por una bóveda nueva; RemoteAuthException FLOW_EXPIRED, TOKEN_EXCHANGE_FAILED y CONNECTION_NOT_FOUND; intervalo de sondeo respetado.",
+      "en": "Authorization URL with state, S256 challenge and callback; the verifier received by the server produces that challenge; account data and expiry; .cred file without clear secrets and reread by a new vault; RemoteAuthException FLOW_EXPIRED, TOKEN_EXCHANGE_FAILED and CONNECTION_NOT_FOUND; polling interval respected."
+    },
+    "behavior": {
+      "es": "El servidor canjea el código con el verificador PKCE, guarda la credencial cifrada y solo devuelve al navegador una confirmación sin secretos; un estado reutilizado, un código rechazado o una cancelación no dejan credencial; y en el flujo de dispositivo el sondeo respeta el intervalo, pasa de pendiente a autorizado y termina con error si se deniega o caduca.",
+      "en": "The server exchanges the code with the PKCE verifier, stores the credential encrypted and only returns to the browser a confirmation without secrets; a reused state, a rejected code or a cancellation leave no credential; and in the device flow polling respects the interval, moves from pending to authorized and ends with an error if denied or expired."
+    },
+    "rule": {
+      "es": "Un estado de autorización solo se usa una vez; la credencial nunca vuelve al navegador ni se guarda en claro; el proveedor solo recibe el verificador que corresponde al reto enviado.",
+      "en": "An authorization state is used only once; the credential never returns to the browser nor is stored in clear; the provider only receives the verifier matching the challenge sent."
+    },
+    "scenario": {
+      "es": "Inicio con código y reto, canje correcto y relectura tras reiniciar; estado reutilizado, estado desconocido, código rechazado con error 400 y cancelación del usuario; inicio por dispositivo con espera, pendiente, autorizado, denegado y caducado.",
+      "en": "Start with code and challenge, successful exchange and reread after restart; reused state, unknown state, code rejected with a 400 error and user cancellation; device start with waiting, pending, authorized, denied and expired."
+    },
+    "result": {
+      "es": "El proveedor simulado valida el verificador y recibe un único canje; la bóveda guarda la credencial cifrada y una instancia nueva la lee; los fallos no dejan fichero de credencial; el sondeo no consulta al proveedor antes de tiempo y el resultado final se repite sin nuevas consultas.",
+      "en": "The simulated provider validates the verifier and receives a single exchange; the vault stores the credential encrypted and a new instance reads it; failures leave no credential file; polling does not query the provider early and the final result is repeated without new queries."
+    },
+    "expected": {
+      "es": "Peticiones recibidas, ficheros en disco, tipos de error y cuenta de consultas coinciden con los literales esperados en los cuatro casos.",
+      "en": "Requests received, files on disk, error kinds and query counts match the expected literals in the four cases."
+    },
+    "guarantee": {
+      "es": "Evidencia de que el flujo de conexión de cuentas funciona de extremo a extremo con un proveedor que sigue el protocolo, con la credencial protegida y los estados de un solo uso.",
+      "en": "Evidence that the account connection flow works end to end with a provider following the protocol, with the credential protected and states single-use."
+    },
+    "limits": {
+      "es": "El proveedor de identidad es un servidor local que imita la API de GitHub según su descripción: no prueba que el real acepte estas peticiones, ni la renovación de credenciales, ni otros proveedores, ni la ventana del navegador; la hora de sondeo se adelanta en el almacén de estados en lugar de esperar.",
+      "en": "The identity provider is a local server imitating the GitHub API from its description: it does not prove the real one accepts these requests, nor credential renewal, other providers, or the browser window; the poll time is moved forward in the state store instead of waiting."
+    },
+    "strengthWhy": {
+      "es": "Todo es real salvo el proveedor de identidad, simulado, por lo que no alcanza el nivel máximo.",
+      "en": "Everything is real except the identity provider, which is simulated, so it does not reach the top level."
+    },
+    "cases": [
+      {
+        "n": "theAuthorizationCodeIsExchangedOnTheServerAndTheCredentialIsStoredEncrypted",
+        "scenario": { "es": "Iniciar, canjear el código y releer tras reiniciar.", "en": "Start, exchange the code and reread after restart." },
+        "result": { "es": "Credencial cifrada, cuenta correcta y verificador coherente con el reto.", "en": "Encrypted credential, correct account and verifier consistent with the challenge." }
+      },
+      {
+        "n": "aReusedStateAProviderErrorOrAnIdentityProviderRejectionLeaveNoCredential",
+        "scenario": { "es": "Estado reutilizado o desconocido, código rechazado y cancelación.", "en": "Reused or unknown state, rejected code and cancellation." },
+        "result": { "es": "Error tipado y ninguna credencial guardada.", "en": "Typed error and no credential stored." }
+      },
+      {
+        "n": "theDeviceFlowRespectsThePollingIntervalAndMovesFromPendingToAuthorized",
+        "scenario": { "es": "Sondeo antes y después del intervalo, pendiente y autorizado.", "en": "Polling before and after the interval, pending and authorized." },
+        "result": { "es": "El proveedor solo recibe sondeos a tiempo y la credencial se guarda al autorizar.", "en": "The provider only receives timely polls and the credential is stored on authorization." }
+      },
+      {
+        "n": "aDeniedOrExpiredDeviceCodeEndsWithAnErrorAndStoresNothing",
+        "scenario": { "es": "Dispositivo denegado y caducado.", "en": "Device denied and expired." },
+        "result": { "es": "Error terminal repetible y ningún fichero de credencial.", "en": "Repeatable terminal error and no credential file." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.remote.auth.RemoteAuthenticationSecurityTests",
+      "java:com.example.editor.remote.auth.provider.MultiProviderOAuthProviderTests"
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/remote/auth/RemoteOAuthLoopbackExchangeIntegrationTests.java", "line": 110 },
+      { "path": "src/test/java/com/example/editor/remote/auth/RemoteOAuthLoopbackExchangeIntegrationTests.java", "line": 117 },
+      { "path": "src/test/java/com/example/editor/remote/auth/RemoteOAuthLoopbackExchangeIntegrationTests.java", "line": 145 },
+      { "path": "src/test/java/com/example/editor/remote/auth/RemoteOAuthLoopbackExchangeIntegrationTests.java", "line": 176 },
+      { "path": "src/test/java/com/example/editor/remote/auth/RemoteOAuthLoopbackExchangeIntegrationTests.java", "line": 199 },
+      { "path": "src/test/java/com/example/editor/remote/auth/RemoteOAuthLoopbackExchangeIntegrationTests.java", "line": 226 },
+      { "path": "src/test/java/com/example/editor/remote/auth/RemoteOAuthLoopbackExchangeIntegrationTests.java", "line": 245 }
+    ]
+  }
+]

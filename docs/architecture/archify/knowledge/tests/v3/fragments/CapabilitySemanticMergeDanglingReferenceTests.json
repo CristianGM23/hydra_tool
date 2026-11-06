@@ -1,0 +1,106 @@
+[
+  {
+    "id": "java:com.example.editor.portability.merge.CapabilitySemanticMergeDanglingReferenceTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Fusión de capas: las referencias colgantes bloquean la fusión",
+      "en": "Layer merge: dangling references block the merge"
+    },
+    "type": "BEHAVIOR",
+    "layer": "platform",
+    "layers2": [],
+    "caps": [
+      "portability"
+    ],
+    "procs": [],
+    "prod": [
+      "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeService.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "Servicio de fusión real sobre paquetes en memoria; la transacción de capas no se usa en la vista previa.",
+      "en": "Real merge service over in-memory packages; the layer transaction is not used in preview."
+    },
+    "executes": {
+      "es": "preview de la fusión con documentos JSON literales que referencian quickFixId, validationId y actionId.",
+      "en": "Merge preview with literal JSON documents referencing quickFixId, validationId and actionId."
+    },
+    "asserts": {
+      "es": "Una referencia a una corrección, validación o acción inexistente deja la fusión no aplicable y figura como dependencia sin resolver; la misma referencia con destino definido se resuelve.",
+      "en": "A reference to a missing fix, validation or action makes the merge not applicable and shows as an unresolved dependency; the same reference with a defined target resolves."
+    },
+    "behavior": {
+      "es": "Una referencia a un elemento que no existe se detecta aunque el campo que la contiene sea el de otra regla o acción.",
+      "en": "A reference to an element that does not exist is detected even when the field holding it belongs to another rule or action."
+    },
+    "rule": {
+      "es": "Una referencia solo se resuelve contra elementos realmente definidos, nunca contra sí misma.",
+      "en": "A reference only resolves against truly defined elements, never against itself."
+    },
+    "scenario": {
+      "es": "Regla con corrección inexistente, enlace con validación y acción inexistentes, y regla con corrección definida.",
+      "en": "Rule with a missing fix, binding with missing validation and action, and a rule with a defined fix."
+    },
+    "result": {
+      "es": "Las dos primeras bloquean la fusión señalando la referencia; la tercera es aplicable.",
+      "en": "The first two block the merge naming the reference; the third is applicable."
+    },
+    "expected": {
+      "es": "Las referencias sin resolver coinciden con los literales del JSON.",
+      "en": "The unresolved references match the JSON literals."
+    },
+    "guarantee": {
+      "es": "La vista previa de fusión no oculta referencias colgantes de estos campos.",
+      "en": "The merge preview does not hide dangling references of these fields."
+    },
+    "limits": {
+      "es": "Solo la vista previa con un documento; un objeto sin identificador propio sigue contando como definición de su regla, operación, evento, nodo, mapeo o enlace.",
+      "en": "Preview with one document only; an object without its own id still counts as defining its rule, operation, event, node, mapping or binding."
+    },
+    "strengthWhy": {
+      "es": "Servicio real y oráculo literal, pero ámbito acotado a un documento y a la vista previa.",
+      "en": "Real service and literal oracle, but scope limited to one document and to the preview."
+    },
+    "cases": [
+      {
+        "n": "aDanglingQuickFixReferenceBlocksTheMerge",
+        "scenario": {
+          "es": "Corrección inexistente.",
+          "en": "Missing fix."
+        },
+        "result": {
+          "es": "No aplicable.",
+          "en": "Not applicable."
+        }
+      },
+      {
+        "n": "theSameReferenceIsResolvedWhenItsTargetIsDefinedByIdAndTheMergeStaysApplicable",
+        "scenario": {
+          "es": "Control positivo.",
+          "en": "Positive control."
+        },
+        "result": {
+          "es": "Aplicable.",
+          "en": "Applicable."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDanglingReferenceTests.java",
+        "line": 34
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDanglingReferenceTests.java",
+        "line": 51
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/merge/CapabilitySemanticMergeDanglingReferenceTests.java",
+        "line": 63
+      }
+    ]
+  }
+]

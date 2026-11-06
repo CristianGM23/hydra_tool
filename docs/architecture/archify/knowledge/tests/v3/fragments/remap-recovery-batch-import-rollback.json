@@ -1,0 +1,134 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalProjectImportRollbackTests",
+    "name": {
+      "es": "Limpieza dirigida y documentos guardados reales en la importacion de un proyecto externo",
+      "en": "Real directed cleanup and saved documents in an external project import"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "recovery",
+      "project"
+    ],
+    "procs": [
+      {
+        "id": "recovery_persist_rollback",
+        "stages": [
+          "a3",
+          "a2"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_recover_external_project",
+        "stages": [
+          "rb",
+          "d2"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+      "src/main/java/com/example/editor/project/storage/ProjectDeletionService.java",
+      "src/main/java/com/example/editor/project/ProjectApplicationService.java",
+      "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectImportResult.java"
+    ],
+    "pre": {
+      "es": "Directorio de trabajo temporal real; en el caso de fallo, con un subdirectorio hermano preexistente ajeno a la importacion.",
+      "en": "Real temporary working directory; in the failure case, with a pre-existing sibling subdirectory unrelated to the import."
+    },
+    "setup": {
+      "es": "ExternalProjectImportService real con ExternalProjectRecoveryService, ExternalProjectArchiveWalker, ProjectApplicationService (sobre LocalDirectoryProjectStorage real) y ProjectDeletionService reales; el materializador semantico se construye real pero con sus 8 colaboradores no usados en null porque ningun escenario ejercitado los necesita.",
+      "en": "Real ExternalProjectImportService with real ExternalProjectRecoveryService, ExternalProjectArchiveWalker, ProjectApplicationService (over a real LocalDirectoryProjectStorage) and ProjectDeletionService; the semantic materializer is real but built with its 8 unused collaborators as null because neither exercised scenario needs them."
+    },
+    "executes": {
+      "es": "importProject(...) dos veces: un ZIP real cuyo unico fichero supera el presupuesto de subida produce un fallo real a mitad de importacion; un ZIP real pequeno sin ficheros semanticos completa la importacion con exito.",
+      "en": "importProject(...) twice: a real ZIP whose only file exceeds the upload budget produces a real mid-import failure; a small real ZIP with no semantic files completes the import successfully."
+    },
+    "asserts": {
+      "es": "Fallo: excepcion de tamano excesivo; directorio recien creado ausente, hermano preexistente intacto -- exactamente la limpieza dirigida (deshacer solo lo creado en esa ejecucion, nunca un snapshot completo). Exito: sesion activa con documentos reales en disco.",
+      "en": "Failure: oversized-file exception; newly created directory absent, pre-existing sibling intact -- exactly the targeted cleanup (undo only what that run created, never a full snapshot). Success: active session with real documents on disk."
+    },
+    "behavior": {
+      "es": "Si una importacion de proyecto externo falla a mitad de camino, HYDRA deshace solo lo que esa ejecucion habia creado, sin tocar nada que existiera antes.",
+      "en": "If an external project import fails partway through, HYDRA undoes only what that run had created, without touching anything that existed before."
+    },
+    "rule": {
+      "es": "Un fallo despues de crear el proyecto dispara el borrado del proyecto recien creado, identificado por lo que esa ejecucion creo, nunca un borrado mas amplio ni la restauracion de una copia completa.",
+      "en": "A failure after the project is created triggers deletion of the just-created project, identified by what that run created, never a broader deletion nor restoring a full snapshot."
+    },
+    "scenario": {
+      "es": "ZIP con un fichero que supera el limite de subida junto a un directorio hermano preexistente; ZIP pequeno sin ficheros semanticos.",
+      "en": "A ZIP with a file exceeding the upload limit alongside a pre-existing sibling directory; a small ZIP with no semantic files."
+    },
+    "result": {
+      "es": "En el fallo, solo el proyecto recien creado desaparece y el hermano sobrevive intacto; en el exito, sesion activa con documentos reales guardados.",
+      "en": "On failure, only the just-created project disappears and the sibling survives intact; on success, an active session with real documents saved."
+    },
+    "expected": {
+      "es": "Las aserciones sobre la excepcion, el contenido real del directorio y los ficheros guardados coinciden con lo esperado en ambos casos.",
+      "en": "Assertions on the exception, the real directory contents, and the saved files match expectations in both cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que deshacer una recuperacion fallida es una limpieza dirigida y no destructiva de nada anterior, exactamente el mecanismo de rollback descrito para la recuperacion de un proyecto externo.",
+      "en": "Real evidence that undoing a failed recovery is a targeted cleanup, non-destructive of anything prior, exactly the rollback mechanism described for recovering an external project."
+    },
+    "limits": {
+      "es": "No cubre la restauracion de una sesion previa activa; no cubre la confirmacion de deshacer que ve el usuario; el caso de exito no ejercita materializacion semantica real.",
+      "en": "Does not cover restoring a previously active session; does not cover the user-facing undo confirmation; the success case does not exercise real semantic materialization."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Integracion real de extremo a extremo (traits.mocks=false), sin mocks, con un fallo real y aserciones de sistema de ficheros independientes; el mismo mecanismo de limpieza dirigida ya demostrado para recovery_persist_rollback.a3/a2 es exactamente el nodo 'rb' (deshacer lo creado) de x_recover_external_project, visto desde la perspectiva del proceso cruzado.",
+      "en": "Real end-to-end integration (traits.mocks=false), no mocks, with a real failure and independent file-system assertions; the same targeted-cleanup mechanism already demonstrated for recovery_persist_rollback.a3/a2 is exactly x_recover_external_project's 'rb' node (undo what was created), viewed from the cross-process perspective."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "aFailedUploadMidImportDeletesOnlyTheJustCreatedProjectAndLeavesSiblingsUntouched",
+        "scenario": {
+          "es": "Fichero que supera el presupuesto de subida",
+          "en": "File exceeding the upload budget"
+        },
+        "result": {
+          "es": "Solo el proyecto recien creado se borra",
+          "en": "Only the just-created project is deleted"
+        }
+      },
+      {
+        "n": "aSuccessfulImportPersistsRealDocumentsOnDiskIdentifiedByAnActiveSession",
+        "scenario": {
+          "es": "Importacion pequena sin ficheros semanticos",
+          "en": "Small import with no semantic files"
+        },
+        "result": {
+          "es": "Sesion activa con documentos reales en disco",
+          "en": "Active session with real documents on disk"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.project.recovery.ExternalProjectRecoveryServiceTests",
+      "java:com.example.editor.project.recovery.ExternalProjectRecoveryConflictReconciliationTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectImportRollbackTests.java",
+        "line": 46
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectImportRollbackTests.java",
+        "line": 101
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectImportRollbackTests.java",
+        "line": 90
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

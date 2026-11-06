@@ -8,16 +8,19 @@ import org.springframework.stereotype.Component;
 /** Safe server-owned catalog; the browser never supplies executable command lines. */
 @Component
 public class GeneratedProjectRuntimeProfileCatalog {
+    /** The standalone profile only uses the JDK launchers already allowed by the process policy (no shell wrappers). */
+    private static final List<String> STANDALONE_BUILD = List.of("javac", "--release", "21", "-d", "backend/out", "backend/src/HydraStandaloneServer.java");
+    private static final List<String> STANDALONE_CHECK = List.of("java", "-cp", "backend/out", "HydraStandaloneServer", "--check");
+    private static final List<String> STANDALONE_LAUNCH = List.of("java", "-cp", "backend/out", "HydraStandaloneServer");
     private final List<GeneratedProjectRuntimeProfile> profiles = List.of(
             profile("standalone-web", "Standalone web editor", "HYDRA",
                     stage(GeneratedProjectStage.GENERATE, "Build the dependency-free Java backend",
-                            List.of("cmd", "/c", "build.cmd"), List.of("sh", "./build.sh"), 180, false),
+                            STANDALONE_BUILD, STANDALONE_BUILD, 180, false),
                     stage(GeneratedProjectStage.VALIDATE, "Verify the generated descriptor and frontend",
-                            List.of("cmd", "/c", "if exist standalone-editor.json (exit /b 0) else (exit /b 1)"),
-                            List.of("sh", "-c", "test -f standalone-editor.json && test -f frontend/index.html"), 30, false),
+                            STANDALONE_CHECK, STANDALONE_CHECK, 60, false),
                     stage(GeneratedProjectStage.OPEN, "Resolve the generated project directory", List.of(), List.of(), 5, false),
                     stage(GeneratedProjectStage.LAUNCH, "Launch the local standalone editor",
-                            List.of("cmd", "/c", "run.cmd"), List.of("sh", "./run.sh"), 30, true)),
+                            STANDALONE_LAUNCH, STANDALONE_LAUNCH, 30, true)),
             profile("langium", "Langium workspace", "LANGIUM",
                     stage(GeneratedProjectStage.GENERATE, "Generate Langium AST and services",
                             List.of("npm.cmd", "run", "langium:generate"), List.of("npm", "run", "langium:generate"), 300, false),

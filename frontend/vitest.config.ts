@@ -27,6 +27,8 @@ export default mergeConfig(viteConfig, defineConfig({
         // platforms keep Vitest's process isolation unless HYDRA_TEST_BATCH_POOL overrides it.
         pool,
         isolate: true,
+        // Vitest 5 clears mock history before each test by default; HYDRA keeps the Vitest 4 semantics its suites were written against.
+        clearMocks: false,
         maxWorkers,
         fileParallelism,
         exclude: [...configDefaults.exclude, 'e2e/**']

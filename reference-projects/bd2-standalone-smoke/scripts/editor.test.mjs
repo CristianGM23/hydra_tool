@@ -56,3 +56,66 @@ test('emits challenge-bound semantic evidence for the generated editor', () => {
     writeFileSync(path, JSON.stringify(evidence, null, 2) + '\n');
   }
 });
+
+// The generated reference UI genuinely calls Rust-compatible IPC operations.
+// A Node fake of the IPC boundary exercises create, optimistic update, conflict
+// and reopen; the Windows/Linux/macOS installed GUI is still a separate gate.
+test('generated desktop UI persists and reopens a model across fresh sessions', async () => {
+  const previousWindow = globalThis.window;
+  const previousDocument = globalThis.document;
+  const stored = new Map();
+  const calls = [];
+  const invoke = async (command, args) => {
+    calls.push({ command, args });
+    const current = stored.get(args.id);
+    if (command === 'hydra_read_model') {
+      if (!current) throw new Error('Model not found');
+      return structuredClone(current);
+    }
+    if (command === 'hydra_write_model') {
+      if (current && args.ifMatch !== current.etag) throw new Error('Concurrent model change');
+      if (!current && !args.ifNoneMatch) throw new Error('Create requires precondition');
+      const value = JSON.parse(args.body);
+      const etag = createHash('sha256').update(args.body).digest('hex');
+      const result = { value, etag };
+      stored.set(args.id, structuredClone(result));
+      return result;
+    }
+    throw new Error('Unexpected native command ' + command);
+  };
+  function mockWindow() {
+    const nodes = Object.fromEntries(['name', 'save', 'reload', 'status'].map(id => [id, {
+      value: id === 'name' ? 'Example' : '', textContent: '', disabled: false, listeners: {},
+      addEventListener(name, callback) { this.listeners[name] = callback; },
+    }]));
+    globalThis.window = { __TAURI__: { core: { invoke } } };
+    globalThis.document = { getElementById: id => nodes[id] };
+    return nodes;
+  }
+  try {
+    const nodes = mockWindow();
+    await import('../src/app.js?tauri-session=1');
+    await new Promise(resolve => setImmediate(resolve));
+    nodes.name.value = 'Persisted from Tauri';
+    await nodes.save.listeners.click();
+    assert.equal(stored.get('example').value.name, 'Persisted from Tauri');
+    assert.equal(calls.at(-1).args.ifNoneMatch, true);
+    const firstEtag = stored.get('example').etag;
+    nodes.name.value = 'Updated from Tauri';
+    await nodes.save.listeners.click();
+    assert.equal(calls.at(-1).args.ifMatch, firstEtag);
+    assert.equal(stored.get('example').value.name, 'Updated from Tauri');
+    const restarted = mockWindow();
+    await import('../src/app.js?tauri-session=2');
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(restarted.name.value, 'Updated from Tauri');
+    restarted.name.value = 'Conflict should not persist';
+    stored.set('example', { value: { id: 'example', name: 'External revision' }, etag: 'remote-revision' });
+    await restarted.save.listeners.click();
+    assert.match(restarted.status.textContent, /Guardado rechazado/);
+    assert.equal(stored.get('example').value.name, 'External revision');
+  } finally {
+    globalThis.window = previousWindow;
+    globalThis.document = previousDocument;
+  }
+});

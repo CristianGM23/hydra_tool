@@ -19,7 +19,7 @@ export interface GamificationBindingModel { schemaVersion: '1.0'; id: string; me
 export interface GamificationDiagnostic { severity: 'ERROR' | 'WARNING' | 'INFO'; code: string; elementId: string; path: string; message: string; }
 export interface GamificationCheckReport { definitionModelId: string; bindingModelId: string; diagnostics: GamificationDiagnostic[]; valid?: boolean; }
 export interface GamificationLoadResult { definitions: GamificationDefinitionModel; definitionEtag: string; bindings: GamificationBindingModel; bindingEtag: string; checkReport: GamificationCheckReport; }
-export interface GamificationActorState { actorId: string; points: Record<string, number>; levelIds: Record<string, string>; achievementIds: string[]; challengeProgress: Record<string, number>; rewardIds: string[]; }
+export interface GamificationActorState { actorId: string; points: Record<string, number>; levels?: Record<string, string>; achievements?: string[]; challengeProgress?: Record<string, number>; rewards?: string[]; }
 export interface GamificationRuntimeState { schemaVersion: '1.0'; id: string; metamodelId: string; updatedAt: string; actors: Record<string, GamificationActorState>; processedAwardKeys: string[]; }
 export interface GamificationLedgerEntry { id: string; actorId: string; sourceEventId: string; ruleId: string; pointsTypeId: string; pointsDelta: number; achievementId: string; challengeId: string; rewardId: string; status: 'ACTIVE' | 'REJECTED' | 'COMPENSATED'; compensationOf: string; occurredAt: string; correlationId: string; metadata: Record<string, string>; }
 export interface GamificationLedger { schemaVersion: '1.0'; id: string; metamodelId: string; updatedAt: string; entries: GamificationLedgerEntry[]; }

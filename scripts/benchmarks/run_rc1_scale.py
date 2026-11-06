@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 p=argparse.ArgumentParser(); p.add_argument('--full',action='store_true'); args=p.parse_args()
 policy=json.loads((ROOT/'config/rc1-scale-budgets.json').read_text(encoding='utf-8'))
-cmd=['mvnw.cmd' if os.name=='nt' else './mvnw','-B','-Dtest=Rc1TransformationScaleQualificationTests']
+cmd=[str(ROOT/'mvnw.cmd') if os.name=='nt' else './mvnw','-B','-Dtest=Rc1TransformationScaleQualificationTests']
 if args.full: cmd.append('-Dhydra.rc1.scale.full=true')
 cmd.append('test')
 started=time.time(); cp=subprocess.run(cmd,cwd=ROOT,text=True,capture_output=True); out=cp.stdout+'\n'+cp.stderr

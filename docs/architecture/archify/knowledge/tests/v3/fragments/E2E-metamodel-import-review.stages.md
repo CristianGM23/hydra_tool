@@ -1,0 +1,3 @@
+- metamodel_author_import.rv: la revisión muestra la fidelidad STRUCTURAL y coincide con la declarada por el backend para el formato detectado (líneas 47-50).
+- metamodel_author_import.rv (rechazo): proponer y abrir en el diseñador no guarda nada (líneas 51 y 57 con expectNotSaved).
+- metamodel_author_import.rv (completar a mano): el atributo 'registryCode' escrito en el panel llega al .metamodel.json junto con lo propuesto (líneas 74-80).

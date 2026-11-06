@@ -1,0 +1,6 @@
+- events_author_flow.a1: flujo nuevo con id, nombre y disparador escritos por el backend (l.91-93) tras añadirlo con «+ Flow».
+- events_author_flow.a2: paso por defecto de evento (l.40, l.97) y tipos elegidos en la paleta (l.95, l.100, l.107).
+- events_author_flow.a3: reintento, plazo y compensable exactos en el fichero (l.101-105).
+- events_author_flow.a5: variable (l.109-112) y compensación origen/destino (l.114-116) en el fichero.
+- Rechazo previo: grafo sin conectar → servidor rechaza y no hay fichero (l.69-71); guardado con 4 transiciones (l.118).
+- Guardado y recarga: tras guardar la pantalla confirma «Event flows and diagram saved» (helper saveFlows) y, al recargar con openFlows, dibuja 5 pasos y 4 conexiones sin error (final del test). El defecto anterior (el diseñador no normalizaba las cadenas vacías que omite el servidor) está corregido en `eventFlowNormalization.ts`, por eso el registro es STRONG.

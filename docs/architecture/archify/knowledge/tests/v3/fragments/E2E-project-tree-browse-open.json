@@ -1,0 +1,53 @@
+[
+  {
+    "id": "pw:e2e/real/project/tree-browse-open.spec.ts",
+    "name": { "es": "Árbol del proyecto: desplegar, abrir con doble clic y aviso de cambio externo", "en": "Project tree: expand, open with a double click and external-change notice" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["project"],
+    "procs": [
+      { "id": "project_author_tree", "stages": ["a", "b", "c", "f"], "match": "direct" }
+    ],
+    "pre": null,
+    "executes": { "es": "Navegador real sobre la aplicación compilada y el backend real: despliega y pliega grupos del árbol de un proyecto con varios tipos de elemento, abre un fichero con doble clic, suma con Ctrl+clic y modifica un fichero desde fuera.", "en": "Real browser on the built application and the real backend: expands and collapses tree groups of a project with several kinds of element, opens a file with a double click, adds with Ctrl+click and changes a file from outside." },
+    "asserts": { "es": "Las filas y su tipo coinciden con el árbol que da el backend; el editor muestra el contenido real del disco; el doble clic en un grupo no abre nada; solo el fichero cambiado fuera se marca y Recargar trae el contenido nuevo.", "en": "Rows and their kind match the tree served by the backend; the editor shows the real disk content; double-clicking a group opens nothing; only the externally changed file is marked and Reload brings the new content." },
+    "behavior": { "es": "El usuario recorre el árbol del proyecto, abre un metamodelo en su editor y ve marcado el fichero que otra herramienta modificó fuera de HYDRA.", "en": "The user browses the project tree, opens a metamodel in its editor and sees marked the file that another tool changed outside HYDRA." },
+    "rule": { "es": "Doble clic abre solo ficheros; Ctrl+clic suma a la selección sin abrir; el aviso aparece solo en los ficheros que cambiaron.", "en": "Double click opens files only; Ctrl+click adds to the selection without opening; the notice appears only on files that changed." },
+    "scenario": { "es": "Proyecto con un metamodelo, un modelo y reglas de calidad; se despliegan grupos, se abre el metamodelo, se selecciona con Ctrl+clic y, en otra prueba, se reescribe el metamodelo en disco mientras está abierto.", "en": "A project with a metamodel, a model and quality rules; groups are expanded, the metamodel is opened, Ctrl+click selects, and in another test the metamodel is rewritten on disk while open." },
+    "result": { "es": "El editor muestra el texto exacto del disco y, tras el cambio externo, solo el metamodelo aparece marcado hasta que se recarga.", "en": "The editor shows the exact disk text and, after the external change, only the metamodel appears marked until it is reloaded." },
+    "expected": { "es": "Filas y contenido idénticos a lo que sirve el backend, sin pestañas al hacer doble clic en un grupo, y un único fichero marcado tras el cambio externo.", "en": "Rows and content identical to what the backend serves, no tabs when double-clicking a group, and a single file marked after the external change." },
+    "guarantee": { "es": "El árbol refleja el proyecto real, abre los ficheros con su contenido verdadero y avisa de los cambios hechos fuera de HYDRA.", "en": "The tree reflects the real project, opens files with their true content and warns about changes made outside HYDRA." },
+    "limits": { "es": "El efecto real de la selección múltiple se prueba con Eliminar (disco y árbol del backend) además de la exportación; no recorre todos los tipos de fichero ni los iconos exactos; el aviso se espera hasta 30 s por el sondeo periódico. Interfaz en inglés.", "en": "The real effect of multi-selection is tested with Delete (backend disk and tree) in addition to export; it does not walk through every file kind or exact icons; the notice is awaited up to 30 s because of periodic polling. English interface." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Acciones reales del usuario en navegador, backend real, contenido leído del disco y del servicio, y comprobaciones negativas (grupo, ficheros sin cambiar).", "en": "Real user actions in a browser, real backend, content read from disk and from the service, and negative checks (group, unchanged files)." },
+    "external": "none",
+    "cases": [
+      { "n": "desplegar y abrir", "scenario": { "es": "Despliega grupos, pliega uno, doble clic en un grupo y en el metamodelo.", "en": "Expands groups, collapses one, double-clicks a group and the metamodel." }, "result": { "es": "El grupo no abre nada; el metamodelo se abre con el contenido del disco.", "en": "The group opens nothing; the metamodel opens with the disk content." } },
+      { "n": "cambio externo", "scenario": { "es": "Reescribe el metamodelo en disco con el proyecto abierto.", "en": "Rewrites the metamodel on disk while the project is open." }, "result": { "es": "Solo ese fichero se marca; Recargar muestra el texto nuevo y quita el aviso.", "en": "Only that file is marked; Reload shows the new text and clears the notice." } }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 49 },
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 61 },
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 68 },
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 71 },
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 101 },
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 108 },
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 113 },
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 130 },
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 138 },
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 149 },
+      { "path": "frontend/e2e/real/project/tree-browse-open.spec.ts", "line": 160 }
+    ],
+    "prod": [
+      "frontend/src/project-explorer/ProjectTree.tsx",
+      "frontend/src/project-explorer/ProjectExplorerWorkspace.tsx",
+      "frontend/src/project-explorer/ProjectFileEditor.tsx",
+      "src/main/java/com/example/editor/project/web/ProjectController.java",
+      "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java",
+      "src/main/java/com/example/editor/project/storage/ProjectIndexService.java",
+      "src/main/java/com/example/editor/project/storage/ProjectChangeTracker.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

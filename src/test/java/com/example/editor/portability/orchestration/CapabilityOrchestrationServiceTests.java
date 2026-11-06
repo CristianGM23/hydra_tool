@@ -54,7 +54,9 @@ class CapabilityOrchestrationServiceTests {
     }
 
     private CapabilityOrchestrationSource source(String id, int precedence, List<String> after, HydraCapabilityPackage pkg) {
-        return new CapabilityOrchestrationSource(id, precedence, after, pkg, CapabilitySemanticMergeDecision.MERGE, Map.of());
+        // La capa de validaciones difiere en cada paso: la fusion se decide de forma explicita.
+        return new CapabilityOrchestrationSource(id, precedence, after, pkg, null,
+                Map.of("validations.json#document", CapabilitySemanticMergeDecision.MERGE));
     }
 
     private HydraCapabilityPackage capabilityPackage(JsonNode validations) {

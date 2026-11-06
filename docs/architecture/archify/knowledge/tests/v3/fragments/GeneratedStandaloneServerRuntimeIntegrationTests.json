@@ -1,0 +1,72 @@
+[
+  {
+    "id": "java:com.example.editor.standalone.GeneratedStandaloneServerRuntimeIntegrationTests",
+    "name": {"es": "Editor autónomo generado: compilar, arrancar y usar", "en": "Generated standalone editor: build, start and use"},
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": ["publication"],
+    "procs": [
+      {"id": "x_language_to_published_editor", "stages": ["gen"], "match": "direct"},
+      {"id": "x_generate_certify_distribute", "stages": ["gen"], "match": "direct"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/standalone/StandaloneEditorGeneratorService.java",
+      "src/main/resources/standalone-template/backend/src/HydraStandaloneServer.java.template"
+    ],
+    "pre": {"es": "Un JDK local con compilador y el binario java; sin red, Docker ni Node. Puerto libre del bucle local.", "en": "A local JDK with compiler and the java binary; no network, Docker or Node. A free loopback port."},
+    "executes": {
+      "es": "Generador real del editor autónomo; el archivo se extrae a disco, el servidor Java generado se compila con el compilador del JDK y se lanza como proceso en un puerto libre del bucle local con una carpeta de datos temporal; un cliente HTTP real lo usa.",
+      "en": "Real standalone editor generator; the archive is extracted to disk, the generated Java server is compiled with the JDK compiler and launched as a process on a free loopback port with a temp data folder; a real HTTP client uses it."
+    },
+    "asserts": {
+      "es": "El servidor compila y anuncia que escucha; salud, página de entrada, script y configuración coinciden byte a byte con los ficheros generados; guardar, releer, actualizar y borrar modelos con ETag exacto; ETag obsoleto, escritura sin condición, identificador distinto, tipo erróneo y modelo demasiado grande se rechazan sin tocar el disco.",
+      "en": "The server compiles and announces it is listening; health, entry page, script and configuration match the generated files byte for byte; saving, rereading, updating and deleting models with the exact ETag; stale ETag, unconditional write, different identifier, wrong type and oversized model are rejected without touching the disk."
+    },
+    "behavior": {
+      "es": "El editor autónomo que HYDRA genera se puede compilar con solo el JDK, arrancar y usar de verdad: sirve el editor y su configuración y guarda modelos con control de concurrencia y límite de tamaño.",
+      "en": "The standalone editor HYDRA generates can be built with only the JDK, started and genuinely used: it serves the editor and its configuration and stores models with concurrency control and a size limit."
+    },
+    "rule": {
+      "es": "Crear exige no existir previamente, actualizar y borrar exigen la huella actual del modelo y ningún modelo supera el límite configurado al generar.",
+      "en": "Creating requires the model not to exist, updating and deleting require the model's current fingerprint and no model exceeds the limit configured at generation."
+    },
+    "scenario": {
+      "es": "Generar el editor, compilarlo, lanzarlo, pedir salud, entrada y configuración, guardar y modificar un modelo, provocar conflictos y borrados inválidos, y generar con un límite de 256 bytes para rechazar un modelo mayor.",
+      "en": "Generate the editor, build it, launch it, request health, entry page and configuration, save and modify a model, provoke conflicts and invalid deletes, and generate with a 256-byte limit to reject a larger model."
+    },
+    "result": {
+      "es": "Las respuestas HTTP y los ficheros de modelo en disco, comparados con valores esperados y huellas recalculadas, demuestran que el servidor generado funciona y protege los datos.",
+      "en": "The HTTP responses and the model files on disk, compared with expected values and recomputed fingerprints, show the generated server works and protects the data."
+    },
+    "expected": {
+      "es": "Todos los casos pasan y el proceso del servidor se detiene al terminar cada caso.",
+      "en": "All cases pass and the server process is stopped at the end of each case."
+    },
+    "guarantee": {
+      "es": "El editor autónomo generado es ejecutable sin dependencias externas y su persistencia no pierde ni pisa modelos por conflicto.",
+      "en": "The generated standalone editor runs without external dependencies and its persistence neither loses nor overwrites models on conflict."
+    },
+    "limits": {
+      "es": "No ejecuta los guiones de arranque, los destinos de contenedor (solo texto), el navegador ni el código del frontend; no prueba editores textuales ni el empaquetado de distribución. La petición con ruta escapada solo exige un error (>=400).",
+      "en": "It does not run the start scripts, the container targets (text only), the browser or the frontend code; it does not test textual editors or distribution packaging. The escaped-path request only requires an error (>=400)."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Generador, compilador del JDK, proceso Java y cliente HTTP reales, con oráculos de bytes y huellas en disco y rechazos con control positivo.",
+      "en": "Real generator, JDK compiler, Java process and HTTP client, with byte and fingerprint oracles on disk and rejections with positive control."
+    },
+    "external": "none",
+    "src": [
+      {"path": "src/test/java/com/example/editor/standalone/GeneratedStandaloneServerRuntimeIntegrationTests.java", "line": 95},
+      {"path": "src/test/java/com/example/editor/standalone/GeneratedStandaloneServerRuntimeIntegrationTests.java", "line": 122},
+      {"path": "src/test/java/com/example/editor/standalone/GeneratedStandaloneServerRuntimeIntegrationTests.java", "line": 181},
+      {"path": "src/test/java/com/example/editor/standalone/GeneratedStandaloneServerRuntimeIntegrationTests.java", "line": 192},
+      {"path": "src/test/java/com/example/editor/standalone/GeneratedStandaloneServerRuntimeIntegrationTests.java", "line": 210},
+      {"path": "src/test/java/com/example/editor/standalone/GeneratedStandaloneServerRuntimeIntegrationTests.java", "line": 222},
+      {"path": "src/test/java/com/example/editor/standalone/GeneratedStandaloneServerRuntimeIntegrationTests.java", "line": 225},
+      {"path": "src/test/java/com/example/editor/standalone/GeneratedStandaloneServerRuntimeIntegrationTests.java", "line": 240},
+      {"path": "src/test/java/com/example/editor/standalone/GeneratedStandaloneServerRuntimeIntegrationTests.java", "line": 251}
+    ],
+    "confidence": "ANALYZED"
+  }
+]

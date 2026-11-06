@@ -190,11 +190,11 @@ public class UpdateSiteImportApplicationService {
             throw new MetamodelDesignException(Reason.INVALID_REQUEST,
                     "Update-site analysis is not importable: " + (analysis == null ? "missing analysis" : String.join("; ", analysis.diagnostics())));
         }
-        byte[] content = serialize(analysis.metamodelPreview().metamodel());
-        MetamodelImportSaveResult saved = metamodelImportService.importAndSave(
-                analysis.metamodelPreview().metamodel().id() + ".metamodel.json", "application/json", content,
-                new MetamodelImportOptions("json", analysis.metamodelPreview().metamodel().id(), options.overwrite(),
-                        true, true, options.strict()));
+        // OBS-MM-IMPORT-PREVIEW-DUPLICATE-LAYOUT (T-UPD): the analysis already holds the neutral import of exactly this recovered metamodel (its
+        // key is the fingerprint of the uploaded content, the candidate and the options, so changed input is analysed again). Re-importing its
+        // JSON repeated parsing, normalisation and the whole diagram layout for the same result; the prepared preview is persisted instead,
+        // with the strict rule applied to its warnings and the source-file annotation the re-import wrote (ImportReprocessEquivalenceTests).
+        MetamodelImportSaveResult saved = metamodelImportService.importPrepared(asSaved(analysis.metamodelPreview()), options.overwrite(), options.strict());
         String packagePath = "";
         if(options.persistRecoveryPackage()) {
             UpdateSiteRecoveryCandidate candidate = analysis.candidates().stream()
@@ -244,6 +244,21 @@ public class UpdateSiteImportApplicationService {
         return metamodelImportService.preview(metamodel.id() + ".metamodel.json", "application/json", content,
                 new MetamodelImportOptions("json", options.targetId().isBlank() ? metamodel.id() : options.targetId(),
                         false, true, true, false));
+    }
+
+    /**
+     * Descripción: La vista previa tal como la guardaba la reimportación de su JSON: el único cambio es «import:sourceFile», que pasa a ser el
+     * fichero con el id final («<id>.metamodel.json») en lugar del id recuperado cuando targetId lo cambia. Entradas: preview. Salida: vista previa.
+     */
+    static MetamodelImportPreview asSaved(MetamodelImportPreview preview) {
+        MetaModel metamodel = preview.metamodel();
+        String expected = metamodel.id() + ".metamodel.json";
+        if(metamodel.annotations() == null || !metamodel.annotations().containsKey("import:sourceFile") || expected.equals(metamodel.annotations().get("import:sourceFile"))) return preview;
+        Map<String, String> annotations = new LinkedHashMap<>(metamodel.annotations());
+        annotations.put("import:sourceFile", expected);
+        MetaModel saved = new MetaModel(metamodel.schemaVersion(), metamodel.id(), metamodel.name(), metamodel.classes(), metamodel.enums(), metamodel.dataTypes(),
+                metamodel.relations(), annotations);
+        return new MetamodelImportPreview(preview.detectedFormat(), preview.supportLevel(), saved, preview.targets(), preview.diagram(), preview.warnings(), preview.statistics());
     }
 
     /** Descripción: Ejecuta la operación «serialize» correspondiente a la responsabilidad de UpdateSiteImportApplicationService. Entradas: metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private byte[] serialize(MetaModel metamodel) {

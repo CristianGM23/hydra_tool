@@ -1,0 +1,4 @@
+RemoteGitFetchPullPushLocalRemoteIntegrationTests (grupo B3)
+- repos_author_git.a (direct): afterPushingAndFetchingTheTreeShowsLocalAndRemoteBranchesWithRecentCommits (l.89-129): ramas locales y remotas con commits recientes (l.118-126), retraso 1 tras traer (l.105/118) y ids/padres contra git del remoto.
+- x_remote_repository_exchange.g1 y repos_author_git.b (indirect): pullMovesRealCommitsAndADivergentPushIsRejectedWithoutOverwritingTheRemote (l.132-157): se ejecutan fetch, pull y push; envio divergente rechazado con el remoto intacto (l.151) y sin operaciones de forzar/reiniciar (l.153). Elegir la operacion es interfaz.
+- x_remote_repository_exchange.d3 (indirect): withoutChangesAllIsFineAndWithDivergentHistoriesTheConflictIsShownAndNeverResolvedSilently (l.160-200): rama todo correcto, avance rechazado (l.178) y conflicto marcado (l.188) y cancelable (l.194); falta la rama de version distinta de transferencia de archivos.

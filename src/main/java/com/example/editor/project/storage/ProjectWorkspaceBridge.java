@@ -11,7 +11,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.example.editor.io.FileSystemBoundaries;
 import com.example.editor.project.ArtifactKind;
 import com.example.editor.project.LocalProjectProperties;
 import com.example.editor.project.ProjectDescriptor;
@@ -22,6 +24,7 @@ import com.example.editor.project.ProjectSyncRequest;
 import com.example.editor.project.ProjectSynchronizationPlan;
 import com.example.editor.project.ProjectSynchronizationResult;
 import com.example.editor.project.ProjectWorkspaceContribution;
+import com.example.editor.project.ProjectWorkspaceReloadListener;
 import com.example.editor.project.WorkspaceTransferDirection;
 import com.example.editor.project.WorkspaceTransferMode;
 
@@ -36,13 +39,20 @@ public class ProjectWorkspaceBridge {
     private final ProjectArtifactClassifier classifier;
     private final ProjectFileOperations files;
     private final LocalProjectProperties properties;
+    private final List<ProjectWorkspaceReloadListener> reloadListeners;
 
     /** Descripción: Inicializa el puente con el registro de contribuciones, clasificador, operaciones de ficheros y límites portables compartidos. Entradas: registry: contribuciones disponibles; classifier: clasificador de artefactos; files: operaciones seguras de fichero; properties: presupuestos configurables del proyecto. Salida: deja la instancia lista para sincronizar. */
     /** Descripción: Inicializa una instancia de ProjectWorkspaceBridge con sus dependencias y datos de entrada. Entradas: registry: dato de entrada necesario para la operación; classifier: dato de entrada necesario para la operación; files: archivo o contenido que debe procesarse; properties: configuración que gobierna el comportamiento. Salida: deja la instancia inicializada y lista para su uso. */ public ProjectWorkspaceBridge(ProjectWorkspaceContributionRegistry registry,ProjectArtifactClassifier classifier,ProjectFileOperations files,LocalProjectProperties properties) {
+        this(registry,classifier,files,properties,List.of());
+    }
+
+    /** Descripción: Inicializa el puente con los módulos que deben recargarse tras traer un proyecto al espacio de trabajo. Entradas: las dependencias del constructor anterior y reloadListeners: módulos con estado en memoria derivado de los repositorios. Salida: deja la instancia lista para sincronizar. */
+    @Autowired public ProjectWorkspaceBridge(ProjectWorkspaceContributionRegistry registry,ProjectArtifactClassifier classifier,ProjectFileOperations files,LocalProjectProperties properties,List<ProjectWorkspaceReloadListener> reloadListeners) {
         this.registry=registry;
         this.classifier=classifier;
         this.files=files;
         this.properties=properties;
+        this.reloadListeners=reloadListeners==null?List.of():List.copyOf(reloadListeners);
     }
 
     /** Descripción: Calcula una sincronización sin escribir, aplicando los mismos límites y controles de seguridad que la ejecución real. Entradas: projectRoot: raíz del proyecto; descriptor: descriptor portable; request: dirección y modo. Salida: devuelve el plan determinista de cambios. */
@@ -62,7 +72,14 @@ public class ProjectWorkspaceBridge {
         List<ProjectSyncFileChange> changes=request.direction()==WorkspaceTransferDirection.WORKSPACE_TO_PROJECT
                 ? workspaceToProject(projectRoot,descriptor,true,request.mode())
                 : projectToWorkspace(projectRoot,descriptor,true,request.mode());
-        return new ProjectSynchronizationResult(request.direction(),request.mode(),Instant.now(),changes,List.of());
+        List<String> warnings=new ArrayList<>();
+        if(request.direction()==WorkspaceTransferDirection.PROJECT_TO_WORKSPACE) {
+            for(ProjectWorkspaceReloadListener listener:reloadListeners) {
+                try { warnings.addAll(listener.reloadAfterProjectToWorkspace()); }
+                catch(RuntimeException exception) { warnings.add("Could not reload "+listener.getClass().getSimpleName()+" after the transfer: "+exception.getMessage()); }
+            }
+        }
+        return new ProjectSynchronizationResult(request.direction(),request.mode(),Instant.now(),changes,List.copyOf(warnings));
     }
 
     /** Descripción: Sincroniza repositorios configurados hacia el proyecto sin materializar previamente todos sus paths y respetando límites de cantidad, profundidad y bytes. Entradas: projectRoot: raíz destino; descriptor: layout; apply: indica si escribe; mode: estrategia de conflicto. Salida: devuelve cambios ordenados de forma determinista. */
@@ -85,7 +102,7 @@ public class ProjectWorkspaceBridge {
                 verifyDestination(normalizedProject,destination,"Synchronization destination escapes the project root");
                 verifyExistingPathChain(normalizedProject,destination);
                 String operation=operation(destination,mode);
-                if(!operation.equals("SKIP")&&apply) copyPortableRegularFile(file,destination,attrs.size());
+                if(!operation.equals("SKIP")&&apply) copyPortableRegularFile(file,normalizedProject,destination,attrs.size());
                 result.add(change(file,destination,operation,kind,attrs.size()));
             },"Could not scan workspace contribution "+contribution.id());
         }
@@ -112,7 +129,7 @@ public class ProjectWorkspaceBridge {
             verifyDestination(normalizedDestinationRoot,destination,"Workspace destination escapes its repository");
             verifyExistingPathChain(normalizedDestinationRoot,destination);
             String operation=operation(destination,mode);
-            if(!operation.equals("SKIP")&&apply) copyPortableRegularFile(file,destination,attrs.size());
+            if(!operation.equals("SKIP")&&apply) copyPortableRegularFile(file,normalizedDestinationRoot,destination,attrs.size());
             result.add(change(file,destination,operation,kind,attrs.size()));
         },"Could not scan the project");
         return immutableSorted(result);
@@ -121,16 +138,22 @@ public class ProjectWorkspaceBridge {
     /** Descripción: Recorre incrementalmente únicamente ficheros regulares reales sin seguir enlaces simbólicos. Entradas: root: raíz; consumer: operación por fichero; errorMessage: contexto del fallo. Salida: no devuelve valor. */
     /** Descripción: Ejecuta la operación «visitRegularFiles» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: root: ruta o ubicación utilizada por la operación; consumer: dato de entrada necesario para la operación; errorMessage: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void visitRegularFiles(Path root,FileConsumer consumer,String errorMessage) {
         try {
+            Path realRoot=FileSystemBoundaries.realRoot(root);
             Files.walkFileTree(root,new SimpleFileVisitor<>() {
-                /** Descripción: Rechaza directorios simbólicos antes de descender durante una sincronización de workspace. Entradas: directorio y atributos. Salida: devuelve la decisión de continuar el recorrido. */
-                /** Descripción: Ejecuta la operación «preVisitDirectory» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: dir: dato de entrada necesario para la operación; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) {
-                    if(attrs.isSymbolicLink()) throw invalid("Symbolic links are not allowed during project synchronization: "+dir);
+                /** Descripción: Rechaza directorios simbólicos, y los que resuelven fuera de la raíz (unión o punto de montaje de Windows, SEC-WIN-JUNCTION), antes de descender durante una sincronización de workspace. Entradas: directorio y atributos. Salida: devuelve la decisión de continuar el recorrido. */
+                @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) {
+                    if(attrs.isSymbolicLink()||FileSystemBoundaries.escapes(dir,realRoot)) throw invalid("Symbolic links and directory junctions are not allowed during project synchronization: "+dir);
                     return FileVisitResult.CONTINUE;
                 }
                 /** Descripción: Entrega únicamente ficheros regulares reales al consumidor de sincronización y rechaza enlaces simbólicos. Entradas: fichero y atributos. Salida: devuelve la decisión de continuar el recorrido. */
-                /** Descripción: Ejecuta la operación «visitFile» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: file: archivo o contenido que debe procesarse; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) {
+                /** Descripción: Ejecuta la operación «visitFile» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: file: archivo o contenido que debe procesarse; attrs: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ @Override public FileVisitResult visitFile(Path file,BasicFileAttributes attrs) throws IOException {
                     if(attrs.isSymbolicLink()) throw invalid("Symbolic links are not allowed during project synchronization: "+file);
-                    if(attrs.isRegularFile()) consumer.accept(file,attrs);
+                    // TOCTOU: the directory was checked when the walk entered it; if it has since been replaced by a junction, the name resolves outside.
+                    // A regular file is pinned first, so none of its directories can be swapped between this check and the copy done by the consumer
+                    try(java.io.Closeable pin=attrs.isRegularFile()?FileSystemBoundaries.pin(file):() -> {}) {
+                        if(FileSystemBoundaries.escapes(file,realRoot)) throw invalid("Symbolic links and directory junctions are not allowed during project synchronization: "+file);
+                        if(attrs.isRegularFile()) consumer.accept(file,attrs);
+                    }
                     return FileVisitResult.CONTINUE;
                 }
             });
@@ -139,11 +162,12 @@ public class ProjectWorkspaceBridge {
     }
 
     /** Descripción: Copia un fichero regular mediante publicación atómica y presupuesto por fichero, rechazando cambios concurrentes de tipo o tamaño. Entradas: source: fichero origen; destination: destino; expectedSize: tamaño observado. Salida: no devuelve valor. */
-    /** Descripción: Ejecuta la operación «copyPortableRegularFile» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: source: dato de entrada necesario para la operación; destination: dato de entrada necesario para la operación; expectedSize: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void copyPortableRegularFile(Path source,Path destination,long expectedSize) {
+    /** Descripción: Ejecuta la operación «copyPortableRegularFile» correspondiente a la responsabilidad de ProjectWorkspaceBridge. Entradas: source: dato de entrada necesario para la operación; root: raíz del destino, en la que el temporal queda fijado hasta publicarse (T-SEC-JUNCTION-AMPLIAR); destination: dato de entrada necesario para la operación; expectedSize: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void copyPortableRegularFile(Path source,Path root,Path destination,long expectedSize) {
         long maximum=Math.max(1L,Math.min(properties.getMaxUploadFileSizeBytes(),properties.getMaxArchiveSizeBytes()));
         if(expectedSize>maximum) throw tooLarge("Synchronization file exceeds the configured per-file limit: "+source);
         if(Files.isSymbolicLink(source)||!Files.isRegularFile(source,LinkOption.NOFOLLOW_LINKS)) throw invalid("Synchronization source changed while being copied: "+source);
-        try { files.copyRegularBounded(source,destination,maximum); }
+        // TOCTOU: verifyExistingPathChain checked the destination by name; a directory swapped for a junction since then is caught with the temporary file pinned
+        try { files.copyRegularBoundedWithin(source,root,destination,maximum); }
         catch(ProjectException exception) { throw exception; }
     }
 
@@ -209,10 +233,15 @@ public class ProjectWorkspaceBridge {
         Path normalizedRoot=root.toAbsolutePath().normalize();
         Path current=normalizedRoot;
         if(Files.isSymbolicLink(current)) throw invalid("Symbolic links are not allowed in synchronization destinations: "+current);
+        Path realRoot;
+        try { realRoot=FileSystemBoundaries.realRoot(normalizedRoot); }
+        catch(IOException exception) { throw storage("Could not resolve the synchronization destination "+normalizedRoot,exception); }
         Path relative=normalizedRoot.relativize(destination.toAbsolutePath().normalize());
         for(Path segment:relative) {
             current=current.resolve(segment);
-            if(Files.exists(current,LinkOption.NOFOLLOW_LINKS)&&Files.isSymbolicLink(current)) throw invalid("Symbolic links are not allowed in synchronization destinations: "+current);
+            // SEC-WIN-JUNCTION: a Windows directory junction is not a symbolic link for Java but redirects the write outside the root
+            if(Files.exists(current,LinkOption.NOFOLLOW_LINKS)&&(Files.isSymbolicLink(current)||FileSystemBoundaries.escapes(current,realRoot)))
+                throw invalid("Symbolic links and directory junctions are not allowed in synchronization destinations: "+current);
         }
     }
 

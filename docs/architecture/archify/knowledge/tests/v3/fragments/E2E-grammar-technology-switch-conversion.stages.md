@@ -1,0 +1,2 @@
+- grammar_conversion_preview.em, rama vacía: sin texto, Xtext se sustituye sin diálogo ni petición de conversión y se guarda (líneas 20-26).
+- grammar_conversion_preview.em, rama con texto: aparece la vista previa sin guardar, cancelar deja Langium (líneas 35-40); aplicar muestra el texto que devuelve la API real y solo guardar cambia el fichero (líneas 61-69).

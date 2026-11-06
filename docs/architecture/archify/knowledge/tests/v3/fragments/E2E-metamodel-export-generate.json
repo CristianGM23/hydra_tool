@@ -1,0 +1,95 @@
+[
+  {
+    "id": "pw:e2e/real/metamodel/export-generate.spec.ts",
+    "name": {
+      "es": "Exportar un metamodelo de extremo a extremo: elegir formato y descargar el fichero y el paquete",
+      "en": "Exporting a metamodel end to end: choose a format and download the file and the package"
+    },
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "layers2": ["definition"],
+    "caps": ["metamodel"],
+    "procs": [
+      { "id": "metamodel_export_generate", "stages": ["in"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/metamodel-designer/MetamodelExportDialog.tsx",
+      "frontend/src/metamodel-designer/exportApi.ts",
+      "frontend/src/metamodel-designer/MetamodelDesigner.tsx",
+      "src/main/java/com/example/editor/metamodel/export/MetamodelExportController.java",
+      "src/main/java/com/example/editor/metamodel/export/MetamodelExportService.java"
+    ],
+    "pre": {
+      "es": "Backend real con almacenamiento temporal propio; un metamodelo mínimo se siembra por la API real como paso previo.",
+      "en": "Real backend with its own temporary storage; a minimal metamodel is seeded through the real API as a prior step."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, sin simulaciones; las descargas las captura el navegador. El oráculo abre desde Node el JSON y el ZIP descargados y compara con el catálogo de formatos y el metamodelo de la API real.",
+      "en": "Playwright with Chromium, no simulations; downloads are captured by the browser. The oracle opens the downloaded JSON and ZIP from Node and compares them with the real API's format catalogue and metamodel."
+    },
+    "executes": {
+      "es": "Abre #/metamodel, comprueba que 'Export' está deshabilitado con un borrador, elige el metamodelo guardado en 'Existing metamodel', pulsa 'Open' y 'Export', pulsa 'Clear', descarga el formato JSON desde su tarjeta, marca dos formatos y descarga el paquete con el botón de descarga múltiple.",
+      "en": "Opens #/metamodel, checks that 'Export' is disabled with a draft, picks the saved metamodel in 'Existing metamodel', presses 'Open' and 'Export', presses 'Clear', downloads the JSON format from its card, ticks two formats and downloads the package with the multi-download button."
+    },
+    "asserts": {
+      "es": "Con un borrador sin guardar el botón está deshabilitado; el diálogo nombra el metamodelo elegido y el destino local; sin formatos marcados la descarga múltiple queda deshabilitada; el JSON descargado se parsea y contiene id, 'Person' y 'fullName'; el ZIP empieza por PK y su directorio central tiene al menos una entrada por formato marcado; el metamodelo guardado no cambia.",
+      "en": "With an unsaved draft the button is disabled; the dialog names the chosen metamodel and the local destination; with no format ticked the multi-download is disabled; the downloaded JSON parses and contains the id, 'Person' and 'fullName'; the ZIP starts with PK and its central directory has at least one entry per ticked format; the saved metamodel does not change."
+    },
+    "behavior": {
+      "es": "Una persona exporta un metamodelo guardado: elige el formato, descarga el fichero y también un paquete con varios formatos, y los ficheros descargados contienen el metamodelo elegido.",
+      "en": "A person exports a saved metamodel: picks the format, downloads the file and also a package with several formats, and the downloaded files contain the chosen metamodel."
+    },
+    "rule": {
+      "es": "No se puede exportar un borrador sin guardar ni generar un paquete sin marcar ningún formato.",
+      "en": "An unsaved draft cannot be exported and a package cannot be generated without ticking any format."
+    },
+    "scenario": {
+      "es": "Un metamodelo guardado se abre en el diseñador, se abre el diálogo de exportación con destino local, se descarga un formato suelto y después un paquete con dos formatos.",
+      "en": "A saved metamodel is opened in the designer, the export dialog is opened with a local destination, a single format is downloaded and then a package with two formats."
+    },
+    "result": {
+      "es": "El navegador recibe un fichero JSON válido con el metamodelo elegido y un paquete comprimido con una entrada por cada formato marcado.",
+      "en": "The browser receives a valid JSON file with the chosen metamodel and a compressed package with one entry per ticked format."
+    },
+    "expected": {
+      "es": "Una ejecución correcta descarga ambos ficheros, legibles fuera de la aplicación, sin modificar el metamodelo guardado.",
+      "en": "A passing run downloads both files, readable outside the application, without modifying the saved metamodel."
+    },
+    "guarantee": {
+      "es": "La selección de metamodelo y formatos del diálogo llega al servidor y produce ficheros descargables correctos.",
+      "en": "The dialog's metamodel and format selection reaches the server and produces correct downloadable files."
+    },
+    "limits": {
+      "es": "El destino remoto (repositorios en la nube) no se ejerce porque exige credenciales; no cubre los proyectos completos ni los formatos de código, diagrama o documentación, y comprueba el contenido solo del formato JSON y los nombres del paquete.",
+      "en": "The remote destination (cloud repositories) is not exercised because it needs credentials; it does not cover complete projects or the code, diagram or documentation formats, and checks content only for the JSON format and the package entry names."
+    },
+    "strength": "MEDIUM",
+    "strengthWhy": {
+      "es": "Descargas reales y oráculo independiente, pero el destino remoto no se prueba y solo se lee a fondo un formato.",
+      "en": "Real downloads and an independent oracle, but the remote destination is not tested and only one format is read in depth."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "el diálogo de exportación exige un formato y descarga el metamodelo elegido en JSON y en un ZIP con los formatos marcados",
+        "scenario": { "es": "Se exporta un metamodelo guardado: un borrador bloqueado, ningún formato marcado, un formato suelto y un paquete de dos.", "en": "A saved metamodel is exported: a blocked draft, no format ticked, a single format and a two-format package." },
+        "result": { "es": "Los rechazos se cumplen y los dos ficheros descargados contienen el metamodelo elegido.", "en": "The rejections hold and both downloaded files contain the chosen metamodel." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.metamodel.export.project.MetamodelCompleteProjectExportGateIntegrationTests",
+      "vitest:frontend/src/metamodel-designer/exportDialog.configurable.test.tsx"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/metamodel/export-generate.spec.ts", "line": 40 },
+      { "path": "frontend/e2e/real/metamodel/export-generate.spec.ts", "line": 54 },
+      { "path": "frontend/e2e/real/metamodel/export-generate.spec.ts", "line": 67 },
+      { "path": "frontend/e2e/real/metamodel/export-generate.spec.ts", "line": 76 },
+      { "path": "frontend/e2e/real/metamodel/export-generate.spec.ts", "line": 88 },
+      { "path": "frontend/e2e/real/metamodel/export-generate.spec.ts", "line": 90 },
+      { "path": "frontend/e2e/real/metamodel/export-generate.spec.ts", "line": 96 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

@@ -50,6 +50,7 @@ public class TechnologyProjectValidationService {
         TechnologyProjectValidationRequest effective = request == null ? TechnologyProjectValidationRequest.structural() : request;
         Path workspace = effective.workspaceDirectory() == null ? createWorkspace(compilation) : effective.workspaceDirectory().toAbsolutePath().normalize();
         boolean ownedWorkspace = effective.workspaceDirectory() == null;
+        IsolatedPython python = null;
         try{
             if(!ownedWorkspace) temporaryWorkspace.verify(workspace);
             materialize(compilation, workspace);
@@ -59,8 +60,15 @@ public class TechnologyProjectValidationService {
             if(effective.mode() != TechnologyValidationMode.STRUCTURAL){
                 for(IntegrationVerificationStep step : compilation.verificationSteps()){
                     Path workingDirectory = resolveWorkingDirectory(workspace, step.workingDirectory());
+                    List<String> command = step.command();
+                    if(isPython(command)){
+                        // pip installs the generated package: never into the interpreter of the host, only into an environment owned by this validation
+                        if(python == null){python = createIsolatedPython(effective, steps);}
+                        if(python.interpreter() == null){steps.add(notRunWithoutIsolatedPython(step)); continue;}
+                        command = new ArrayList<>(command); command.set(0, python.interpreter().toString());
+                    }
                     TechnologyValidationStepResult result = processes.run(step.id(), step.description(), workingDirectory,
-                            nativeCommand(step.command()), step.expectedExitCode(), effective.timeoutSeconds(), effective.environment());
+                            nativeCommand(command), step.expectedExitCode(), effective.timeoutSeconds(), effective.environment());
                     steps.add(result);
                 }
             }
@@ -69,10 +77,39 @@ public class TechnologyProjectValidationService {
             metadata.put("validationMode", effective.mode().name());
             metadata.put("workspace", workspace.toString());
             metadata.put("nativeSteps", Integer.toString(compilation.verificationSteps().size()));
+            if(python != null && python.interpreter() != null) metadata.put("pythonEnvironment", python.root().toString());
             return new TechnologyProjectValidationReport(compilation.technology(), status, workspace, steps, metadata);
         }finally{
+            if(python != null && !effective.keepWorkspace()){temporaryWorkspace.cleanup(python.root());}
             if(ownedWorkspace && !effective.keepWorkspace()){temporaryWorkspace.cleanup(workspace);}
         }
+    }
+
+    /** Entorno Python propio de una validación: raíz temporal y su intérprete, o null si no se pudo crear. */
+    private record IsolatedPython(Path root, Path interpreter){}
+
+    /** Descripción: Crea con «python -m venv» un entorno Python en un directorio temporal de HYDRA, fuera del proyecto validado. Entradas: request: solicitud efectiva (timeout y entorno); steps: resultados a los que se añade el de la creación. Salida: el entorno, con intérprete null si no se pudo crear. */ private IsolatedPython createIsolatedPython(TechnologyProjectValidationRequest request, List<TechnologyValidationStepResult> steps){
+        Path root = temporaryWorkspace.create("python-env-");
+        Path environment = root.resolve("venv");
+        TechnologyValidationStepResult created = processes.run("python-isolated-environment",
+                "Create an isolated Python environment so the generated package is never installed into the host interpreter", root,
+                nativeCommand(List.of("python", "-m", "venv", environment.toString())), 0, request.timeoutSeconds(), request.environment());
+        steps.add(created);
+        Path interpreter = isWindows() ? environment.resolve("Scripts").resolve("python.exe") : environment.resolve("bin").resolve("python");
+        boolean ready = created.status() == TechnologyValidationStepStatus.PASSED && Files.isRegularFile(interpreter);
+        return new IsolatedPython(root, ready ? interpreter : null);
+    }
+
+    /** Descripción: Resultado de un paso Python que no se ejecuta porque no hay entorno aislado. Entradas: step: paso declarado. Salida: resultado SKIPPED con el motivo. */ private TechnologyValidationStepResult notRunWithoutIsolatedPython(IntegrationVerificationStep step){
+        return new TechnologyValidationStepResult(step.id(), step.description(), TechnologyValidationStepStatus.SKIPPED, step.command(), null, 0, "", "",
+                List.of("Not run: the isolated Python environment could not be created, and HYDRA does not install generated packages into the host interpreter"));
+    }
+
+    /** Descripción: Indica si el paso se ejecuta con el intérprete Python. Entradas: command: orden declarada. Salida: verdadero para python o python3 (con o sin .exe). */ private boolean isPython(List<String> command){
+        if(command == null || command.isEmpty() || command.get(0) == null) return false;
+        String executable = Path.of(command.get(0).trim()).getFileName().toString().toLowerCase(java.util.Locale.ROOT);
+        if(executable.endsWith(".exe")) executable = executable.substring(0, executable.length() - 4);
+        return executable.equals("python") || executable.equals("python3");
     }
 
     /** Descripción: Crea o prepara el resultado de «createWorkspace» dentro de TechnologyProjectValidationService. Entradas: compilation: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private Path createWorkspace(TechnologyCompilationResult compilation){

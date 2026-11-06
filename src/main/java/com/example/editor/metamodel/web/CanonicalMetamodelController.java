@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.editor.metamodel.application.CanonicalMetamodelApplicationService;
 import com.example.editor.metamodel.application.MetamodelLoadResult;
 import com.example.editor.metamodel.application.MetamodelSaveResponse;
+import com.example.editor.metamodel.canonical.CanonicalMetamodelCatalog;
 import com.example.editor.metamodel.canonical.CanonicalMetamodelSummary;
 import com.example.editor.metamodel.core.MetaModel;
 import com.example.editor.metamodel.registry.MetamodelRegistryService;
@@ -52,9 +53,23 @@ public class CanonicalMetamodelController {
             .body(response);
     }
 
+    /** Number of stored metamodels left out of the listing because their document cannot be used (D-MM-CORRUPT-CONTRATO). */
+    public static final String OMITTED_COUNT_HEADER = "X-Hydra-Omitted-Count";
+    /** Comma-separated ids of the omitted metamodels (at most {@link #OMITTED_ITEMS_LIMIT}; a file whose name is not an id is only counted). */
+    public static final String OMITTED_ITEMS_HEADER = "X-Hydra-Omitted-Items";
+    static final int OMITTED_ITEMS_LIMIT = 50;
+
     @GetMapping
-    /** Descripción: Obtiene la información correspondiente a «list» dentro de CanonicalMetamodelController. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public List<CanonicalMetamodelSummary> list() {
-        return service.findAll();
+    /** Descripción: Lista los metamodelos que se pueden usar con el mismo array JSON de siempre; si alguno se omite porque su documento está corrupto o no se puede leer, las cabeceras X-Hydra-Omitted-Count y X-Hydra-Omitted-Items lo identifican sin rutas (D-MM-CORRUPT-CONTRATO). Entradas: ninguna. Salida: resúmenes ordenados por id. */ public ResponseEntity<List<CanonicalMetamodelSummary>> list() {
+        CanonicalMetamodelCatalog catalog = service.catalog();
+        ResponseEntity.BodyBuilder response = ResponseEntity.ok();
+        if (!catalog.omitted().isEmpty()) {
+            response.header(OMITTED_COUNT_HEADER, Integer.toString(catalog.omitted().size()));
+            String ids = catalog.omitted().stream().map(CanonicalMetamodelCatalog.Omitted::metamodelId).filter(java.util.Objects::nonNull)
+                    .limit(OMITTED_ITEMS_LIMIT).collect(java.util.stream.Collectors.joining(","));
+            if (!ids.isEmpty()) response.header(OMITTED_ITEMS_HEADER, ids);
+        }
+        return response.body(catalog.metamodels());
     }
 
     @GetMapping("/{id}")

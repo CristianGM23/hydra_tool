@@ -29,6 +29,7 @@ class ValidationRuntimeEventFactoryTests {
         assertThat(event.subject().kind()).isEqualTo(EventSubjectKind.VALIDATION_DIAGNOSTIC);
         assertThat(event.subject().elementId()).isEqualTo("diagnostic:one");
         assertThat(event.payload()).containsEntry("ruleId", "rule:one");
+        assertThat(event.payload()).containsEntry("diagnosticId", "diagnostic:one");
     }
     @Test void quickFixEventUsesQuickFixContextAndCorrelation() {
         var event = ValidationRuntimeEventFactory.quickFix("core.quickfix.applied", "meta", "model-one", "action:one", "diagnostic:one", Map.of("status", "OK"), "transaction:one");

@@ -1,0 +1,6 @@
+CapabilityPlanConfirmationAndRevertGatesIntegrationTests (grupo B3)
+- portability_author_merge.b: thereAreNoConflictsWithoutOverlapAndTheyAreEnumeratedWhenTheSameLayerDiffers (l.99-140): conflictos vacios sin solape/identicas, cuatro exactos si difiere (l.124).
+- portability_author_merge.c: everyConflictGetsItsOwnDecisionAndTheDocumentOnDiskReflectsThem (l.145-190): decision por elemento (l.159) y JSON escrito en disco (l.185).
+- x_package_and_move_capabilities.d3: nothingIsAppliedUntilConfirmedAndAdjustingDecisionsStillTouchesNothing (l.209-248): persistir=false no escribe (l.219), ajustar cambia el plan sin escribir (l.227), sin version se rechaza (l.234), confirmar escribe con SHA-256 recalculado (l.243).
+- portability_revert.b: revertingSkipsLayersChangedAfterApplyingAndRestoresTheOnesStillAtTheAppliedVersion (l.250-290): omite lo cambiado despues (l.261), version declarada distinta (l.277), diario cerrado al completar (l.287).
+- x_package_and_move_capabilities.m2 (indirect): conflictsWithoutAnExplicitDecisionAreMergedImplicitly (l.193-205): la decision por conflicto NO es obligatoria (defaultDecision = MERGE en CapabilitySemanticMergeRequest.java:19), lo que contradice «ninguna fusion es implicita».

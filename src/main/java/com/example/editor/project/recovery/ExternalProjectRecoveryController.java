@@ -41,11 +41,12 @@ public class ExternalProjectRecoveryController {
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     /** Descripción: Ejecuta la operación «importProject» correspondiente a la responsabilidad de ExternalProjectRecoveryController. Entradas: file: archivo o contenido que debe procesarse; parentDirectory: dato de entrada necesario para la operación; projectName: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public ExternalProjectImportResult importProject(@RequestPart("file") MultipartFile file,
             @org.springframework.web.bind.annotation.RequestParam String parentDirectory,
-            @org.springframework.web.bind.annotation.RequestParam String projectName) {
+            @org.springframework.web.bind.annotation.RequestParam String projectName,
+            @org.springframework.web.bind.annotation.RequestParam(required = false) String confirmedFingerprint) {
         if(file == null || file.isEmpty()) throw new ProjectException(ProjectException.Reason.INVALID_REQUEST,
                 "Select an external project archive before importing it");
         try(var input = file.getInputStream()) {
-            return importer.importProject(file.getOriginalFilename(), input, file.getSize(), parentDirectory, projectName);
+            return importer.importConfirmed(file.getOriginalFilename(), input, file.getSize(), parentDirectory, projectName, confirmedFingerprint);
         } catch(IOException exception) {
             throw new ProjectException(ProjectException.Reason.STORAGE_ERROR,
                     "Could not read the selected external project archive", exception);

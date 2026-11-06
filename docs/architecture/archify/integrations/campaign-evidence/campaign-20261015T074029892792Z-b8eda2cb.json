@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-15T07:40:29+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261015-094019",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "f56315d3a391b8aa7efab1ea9e14be1ce0e53d9ef64cdc124ec7cd6958544b06",
+  "reportCheckpointName": "0024-01792050029014648800-69cd4d9147594df6913acc81159a4a9a.json",
+  "testResults": [
+    {
+      "id": "S111",
+      "title": "Verificar r5c13 fix11 gamification feedback",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.28,
+      "logSha256": "1cad21fce43a3007b9f05d153d7c7c22625fc652fc336290ee5bdf2f5fadff2e",
+      "logRelativePath": "logs/S111.log"
+    },
+    {
+      "id": "S112",
+      "title": "Verificar r5c13 fix12 backend regressions",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.54,
+      "logSha256": "e45e689daf0b33c365a5297f00bf2d886938080e5df82ed300226094f9dcb8c7",
+      "logRelativePath": "logs/S112.log"
+    },
+    {
+      "id": "S119",
+      "title": "Verificar r5c13 fix23 editor runtime canvas tests",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "f258108231b799535f6c2a1e446b4158321c05549a8f564a0d4bc843bacaad3e",
+      "logRelativePath": "logs/S119.log"
+    },
+    {
+      "id": "S120",
+      "title": "Verificar r5c13 fix24 semantic expression kernel",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.56,
+      "logSha256": "b3498c9fc976dc951cd7bf64f9ee038a3aecf248d9757c836cc1762bc447dc05",
+      "logRelativePath": "logs/S120.log"
+    },
+    {
+      "id": "S121",
+      "title": "Verificar r5c13 fix25 semantic expression overlay cleanup",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "ce3e483fbb431044a0933ea1657b27f2de7b273a435a400abb14f2ebf819344b",
+      "logRelativePath": "logs/S121.log"
+    },
+    {
+      "id": "S122",
+      "title": "Verificar r5c13 fix26 no legacy expression sources",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.22,
+      "logSha256": "69e8c9909faad3e661719dace7fbec73cd554b02f7a04aaccb8ec067962b763a",
+      "logRelativePath": "logs/S122.log"
+    },
+    {
+      "id": "S123",
+      "title": "Verificar r5c13 fix27 maven legacy expression quarantine",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.18,
+      "logSha256": "975ac483cdc01e7b693d9beb8f9342bdbdde12fcba10927d1da0fe2586b3cd73",
+      "logRelativePath": "logs/S123.log"
+    },
+    {
+      "id": "S124",
+      "title": "Verificar r5c13 fix28 event semantic expression",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "691f7deba1711e80a9f2d0834b2b9b8d2bbbb374ac66169977be7a22532c48b6",
+      "logRelativePath": "logs/S124.log"
+    },
+    {
+      "id": "S125",
+      "title": "Verificar r5c13 fix29 event context kind compile",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.03,
+      "logSha256": "fe06a4059ea841b46b0380640196838aacc2380fbf5adeec742c07e1a9d07ad6",
+      "logRelativePath": "logs/S125.log"
+    },
+    {
+      "id": "S126",
+      "title": "Verificar r5c13 fix30 event fixture contracts",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.17,
+      "logSha256": "2dabe9282ff5276f65ab2066e5dcdabb1ae6a1d2f8d5057592e8d0cfddecca7f",
+      "logRelativePath": "logs/S126.log"
+    },
+    {
+      "id": "S127",
+      "title": "Verificar r5c13 fix31 nullable expression variables",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "1faba914d618f2b4db2423c9dab4cb0f9a9cd98121cb7ef604da1ca9466e0bba",
+      "logRelativePath": "logs/S127.log"
+    },
+    {
+      "id": "S138",
+      "title": "Verificar r5c13 fix7 monaco diagram ux",
+      "group": "grammar",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "48a91b250c7315be72e4d02a0d527da5202a7f46fe37a3c143f9c837de93a102",
+      "logRelativePath": "logs/S138.log"
+    },
+    {
+      "id": "S139",
+      "title": "Verificar r5c13 fix85s windows recovery",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "92d9e2971d971e62ee8b2b86dd829021b0ea0e52b0d98fd3d1d35019272de96d",
+      "logRelativePath": "logs/S139.log"
+    },
+    {
+      "id": "S140",
+      "title": "Verificar r5c13 fix85v spring test bootstrap",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "27e94454d1485764b5f23e22edd2d62f7c293a46f5a950dc1b3358333391a88d",
+      "logRelativePath": "logs/S140.log"
+    },
+    {
+      "id": "S141",
+      "title": "Verificar r5c13 fix85w instance lock spring bootstrap",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.15,
+      "logSha256": "981934b20951129bdfbd2d0e82ff546df6cbf4bb45b6475bab6271513d99d1d8",
+      "logRelativePath": "logs/S141.log"
+    },
+    {
+      "id": "S143",
+      "title": "Verificar r5c13 fix9 shared renderer monaco semantics",
+      "group": "grammar",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.19,
+      "logSha256": "7c6481be00c0d897e9c1062b976e3e7efb6f3d70f01d5c5b8e1b9c4e8365df95",
+      "logRelativePath": "logs/S143.log"
+    },
+    {
+      "id": "S145",
+      "title": "Verificar r6c1 fix124 vitest worker recovery",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.36,
+      "logSha256": "c771320f354613d3f3461ee99402a09f9eb180935c13c0fd2898b7420026016d",
+      "logRelativePath": "logs/S145.log"
+    },
+    {
+      "id": "S146",
+      "title": "Verificar r6c1 fix125 explicit vitest recovery",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.23,
+      "logSha256": "ead0b565429d99e3f23a1e994a82b28b3375d21fa58e3712ce78672ac1a28125",
+      "logRelativePath": "logs/S146.log"
+    },
+    {
+      "id": "S147",
+      "title": "Verificar r6c1 fix126 typed expectations",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.17,
+      "logSha256": "f519ab96a5d34cbdc1a725b30b604c483acabcffd99990e4c77f78bc3164e4ea",
+      "logRelativePath": "logs/S147.log"
+    },
+    {
+      "id": "S148",
+      "title": "Verificar r6c2 fix127 132 delivery readiness",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.2,
+      "logSha256": "073c5040c53cb78808aac7c439a426680c214a1bcccf7b11137d0756c144ae2a",
+      "logRelativePath": "logs/S148.log"
+    },
+    {
+      "id": "S149",
+      "title": "Verificar r6c3 instance roundtrip",
+      "group": "regression",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.31,
+      "logSha256": "9f11542e738f57ab1c6b292efff1271a0774779498d6194ded02dfb870ff7141",
+      "logRelativePath": "logs/S149.log"
+    },
+    {
+      "id": "S150",
+      "title": "Verificar r6c3 runtime resilience",
+      "group": "security",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.15,
+      "logSha256": "0e5a8506fc8eb66c939a5f35f2edd0c25c59ba6162048fe00f1dec20a87387fe",
+      "logRelativePath": "logs/S150.log"
+    },
+    {
+      "id": "S151",
+      "title": "Verificar r6c3 semantic roundtrip",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.16,
+      "logSha256": "6874074b6abf1f4362a530296e47021b8cedffd13ef4a0942922e9df7cc4a489",
+      "logRelativePath": "logs/S151.log"
+    },
+    {
+      "id": "S154",
+      "title": "Verificar r6c4 textual interactions",
+      "group": "grammar",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.33,
+      "logSha256": "1c1654f3caddbc1d1c976fd58cbc8341168abd3f3b0d77f435063ba15bbfd6c9",
+      "logRelativePath": "logs/S154.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

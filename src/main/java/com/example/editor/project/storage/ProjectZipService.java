@@ -1,6 +1,7 @@
 package com.example.editor.project.storage;
 
 import java.io.ByteArrayInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileVisitResult;
@@ -15,20 +16,30 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.springframework.stereotype.Component;
 import com.example.editor.io.AtomicFiles;
 import com.example.editor.io.BoundedIo;
+import com.example.editor.project.ArtifactKind;
 import com.example.editor.project.LocalProjectProperties;
 import com.example.editor.project.ProjectException;
+import com.example.editor.project.ProjectLayout;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 /** Importa y exporta proyectos ZIP con protección frente a Zip Slip y límites de tamaño. */
 @Component
 public class ProjectZipService {
     private static final int STREAM_BUFFER_BYTES=64*1024;
+    private static final JsonMapper JSON=JsonMapper.builder().build();
+    /** Tipos de usuario o genéricos: su contenido no lo interpreta HYDRA y no se exige que sea JSON válido. */
+    private static final Set<ArtifactKind> UNMANAGED=Set.of(ArtifactKind.GENERIC_FILE,ArtifactKind.ASSET,ArtifactKind.TEST_RESOURCE,ArtifactKind.DOCUMENTATION);
     private final LocalProjectProperties properties;
     private final ProjectFileOperations files;
+    private final ProjectArtifactClassifier classifier=new ProjectArtifactClassifier();
 
     /** Descripción: Inicializa una instancia de ProjectZipService con sus dependencias y datos de entrada. Entradas: properties: configuración que gobierna el comportamiento; files: archivo o contenido que debe procesarse. Salida: deja la instancia inicializada y lista para su uso. */ public ProjectZipService(LocalProjectProperties properties,ProjectFileOperations files) {
         this.properties=properties;
@@ -39,16 +50,22 @@ public class ProjectZipService {
         Path temporary=null;
         try {
             List<ExportEntry> entries=collectExportEntries(root);
+            Path realRoot=com.example.editor.io.FileSystemBoundaries.realRoot(root);
             temporary=Files.createTempFile("hydra-project-export-", ".zip");
             long expanded=0;
             try(ZipOutputStream zip=new ZipOutputStream(Files.newOutputStream(temporary))) {
                 for(ExportEntry source:entries) {
                     verifyPortableSource(source.path());
-                    ZipEntry entry=new ZipEntry(source.directory()?source.relative()+"/":source.relative());
-                    entry.setTime(source.lastModifiedMillis());
-                    zip.putNextEntry(entry);
-                    if(!source.directory()) expanded=copyExportFile(source.path(),zip,expanded);
-                    zip.closeEntry();
+                    // TOCTOU: the inventory was taken before reading; a directory replaced by a junction since then would be read outside the project.
+                    // A file is pinned first, so none of its directories can be swapped between this check and the read
+                    try(java.io.Closeable pin=source.directory()?() -> {}:com.example.editor.io.FileSystemBoundaries.pin(source.path())) {
+                        if(com.example.editor.io.FileSystemBoundaries.escapes(source.path(),realRoot)) throw invalid("Directory junctions and links outside the project cannot be exported in a portable project archive: "+source.relative());
+                        ZipEntry entry=new ZipEntry(source.directory()?source.relative()+"/":source.relative());
+                        entry.setTime(source.lastModifiedMillis());
+                        zip.putNextEntry(entry);
+                        if(!source.directory()) expanded=copyExportFile(source.path(),zip,expanded);
+                        zip.closeEntry();
+                    }
                 }
                 zip.finish();
             }
@@ -96,11 +113,13 @@ public class ProjectZipService {
         long maximumBytes=properties.getMaxArchiveSizeBytes();
         ArrayList<ExportEntry> entries=new ArrayList<>(Math.min(maximumEntries,1024));
         long[] estimatedBytes={0L};
+        Path realRoot=com.example.editor.io.FileSystemBoundaries.realRoot(root);
         Files.walkFileTree(root,new SimpleFileVisitor<>() {
-            /** Descripción: Valida profundidad y número de directorios y omite por completo la caché interna no portable. Entradas: dir: directorio visitado; attrs: atributos básicos. Salida: continúa o salta el subárbol de caché. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) throws IOException {
+            /** Descripción: Valida profundidad y número de directorios y omite por completo la caché interna no portable; rechaza un directorio que resuelve fuera del proyecto (unión de Windows, SEC-WIN-JUNCTION), que el ZIP leería fuera de él. Entradas: dir: directorio visitado; attrs: atributos básicos. Salida: continúa o salta el subárbol de caché. */ @Override public FileVisitResult preVisitDirectory(Path dir,BasicFileAttributes attrs) throws IOException {
                 if(dir.equals(root)) return FileVisitResult.CONTINUE;
                 String relative=portableRelative(root,dir);
                 if(relative.equals(".modeling/cache")||relative.startsWith(".modeling/cache/")) return FileVisitResult.SKIP_SUBTREE;
+                if(com.example.editor.io.FileSystemBoundaries.escapes(dir,realRoot)) throw invalid("Directory junctions and links outside the project cannot be exported in a portable project archive: "+relative);
                 verifyDepth(relative,maximumDepth);
                 addEntry(entries,new ExportEntry(dir,relative,true,0L,attrs.lastModifiedTime().toMillis()),maximumEntries);
                 return FileVisitResult.CONTINUE;
@@ -150,9 +169,23 @@ public class ProjectZipService {
                             output.write(buffer,0,read);
                         }
                     }
+                    verifyManagedJson(target,entryName);
                 }
                 zip.closeEntry();
             }
+        } catch(ZipException|EOFException exception) {
+            // Un ZIP truncado o dañado es una entrada del usuario malformada, no un fallo de almacenamiento del servidor.
+            throw invalid("The project archive is damaged or incomplete and cannot be read");
+        }
+    }
+
+    /** Descripción: Exige JSON bien formado en los artefactos que HYDRA interpreta (descriptor, metamodelos, editores, validaciones, eventos...), para no publicar un proyecto que después impediría leer los repositorios; los ficheros de usuario, documentación y pruebas no se interpretan. Entradas: file: fichero extraído en staging; entryName: ruta normalizada dentro del archivo. Salida: no devuelve valor; rechaza la importación con INVALID_REQUEST. */ private void verifyManagedJson(Path file,String entryName) throws IOException {
+        if(!entryName.toLowerCase(java.util.Locale.ROOT).endsWith(".json")||UNMANAGED.contains(classifier.classify(entryName,ProjectLayout.standard()))) return;
+        try(InputStream input=Files.newInputStream(file)) {
+            JsonNode node=JSON.readTree(input);
+            if(node==null||node.isMissingNode()) throw invalid("Project artifact is empty instead of JSON: "+entryName);
+        } catch(JacksonException exception) {
+            throw invalid("Project artifact is not valid JSON: "+entryName);
         }
     }
 

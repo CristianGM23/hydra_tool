@@ -1,0 +1,4 @@
+- toolchains_author_provision.a: lines 113 and 128 (versions listed for ATL and for ETL equal the installable ones the server declares for that language; switching language changes the list) in the first test.
+- toolchains_author_provision.b: lines 121 and 123 (tampered package is not installable on the server and is not offered) and line 135 (a version is chosen in the selector); gate: the tampered version is rejected.
+- toolchains_check_install.d1: lines 175, 180 and 187 (native compatibility catalog and transformation package catalog are disjoint; each screen shows only its own).
+- Not claimed: toolchains_author_provision.c (install/update/remove). The e2e backend starts with provisioning disabled; lines 145-157 only prove the closed gate (buttons disabled, direct install order rejected, no managed slot created).

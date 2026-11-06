@@ -45,6 +45,8 @@ export function GrammarDesigner(){
     const [metamodels,setMetamodels]=useState<CanonicalMetamodelSummary[]>([]);
     const [selectedDocumentId,setSelectedDocumentId]=useState('main');
     const [revision,setRevision]=useState(0);
+    /** Verdadero en cuanto el usuario empieza a trabajar (editar, nueva gramática o abrir otra): la carga inicial asíncrona de la última gramática ya no debe pisar su trabajo. */
+    const initialLoadSuperseded=useRef(false);
     const [analysis,setAnalysis]=useState<GrammarAnalysisResult|null>(null);
     const [snapshot,setSnapshot]=useState<GrammarCompilationSnapshot|null>(null);
     const [classDiagram,setClassDiagram]=useState<GrammarClassDiagramProjection|null>(null);
@@ -107,13 +109,14 @@ export function GrammarDesigner(){
         void Promise.all([listGrammars(),listToolchainProfiles(),listGrammarProviders(),listCanonicalMetamodels()]).then(async([items,toolchains,descriptors,models])=>{
             if(disposed)return;
             setPersisted(items);setProfiles(toolchains);setProviders(descriptors);setMetamodels(models);
+            if(initialLoadSuperseded.current)return;
             let remembered='';
             try{remembered=localStorage.getItem(LAST_GRAMMAR_STORAGE_KEY)??'';}catch{/* local persistence is optional */}
             const initial=items.find(item=>item.id===remembered)??items[0];
             if(initial===undefined)return;
             try{
                 const [loaded,active]=await Promise.all([loadGrammar(initial.id),loadActiveGrammarCompilation(initial.id)]);
-                if(disposed)return;
+                if(disposed||initialLoadSuperseded.current)return;
                 setModel(loaded.grammar);setEtag(loaded.etag);setSelectedDocumentId(loaded.grammar.entryDocumentId||loaded.grammar.documents[0]?.id||'');setRevision(0);setAnalysis(null);setSnapshot(active);setClassDiagram(active?.classDiagram??null);setWorkspaceView('SOURCE');rememberGrammar(initial.id);
             }catch(error){if(!disposed)setMessage(error instanceof Error?error.message:String(error));}
         }).catch(error=>{if(!disposed)setMessage(error instanceof Error?error.message:String(error));});
@@ -190,7 +193,7 @@ export function GrammarDesigner(){
         const inferred=inspectGrammarLocally(next).inferredEntryRule;
         return inferred!==''&&inferred!==next.entryRule?{...next,entryRule:inferred,annotations:{...next.annotations,'hydra.entryRule.mode':'AUTO'}}:next;
     }
-    function mutate(next:GrammarDefinitionModel){setModel(withLocalAutoEntry(next));setRevision(value=>value+1);setMessage('');}
+    function mutate(next:GrammarDefinitionModel){initialLoadSuperseded.current=true;setModel(withLocalAutoEntry(next));setRevision(value=>value+1);setMessage('');}
     function updateSource(content:string){if(!selected)return;setFocusDiagnostic(null);mutate({...model,documents:model.documents.map(doc=>doc.id===selected.id?{...doc,content,sourceHash:''}:doc)});}
     function switchTechnology(technology:GrammarTechnology){
         if(technology===model.technology||conversionLoading)return;
@@ -219,6 +222,7 @@ export function GrammarDesigner(){
     function rememberGrammar(grammarId:string){try{if(grammarId.trim()==='')localStorage.removeItem(LAST_GRAMMAR_STORAGE_KEY);else localStorage.setItem(LAST_GRAMMAR_STORAGE_KEY,grammarId);}catch{/* local persistence is optional */}}
     async function openGrammar(grammarId:string){
         if(grammarId.trim()==='')return;
+        initialLoadSuperseded.current=true;
         await cancelPendingAnalyses();
         try{
             const [loaded,active]=await Promise.all([loadGrammar(grammarId),loadActiveGrammarCompilation(grammarId)]);
@@ -230,6 +234,7 @@ export function GrammarDesigner(){
         const ids=new Set(persisted.map(item=>item.id));
         let id=base.id,index=2;while(ids.has(id)){id=`${base.id}-${index++}`;}
         const next=id===base.id?base:{...base,id,name:`${base.name} ${index-1}`};
+        initialLoadSuperseded.current=true;
         void cancelPendingAnalyses();
         setModel(next);setEtag('');setSelectedDocumentId(next.entryDocumentId);setRevision(0);setAnalysis(null);setSnapshot(null);setClassDiagram(null);setFocusDiagnostic(null);setOperationDiagnostics([]);setStatusDockTab('PROBLEMS');setWorkspaceView('SOURCE');rememberGrammar('');setMessage(t('New grammar ready.'));
     }

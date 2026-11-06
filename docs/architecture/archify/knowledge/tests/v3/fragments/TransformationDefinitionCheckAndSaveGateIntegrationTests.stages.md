@@ -1,0 +1,3 @@
+- transformation_author_mapping.ck and transformation_define.chk: blockingRuleErrorsAreReportedByCheckAndRejectedBySaveWithoutPersisting (lines 87-91, helper assertRejected lines 154-163) establishes that each blocking diagnostic code is reported by check and save is rejected with nothing on disk.
+- transformation_define.chk: aWarningOnlyDefinitionIsSavedAndCheckReportsWarningWithValidTrue (lines 102-112) establishes that warnings do not block saving.
+- transformation_define.chk: bidirectionalWithoutReverseRuleIsBlocked (line 131) and textToModelNeedsAGrammarAndItsConfigurationIsReloadedFromDisk (lines 140-151) establish the bidirectional and T2M gates and the reread configuration.

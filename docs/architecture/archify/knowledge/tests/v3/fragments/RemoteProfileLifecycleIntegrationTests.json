@@ -1,0 +1,167 @@
+[
+  {
+    "id": "java:com.example.editor.remote.storage.RemoteProfileLifecycleIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Ciclo de vida de los perfiles de repositorios: guardar, reabrir, listar, borrar y decidir el uso de Git",
+      "en": "Repository profile lifecycle: save, reopen, list, delete and decide Git support"
+    },
+    "type": "INTEGRATION",
+    "layer": "external",
+    "caps": [
+      "external_repositories"
+    ],
+    "procs": [
+      {
+        "id": "repos_author_connection",
+        "stages": [
+          "d",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "repos_connect_sync",
+        "stages": [
+          "a1",
+          "d1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_remote_repository_exchange",
+        "stages": [
+          "c1",
+          "d1"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/remote/storage/RemoteStorageProfileManager.java",
+      "src/main/java/com/example/editor/remote/storage/RemoteStorageProperties.java",
+      "src/main/java/com/example/editor/remote/git/GitRemoteUrlResolver.java",
+      "src/main/java/com/example/editor/remote/storage/RemoteStorageLocationResolver.java",
+      "src/main/java/com/example/editor/remote/git/NativeGitProperties.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío donde se guarda el registro de perfiles; sin red ni credenciales.",
+      "en": "Empty temporary directory where the profile registry is saved; no network or credentials."
+    },
+    "setup": {
+      "es": "Gestor de perfiles real con JsonMapper real y fichero de registro en @TempDir; el oráculo lee el fichero crudo y compara con literales.",
+      "en": "Real profile manager with a real JsonMapper and a registry file in @TempDir; the oracle reads the raw file and compares with literals."
+    },
+    "executes": {
+      "es": "RemoteStorageProfileManager.upsert para los seis proveedores, instancia nueva con initialize, configurations y delete; GitRemoteUrlResolver.resolve sobre los perfiles recargados, con y sin servidores permitidos.",
+      "en": "RemoteStorageProfileManager.upsert for the six providers, a new instance with initialize, configurations and delete; GitRemoteUrlResolver.resolve over the reloaded profiles, with and without allowed hosts."
+    },
+    "asserts": {
+      "es": "Registro JSON crudo con proveedor, URL base, tamaño máximo, rama y carpeta raíz por perfil y sin credenciales; listado ordenado tras reiniciar; borrado persistente; direcciones Git literales; RemoteStorageException por proveedor no Git, id inválido, capacidad y perfil desconocido.",
+      "en": "Raw JSON registry with provider, base URL, maximum size, branch and root folder per profile and no credentials; sorted listing after restart; persistent deletion; literal Git addresses; RemoteStorageException for non-Git provider, invalid id, capacity and unknown profile."
+    },
+    "behavior": {
+      "es": "Se guarda un perfil por proveedor con su URL base y su tamaño máximo de artefacto, sin credenciales; tras reiniciar se listan los mismos perfiles y el borrado persiste; solo tres proveedores admiten operaciones Git y su dirección se calcula con su URL base; los perfiles inválidos o excesivos se rechazan sin tocar el registro.",
+      "en": "One profile per provider is saved with its base URL and maximum artifact size, without credentials; after a restart the same profiles are listed and deletion persists; only three providers support Git operations and their address is computed from their base URL; invalid or excessive profiles are rejected without touching the registry."
+    },
+    "rule": {
+      "es": "Solo los proveedores de repositorio Git admiten operaciones Git, y solo hacia servidores de la lista permitida del servidor.",
+      "en": "Only Git repository providers support Git operations, and only towards servers on the server's allowed list."
+    },
+    "scenario": {
+      "es": "Seis perfiles (GitHub, GitLab, un servicio de nube de terceros, Google Drive, Dropbox y Git genérico) con URL base y tamaños propios; reinicio con una instancia nueva; borrado de uno; cálculo de direcciones Git; un tercer perfil sobre un límite de dos, un identificador inválido y un perfil sin repositorio.",
+      "en": "Six profiles (GitHub, GitLab, a third-party cloud service, Google Drive, Dropbox and generic Git) with their own base URL and sizes; restart with a new instance; deletion of one; Git address computation; a third profile over a limit of two, an invalid identifier and a profile without repository."
+    },
+    "result": {
+      "es": "El registro contiene los seis perfiles con los valores esperados, la instancia nueva los lista en orden, GitHub, GitLab y Git genérico dan su dirección y los otros tres se rechazan, y los rechazos dejan el registro idéntico byte a byte.",
+      "en": "The registry holds the six profiles with the expected values, the new instance lists them in order, GitHub, GitLab and generic Git give their address and the other three are rejected, and rejections leave the registry byte-for-byte identical."
+    },
+    "expected": {
+      "es": "Registro, listado, direcciones y rechazos coinciden con los literales esperados en los cuatro casos.",
+      "en": "Registry, listing, addresses and rejections match the expected literals in the four cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que los perfiles de repositorios se guardan, sobreviven a un reinicio sin credenciales y condicionan correctamente el uso de Git.",
+      "en": "Real evidence that repository profiles are saved, survive a restart without credentials and correctly constrain Git use."
+    },
+    "limits": {
+      "es": "Solo la capa de servidor, sin el formulario ni la API web; no comprueba la conexión con ningún proveedor ni las credenciales más allá de que no se guardan; un solo proceso y archivo local.",
+      "en": "Server layer only, without the form or the web API; it does not check the connection to any provider or credentials beyond not saving them; single process and local file."
+    },
+    "strengthWhy": {
+      "es": "Gestor y fichero reales, oráculo independiente (JSON crudo y literales), casos negativos y mapeo directo a las etapas de perfil.",
+      "en": "Real manager and file, independent oracle (raw JSON and literals), negative cases and direct mapping to the profile stages."
+    },
+    "cases": [
+      {
+        "n": "oneProfilePerProviderIsStoredWithItsBaseUrlAndMaximumSize",
+        "scenario": {
+          "es": "Guardar seis perfiles con URL base y tamaño propios.",
+          "en": "Save six profiles with their own base URL and size."
+        },
+        "result": {
+          "es": "Registro crudo con los valores esperados y sin credenciales.",
+          "en": "Raw registry with the expected values and no credentials."
+        }
+      },
+      {
+        "n": "afterARestartANewInstanceListsTheSameProfilesAndDeletionPersists",
+        "scenario": {
+          "es": "Reiniciar, listar y borrar un perfil.",
+          "en": "Restart, list and delete a profile."
+        },
+        "result": {
+          "es": "Mismos perfiles en orden y borrado persistente.",
+          "en": "Same profiles in order and persistent deletion."
+        }
+      },
+      {
+        "n": "onlyThreeProvidersSupportGitOperations",
+        "scenario": {
+          "es": "Calcular la dirección Git de los seis perfiles.",
+          "en": "Compute the Git address of the six profiles."
+        },
+        "result": {
+          "es": "Tres direcciones literales y tres rechazos; servidor no permitido rechazado.",
+          "en": "Three literal addresses and three rejections; disallowed server rejected."
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.remote.storage.RemoteStorageLocationResolverTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/remote/storage/RemoteProfileLifecycleIntegrationTests.java",
+        "line": 59
+      },
+      {
+        "path": "src/test/java/com/example/editor/remote/storage/RemoteProfileLifecycleIntegrationTests.java",
+        "line": 75
+      },
+      {
+        "path": "src/test/java/com/example/editor/remote/storage/RemoteProfileLifecycleIntegrationTests.java",
+        "line": 88
+      },
+      {
+        "path": "src/test/java/com/example/editor/remote/storage/RemoteProfileLifecycleIntegrationTests.java",
+        "line": 129
+      },
+      {
+        "path": "src/test/java/com/example/editor/remote/storage/RemoteProfileLifecycleIntegrationTests.java",
+        "line": 144
+      },
+      {
+        "path": "src/test/java/com/example/editor/remote/storage/RemoteProfileLifecycleIntegrationTests.java",
+        "line": 173
+      },
+      {
+        "path": "src/test/java/com/example/editor/remote/storage/RemoteProfileLifecycleIntegrationTests.java",
+        "line": 134
+      }
+    ]
+  }
+]

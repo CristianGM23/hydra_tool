@@ -1,0 +1,124 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.application.GrammarConversionApplyRejectIntegrationTests",
+    "name": {
+      "es": "Aplicar o mantener una conversión de tecnología de gramática",
+      "en": "Applying or keeping a grammar technology conversion"
+    },
+    "type": "BEHAVIOR",
+    "layer": "definition",
+    "caps": [
+      "grammar"
+    ],
+    "procs": [
+      {
+        "id": "grammar_conversion_preview",
+        "stages": [
+          "ap",
+          "rj",
+          "pv"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarPlatformConversionService.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarRepository.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible.",
+      "en": "Writable temp directory."
+    },
+    "setup": {
+      "es": "GrammarApplicationService y GrammarPlatformConversionService reales sobre @TempDir, sin mocks.",
+      "en": "Real GrammarApplicationService and GrammarPlatformConversionService over @TempDir, no mocks."
+    },
+    "executes": {
+      "es": "Guarda una gramática Langium real, calcula una vista previa de conversión real a Xtext con GrammarPlatformConversionService.prepare, y después aplica (GrammarApplicationService.replace) o deliberadamente no aplica la conversión.",
+      "en": "Saves a real Langium grammar, computes a real conversion preview to Xtext with GrammarPlatformConversionService.prepare, and then either applies (GrammarApplicationService.replace) or deliberately does not apply the conversion."
+    },
+    "asserts": {
+      "es": "La vista previa real es semánticamente equivalente; tras aplicar, la gramática releída desde un repositorio real distinto tiene la tecnología y el texto convertidos; si no se aplica, la gramática releída conserva la tecnología y el texto originales intactos.",
+      "en": "The real preview is semantically equivalent; after applying, the grammar reread from a separate real repository has the converted technology and text; if not applied, the reread grammar keeps the original technology and text intact."
+    },
+    "behavior": {
+      "es": "Aplicar una conversión es de verdad guardar la gramática convertida a través del mismo servicio real que respalda el guardado del diseñador; mantener la tecnología actual es de verdad no guardar nada, dejando la gramática original intacta.",
+      "en": "Applying a conversion is genuinely saving the converted grammar through the same real service backing the designer's save; keeping the current technology is genuinely not saving anything, leaving the original grammar intact."
+    },
+    "rule": {
+      "es": "Solo aplicar persiste el cambio de tecnología y texto; no aplicar deja el documento guardado sin modificar.",
+      "en": "Only applying persists the technology and text change; not applying leaves the saved document unmodified."
+    },
+    "scenario": {
+      "es": "Una gramática Langium real convertida de verdad a Xtext, aplicada en un caso y mantenida sin aplicar en el otro.",
+      "en": "A real Langium grammar genuinely converted to Xtext, applied in one case and kept unapplied in the other."
+    },
+    "result": {
+      "es": "Tecnología y texto Xtext reales tras aplicar; tecnología y texto Langium originales intactos al no aplicar.",
+      "en": "Real Xtext technology and text after applying; original Langium technology and text intact when not applied."
+    },
+    "expected": {
+      "es": "Cada caso deja la gramática guardada con la tecnología y el texto correspondientes.",
+      "en": "Each case leaves the saved grammar with the corresponding technology and text."
+    },
+    "guarantee": {
+      "es": "Evidencia de que aplicar o mantener una conversión son decisiones reales con consecuencias reales de persistencia, no solo del cálculo de la vista previa.",
+      "en": "Evidence that applying or keeping a conversion are real decisions with real persistence consequences, not just the preview computation."
+    },
+    "limits": {
+      "es": "Un único par de tecnologías (Langium a Xtext); no cubre una conversión no equivalente ni ANTLR.",
+      "en": "A single technology pair (Langium to Xtext); does not cover a non-equivalent conversion nor ANTLR."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Integración real de extremo a extremo sin mocks entre el servicio de conversión real y el servicio de aplicación real que guarda en disco, con relectura desde un repositorio real distinto.",
+      "en": "Real end-to-end integration with no mocks between the real conversion service and the real application service that saves to disk, with reread from a separate real repository."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "applyingARealEquivalentConversionGenuinelyPersistsTheNewTechnologyAndText",
+        "scenario": {
+          "es": "Aplicar una conversión equivalente real",
+          "en": "Applying a real equivalent conversion"
+        },
+        "result": {
+          "es": "Tecnología y texto Xtext reales persistidos",
+          "en": "Real Xtext technology and text persisted"
+        }
+      },
+      {
+        "n": "keepingTheCurrentTechnologyGenuinelyLeavesTheOriginalGrammarUntouched",
+        "scenario": {
+          "es": "No aplicar la conversión calculada",
+          "en": "Not applying the computed conversion"
+        },
+        "result": {
+          "es": "Tecnología y texto Langium originales intactos",
+          "en": "Original Langium technology and text intact"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.grammar.application.GrammarPlatformConversionServiceTests",
+      "java:com.example.editor.grammar.application.GrammarApplicationServiceSaveIntegrationTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarConversionApplyRejectIntegrationTests.java",
+        "line": 38
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarConversionApplyRejectIntegrationTests.java",
+        "line": 70
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarConversionApplyRejectIntegrationTests.java",
+        "line": 51
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

@@ -67,6 +67,13 @@ public class ValidationModelApplicationService {
         catch(CanonicalDocumentStoreException exception) { throw translate(exception); }
     }
 
+    /** Descripción: Resume el modelo de validación de un solo metamodelo leyendo únicamente su documento, de modo que un documento ilegible de otro metamodelo no lo impide (preparación de Home). Entradas: metamodelId: identificador del metamodelo o del contexto semántico. Salida: el mismo resumen que findAll, o vacío si no hay modelo. */ public java.util.Optional<ValidationModelSummary> summary(String metamodelId) {
+        try {
+            return repository.findById(metamodelId).map(item -> new ValidationModelSummary(item.document().id(), item.document().metamodelId(),
+                    item.document().schemaVersion(), item.document().rules().size(), item.document().ruleSets().size(), item.etag()));
+        } catch(CanonicalDocumentStoreException exception) { throw translate(exception); }
+    }
+
     /** Descripción: Valida las condiciones necesarias para «check» y rechaza entradas no válidas. Entradas: metamodelId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ public ValidationModelCheckReport check(String metamodelId) {
         ValidationModel model = find(metamodelId).validationModel();
         return checker.check(model, requireMetamodel(metamodelId), requireExpressions(metamodelId, model.expressionModelId()), optionalActions(metamodelId, model.actionModelId()));
@@ -107,6 +114,7 @@ public class ValidationModelApplicationService {
         try { return metamodelService.findById(id).metamodel(); }
         catch(MetamodelApplicationException exception) {
             ValidationModelApplicationException.Reason reason = switch(exception.getReason()) {
+                case CORRUPT_CONFIGURATION -> throw exception;
                 case INVALID_REQUEST -> ValidationModelApplicationException.Reason.INVALID_REQUEST;
                 case NOT_FOUND -> ValidationModelApplicationException.Reason.NOT_FOUND;
                 case CONFLICT -> ValidationModelApplicationException.Reason.CONFLICT;

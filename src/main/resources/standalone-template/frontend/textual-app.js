@@ -3,7 +3,7 @@
   const state={descriptor:null,editor:null,grammar:null,style:null,draft:null,etag:'',dirty:false,worker:null,workerReady:false,requestId:0,pending:new Map(),diagnostics:[],changeTimer:null,version:1,capabilityDocuments:{},runtime:null};
   const byId=id=>document.getElementById(id);
   const status=text=>{byId('status').textContent=text;};
-  const jsonRequest=async(path,options={})=>{const response=await fetch(path,options);if(!response.ok)throw new Error((await response.text())||`HTTP ${response.status}`);return {value:response.status===204?null:await response.json(),etag:(response.headers.get('ETag')||'').replaceAll('"','')};};
+  const jsonRequest=(path,options={})=>window.HydraEditorTransport.request(path,options);
   const browserPath=path=>`/${String(path||'').replace(/^frontend\//,'').replace(/^\/+/, '')}`;
   const extension=()=>state.editor?.fileExtensions?.[0]||state.descriptor?.settings?.fileExtension||'.dsl';
   const modelId=()=>state.draft?.id||'';

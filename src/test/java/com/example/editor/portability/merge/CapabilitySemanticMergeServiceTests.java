@@ -28,8 +28,9 @@ class CapabilitySemanticMergeServiceTests {
                 """));
 
         CapabilitySemanticMergePreview preview = service.preview(new CapabilitySemanticMergeRequest(
-                existing, recovered, "library", Map.of(), List.of(), CapabilitySemanticMergeDecision.MERGE,
-                Map.of(), false));
+                existing, recovered, "library", Map.of(), List.of(), null,
+                Map.of("validations.json#document", CapabilitySemanticMergeDecision.MERGE,
+                        "validations.json/rules/existing-rule", CapabilitySemanticMergeDecision.KEEP_EXISTING), false));
 
         assertThat(preview.applicable()).isTrue();
         assertThat(preview.items()).anyMatch(item -> item.explanation().contains("different identifier"));

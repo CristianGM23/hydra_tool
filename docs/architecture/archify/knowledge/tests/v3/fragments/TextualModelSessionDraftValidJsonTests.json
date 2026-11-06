@@ -1,0 +1,28 @@
+[
+  {
+    "id": "java:com.example.editor.textual.TextualModelSessionDraftValidJsonTests",
+    "name": { "es": "Sesión de edición en texto: el indicador de borrador válido llega en la respuesta", "en": "Text editing session: the valid-draft flag is part of the response" },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": ["grammar"],
+    "procs": [],
+    "pre": null,
+    "executes": { "es": "Serializa una sesión sin errores y otra con un error, y relee el resultado como sesión, incluso con el indicador falsificado.", "en": "Serializes a session without errors and another with an error, and reads the result back as a session, even with the flag forged." },
+    "asserts": { "es": "El JSON trae el indicador verdadero sin errores y falso con un error; al releer, el indicador se recalcula de los diagnósticos y no se toma del texto.", "en": "The JSON carries the flag true without errors and false with an error; when read back, the flag is recomputed from the diagnostics and not taken from the text." },
+    "behavior": { "es": "Protege la corrección de un defecto: la pantalla del editor de texto no recibía el indicador de borrador válido, así que nunca marcaba el borrador como validado ni permitía promoverlo.", "en": "Protects the fix of a defect: the text editor screen did not receive the valid-draft flag, so it never marked the draft as validated nor allowed promoting it." },
+    "rule": { "es": "Solo un borrador sin errores se considera válido.", "en": "Only a draft without errors is considered valid." },
+    "scenario": { "es": "Sesión con un aviso y sesión con un error de gramática.", "en": "Session with a warning and session with a grammar error." },
+    "result": { "es": "El indicador aparece en la respuesta con el valor correcto.", "en": "The flag appears in the response with the right value." },
+    "expected": { "es": "Verdadero sin errores, falso con error, y nunca arrastrado de un texto guardado.", "en": "True without errors, false with an error, and never carried over from stored text." },
+    "guarantee": { "es": "La pantalla recibe el mismo indicador de borrador válido que calcula el servidor.", "en": "The screen receives the same valid-draft flag the server computes." },
+    "limits": { "es": "Es una prueba unitaria de serialización con un lector estándar; no recorre el servidor web ni la pantalla.", "en": "It is a serialization unit test with a standard reader; it does not walk the web server or the screen." },
+    "strength": "LIMITED",
+    "strengthWhy": { "es": "Prueba unitaria de un formato de datos.", "en": "Unit test of a data format." },
+    "external": "none",
+    "cases": [],
+    "related": ["pw:e2e/real/grammar/textual-model-edit-fix-save.spec.ts"],
+    "src": [{ "path": "src/test/java/com/example/editor/textual/TextualModelSessionDraftValidJsonTests.java", "line": 36 }],
+    "prod": ["src/main/java/com/example/editor/textual/runtime/TextualModelSession.java"],
+    "confidence": "ANALYZED"
+  }
+]

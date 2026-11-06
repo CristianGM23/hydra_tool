@@ -9,6 +9,7 @@ import com.example.editor.artifact.transaction.HydraArtifactTransactionOperation
 import com.example.editor.artifact.transaction.HydraArtifactTransactionService;
 
 import com.example.editor.metamodel.application.CanonicalMetamodelApplicationService;
+import com.example.editor.metamodel.application.MetamodelApplicationException;
 import com.example.editor.metamodel.core.MetaModel;
 import com.example.editor.metamodel.validation.MetamodelValidationFingerprint;
 import com.example.editor.transformation.core.TransformationCheckReport;
@@ -164,6 +165,15 @@ public class TransformationApplicationService {
             if(endpoint.metamodelId().isBlank()) continue;
             try {
                 result.add(metamodels.findById(endpoint.metamodelId()).metamodel());
+            } catch(MetamodelApplicationException exception) {
+                // A corrupt stored metamodel keeps its own 409 (D-MM-CORRUPT-CONTRATO); one that cannot be read is a server-side failure,
+                // never the client's mistake.
+                if(exception.isCorruptConfiguration()) throw exception;
+                if(exception.getReason() == MetamodelApplicationException.Reason.STORAGE_ERROR)
+                    throw new TransformationApplicationException(TransformationApplicationException.Reason.STORAGE_ERROR,
+                            "Transformation endpoint metamodel could not be read: " + endpoint.metamodelId(), exception);
+                throw new TransformationApplicationException(TransformationApplicationException.Reason.INVALID_REQUEST,
+                        "Transformation endpoint metamodel was not found: " + endpoint.metamodelId(), exception);
             } catch(RuntimeException exception) {
                 // The checker reports structural problems. Missing semantic contexts are
                 // translated here to a stable application error because execution and save

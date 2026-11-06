@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-15T07:49:48+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261015-094531",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "1d95f39bc6451e983d58be0e82cde59fe5afd07175953ab981bd3f2b0d8fed90",
+  "reportCheckpointName": "0024-01792050587411678100-70353a9f0bff4b04bd7dd99b2eab6f29.json",
+  "testResults": [
+    {
+      "id": "S261",
+      "title": "Vitest file: src/editor-definition/editorCapabilityHelp.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.19,
+      "logSha256": "2780a0d14d83e710db0fc05b252597aa75210a7164d8b191858e07b2df583f87",
+      "logRelativePath": "logs/S261.log"
+    },
+    {
+      "id": "S262",
+      "title": "Vitest file: src/editor-definition/editorDefinitionFactory.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.07,
+      "logSha256": "455c85e72722e90612f548096195737a63f92385808f3155639292cf47d10dbf",
+      "logRelativePath": "logs/S262.log"
+    },
+    {
+      "id": "S263",
+      "title": "Vitest file: src/editor-definition/editorDefinitionMappingMutations.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 15.29,
+      "logSha256": "6684c9663435117bef01a253a60274a6cc92f0f2b1216f62bdb2938bf37bdfdb",
+      "logRelativePath": "logs/S263.log"
+    },
+    {
+      "id": "S264",
+      "title": "Vitest file: src/editor-definition/editorDefinitionNormalization.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 27.99,
+      "logSha256": "0101143aab31ecbe404e2ee31e974449ecb13f1f25b4b7eebe1afa7b60b1433c",
+      "logRelativePath": "logs/S264.log"
+    },
+    {
+      "id": "S265",
+      "title": "Vitest file: src/editor-definition/editorDefinitionValidation.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 38.56,
+      "logSha256": "de835829b87a6abb13cac4d3d868127fb4b654d0457211ce7b67b482f99ae849",
+      "logRelativePath": "logs/S265.log"
+    },
+    {
+      "id": "S266",
+      "title": "Vitest file: src/editor-definition/editorNotationGeometry.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.71,
+      "logSha256": "9a8178271ef1b32d953c1ad8f68195e819574cca28c5a652c6fd0127eeb3d442",
+      "logRelativePath": "logs/S266.log"
+    },
+    {
+      "id": "S267",
+      "title": "Vitest file: src/editor-definition/editorRuntimeLayout.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.21,
+      "logSha256": "30e3613f3af5cb0c7f62ef5e921c118d1fd633ef00919e79b89c450d1b560d41",
+      "logRelativePath": "logs/S267.log"
+    },
+    {
+      "id": "S268",
+      "title": "Vitest file: src/editor-definition/editorRuntimeNormalization.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.22,
+      "logSha256": "7516097700ab661cbcb3bd54f0ba58ecdb8ae49b0cd99cba47404cdd2f954c3d",
+      "logRelativePath": "logs/S268.log"
+    },
+    {
+      "id": "S269",
+      "title": "Vitest file: src/editor-definition/editorVisualAssetUrl.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.0,
+      "logSha256": "e95133aed3cda77795c23d060cd48ea4c3d8f5c151c7b430aefffdfcfc814f66",
+      "logRelativePath": "logs/S269.log"
+    },
+    {
+      "id": "S270",
+      "title": "Vitest file: src/editor-definition/metamodelRootDetection.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.09,
+      "logSha256": "3095685eb19a6d1be94f470ee81942e8f695559ce21b5fd52e664c3e5ce67a0a",
+      "logRelativePath": "logs/S270.log"
+    },
+    {
+      "id": "S271",
+      "title": "Vitest file: src/editor-definition/standaloneCapabilityPackage.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.28,
+      "logSha256": "4d1d33adc55cdfad77e05d58fe8f0758df595ce96a7c2769b935f481024c5727",
+      "logRelativePath": "logs/S271.log"
+    },
+    {
+      "id": "S272",
+      "title": "Vitest file: src/event-designer/EventCategoryField.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.42,
+      "logSha256": "7b31d61952ec675539e5e5f41ef2e9f2b7dba53505efb25475dcd42828fa9f40",
+      "logRelativePath": "logs/S272.log"
+    },
+    {
+      "id": "S273",
+      "title": "Vitest file: src/event-designer/EventDesigner.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 41.01,
+      "logSha256": "01557e62a88c4931ab482741344f4916b2a028d99d4d7e3d27faf8be66f4d4df",
+      "logRelativePath": "logs/S273.log"
+    },
+    {
+      "id": "S274",
+      "title": "Vitest file: src/event-designer/EventStructureTree.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.36,
+      "logSha256": "e601689e9f5ee8e150fbae500e77736e2f1d38ee4553b7cdb6e204c04a1da7b9",
+      "logRelativePath": "logs/S274.log"
+    },
+    {
+      "id": "S275",
+      "title": "Vitest file: src/event-designer/api.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.31,
+      "logSha256": "9f8163aa9e8f028c4c6212ddd09704e51522ea3cdbbaadd88ce7b22c48b0d0f5",
+      "logRelativePath": "logs/S275.log"
+    },
+    {
+      "id": "S276",
+      "title": "Vitest file: src/event-designer/eventArchitectureDiagram.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.24,
+      "logSha256": "d92fd458482ebff08405513e68d9a47b02093679bd41a75a2d425cbb21a4a3b4",
+      "logRelativePath": "logs/S276.log"
+    },
+    {
+      "id": "S277",
+      "title": "Vitest file: src/event-designer/eventArchitecturePalette.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.03,
+      "logSha256": "1ea94b6f37ea72d801390e545a80624cc2ef7428ef6c984cf0cf20717324931d",
+      "logRelativePath": "logs/S277.log"
+    },
+    {
+      "id": "S278",
+      "title": "Vitest file: src/event-designer/eventConnections.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.15,
+      "logSha256": "1b0ba5714300b9e65f1c57479934a5e6c6fc30550438285b412ee4c7d6f33fb6",
+      "logRelativePath": "logs/S278.log"
+    },
+    {
+      "id": "S279",
+      "title": "Vitest file: src/event-designer/eventDesignerFactory.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.67,
+      "logSha256": "2344360461040efa9c20e644df9bd998434b91d9b9c2a33ef8df4b638a120052",
+      "logRelativePath": "logs/S279.log"
+    },
+    {
+      "id": "S280",
+      "title": "Vitest file: src/event-designer/eventDesignerValidation.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.3,
+      "logSha256": "ec3aa6228fcaf10ed0e93a7e73f10f1db9c06b693eab769e0c9b608a3b85dc18",
+      "logRelativePath": "logs/S280.log"
+    },
+    {
+      "id": "S281",
+      "title": "Vitest file: src/event-designer/eventModelNormalization.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.41,
+      "logSha256": "813620ab143741c051750cb79bffc1c0b31dd9d6641b9c1fd9f3b95b99993a28",
+      "logRelativePath": "logs/S281.log"
+    },
+    {
+      "id": "S282",
+      "title": "Vitest file: src/event-designer/flow/EventFlowDesigner.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 11.77,
+      "logSha256": "da18c43fa8b827e65166b0501f882f215038128676f45f533de0cd40373d8aba",
+      "logRelativePath": "logs/S282.log"
+    },
+    {
+      "id": "S283",
+      "title": "Vitest file: src/event-designer/flow/EventFlowStructureTree.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.02,
+      "logSha256": "d149c244a0a974766a9c58cb67fc04444eb671dbc4a968ea648b42ee80b4d300",
+      "logRelativePath": "logs/S283.log"
+    },
+    {
+      "id": "S284",
+      "title": "Vitest file: src/event-designer/flow/eventFlowFactory.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.14,
+      "logSha256": "dd91bb7595adb02a6fb497cf42145ffdd36b65867a9f46981b857851a919edb6",
+      "logRelativePath": "logs/S284.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

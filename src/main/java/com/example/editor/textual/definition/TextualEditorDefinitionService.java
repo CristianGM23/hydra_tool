@@ -37,9 +37,13 @@ public class TextualEditorDefinitionService {
     /** Descripción: Elimina o libera el recurso gestionado por «delete» de forma controlada. Entradas: id: identificador que delimita el recurso objetivo; e: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void delete(String id,String e){find(id);repository.delete(id,e);}
     /** Descripción: Resuelve el snapshot efectivo del editor textual y sigue el snapshot activo salvo fijación explícita. Entradas: m: definición textual cuya política de snapshot debe aplicarse. Salida: devuelve el snapshot exitoso que debe gobernar el runtime textual. */ public GrammarCompilationSnapshot resolveSnapshot(TextualEditorDefinitionModel m){
         if(m==null||m.grammarId().isBlank())throw new IllegalArgumentException("Textual editor grammarId is required");
-        if(followsActiveSnapshot(m))return compilations.active(m.grammarId()).orElseThrow(()->new IllegalStateException("Textual editor requires an active successful grammar snapshot"));
+        if(followsActiveSnapshot(m))return compilations.active(m.grammarId()).orElseThrow(()->noActiveSnapshot(m));
         if(!m.compilationSnapshotId().isBlank()){GrammarCompilationSnapshot s=compilations.find(m.compilationSnapshotId());if(!s.grammarId().equals(m.grammarId())||!s.successful())throw new IllegalArgumentException("Textual editor requires a successful snapshot of its grammar");return s;}
-        return compilations.active(m.grammarId()).orElseThrow(()->new IllegalStateException("Textual editor requires an active successful grammar snapshot"));
+        return compilations.active(m.grammarId()).orElseThrow(()->noActiveSnapshot(m));
+    }
+
+    /** Descripción: Construye el error de estado que se devuelve cuando la gramática aún no tiene una compilación correcta activa. Entradas: m: definición textual. Salida: devuelve la excepción que la API traduce a 409. */ private static TextualGrammarSnapshotUnavailableException noActiveSnapshot(TextualEditorDefinitionModel m){
+        return new TextualGrammarSnapshotUnavailableException("Textual editor requires an active successful grammar snapshot: compile grammar '"+m.grammarId()+"' successfully first");
     }
 
     /** Descripción: Ejecuta la operación «optionalSnapshot» correspondiente a la responsabilidad de TextualEditorDefinitionService. Entradas: m: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private Optional<GrammarCompilationSnapshot> optionalSnapshot(TextualEditorDefinitionModel m){

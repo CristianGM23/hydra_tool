@@ -162,10 +162,20 @@ public class PythonMetamodelImporter implements MetamodelImporter {
                     attributes.add(new MetaAttribute(ImportParsingSupport.attributeId(classId, field.name()), field.name(), typeReference(use.baseType(), target), use.multiplicity(), use.ordered(), use.unique(), normalizeDefault(field.defaultValue()), annotations));
                 }
             }
+            // the accessors of a recovered field and the object protocol represent the field, not a domain operation (MULTIGEN)
+            Set<String> fieldNames = new java.util.LinkedHashSet<>();
+            for(PythonFieldSpec field : type.fields()) fieldNames.add(field.name());
+            int omitted = 0;
             for(PythonMethodSpec method : type.methods()) {
                 if("__init__".equals(method.name()) || "__new__".equals(method.name())) continue;
+                if(isAccessorOrObjectProtocol(method, fieldNames)) {
+                    omitted++;
+                    continue;
+                }
                 operations.add(buildOperation(classId, type, method));
             }
+            if(omitted > 0) warnings.add(new TransformationWarning("IMPORT_PYTHON_ACCESSORS_OMITTED", "$.classes[" + classId + "]",
+                    omitted + " get_/set_ accessors of recovered fields and object protocol methods were represented by the fields, not imported as operations"));
             for(String superType : type.bases()) {
                 PythonTypeUse use = parseType(superType);
                 String target = resolveKnownType(use.baseType(), type);
@@ -193,6 +203,16 @@ public class PythonMetamodelImporter implements MetamodelImporter {
             if(decorators.contains("contain") || decorators.contains("composition") || type.contains("containment")) return MetaRelationKind.CONTAINMENT;
             if(decorators.contains("aggregate")) return MetaRelationKind.AGGREGATION;
             return MetaRelationKind.REFERENCE;
+        }
+
+        /** Descripción: Indica si un método es un accesor get_x()/set_x(valor) de un campo recuperado de la misma clase o parte del protocolo de object (__eq__, __ne__, __hash__, __str__, __repr__). Entradas: method y nombres de campo. Salida: true si no es una operación de dominio. */
+        private static boolean isAccessorOrObjectProtocol(PythonMethodSpec method, Set<String> fieldNames) {
+            String name = method.name();
+            if(Set.of("__eq__", "__ne__", "__hash__", "__str__", "__repr__").contains(name)) return true;
+            long parameters = method.parameters().stream().filter(parameter -> !"self".equals(parameter.name()) && !"cls".equals(parameter.name())).count();
+            if(parameters == 0 && name.startsWith("get_") && name.length() > 4) return fieldNames.contains(name.substring(4));
+            if(parameters == 1 && name.startsWith("set_") && name.length() > 4) return fieldNames.contains(name.substring(4));
+            return false;
         }
 
         /** Descripción: Crea o prepara el resultado de «buildOperation» dentro de PythonTypeUse. Entradas: classId: identificador que delimita el recurso objetivo; owner: dato de entrada necesario para la operación; method: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private MetaOperation buildOperation(String classId, PythonTypeSpec owner, PythonMethodSpec method) {

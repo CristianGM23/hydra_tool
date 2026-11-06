@@ -1,0 +1,164 @@
+[
+  {
+    "id": "pw:e2e/real/publication/repos-connection-profile.spec.ts",
+    "name": {
+      "es": "Conexiones de repositorios de extremo a extremo: crear y guardar un perfil de GitHub y otro de GitLab",
+      "en": "Repository connections end to end: creating and saving a GitHub profile and a GitLab profile"
+    },
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": [
+      "external_repositories"
+    ],
+    "procs": [
+      {
+        "id": "repos_author_connection",
+        "stages": [
+          "a",
+          "b",
+          "c"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "frontend/src/repository-connections/RepositoryConnectionsCenter.tsx",
+      "frontend/src/repository-connections/RepositoryConnectionsGuidedSteps.tsx",
+      "frontend/src/repository-connections/RepositoryProfileList.tsx",
+      "frontend/src/repository-connections/repositoryProfileModel.ts",
+      "frontend/src/remote-storage/api.ts",
+      "src/main/java/com/example/editor/remote/storage/web/RemoteStorageController.java",
+      "src/main/java/com/example/editor/remote/storage/RemoteStorageProfileManager.java"
+    ],
+    "pre": {
+      "es": "Servidor real con almacenamiento temporal propio. Guardar un perfil es local: no se contacta con ningún proveedor ni se necesitan credenciales.",
+      "en": "Real server with its own temporary storage. Saving a profile is local: no provider is contacted and no credentials are needed."
+    },
+    "setup": {
+      "es": "Navegador real, interfaz en inglés, sin simulaciones. Identificadores únicos por ejecución.",
+      "en": "Real browser, interface in English, no simulations. Identifiers unique per run."
+    },
+    "executes": {
+      "es": "Abre #/repositories, pulsa 'New repository', alterna 'Guided' y 'Advanced / manual', rellena identificador y nombre, recorre los proveedores GitLab, un servicio de nube de terceros, Generic Git y GitHub, rellena propietario, repositorio, rama y carpeta raíz y pulsa 'Save repository'; repite con GitLab.",
+      "en": "Opens #/repositories, presses 'New repository', toggles 'Guided' and 'Advanced / manual', fills the id and name, walks through the GitLab, a third-party cloud service, Generic Git and GitHub providers, fills owner, repository, branch and root folder and presses 'Save repository'; repeats with GitLab."
+    },
+    "asserts": {
+      "es": "Sin carpeta raíz el guardado se rechaza y el perfil no existe en la lista del servidor; tras guardar, el servidor devuelve el perfil con proveedor, propietario, repositorio, rama y carpeta, el fichero de perfiles contiene lo mismo y ningún secreto, y el perfil sobrevive a recargar.",
+      "en": "Without a root folder the save is rejected and the profile is absent from the server list; after saving, the server returns the profile with provider, owner, repository, branch and folder, the profiles file holds the same and no secret, and the profile survives a reload."
+    },
+    "behavior": {
+      "es": "Una persona crea una conexión a un repositorio eligiendo proveedor y destino; los campos cambian según el proveedor y la conexión queda guardada con exactamente lo escrito.",
+      "en": "A person creates a repository connection by choosing a provider and a target; the fields change with the provider and the connection is saved with exactly what was typed."
+    },
+    "rule": {
+      "es": "El destino exige carpeta raíz, y la conexión guardada no contiene contraseñas ni tokens.",
+      "en": "The target requires a root folder, and the saved connection holds no passwords or tokens."
+    },
+    "scenario": {
+      "es": "Perfil nuevo en modo avanzado: GitHub con propietario, repositorio, rama y carpeta; después un perfil de GitLab con proyecto, rama y carpeta.",
+      "en": "New profile in advanced mode: GitHub with owner, repository, branch and folder; then a GitLab profile with project, branch and folder."
+    },
+    "result": {
+      "es": "Los dos perfiles quedan guardados en el servidor con las coordenadas del proveedor elegido y sin secretos.",
+      "en": "Both profiles are saved on the server with the coordinates of the chosen provider and no secrets."
+    },
+    "expected": {
+      "es": "Una ejecución correcta rechaza el perfil incompleto y guarda los completos con lo que se escribió.",
+      "en": "A passing run rejects the incomplete profile and saves the complete ones with what was typed."
+    },
+    "guarantee": {
+      "es": "Crear un perfil de repositorio en la interfaz real lo deja guardado y leíble en el servidor real, sin credenciales.",
+      "en": "Creating a repository profile in the real interface leaves it saved and readable on the real server, with no credentials."
+    },
+    "limits": {
+      "es": "El asistente se ejerce con una dirección de GitHub: se reconoce, se guarda con el botón general y el resultado coincide con el del modo avanzado. No recorre sus pasos de acceso ni 'Save and verify connection' (exige conectar la cuenta del proveedor), no prueba el acceso ni la conexión, y no cubre Dropbox, nubes de terceros ni Google Drive.",
+      "en": "The wizard is exercised with a GitHub address: it is recognized, saved with the general button and the result matches the advanced mode's. It does not walk its access steps or 'Save and verify connection' (which needs the provider account connected), does not test access or connection, and does not cover Dropbox, third-party clouds or Google Drive."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción de usuario real, servidor real y oráculo independiente (API y fichero de perfiles) sobre el resultado de identidad y destino, con un rechazo.",
+      "en": "Real user action, real server and an independent oracle (API and profiles file) on the identity and target outcome, with a rejection."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "perfil de GitHub en modo avanzado",
+        "scenario": {
+          "es": "Se alterna el modo, se recorren los proveedores y se guarda con y sin carpeta raíz.",
+          "en": "The mode is toggled, providers are walked and the profile is saved with and without a root folder."
+        },
+        "result": {
+          "es": "El incompleto se rechaza; el completo queda en el servidor y en el fichero de perfiles.",
+          "en": "The incomplete one is rejected; the complete one lands on the server and in the profiles file."
+        }
+      },
+      {
+        "n": "perfil de GitLab con proyecto y rama",
+        "scenario": {
+          "es": "Se elige GitLab, se escribe el proyecto, la rama y la carpeta y se guarda.",
+          "en": "GitLab is chosen, the project, branch and folder are typed and the profile is saved."
+        },
+        "result": {
+          "es": "Se guardan el proyecto y la rama y no queda propietario.",
+          "en": "The project and branch are saved and no owner remains."
+        }
+      },
+      {
+        "n": "el asistente guiado reconoce una URL de GitHub y guarda el mismo perfil que el modo avanzado",
+        "scenario": {
+          "es": "En el asistente se intenta guardar sin dirección, después se escribe una dirección con rama y carpeta, se reconoce y se guarda.",
+          "en": "In the wizard a save is attempted without an address, then an address with branch and folder is typed, recognized and saved."
+        },
+        "result": {
+          "es": "Sin dirección no se guarda nada; con ella el servidor guarda proveedor, repositorio, rama y carpeta, igual que en el modo avanzado.",
+          "en": "Without an address nothing is saved; with it the server stores provider, repository, branch and folder, as in advanced mode."
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/e2e/real/publication/repos-connection-profile.spec.ts",
+        "line": 32
+      },
+      {
+        "path": "frontend/e2e/real/publication/repos-connection-profile.spec.ts",
+        "line": 46
+      },
+      {
+        "path": "frontend/e2e/real/publication/repos-connection-profile.spec.ts",
+        "line": 65
+      },
+      {
+        "path": "frontend/e2e/real/publication/repos-connection-profile.spec.ts",
+        "line": 75
+      },
+      {
+        "path": "frontend/e2e/real/publication/repos-connection-profile.spec.ts",
+        "line": 80
+      },
+      {
+        "path": "frontend/e2e/real/publication/repos-connection-profile.spec.ts",
+        "line": 81
+      },
+      {
+        "path": "frontend/e2e/real/publication/repos-connection-profile.spec.ts",
+        "line": 103
+      },
+      {
+        "path": "frontend/e2e/real/publication/repos-connection-profile.spec.ts",
+        "line": 119
+      },
+      {
+        "path": "frontend/e2e/real/publication/repos-connection-profile.spec.ts",
+        "line": 130
+      },
+      {
+        "path": "frontend/e2e/real/publication/repos-connection-profile.spec.ts",
+        "line": 132
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

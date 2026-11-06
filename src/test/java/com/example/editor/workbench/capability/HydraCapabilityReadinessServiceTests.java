@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import com.example.editor.definition.EditorDefinitionApplicationService;
 import com.example.editor.definition.EditorDefinitionSummary;
@@ -47,9 +48,9 @@ class HydraCapabilityReadinessServiceTests {
         EditorDefinitionApplicationService editors = mock(EditorDefinitionApplicationService.class);
         IntegrationProfileApplicationService integrations = mock(IntegrationProfileApplicationService.class);
         when(metamodels.findById("people")).thenReturn(new MetamodelLoadResult(new MetaModel("2.1", "people", "People", List.of(), List.of(), List.of(), List.of(), Map.of()), "etag"));
-        when(validations.findAll()).thenReturn(List.of(new ValidationModelSummary("validation-people", "people", "1.0", 2, 1, "etag")));
-        when(events.list()).thenReturn(List.of(new EventModelSummary("people", "events", 3, "bindings", 2, "e", "b")));
-        when(flows.list()).thenReturn(List.of(new EventFlowSummary("flows", "people", 1, 4, "etag")));
+        when(validations.summary("people")).thenReturn(Optional.of(new ValidationModelSummary("validation-people", "people", "1.0", 2, 1, "etag")));
+        when(events.summary("people")).thenReturn(Optional.of(new EventModelSummary("people", "events", 3, "bindings", 2, "e", "b")));
+        when(flows.summary("people")).thenReturn(Optional.of(new EventFlowSummary("flows", "people", 1, 4, "etag")));
         when(gamification.listWithDiagnostics()).thenReturn(new GamificationCatalogResult(
                 List.of(new GamificationSummary("people", "game", 2, 1, 1, "e", "b")), List.of()));
         when(editors.list("people")).thenReturn(List.of(new EditorDefinitionSummary("editor", "people", "People editor", 2, 3, 1, "etag")));
@@ -73,9 +74,6 @@ class HydraCapabilityReadinessServiceTests {
         EditorDefinitionApplicationService editors = mock(EditorDefinitionApplicationService.class);
         IntegrationProfileApplicationService integrations = mock(IntegrationProfileApplicationService.class);
         when(metamodels.findById("people")).thenReturn(new MetamodelLoadResult(new MetaModel("2.1", "people", "People", List.of(), List.of(), List.of(), List.of(), Map.of()), "etag"));
-        when(validations.findAll()).thenReturn(List.of());
-        when(events.list()).thenReturn(List.of());
-        when(flows.list()).thenReturn(List.of());
         when(gamification.listWithDiagnostics()).thenReturn(GamificationCatalogResult.empty(
                 "Skipped invalid gamification document c16e3a29: Could not parse document: data/gamification/c16e3a29.gamification-definitions.json"));
         when(editors.list("people")).thenReturn(List.of());
@@ -109,9 +107,6 @@ class HydraCapabilityReadinessServiceTests {
         when(grammars.find("grammar-orders")).thenReturn(new GrammarLoadResponse(first, "e1"), new GrammarLoadResponse(second, "e2"));
         when(projection.project(org.mockito.ArgumentMatchers.any(GrammarDefinitionModel.class),
                 org.mockito.ArgumentMatchers.isNull())).thenReturn(projected);
-        when(validations.findAll()).thenReturn(List.of());
-        when(events.list()).thenReturn(List.of());
-        when(flows.list()).thenReturn(List.of());
         when(gamification.listWithDiagnostics()).thenReturn(new GamificationCatalogResult(List.of(), List.of()));
         when(editors.list("grammar.grammar-orders")).thenReturn(List.of());
         when(integrations.list("grammar.grammar-orders")).thenReturn(List.of());

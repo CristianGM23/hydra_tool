@@ -15,7 +15,10 @@ public record UpdateSiteLayerMergeRequest(String targetMetamodelId, String targe
         expectedEtag = text(expectedEtag);
         candidateId = text(candidateId);
         selection = selection == null ? UpdateSiteLayerSelection.all() : selection;
+        // defaultDecision solo se aplica a elementos sin colisión; una colisión exige siempre una decisión explícita en `decisions`.
         defaultDecision = defaultDecision == null ? UpdateSiteMergeDecision.KEEP_EXISTING : defaultDecision;
+        if(decisions != null && decisions.values().stream().anyMatch(java.util.Objects::isNull)) throw new IllegalArgumentException("A merge decision must not be null");
+        if(decisions != null && decisions.keySet().stream().anyMatch(key -> key == null || key.isBlank())) throw new IllegalArgumentException("A merge decision requires the key of the element it resolves");
         decisions = decisions == null || decisions.isEmpty() ? Map.of()
                 : Collections.unmodifiableMap(new LinkedHashMap<>(decisions));
     }

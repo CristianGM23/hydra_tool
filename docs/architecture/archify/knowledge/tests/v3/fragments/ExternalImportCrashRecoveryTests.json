@@ -1,0 +1,215 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalImportCrashRecoveryTests",
+    "name": {
+      "es": "Tras matar el proceso en mitad de una importación, el siguiente arranque la recupera",
+      "en": "After the process is killed in the middle of an import, the next start recovers it"
+    },
+    "type": "END_TO_END",
+    "layer": "platform",
+    "caps": [
+      "recovery",
+      "project",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "x_recover_external_project",
+        "stages": [
+          "pers",
+          "rb",
+          "d2"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "recovery_persist_rollback",
+        "stages": [
+          "a2",
+          "a3"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportCompensationService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportJournal.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportJournalStore.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+      "src/main/java/com/example/editor/definition/assets/EditorVisualAssetService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal compartido entre procesos; cada paso es una JVM nueva con HYDRA completo (directorio de trabajo también temporal).",
+      "en": "Temporary directory shared between processes; each step is a new JVM with the whole of HYDRA (working directory also temporary)."
+    },
+    "setup": {
+      "es": "La prueba no usa Spring: lanza procesos hijos con ProcessBuilder que arrancan la aplicación, importan y se detienen con Runtime.halt (sin hooks) en un punto concreto, y otros procesos que arrancan y recuperan. Solo se observa el disco.",
+      "en": "The test does not use Spring: it launches child processes with ProcessBuilder that start the application, import and stop with Runtime.halt (no hooks) at a given point, and other processes that start and recover. Only the disk is observed."
+    },
+    "executes": {
+      "es": "Mata la importación tras materializar, entre registrar la intención y ejecutar el efecto, y entre ejecutar el efecto y registrarlo; mata también la propia recuperación al borrar el primer editor; reinicia tantas veces como haga falta; repite sobre un metamodelo ya importado.",
+      "en": "Kills the import after materializing, between recording the intent and executing the effect, and between executing the effect and recording it; also kills the recovery itself when deleting the first editor; restarts as many times as needed; repeats over an already imported metamodel."
+    },
+    "asserts": {
+      "es": "Tras cada muerte hay diario y, según el punto, residuo canónico; tras el reinicio el SHA-256 de todos los ficheros canónicos vuelve al previo, no quedan diarios ni pendientes y el proyecto a medias desaparece; la recuperación interrumpida se completa en el reinicio siguiente; un metamodelo preexistente se conserva y sus capas vuelven a su estado previo.",
+      "en": "After each kill there is a journal and, depending on the point, canonical residue; after the restart the SHA-256 of every canonical file returns to the previous one, no journals or pending items remain and the half-made project disappears; the interrupted recovery completes on the next restart; a pre-existing metamodel is kept and its layers return to their previous state."
+    },
+    "behavior": {
+      "es": "Una importación interrumpida por una caída del proceso no deja residuo permanente: el siguiente arranque la reconcilia.",
+      "en": "An import interrupted by a process crash leaves no permanent residue: the next start reconciles it."
+    },
+    "rule": {
+      "es": "La recuperación depende solo de lo que hay en disco.",
+      "en": "Recovery depends only on what is on disk."
+    },
+    "scenario": {
+      "es": "Cuatro puntos de interrupción más una interrupción de la propia recuperación y un reinicio repetido.",
+      "en": "Four interruption points plus an interruption of the recovery itself and a repeated restart."
+    },
+    "result": {
+      "es": "Los almacenes canónicos vuelven a su estado previo tras el reinicio.",
+      "en": "The canonical stores return to their previous state after the restart."
+    },
+    "expected": {
+      "es": "Estado idéntico, sin diarios y sin proyecto a medias.",
+      "en": "Identical state, no journals and no half-made project."
+    },
+    "guarantee": {
+      "es": "La recuperación no comparte ningún estado en memoria con el proceso que cayó.",
+      "en": "Recovery shares no in-memory state with the process that died."
+    },
+    "limits": {
+      "es": "Simula la caída con una parada inmediata del proceso, no con un corte de energía: no verifica que la escritura llegue al medio físico. Una marca de propiedad ausente deja el directorio del proyecto sin borrar y lo comunica.",
+      "en": "It simulates the crash with an immediate process stop, not with a power cut: it does not verify that the write reaches the physical medium. A missing ownership marker leaves the project directory undeleted and reports it."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "JVM nuevas con la aplicación completa y comparación del contenido real del disco.",
+      "en": "New JVMs with the whole application and comparison of the real disk content."
+    },
+    "external": "none",
+    "confidence": "ANALYZED",
+    "src": []
+  },
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalImportCrashChild",
+    "name": {
+      "es": "Proceso hijo que arranca HYDRA y se detiene en un punto concreto",
+      "en": "Child process that starts HYDRA and stops at a given point"
+    },
+    "type": "OTHER",
+    "layer": "platform",
+    "caps": [
+      "recovery",
+      "project"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "No contiene casos de prueba: es un soporte que arranca la aplicación completa en un proceso aparte, importa o recupera y puede detenerse de golpe en un punto elegido.",
+      "en": "Contains no test cases: it is support code que arranca la aplicación completa en un proceso aparte, importa o recupera y puede detenerse de golpe en un punto elegido."
+    },
+    "asserts": {
+      "es": "No hay aserciones.",
+      "en": "There are no assertions."
+    },
+    "behavior": {
+      "es": "No verifica comportamiento por sí mismo.",
+      "en": "Verifies no behaviour by itself."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Ninguno: es un soporte de pruebas, sin ejecución propia.",
+      "en": "None: it is test support, with no execution of its own."
+    },
+    "result": {
+      "es": "No produce resultado de prueba.",
+      "en": "Produces no test result."
+    },
+    "expected": {
+      "es": "No aplica: no es un caso ejecutable.",
+      "en": "Not applicable: not an executable case."
+    },
+    "guarantee": {
+      "es": "Ninguna por sí solo; se ejerce en las pruebas que lo usan.",
+      "en": "None by itself; it is exercised in the tests that use it."
+    },
+    "limits": {
+      "es": "No es una prueba y no debe contarse como evidencia.",
+      "en": "It is not a test and must not be counted as evidence."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Utilidad de soporte sin aserciones.",
+      "en": "Support utility without assertions."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.project.recovery.ExternalImportCrashRecoveryTests"
+    ],
+    "confidence": "ANALYZED",
+    "src": []
+  },
+  {
+    "id": "java:com.example.editor.project.recovery.ImportFixtureArchives",
+    "name": {
+      "es": "Archivos de ejemplo y comparación de almacenes para las pruebas de importación",
+      "en": "Sample archives and store comparison for the import tests"
+    },
+    "type": "OTHER",
+    "layer": "platform",
+    "caps": [
+      "recovery",
+      "project"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "No contiene casos de prueba: es un soporte que construye los archivos ZIP del ejemplo Sirius y calcula el contenido de los almacenes canónicos para compararlos.",
+      "en": "Contains no test cases: it is support code que construye los archivos ZIP del ejemplo Sirius y calcula el contenido de los almacenes canónicos para compararlos."
+    },
+    "asserts": {
+      "es": "No hay aserciones.",
+      "en": "There are no assertions."
+    },
+    "behavior": {
+      "es": "No verifica comportamiento por sí mismo.",
+      "en": "Verifies no behaviour by itself."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Ninguno: es un soporte de pruebas, sin ejecución propia.",
+      "en": "None: it is test support, with no execution of its own."
+    },
+    "result": {
+      "es": "No produce resultado de prueba.",
+      "en": "Produces no test result."
+    },
+    "expected": {
+      "es": "No aplica: no es un caso ejecutable.",
+      "en": "Not applicable: not an executable case."
+    },
+    "guarantee": {
+      "es": "Ninguna por sí solo; se ejerce en las pruebas que lo usan.",
+      "en": "None by itself; it is exercised in the tests that use it."
+    },
+    "limits": {
+      "es": "No es una prueba y no debe contarse como evidencia.",
+      "en": "It is not a test and must not be counted as evidence."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Utilidad de soporte sin aserciones.",
+      "en": "Support utility without assertions."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.project.recovery.ExternalImportCrashRecoveryTests"
+    ],
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]

@@ -35,12 +35,18 @@ public class EditorVisualAssetService {
 
     /** Valida y guarda una imagen externa de forma content-addressed, devolviendo una ruta portable de HYDRA. */
     /** Descripción: Ejecuta la operación «store» correspondiente a la responsabilidad de EditorVisualAssetService. Entradas: sourcePath: ruta o ubicación utilizada por la operación; content: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ public String store(String sourcePath, byte[] content) {
+        return storeTracked(sourcePath, content).path();
+    }
+
+    /** Igual que {@link #store} pero indica si este almacenamiento creó el fichero (titularidad) o reutilizó uno idéntico ya existente. */
+    /** Descripción: Ejecuta la operación «storeTracked» correspondiente a la responsabilidad de EditorVisualAssetService. Entradas: sourcePath: ruta o ubicación utilizada por la operación; content: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ public StoredAsset storeTracked(String sourcePath, byte[] content) {
         ProjectVisualAssetPolicy.ProjectVisualAsset asset = policy.validate(sourcePath, content);
         byte[] validatedContent = asset.content();
         String digest = sha256(validatedContent);
         String extension = extension(sourcePath);
         String key = digest + "." + extension;
         Path destination = resolveKey(key);
+        boolean created = true;
         try {
             if(!Files.exists(root)) {
                 if(!createDirectories) throw new IllegalStateException("Editor visual asset directory is not available");
@@ -49,6 +55,7 @@ public class EditorVisualAssetService {
             try {
                 Files.write(destination, validatedContent, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
             } catch(FileAlreadyExistsException alreadyExists) {
+                created = false;
                 // Content-addressed keys make concurrent writes idempotent. Verify the winner instead of serializing all assets globally.
                 if(!Files.isRegularFile(destination) || Files.size(destination) != validatedContent.length || !digest.equals(sha256(destination)))
                     throw new IllegalStateException("Content-addressed visual asset collision detected", alreadyExists);
@@ -56,8 +63,29 @@ public class EditorVisualAssetService {
         } catch(IOException exception) {
             throw new IllegalStateException("Could not store editor visual asset", exception);
         }
-        return PREFIX + key;
+        return new StoredAsset(PREFIX + key, created);
     }
+
+    /** Ruta portable que tendría el asset (valida y calcula el hash sin escribir): permite registrar la intención antes de guardar. */
+    /** Descripción: Ejecuta la operación «portablePath» correspondiente a la responsabilidad de EditorVisualAssetService. Entradas: sourcePath: ruta o ubicación utilizada por la operación; content: valor de entrada que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ public String portablePath(String sourcePath, byte[] content) {
+        ProjectVisualAssetPolicy.ProjectVisualAsset asset = policy.validate(sourcePath, content);
+        return PREFIX + sha256(asset.content()) + "." + extension(sourcePath);
+    }
+
+    /** Indica si el asset canónico ya existe en el almacén. */
+    /** Descripción: Evalúa la condición «exists» sin modificar el estado externo. Entradas: portablePath: ruta o ubicación utilizada por la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ public boolean exists(String portablePath) {
+        return Files.isRegularFile(resolveKey(key(portablePath)));
+    }
+
+    /** Elimina un asset canónico concreto. Es idempotente: devuelve false si ya no existía. Solo debe llamarlo quien creó el asset. */
+    /** Descripción: Elimina o libera el recurso gestionado por «deleteIfPresent» de forma controlada. Entradas: portablePath: ruta o ubicación utilizada por la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ public boolean deleteIfPresent(String portablePath) {
+        Path target = resolveKey(key(portablePath));
+        try { return Files.deleteIfExists(target); }
+        catch(IOException exception) { throw new IllegalStateException("Could not delete editor visual asset " + portablePath, exception); }
+    }
+
+    /** Resultado de guardar un asset: ruta portable y si el fichero lo creó esta operación. */
+    public record StoredAsset(String path, boolean created) { }
 
     /** Lee y vuelve a validar un asset canónico antes de servirlo al navegador o a un exportador. */
     /** Descripción: Obtiene la información correspondiente a «read» dentro de EditorVisualAssetService. Entradas: portablePath: ruta o ubicación utilizada por la operación. Salida: devuelve el resultado definido por el contrato del método. */ public EditorVisualAsset read(String portablePath) {

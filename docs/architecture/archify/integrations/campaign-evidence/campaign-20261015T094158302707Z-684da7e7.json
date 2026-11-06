@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-15T09:41:58+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261015-113937",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "97e3b88bef2d07254a69e0e20363b0b54f4fc87fd0501b92bf1e2b9876daef39",
+  "reportCheckpointName": "0024-01792057316246493500-abf4ad1243e9476b9718324be7397dcb.json",
+  "testResults": [
+    {
+      "id": "S200",
+      "title": "Vitest file: src/application-shell/HydraHomeProjectDashboardContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.11,
+      "logSha256": "d44b6cc94344c83941b47d52edc4275cd27014604cee09dc2737185c91d8c149",
+      "logRelativePath": "logs/S200.log"
+    },
+    {
+      "id": "S201",
+      "title": "Vitest file: src/application-shell/HydraResponsiveWorkbenchLayoutContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.87,
+      "logSha256": "f4664d443df2159880760b3d5f72ae829af4f7977ab5c8e07b9c3b93cbb64bae",
+      "logRelativePath": "logs/S201.log"
+    },
+    {
+      "id": "S202",
+      "title": "Vitest file: src/application-shell/LazyModuleLoadingContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.66,
+      "logSha256": "32ffc7f4e1e21996c642835209d90a9512ab70e71a2c40ac57349d3cfe1899ac",
+      "logRelativePath": "logs/S202.log"
+    },
+    {
+      "id": "S203",
+      "title": "Vitest file: src/application-shell/moduleRegistry.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.8,
+      "logSha256": "0e2e304e3d4e338f1d3bd0e525444d87aa20d18e6c30db7ac9ca6325c39abd34",
+      "logRelativePath": "logs/S203.log"
+    },
+    {
+      "id": "S205",
+      "title": "Vitest file: src/audit-log/ActivityCaptureContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.72,
+      "logSha256": "0d56cf864d41890105dac6622881d342764d3f4c4db2df8ee5ca8873f224e9da",
+      "logRelativePath": "logs/S205.log"
+    },
+    {
+      "id": "S206",
+      "title": "Vitest file: src/audit-log/ActivityLogContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.12,
+      "logSha256": "4945eee42b2bd50cc1dcb28ab794e500d5a5002eccc4e0ee52b05afe39e935cb",
+      "logRelativePath": "logs/S206.log"
+    },
+    {
+      "id": "S207",
+      "title": "Vitest file: src/audit-log/ActivityRetentionContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.55,
+      "logSha256": "07d6aa78e5e00bff9dc6d46e51770cc1de8e9331238cdd2aa016ba9138c7015a",
+      "logRelativePath": "logs/S207.log"
+    },
+    {
+      "id": "S208",
+      "title": "Vitest file: src/blockly/blocklyInterchange.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.16,
+      "logSha256": "9d910ffc85723810b2566093acbe1ccd4df477173d3537f5a1e6b5024ce9e56b",
+      "logRelativePath": "logs/S208.log"
+    },
+    {
+      "id": "S209",
+      "title": "Vitest file: src/capability-center/CapabilityReadinessView.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.08,
+      "logSha256": "1075bd4a33da4ef577bb36f88e41b526473fd5698d62691d55a1b10665c6aab2",
+      "logRelativePath": "logs/S209.log"
+    },
+    {
+      "id": "S212",
+      "title": "Vitest file: src/components/HydraAdaptiveSelect.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.78,
+      "logSha256": "9d909a442d46a9e206758ab03cf30b0d213540fbe326fe92970e8673f33e0887",
+      "logRelativePath": "logs/S212.log"
+    },
+    {
+      "id": "S213",
+      "title": "Vitest file: src/components/Palette.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.01,
+      "logSha256": "c1bc3733f0677bc85c4719f21cfb666fdcec84e31cb27647105db42b99a389d3",
+      "logRelativePath": "logs/S213.log"
+    },
+    {
+      "id": "S214",
+      "title": "Vitest file: src/design-system/GuidedWorkflowCoverage.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.35,
+      "logSha256": "87f642e8440e3f34a459886831cf45d436dac0133130f01695ee962f1d86be13",
+      "logRelativePath": "logs/S214.log"
+    },
+    {
+      "id": "S215",
+      "title": "Vitest file: src/design-system/HydraDesignSystem.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.84,
+      "logSha256": "5224cb7cfec078aa582597c33aec61bd11904554b0382bf5d73045ad1e4b9cbc",
+      "logRelativePath": "logs/S215.log"
+    },
+    {
+      "id": "S216",
+      "title": "Vitest file: src/design-system/HydraDesignSystemContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.99,
+      "logSha256": "0999c59f7eacc9c1da5ff0381481074b244008a06ec32e39be3da1810b2d1b6f",
+      "logRelativePath": "logs/S216.log"
+    },
+    {
+      "id": "S217",
+      "title": "Vitest file: src/design-system/HydraFieldGuidance.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 3.94,
+      "logSha256": "6911583489b27614d6c8547e56de55e60001b9c40e2d70d4fd2235412955f0de",
+      "logRelativePath": "logs/S217.log"
+    },
+    {
+      "id": "S218",
+      "title": "Vitest file: src/design-system/HydraGuidedWorkflow.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.76,
+      "logSha256": "01fb2e8870099071a0771d41db70cf095fb1b975ac6bbe2de29bf32498784344",
+      "logRelativePath": "logs/S218.log"
+    },
+    {
+      "id": "S219",
+      "title": "Vitest file: src/design-system/HydraMultiSelectChips.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.57,
+      "logSha256": "1d2bec622304a58d7486f9877e0ae6e24d3ddfe68600f9a8a6714b7d88a918fd",
+      "logRelativePath": "logs/S219.log"
+    },
+    {
+      "id": "S220",
+      "title": "Vitest file: src/design-system/HydraWindowControlsCoverage.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.68,
+      "logSha256": "c88b44ee94e1f3f2ef65fb0ddcfd4a6e650c930f1d8ce7acd4a14bf2f357cb9e",
+      "logRelativePath": "logs/S220.log"
+    },
+    {
+      "id": "S221",
+      "title": "Vitest file: src/design-system/openFilePicker.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.29,
+      "logSha256": "acfa9f1409d19aff2a6888189f1e04f39b1798b546752963d2355e417b8c5910",
+      "logRelativePath": "logs/S221.log"
+    },
+    {
+      "id": "S222",
+      "title": "Vitest file: src/designer-ui/ConnectionToolIcon.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.13,
+      "logSha256": "5aeb2741dd6c84aa7c454300655ad71118b726e5175bdc46f6aed1cf6526da66",
+      "logRelativePath": "logs/S222.log"
+    },
+    {
+      "id": "S223",
+      "title": "Vitest file: src/designer-ui/DesignerControlLayoutContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.29,
+      "logSha256": "30b8e75104d7e425d15dc9037f5b3f5f4e11ee29e021aa00a5ffdb78f84cce2e",
+      "logRelativePath": "logs/S223.log"
+    },
+    {
+      "id": "S224",
+      "title": "Vitest file: src/designer-ui/DesignerDropdown.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.9,
+      "logSha256": "38e90ddb82e31bdc4e3595c42bdc4d911931a29262004c2263542e56d8066611",
+      "logRelativePath": "logs/S224.log"
+    },
+    {
+      "id": "S225",
+      "title": "Vitest file: src/designer-ui/DesignerFieldHelp.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.09,
+      "logSha256": "34a20f471e754b8de665149ee817f72132466565f9f053dc2fb2208b59410bf6",
+      "logRelativePath": "logs/S225.log"
+    },
+    {
+      "id": "S226",
+      "title": "Vitest file: src/designer-ui/DesignerFormUxContract.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.13,
+      "logSha256": "d71c144d13187a86e3d162c6e5629ce8c48c3f6dbe8f7669deee173317db7341",
+      "logRelativePath": "logs/S226.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

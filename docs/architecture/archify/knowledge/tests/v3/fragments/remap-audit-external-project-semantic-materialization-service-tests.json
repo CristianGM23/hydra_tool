@@ -1,0 +1,170 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalProjectSemanticMaterializationServiceTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Materialización real de un proyecto externo en un metamodelo canónico",
+      "en": "Real materialization of an external project into a canonical metamodel"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "metamodel",
+      "recovery"
+    ],
+    "procs": [
+      {
+        "id": "recovery_lifecycle",
+        "stages": [
+          "m"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_recover_external_project",
+        "stages": [
+          "mm"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_recover_external_project",
+        "stages": [
+          "mat",
+          "pers"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "x_project_lifecycle_overview",
+        "stages": [
+          "rc"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "metamodel_define_save",
+        "stages": [
+          "rec"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "project_import_export",
+        "stages": [
+          "i3"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "recovery_lifecycle",
+        "stages": [
+          "a7"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "recovery_persist_rollback",
+        "stages": [
+          "a1"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportService.java",
+      "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalValidationRecoveryService.java",
+      "src/main/java/com/example/editor/definition/importing/VisualDefinitionImportService.java",
+      "src/main/java/com/example/editor/definition/importing/VisualValidationAssociationService.java",
+      "src/main/java/com/example/editor/definition/EditorDefinitionApplicationService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible.",
+      "en": "Writable temp directory."
+    },
+    "executes": {
+      "es": "ExternalProjectSemanticMaterializationService.materialize real con sus ocho colaboradores reales (import de metamodelos con detección de contenido real, persistencia canónica real, capas visual y de validación recuperadas, editores), sin mocks ni capa web.",
+      "en": "Real ExternalProjectSemanticMaterializationService.materialize with its eight real collaborators (metamodel import with real content detection, real canonical persistence, recovered visual and validation layers, editors), with no mocks or web layer."
+    },
+    "asserts": {
+      "es": "Un único candidato semántico inequívoco se analiza de verdad, se persiste como metamodelo canónico real con ETag y se reutiliza sin sobrescribirse al reprocesar el mismo proyecto; dos fuentes semánticas igualmente plausibles hacen que HYDRA se niegue a adivinar, sin guardar nada y conservando el proyecto completo intacto.",
+      "en": "A single unambiguous semantic candidate is genuinely analysed, persisted as a real ETag-versioned canonical metamodel and reused without being overwritten when the same project is reprocessed again; two equally plausible semantic sources make HYDRA refuse to guess, saving nothing and leaving the whole project untouched."
+    },
+    "behavior": {
+      "es": "Materializar un proyecto externo persiste de verdad un documento de metamodelo canónico real, con marca de versión, solo cuando hay un candidato semántico inequívoco, dejándolo disponible para el resto de HYDRA exactamente como uno definido a mano.",
+      "en": "Materializing an external project genuinely persists a real, version-marked canonical metamodel document only when there is an unambiguous semantic candidate, leaving it available to the rest of HYDRA exactly like a hand-defined one."
+    },
+    "rule": {
+      "es": "Con un único candidato semántico se guarda el metamodelo con su marca de versión real y queda disponible para reutilizarse; con varios candidatos igualmente plausibles no se guarda nada y el proyecto completo se conserva intacto.",
+      "en": "With a single semantic candidate the metamodel is saved with a real version mark and stays available for reuse; with several equally plausible candidates nothing is saved and the whole project stays untouched."
+    },
+    "scenario": {
+      "es": "Un proyecto con una única fuente semántica se materializa y se reprocesa una segunda vez; un proyecto con dos fuentes semánticas igualmente plausibles se materializa una sola vez.",
+      "en": "A project with a single semantic source is materialized and reprocessed a second time; a project with two equally plausible semantic sources is materialized once."
+    },
+    "result": {
+      "es": "El metamodelo real queda guardado con ETag, disponible y se reutiliza sin duplicarse en el reprocesado; el proyecto con fuentes ambiguas no guarda ningún metamodelo y lo informa explícitamente.",
+      "en": "The real metamodel is saved with an ETag, available and reused without duplication on reprocessing; the project with ambiguous sources saves no metamodel and reports this explicitly."
+    },
+    "expected": {
+      "es": "Cada escenario produce exactamente el resultado de materialización y el estado de persistencia indicados.",
+      "en": "Each scenario produces exactly the stated materialization result and persistence state."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que el materializador genérico de proyectos externos guarda un documento de metamodelo canónico real con ETag cuando corresponde, dejándolo disponible como uno hecho a mano, y nunca adivina ni sobrescribe cuando la evidencia es ambigua.",
+      "en": "Real evidence that the generic external project materializer saves a real, ETag-versioned canonical metamodel document when appropriate, leaving it available like a hand-made one, and never guesses or overwrites when the evidence is ambiguous."
+    },
+    "limits": {
+      "es": "No ejercita la recuperación de capas visuales ni de reglas de validación reales porque el proyecto de prueba no incluye esas fuentes; tampoco cubre la elección de origen y plan por el usuario ni la confirmación explícita de guardado, que son pasos de interfaz no ejercitados aquí.",
+      "en": "It does not exercise real visual layer or validation rule recovery because the test project does not include those sources; it also does not cover the user's choice of source and plan or the explicit save confirmation, which are interface steps not exercised here."
+    },
+    "strengthWhy": {
+      "es": "Prueba real sin mocks (traits.mocks=false): construye los ocho colaboradores reales de ExternalProjectSemanticMaterializationService y recorre el guardado real con ETag y el rechazo seguro ante ambigüedad, cubriendo directamente recovery_persist_rollback.a1/d2, recovery_lifecycle.a7/m y x_recover_external_project.mat/pers/mm -- 'pers' (guardar los documentos reales con marca de version) y 'mm' (metamodelo recuperado disponible) son el mismo guardado real ya demostrado, visto desde la perspectiva del proceso cruzado.",
+      "en": "Real, mock-free test (traits.mocks=false): builds ExternalProjectSemanticMaterializationService's eight real collaborators and walks the real ETag-versioned save and the safe ambiguity-refusal paths, directly covering recovery_persist_rollback.a1/d2, recovery_lifecycle.a7/m and x_recover_external_project.mat/pers/mm -- 'pers' (persist the real documents with a version mark) and 'mm' (recovered metamodel available) are the same real save already demonstrated, viewed from the cross-process perspective."
+    },
+    "cases": [
+      {
+        "n": "materializesARealCanonicalMetamodelFromAUniqueSemanticCandidateAndReusesItOnReplay",
+        "scenario": {
+          "es": "Única fuente semántica, materializar y reprocesar",
+          "en": "Single semantic source, materialize and reprocess"
+        },
+        "result": {
+          "es": "Metamodelo real guardado y reutilizado sin duplicarse",
+          "en": "Real metamodel saved and reused without duplication"
+        }
+      },
+      {
+        "n": "refusesToGuessWhenTwoEquallyPlausibleSemanticSourcesAreFoundAndPreservesTheWholeProject",
+        "scenario": {
+          "es": "Dos fuentes semánticas igualmente plausibles",
+          "en": "Two equally plausible semantic sources"
+        },
+        "result": {
+          "es": "Ningún metamodelo se guarda y el proyecto queda intacto",
+          "en": "No metamodel is saved and the project stays untouched"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteLayerMaterializationServiceTests",
+      "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteMetamodelRecoveryServiceTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationServiceTests.java",
+        "line": 32
+      },
+      {
+        "path": "src/test/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationServiceTests.java",
+        "line": 54
+      }
+    ]
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "pw:e2e/real/transformation/define-policies.spec.ts",
+    "name": { "es": "Direccionalidad y políticas de una transformación en navegador real", "en": "Directionality and policies of a transformation in a real browser" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["transformation"],
+    "procs": [
+      { "id": "transformation_define", "stages": ["pol"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/transformation-designer/TransformationDesigner.tsx",
+      "frontend/src/transformation-designer/transformationDesignerModel.ts",
+      "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java",
+      "src/main/java/com/example/editor/transformation/persistence/JsonTransformationRepository.java"
+    ],
+    "pre": { "es": "Dos metamodelos sembrados por la API real; sin red ni credenciales.", "en": "Two metamodels seeded through the real API; no network or credentials." },
+    "executes": {
+      "es": "En el modo avanzado de un navegador real el usuario hace la transformación bidireccional, elige quién gana ante cambios simultáneos, intenta guardar sin reglas, crea las reglas de ida y vuelta, guarda y recarga la página.",
+      "en": "In advanced mode of a real browser the user makes the transformation bidirectional, chooses who wins on simultaneous changes, tries to save without rules, creates the forward and backward rules, saves and reloads the page."
+    },
+    "asserts": {
+      "es": "El primer intento queda bloqueado y no se crea nada; tras guardar, la API y el disco muestran bidireccional, la política elegida, rastro activo y reglas de ida y vuelta; el comprobador rechaza la misma definición sin reglas; la pantalla recarga lo guardado.",
+      "en": "The first attempt is blocked and nothing is created; after saving, the API and disk show bidirectional, the chosen policy, trace on and forward and backward rules; the checker rejects the same definition without rules; the screen reloads what was saved."
+    },
+    "behavior": {
+      "es": "La dirección y la política de conflictos que el usuario elige en el diseñador llegan guardadas al backend, y el rastro queda activo al ser bidireccional.",
+      "en": "The direction and conflict policy the user chooses in the designer reach the backend saved, and the trace stays on because it is bidirectional."
+    },
+    "rule": {
+      "es": "Una transformación bidireccional necesita sus reglas de ida y vuelta para poder guardarse y obliga a mantener el rastro.",
+      "en": "A bidirectional transformation needs its forward and backward rules to be saved and forces the trace to stay on."
+    },
+    "scenario": {
+      "es": "Definición bidireccional con política «gana el destino», primero sin reglas y después con el par completo.",
+      "en": "Bidirectional definition with a target-wins policy, first without rules and then with the full pair."
+    },
+    "result": {
+      "es": "Sin reglas no se guarda; con el par completo se guarda con la política elegida y se recupera al recargar.",
+      "en": "Without rules it is not saved; with the full pair it is saved with the chosen policy and recovered on reload."
+    },
+    "expected": {
+      "es": "Los valores leídos del backend y del disco coinciden con la elección hecha en pantalla.",
+      "en": "Values read from the backend and from disk match the choice made on screen."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que direccionalidad y política elegidas en el diseñador se persisten y de que la puerta de guardado rechaza lo incompleto.",
+      "en": "Real evidence that directionality and policy chosen in the designer are persisted and that the save gate rejects incomplete definitions."
+    },
+    "limits": {
+      "es": "No ejecuta ni sincroniza la transformación y solo prueba una política de conflicto; el rastro no se elige, se fuerza.",
+      "en": "It does not run or synchronize the transformation and tests only one conflict policy; the trace is forced, not chosen."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción real del usuario en navegador, backend real, lectura independiente del disco y rechazo comprobado.",
+      "en": "Real user action in a browser, real backend, independent disk reading and a verified rejection."
+    },
+    "external": "none",
+    "cases": [],
+    "related": ["pw:e2e/real/transformation/guided-m2m-bidirectional.spec.ts"],
+    "src": [
+      { "path": "frontend/e2e/real/transformation/define-policies.spec.ts", "line": 27 },
+      { "path": "frontend/e2e/real/transformation/define-policies.spec.ts", "line": 28 },
+      { "path": "frontend/e2e/real/transformation/define-policies.spec.ts", "line": 46 },
+      { "path": "frontend/e2e/real/transformation/define-policies.spec.ts", "line": 47 },
+      { "path": "frontend/e2e/real/transformation/define-policies.spec.ts", "line": 48 },
+      { "path": "frontend/e2e/real/transformation/define-policies.spec.ts", "line": 56 },
+      { "path": "frontend/e2e/real/transformation/define-policies.spec.ts", "line": 64 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

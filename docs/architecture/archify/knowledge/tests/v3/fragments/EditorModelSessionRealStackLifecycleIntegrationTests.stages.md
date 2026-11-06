@@ -1,0 +1,5 @@
+- model_editor_session.op: L146 sesión creada con raíz y validación al abrir según la política (1 diagnóstico de la regla).
+- model_editor_session.ed: L154 createNode y updateElement con etag distinto y revisión creciente en cada paso.
+- model_editor_session.va: L168 validate FULL da 2 diagnósticos de la regla (uno por elemento INVALID).
+- model_editor_session.qf: L173 quickFixes ofrece action:reset; applyQuickFix resuelve el diagnóstico, informe INCREMENTAL, nombres fixed/INVALID.
+- model_editor_session.sv: L183 el disco no tiene el cambio antes de save y sí después; un repositorio nuevo recupera el modelo y la revisión.

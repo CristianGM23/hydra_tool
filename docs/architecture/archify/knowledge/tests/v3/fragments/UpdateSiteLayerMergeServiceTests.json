@@ -1,0 +1,64 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteLayerMergeServiceTests",
+    "name": {
+      "es": "Composición selectiva: una colisión exige una decisión explícita y válida",
+      "en": "Selective composition: a collision requires an explicit, valid decision"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "recovery",
+      "persistence"
+    ],
+    "procs": [],
+    "prod": [
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMergeService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMergeRequest.java"
+    ],
+    "pre": null,
+    "executes": {
+      "es": "Fusiona listas de elementos con colisiones variando las decisiones: sin decisión, con una decisión por defecto, explícitas, absurdas, de elementos que no existen y nulas.",
+      "en": "Merges lists of elements with collisions while varying the decisions: none, a default decision, explicit ones, absurd ones, for elements that do not exist and null ones."
+    },
+    "asserts": {
+      "es": "Una colisión sin decisión explícita queda pendiente aunque haya una decisión por defecto y se previsualiza conservando lo existente; la explícita la resuelve y se registra; una decisión sin sentido, ajena o nula se rechaza; sin colisión no hace falta decidir; sin versión no se persiste.",
+      "en": "A collision without an explicit decision stays pending even if a default decision is sent and is previewed keeping the existing element; an explicit one resolves it and is recorded; a senseless, foreign or null decision is rejected; without a collision no decision is needed; without a version nothing is persisted."
+    },
+    "behavior": {
+      "es": "La composición selectiva nunca resuelve una colisión por su cuenta ni reinterpreta en silencio una decisión.",
+      "en": "Selective composition never resolves a collision on its own nor silently reinterprets a decision."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Un elemento colisiona, otro solo existe y otro solo se recupera.",
+      "en": "One element collides, another only exists and another is only recovered."
+    },
+    "result": {
+      "es": "Las colisiones sin decisión se enumeran; las decisiones válidas gobiernan el resultado.",
+      "en": "Collisions without a decision are listed; valid decisions govern the result."
+    },
+    "expected": {
+      "es": "Pendientes enumerados y rechazos de decisiones inválidas.",
+      "en": "Pending ones listed and invalid decisions rejected."
+    },
+    "guarantee": {
+      "es": "Este flujo no ofrece fusionar: cada elemento se conserva, se sustituye o se omite.",
+      "en": "This flow does not offer merging: each element is kept, replaced or skipped."
+    },
+    "limits": {
+      "es": "Prueba la lógica de decisiones sobre listas sencillas, sin editor real ni disco; no recorre la cadena completa de recuperación.",
+      "en": "Tests the decision logic over simple lists, with no real editor or disk; it does not walk the whole recovery chain."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Lógica pura sin cadena real.",
+      "en": "Pure logic without the real chain."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]

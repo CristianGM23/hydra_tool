@@ -1,0 +1,4 @@
+- metamodel_export_generate.chk: exportWithoutValidationIsRejectedAndProducesNoZip (lines 117-118) and metamodelWithErrorsNeverEnablesGeneration (lines 195-203).
+- metamodel_export_generate.d1: decision generationReady - ready after validation (lines 136-140), not ready after change (lines 163-166).
+- metamodel_export_generate.fix: saveAloneDoesNotRenewTheReceiptButValidateStoredDoes (line 159 receipt unchanged by save; lines 170-172 renewed only by validation).
+- metamodel_export_generate.gen: INDIRECT only (ZIP and evidence entries, lines 131-140); generated project content is not asserted.

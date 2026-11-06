@@ -141,6 +141,8 @@ export const HYDRA_API_OPERATIONS = {
   "GamificationDiagramController_find_get": { method: "GET", path: "/api/canonical-metamodels/{metamodelId}/gamification/diagram/" },
   "GamificationDiagramController_save_put": { method: "PUT", path: "/api/canonical-metamodels/{metamodelId}/gamification/diagram/" },
   "GamificationExportController_export_get": { method: "GET", path: "/api/canonical-metamodels/{metamodelId}/gamification/exports/{format}" },
+  "CanonicalGamificationController_recovery_get": { method: "GET", path: "/api/canonical-metamodels/{metamodelId}/gamification/recovery" },
+  "CanonicalGamificationController_quarantine_post": { method: "POST", path: "/api/canonical-metamodels/{metamodelId}/gamification/recovery/quarantine" },
   "GamificationRuntimeController_reset_delete": { method: "DELETE", path: "/api/canonical-metamodels/{metamodelId}/gamification/runtime/" },
   "GamificationRuntimeController_state_get": { method: "GET", path: "/api/canonical-metamodels/{metamodelId}/gamification/runtime/" },
   "GamificationRuntimeController_process_post": { method: "POST", path: "/api/canonical-metamodels/{metamodelId}/gamification/runtime/events" },

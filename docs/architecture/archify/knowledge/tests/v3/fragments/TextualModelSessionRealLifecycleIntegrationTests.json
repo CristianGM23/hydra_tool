@@ -1,0 +1,228 @@
+[
+  {
+    "id": "java:com.example.editor.textual.TextualModelSessionRealLifecycleIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Sesión de modelo textual real: analizar, conservar el último modelo válido, corregir, consultar y guardar",
+      "en": "Real textual model session: analyse, keep the last valid model, fix, query and save"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "layers2": [
+      "definition"
+    ],
+    "caps": [
+      "grammar"
+    ],
+    "procs": [
+      {
+        "id": "x_grammar_to_text_model",
+        "stages": [
+          "parse",
+          "sv",
+          "d3",
+          "model"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_author_textmodel",
+        "stages": [
+          "pa",
+          "sv",
+          "ok",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_textual_editing",
+        "stages": [
+          "pa",
+          "sv",
+          "ok",
+          "ar"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_diagnostics_actions",
+        "stages": [
+          "d",
+          "ra"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_language_service",
+        "stages": [
+          "a",
+          "rn",
+          "fm",
+          "er",
+          "g",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_grammar_to_text_model",
+        "stages": [
+          "an"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "grammar_author_monaco",
+        "stages": [
+          "an"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/textual/runtime/TextualModelSessionService.java",
+      "src/main/java/com/example/editor/textual/runtime/NeutralTextualModelParser.java",
+      "src/main/java/com/example/editor/textual/runtime/NeutralGrammarSyntaxContract.java",
+      "src/main/java/com/example/editor/textual/interaction/TextualInteractionFacade.java",
+      "src/main/java/com/example/editor/textual/interaction/TextualLanguageFeatureService.java",
+      "src/main/java/com/example/editor/textual/web/TextualModelSessionController.java"
+    ],
+    "pre": {
+      "es": "Contexto completo de la aplicación con todos los directorios en un directorio temporal; sin herramientas nativas.",
+      "en": "Full application context with every directory in a temporary directory; no native tools."
+    },
+    "setup": {
+      "es": "Contexto de Spring real con HTTP real: se crea y compila una gramática Langium, se activa, se define el editor textual y se abre la sesión; las posiciones, textos y revisiones esperados son literales del test.",
+      "en": "Real Spring context with real HTTP: a Langium grammar is created, compiled and activated, the textual editor is defined and the session is opened; expected positions, texts and revisions are literals in the test."
+    },
+    "executes": {
+      "es": "POST /api/grammars, /compile, /api/textual-editor-definitions y /api/textual-model-sessions; /parse con borrador roto, corregido, antiguo y conflictivo; /interactions (capacidades, completado, símbolos, renombrado, formato); /save; la fachada y el servicio de sesión para los rechazos.",
+      "en": "POST /api/grammars, /compile, /api/textual-editor-definitions and /api/textual-model-sessions; /parse with broken, fixed, stale and conflicting drafts; /interactions (capabilities, completion, symbols, rename, format); /save; the facade and the session service for the rejections."
+    },
+    "asserts": {
+      "es": "Borrador válido: modelo con alpha y beta; roto: diagnóstico de error en línea 1 columnas 5-8, último modelo válido conservado, consultas rechazadas, reemplazo valor aplicado y revisión siguiente sin diagnósticos; revisión antigua y misma revisión con otro contenido: 400; consultas sin persistir nada; guardar promueve; borrador roto no se guarda.",
+      "en": "Valid draft: model with alpha and beta; broken: error diagnostic at line 1 columns 5-8, last valid model kept, queries rejected, replacement valor applied and next revision without diagnostics; stale revision and same revision with other content: 400; queries persist nothing; save promotes; a broken draft is not saved."
+    },
+    "behavior": {
+      "es": "Un borrador roto no sustituye al último modelo válido, se explica con gravedad y posición y se corrige aplicando la sugerencia; con un borrador válido responden el completado, los símbolos, el renombrado (solo plan) y el formato sin guardar nada; guardar promueve el modelo analizado.",
+      "en": "A broken draft does not replace the last valid model, is explained with severity and position and is fixed by applying the suggestion; with a valid draft completion, symbols, rename (plan only) and format answer without saving anything; saving promotes the analysed model."
+    },
+    "rule": {
+      "es": "Se rechaza una revisión antigua o la misma con otro contenido; las consultas exigen un borrador válido; solo se guarda el borrador válido ya analizado.",
+      "en": "A stale revision or the same one with other content is rejected; queries require a valid draft; only the valid, already analysed draft is saved."
+    },
+    "scenario": {
+      "es": "Abrir una sesión con un texto válido, enviar un borrador roto, corregirlo con el reemplazo propuesto, probar revisiones antiguas y conflictivas, consultar el lenguaje y guardar; además analizar una gramática con y sin recursión por la izquierda.",
+      "en": "Open a session with valid text, send a broken draft, fix it with the proposed replacement, try stale and conflicting revisions, query the language and save; also analyse a grammar with and without left recursion."
+    },
+    "result": {
+      "es": "El último modelo válido se conserva mientras el borrador está roto, la corrección lo repara, los rechazos ocurren y el guardado promueve la revisión analizada.",
+      "en": "The last valid model is kept while the draft is broken, the fix repairs it, rejections happen and saving promotes the analysed revision."
+    },
+    "expected": {
+      "es": "Todas las aserciones sobre modelos, posiciones, revisiones y rechazos se cumplen.",
+      "en": "All assertions on models, positions, revisions and rejections hold."
+    },
+    "guarantee": {
+      "es": "Evidencia real del ciclo de vida de una sesión textual con gramática compilada, incluidas conservación del último modelo válido, corrección y guardado.",
+      "en": "Real evidence of the lifecycle of a textual session with a compiled grammar, including keeping the last valid model, fixing and saving."
+    },
+    "limits": {
+      "es": "No ejerce el rechazo de guardado por una regla de validación compartida ni la transformación de texto a modelo; usa el analizador neutral, no el runtime nativo del proveedor; los rechazos de borrador roto se comprueban en el servicio, no por HTTP.",
+      "en": "It does not exercise save rejection by a shared validation rule or the text-to-model transformation; it uses the neutral analyser, not the provider's native runtime; broken-draft rejections are checked at the service, not over HTTP."
+    },
+    "strengthWhy": {
+      "es": "Contexto y HTTP reales con persistencia en disco, literales como oráculo y casos negativos reales.",
+      "en": "Real context and HTTP with on-disk persistence, literals as oracle and real negative cases."
+    },
+    "cases": [
+      {
+        "n": "aBrokenDraftKeepsTheLastValidModelAndTheQuickFixReplacementRepairsIt",
+        "scenario": {
+          "es": "Borrador roto y corrección propuesta.",
+          "en": "Broken draft and proposed fix."
+        },
+        "result": {
+          "es": "Modelo válido conservado y reparado al aplicar el reemplazo.",
+          "en": "Valid model kept and repaired on applying the replacement."
+        }
+      },
+      {
+        "n": "staleRevisionsAndConflictingSameRevisionAreRejected",
+        "scenario": {
+          "es": "Revisión antigua y misma revisión con otro contenido.",
+          "en": "Stale revision and same revision with other content."
+        },
+        "result": {
+          "es": "400; la repetición idéntica es idempotente.",
+          "en": "400; an identical retry is idempotent."
+        }
+      },
+      {
+        "n": "savePromotesTheAnalyzedValidModelAndRejectsABrokenDraft",
+        "scenario": {
+          "es": "Guardar con borrador válido y con roto.",
+          "en": "Save with a valid and a broken draft."
+        },
+        "result": {
+          "es": "Promueve el válido y rechaza el roto.",
+          "en": "Promotes the valid one and rejects the broken one."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 165
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 183
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 188
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 193
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 206
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 224
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 246
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 254
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 265
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 280
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 284
+      },
+      {
+        "path": "src/test/java/com/example/editor/textual/TextualModelSessionRealLifecycleIntegrationTests.java",
+        "line": 290
+      }
+    ]
+  }
+]

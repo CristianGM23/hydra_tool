@@ -1,0 +1,175 @@
+[
+  {
+    "id": "java:com.example.editor.standalone.distribution.StandaloneDistributionHttpFlowIntegrationTests",
+    "name": {
+      "es": "Flujo HTTP de distribución independiente de editores",
+      "en": "Standalone editor distribution HTTP flow"
+    },
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": [
+      "publication"
+    ],
+    "procs": [
+      {
+        "id": "publication_author_distribution",
+        "stages": [
+          "pv",
+          "mv",
+          "pk",
+          "ok",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "publication_standalone_distribution",
+        "stages": [
+          "pr",
+          "pl",
+          "mt",
+          "va",
+          "rd",
+          "pk",
+          "pr2",
+          "vk",
+          "zip"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_generate_certify_distribute",
+        "stages": [
+          "dist",
+          "sec",
+          "zip",
+          "vk"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_project_lifecycle_overview",
+        "stages": [
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_project_lifecycle_overview",
+        "stages": [
+          "dl"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "x_language_to_published_editor",
+        "stages": [
+          "r"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionController.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionApplicationService.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPlanner.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionMaterializer.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionValidationService.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPackager.java",
+      "src/main/java/com/example/editor/standalone/distribution/StandaloneProductionReadinessService.java"
+    ],
+    "pre": {
+      "es": "hydra.standalone-distribution.allowed-root apunta a un directorio temporal.",
+      "en": "hydra.standalone-distribution.allowed-root points to a temp directory."
+    },
+    "executes": {
+      "es": "SpringBootTest con Tomcat en puerto aleatorio y HttpClient real: POST plan, materialize, validate, package, release-readiness y package-release-source sobre la cadena real controlador-servicio-planificador-materializador-validador-empaquetador.",
+      "en": "SpringBootTest with Tomcat on a random port and a real HttpClient: POST plan, materialize, validate, package, release-readiness and package-release-source over the real controller-service-planner-materializer-validator-packager chain."
+    },
+    "asserts": {
+      "es": "El ZIP descargado se descomprime en el test, su SHA-256 recalculado coincide con la cabecera X-HYDRA-Distribution-SHA256 y es idéntico entre llamadas; node_modules, .env, claves y enlaces no se empaquetan y su rechazo responde 400 INVALID_REQUEST con el motivo (no 500); la preparación para release falla sobre fuentes y pasa con dist/ construido.",
+      "en": "The downloaded ZIP is unpacked by the test, its recomputed SHA-256 matches the X-HYDRA-Distribution-SHA256 header and is identical across calls; node_modules, .env, keys and links are not packaged and their rejection answers 400 INVALID_REQUEST with the reason (not 500); release readiness fails on sources and passes with a built dist/."
+    },
+    "behavior": {
+      "es": "El centro de distribución planifica, escribe, valida y empaqueta un editor generado en un ZIP reproducible con huella, y se niega a empaquetar editores inválidos, con secretos o con enlaces.",
+      "en": "The distribution center plans, writes, validates and packages a generated editor into a reproducible fingerprinted ZIP, and refuses to package invalid editors, ones with secrets or with links."
+    },
+    "rule": {
+      "es": "Solo se empaqueta un editor válido; el paquete de lanzamiento exige un dist/ construido y no es un instalador nativo.",
+      "en": "Only a valid editor is packaged; the release package requires a built dist/ and is not a native installer."
+    },
+    "scenario": {
+      "es": "Plan, materialización, página de entrada, validación, ZIP dos veces, editor sin entrada, con .env y server.pem, perfil en blanco, ../, ruta absoluta, readiness con y sin dist/ y paquete de fuentes de lanzamiento.",
+      "en": "Plan, materialization, entry page, validation, ZIP twice, editor without entry, with .env and server.pem, blank profile, ../, absolute path, readiness with and without dist/ and the release-source package."
+    },
+    "result": {
+      "es": "Ficheros del disco, entradas del ZIP, huella recalculada y códigos HTTP demuestran cada resultado.",
+      "en": "Files on disk, ZIP entries, recomputed hash and HTTP codes show each outcome."
+    },
+    "expected": {
+      "es": "Todos los casos pasan con la raíz de distribución temporal.",
+      "en": "All cases pass with the temporary distribution root."
+    },
+    "guarantee": {
+      "es": "El flujo HTTP de distribución produce paquetes de fuentes reproducibles y verificables, nunca con secretos, y distingue fuentes de despliegue construido.",
+      "en": "The HTTP distribution flow produces reproducible, verifiable source packages, never with secrets, and distinguishes sources from a built deployment."
+    },
+    "limits": {
+      "es": "Solo el destino PWA; no genera código del modelo (dl indirecto) ni crea instaladores nativos. El paquete de lanzamiento sin dist/ aún responde error de servidor (>=400). Los enlaces simbólicos van en un caso aparte, omitido en hosts sin permiso para crearlos: no se cuenta como cubierto.",
+      "en": "PWA target only; does not generate model code (dl indirect) nor create native installers. The release-source package without dist/ still answers a server error (>=400). Symbolic links live in a separate case, skipped on hosts that cannot create them: not counted as covered."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Servidor y servicios reales, oráculos independientes (ZIP descomprimido y SHA-256 recalculado) y rechazos con control positivo.",
+      "en": "Real server and services, independent oracles (unpacked ZIP and recomputed SHA-256) and rejections with a positive control."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 124
+      },
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 135
+      },
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 155
+      },
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 171
+      },
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 177
+      },
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 200
+      },
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 238
+      },
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 258
+      },
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 164
+      },
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 147
+      },
+      {
+        "path": "src/test/java/com/example/editor/standalone/distribution/StandaloneDistributionHttpFlowIntegrationTests.java",
+        "line": 239
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

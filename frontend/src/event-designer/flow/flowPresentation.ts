@@ -57,13 +57,14 @@ export function flowTransitionOptionHelp(kinds: FlowTransitionKind[]): DesignerS
 
 export function describeFlowNode(node: FlowNode, customTypes: EventTypeDefinition[] = []): string {
     const base = FLOW_NODE_PRESENTATIONS[node.kind];
-    if (node.eventTypeId !== '') {
-        const event = presentEventType(node.eventTypeId, customTypes);
+    const eventTypeId = node.eventTypeId ?? '';
+    if (eventTypeId !== '') {
+        const event = presentEventType(eventTypeId, customTypes);
         if (node.kind === 'EMIT') return `Publishes “${event.label}”. ${event.description}`;
         if (node.kind === 'WAIT_FOR_EVENT' || node.kind === 'ABSENCE') return `Observes “${event.label}”. ${event.description}`;
         return `Uses “${event.label}”. ${event.description}`;
     }
-    if (node.referenceId !== '') {
+    if ((node.referenceId ?? '') !== '') {
         if (node.kind === 'ACTION_STEP') return 'Runs the action selected in the node properties.';
         if (node.kind === 'OPERATION_STEP') return 'Invokes the operation selected in the node properties.';
         if (node.kind === 'COMMAND_STEP') return 'Executes the command selected in the node properties.';

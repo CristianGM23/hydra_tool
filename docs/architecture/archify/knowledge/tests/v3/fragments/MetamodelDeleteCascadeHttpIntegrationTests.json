@@ -1,0 +1,167 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.lifecycle.MetamodelDeleteCascadeHttpIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Borrado en cascada de un metamodelo por HTTP: impacto, aborto, borrado y recuperación",
+      "en": "Cascading metamodel deletion over HTTP: impact, abort, delete and recovery"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "layers2": [
+      "platform"
+    ],
+    "caps": [
+      "metamodel",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "metamodel_delete_cascade",
+        "stages": [
+          "prep",
+          "prim",
+          "rec",
+          "ab",
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "metamodel_delete_cascade",
+        "stages": [
+          "d1"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "x_metamodel_save_and_cascade",
+        "stages": [
+          "prep",
+          "prim",
+          "c_ed",
+          "c_ev",
+          "c_gm",
+          "rec"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_metamodel_save_and_cascade",
+        "stages": [
+          "d1"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/metamodel/lifecycle/MetamodelLifecycleController.java",
+      "src/main/java/com/example/editor/metamodel/lifecycle/MetamodelLifecycleService.java",
+      "src/main/java/com/example/editor/metamodel/lifecycle/MetamodelDeletionJournalService.java",
+      "src/main/java/com/example/editor/metamodel/lifecycle/MetamodelDeletionJournal.java",
+      "src/main/java/com/example/editor/metamodel/deletion/MetamodelDependentArtifactCleanupService.java",
+      "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring completo con todos los directorios dsl.* en un directorio temporal.",
+      "en": "Full Spring context with every dsl.* directory in a temporary directory."
+    },
+    "setup": {
+      "es": "Metamodelo por HTTP y dependientes sembrados con los repositorios reales (reglas, eventos, enlaces, editor, perfil de integración, gamificación, diagrama) más notación y export; el oráculo es el disco y el diario JSON.",
+      "en": "Metamodel over HTTP and dependents seeded through the real repositories (rules, events, bindings, editor, integration profile, gamification, diagram) plus notation and export; the oracle is the disk and the journal JSON."
+    },
+    "executes": {
+      "es": "GET deletion-impact, DELETE /lifecycle y POST /deletion-recovery por el controlador, servicio de ciclo de vida, diario y limpieza de dependientes reales.",
+      "en": "GET deletion-impact, DELETE /lifecycle and POST /deletion-recovery through the real controller, lifecycle service, journal and dependent cleanup."
+    },
+    "asserts": {
+      "es": "El impacto lista los dependientes; DELETE con ETag obsoleto da 412, diario ABORTED y todo intacto; con ETag vigente desaparece el metamodelo y todos los dependientes y el diario queda COMPLETED; tras un fallo simulado la recuperación elimina los residuos y completa el diario.",
+      "en": "The impact lists the dependents; DELETE with a stale ETag gives 412, ABORTED journal and everything intact; with the current ETag the metamodel and all dependents disappear and the journal is COMPLETED; after a simulated crash recovery removes the residues and completes the journal."
+    },
+    "behavior": {
+      "es": "Borrar un metamodelo elimina también lo que depende de él con un diario que permite reanudar la limpieza si se interrumpe; un borrado con versión obsoleta se aborta sin tocar nada.",
+      "en": "Deleting a metamodel also removes what depends on it, with a journal that allows resuming the cleanup if interrupted; a delete with a stale version aborts without touching anything."
+    },
+    "rule": {
+      "es": "El diario se abre antes de borrar; el borrado principal exige la ETag vigente; los dependientes se limpian y lo pendiente se reanuda sin repetir el borrado principal.",
+      "en": "The journal is opened before deleting; the primary delete requires the current ETag; dependents are cleaned and pending work is resumed without repeating the primary delete."
+    },
+    "scenario": {
+      "es": "Sembrar un metamodelo con dependientes, consultar el impacto, borrar con ETag obsoleta y vigente, y recuperar un diario PREPARED sin canónico y otro recovery required.",
+      "en": "Seed a metamodel with dependents, query the impact, delete with a stale and the current ETag, and recover a PREPARED journal without canonical and a recovery required one."
+    },
+    "result": {
+      "es": "412 con todo intacto, borrado total con diario COMPLETED y residuos eliminados por la recuperación, que además no se puede repetir.",
+      "en": "412 with everything intact, total deletion with COMPLETED journal and residues removed by recovery, which cannot be repeated."
+    },
+    "expected": {
+      "es": "Estados HTTP, ficheros dependientes y estados del diario coinciden en los cinco escenarios.",
+      "en": "HTTP statuses, dependent files and journal states match in the five scenarios."
+    },
+    "guarantee": {
+      "es": "Evidencia real de la cascada de borrado y de su recuperación sobre persistencia real.",
+      "en": "Real evidence of the deletion cascade and its recovery on real persistence."
+    },
+    "limits": {
+      "es": "El fallo se simula sembrando el diario, no inyectando un error a mitad de un limpiador; no cubre transformaciones, gramáticas ni modelos XMI asociados.",
+      "en": "The failure is simulated by seeding the journal, not by injecting an error mid-cleaner; does not cover transformations, grammars or associated XMI models."
+    },
+    "strengthWhy": {
+      "es": "Cadena HTTP y repositorios reales, oráculo independiente en disco y caso de aborto real.",
+      "en": "Real HTTP chain and repositories, independent on-disk oracle and a real abort case."
+    },
+    "cases": [
+      {
+        "n": "obsoleteEtagAbortsTheDeletionAndKeepsEverything",
+        "scenario": {
+          "es": "DELETE con ETag obsoleta.",
+          "en": "DELETE with a stale ETag."
+        },
+        "result": {
+          "es": "412, diario ABORTED y dependientes intactos.",
+          "en": "412, ABORTED journal and intact dependents."
+        }
+      },
+      {
+        "n": "recoveryAfterACrashCleansTheResidues",
+        "scenario": {
+          "es": "Diario PREPARED sin canónico y residuos.",
+          "en": "PREPARED journal without canonical and residues."
+        },
+        "result": {
+          "es": "Residuos eliminados y diario COMPLETED.",
+          "en": "Residues removed and COMPLETED journal."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/metamodel/lifecycle/MetamodelDeleteCascadeHttpIntegrationTests.java",
+        "line": 159
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/lifecycle/MetamodelDeleteCascadeHttpIntegrationTests.java",
+        "line": 182
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/lifecycle/MetamodelDeleteCascadeHttpIntegrationTests.java",
+        "line": 200
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/lifecycle/MetamodelDeleteCascadeHttpIntegrationTests.java",
+        "line": 203
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/lifecycle/MetamodelDeleteCascadeHttpIntegrationTests.java",
+        "line": 229
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/lifecycle/MetamodelDeleteCascadeHttpIntegrationTests.java",
+        "line": 252
+      }
+    ]
+  }
+]

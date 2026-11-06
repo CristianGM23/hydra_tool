@@ -1,0 +1,118 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.nativeexec.TransformationNativeParityMissingSourceTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Paridad nativa: un modelo origen ausente es evidencia inválida",
+      "en": "Native parity: a missing source model is invalid evidence"
+    },
+    "type": "BEHAVIOR",
+    "layer": "behavior",
+    "layers2": [],
+    "caps": [
+      "transformation"
+    ],
+    "procs": [],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeParityService.java",
+      "src/main/java/com/example/editor/transformation/parity/TransformationParityService.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "Servicios reales construidos sin colaboradores porque este camino termina antes de exportar o ejecutar nada.",
+      "en": "Real services built without collaborators because this path ends before exporting or running anything."
+    },
+    "executes": {
+      "es": "execute de la paridad nativa y verify de la paridad simple con un modelo origen ausente, y con transformación o lenguaje ausentes.",
+      "en": "Native parity execute and plain parity verify with a missing source model, and with a missing transformation or language."
+    },
+    "asserts": {
+      "es": "Ambos devuelven evidencia inválida señalando el modelo origen, sin ejecución; sin transformación o sin lenguaje sigue siendo un error de argumento.",
+      "en": "Both return invalid evidence naming the source model, without execution; a missing transformation or language is still an argument error."
+    },
+    "behavior": {
+      "es": "Falta de modelo origen se informa como evidencia inválida en lugar de interrumpir con un error.",
+      "en": "A missing source model is reported as invalid evidence instead of failing with an error."
+    },
+    "rule": {
+      "es": "Las dos formas de comprobar paridad dan el mismo veredicto ante un modelo origen ausente.",
+      "en": "Both ways of checking parity give the same verdict for a missing source model."
+    },
+    "scenario": {
+      "es": "Petición de paridad con transformación válida y sin modelo origen; peticiones sin transformación y sin lenguaje.",
+      "en": "Parity request with a valid transformation and no source model; requests without transformation and without language."
+    },
+    "result": {
+      "es": "Evidencia inválida con la diferencia «modelo origen presente / ausente»; error de argumento en los otros dos casos.",
+      "en": "Invalid evidence with the difference \"source model present / missing\"; argument error in the other two cases."
+    },
+    "expected": {
+      "es": "Estado, diferencias y excepciones coinciden con los literales.",
+      "en": "Status, differences and exceptions match the literals."
+    },
+    "guarantee": {
+      "es": "Un cliente que olvida el modelo origen recibe un informe y no una excepción.",
+      "en": "A client that forgets the source model gets a report rather than an exception."
+    },
+    "limits": {
+      "es": "No ejecuta ninguna herramienta nativa ni exporta; solo el camino del modelo ausente con el lenguaje ATL y una transformación M2M.",
+      "en": "Runs no native tool and exports nothing; only the missing-model path with ATL and an M2M transformation."
+    },
+    "strengthWhy": {
+      "es": "Servicios reales y oráculo literal, pero el camino es corto y sin colaboradores.",
+      "en": "Real services and literal oracle, but the path is short and has no collaborators."
+    },
+    "cases": [
+      {
+        "n": "aMissingSourceModelIsInvalidEvidenceAndNothingIsExecuted",
+        "scenario": {
+          "es": "Paridad nativa sin origen.",
+          "en": "Native parity without source."
+        },
+        "result": {
+          "es": "Evidencia inválida.",
+          "en": "Invalid evidence."
+        }
+      },
+      {
+        "n": "nativeParityAndPlainParityAgreeOnTheMissingSourceVerdict",
+        "scenario": {
+          "es": "Comparar con la paridad simple.",
+          "en": "Compare with plain parity."
+        },
+        "result": {
+          "es": "Mismo veredicto.",
+          "en": "Same verdict."
+        }
+      },
+      {
+        "n": "aMissingTransformationOrLanguageIsStillAnArgumentError",
+        "scenario": {
+          "es": "Sin transformación o lenguaje.",
+          "en": "No transformation or language."
+        },
+        "result": {
+          "es": "Error de argumento.",
+          "en": "Argument error."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeParityMissingSourceTests.java",
+        "line": 43
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeParityMissingSourceTests.java",
+        "line": 55
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeParityMissingSourceTests.java",
+        "line": 62
+      }
+    ]
+  }
+]

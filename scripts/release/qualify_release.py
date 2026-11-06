@@ -63,7 +63,7 @@ else:
  run('primary-full-tree',[sys.executable,'scripts/validation/verify_final_tree.py'] + ([] if args.full else ['--structural-only']),timeout=7200)
 
 if args.full:
- tests=','.join(policy['criticalBackendTests']);mvn=['mvnw.cmd','-B',f'-Dtest={tests}','test'] if os.name=='nt' else ['./mvnw','-B',f'-Dtest={tests}','test']
+ tests=','.join(policy['criticalBackendTests']);mvn=[str(ROOT/'mvnw.cmd'),'-B',f'-Dtest={tests}','test'] if os.name=='nt' else ['./mvnw','-B',f'-Dtest={tests}','test']
  run('critical-recovery-smoke',mvn,timeout=3600)
 else:
  run('critical-recovery-contracts',[sys.executable,'scripts/validation/verify_r5c13_fix99_100_release_closure.py'])

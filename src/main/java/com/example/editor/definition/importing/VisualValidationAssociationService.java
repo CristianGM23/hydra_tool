@@ -131,7 +131,7 @@ public class VisualValidationAssociationService {
             else sets.add(set);
         }
         if(!replaced) sets.add(new ValidationRuleSet(setId, "Imported from " + editor.name(), "Validations recovered from the associated visual representation.", true, sets.size(), importedRuleIds, Map.of("hydra.visual.editorDefinitionId",editor.id())));
-        ValidationModel updated = new ValidationModel(ValidationModel.CURRENT_SCHEMA_VERSION, associated.id()+":validations", associated.id(), associated.id(), state.model().actionModelId(), sets, rules, sources, state.model().annotations());
+        ValidationModel updated = new ValidationModel(ValidationModel.CURRENT_SCHEMA_VERSION, state.model().id(), associated.id(), associated.id(), state.model().actionModelId(), sets, rules, sources, state.model().annotations());
         if(state.etag().isBlank()) validations.create(associated.id(), updated); else validations.replace(associated.id(), updated, state.etag());
         EditorDefinitionModel linked = linkRepresentations(editor, details, importedRuleIds);
         return new VisualImportCommitResult(linked, associated.id(), importedRuleIds.size(), importedRuleIds);
@@ -162,8 +162,15 @@ public class VisualValidationAssociationService {
         try { var loaded=validations.find(metamodelId); return new ValidationState(loaded.validationModel(),loaded.etag()); }
         catch(ValidationModelApplicationException exception) {
             if(exception.getReason()!=ValidationModelApplicationException.Reason.NOT_FOUND) throw exception;
-            return new ValidationState(new ValidationModel(ValidationModel.CURRENT_SCHEMA_VERSION,metamodelId+":validations",metamodelId,metamodelId,"",List.of(),List.of(),List.of(),Map.of()),"");
+            return new ValidationState(new ValidationModel(ValidationModel.CURRENT_SCHEMA_VERSION,validationDocumentId(metamodelId),metamodelId,metamodelId,"",List.of(),List.of(),List.of(),Map.of()),"");
         }
+    }
+
+    /** Descripción: Deriva el identificador de documento del modelo de validaciones sin usar ':' (reservado a ids de elemento) y respetando el máximo de 120 caracteres. Entradas: metamodelId: identificador del metamodelo propietario. Salida: identificador de documento estable «&lt;id&gt;.validations». */
+    /** Descripción: Ejecuta la operación «validationDocumentId» correspondiente a la responsabilidad de VisualValidationAssociationService. Entradas: metamodelId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ private static String validationDocumentId(String metamodelId) {
+        String suffix = ".validations";
+        String base = metamodelId.length() + suffix.length() <= 120 ? metamodelId : metamodelId.substring(0, 120 - suffix.length());
+        return base + suffix;
     }
 
     /** Descripción: Ejecuta la operación «linkRepresentations» correspondiente a la responsabilidad de VisualValidationAssociationService. Entradas: editor: dato de entrada necesario para la operación; details: dato de entrada necesario para la operación; ruleIds: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private EditorDefinitionModel linkRepresentations(EditorDefinitionModel editor, List<VisualImportedValidation> details, List<String> ruleIds) {

@@ -24,6 +24,8 @@ export function DesignerDropdown({ label, children, className = '', summary, ali
     const rootRef = useRef<HTMLDivElement | null>(null);
     const popupRef = useRef<HTMLDivElement | null>(null);
     const triggerRef = useRef<HTMLButtonElement | null>(null);
+    // Los eventos de React burbujean por los portales: un diálogo abierto desde el popup cuenta como «dentro» aunque su DOM esté fuera.
+    const insideReactTreeRef = useRef(false);
     const popupId = useId();
     const renderedSummary = typeof summary === 'string' && /^[A-Z0-9_]+$/.test(summary)
         ? summary.toLowerCase().split('_').map((part, index) => index === 0 ? `${part.charAt(0).toUpperCase()}${part.slice(1)}` : part).join(' ')
@@ -55,6 +57,7 @@ export function DesignerDropdown({ label, children, className = '', summary, ali
     useEffect(() => {
         if (!open) return;
         function handlePointerDown(event: PointerEvent): void {
+            if (insideReactTreeRef.current) { insideReactTreeRef.current = false; return; }
             const target = event.target as Node;
             if (rootRef.current?.contains(target) || popupRef.current?.contains(target)) return;
             setOpen(false);
@@ -80,6 +83,7 @@ export function DesignerDropdown({ label, children, className = '', summary, ali
     function handlePopupClick(event: ReactMouseEvent<HTMLDivElement>): void {
         if (!closeOnAction) return;
         const target = event.target as HTMLElement;
+        if (popupRef.current !== null && !popupRef.current.contains(target)) return;
         if (target.closest('[data-hydra-menu-keep-open="true"]') !== null) return;
         if (target.closest('button') !== null) setOpen(false);
     }
@@ -93,6 +97,7 @@ export function DesignerDropdown({ label, children, className = '', summary, ali
         ref={popupRef}
         style={popupStyle}
         onClick={handlePopupClick}
+        onPointerDown={() => { insideReactTreeRef.current = true; }}
     >{children}</HydraOverlayPortal> : null;
 
     return <div className={`hydra-designer-dropdown align-${align.toLowerCase()} ${className}`.trim()} ref={rootRef}>

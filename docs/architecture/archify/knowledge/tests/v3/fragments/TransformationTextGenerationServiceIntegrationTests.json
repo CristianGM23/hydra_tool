@@ -1,0 +1,178 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.text.TransformationTextGenerationServiceIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Generación de texto con plantillas sobre un modelo real",
+      "en": "Template text generation on a real model"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "transformation_author_generation",
+        "stages": [
+          "ed",
+          "en"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/text/TransformationTextGenerationService.java",
+      "src/main/java/com/example/editor/transformation/text/CanonicalTextGenerationRuntime.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java",
+      "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+      "src/main/java/com/example/editor/transformation/persistence/JsonTransformationRepository.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible; metamodelo de ejemplo guardado; sin red ni credenciales.",
+      "en": "Writable temporary directory; sample metamodel stored; no network or credentials."
+    },
+    "setup": {
+      "es": "Servicio de generación, runtime M2T, comprobador y repositorio JSON reales; modelo con Alice, Bob (Employee) y Carol; sin mocks.",
+      "en": "Real generation service, M2T runtime, checker and JSON repository; model with Alice, Bob (Employee) and Carol; no mocks."
+    },
+    "executes": {
+      "es": "preview y execute con reglas {{id}}, {{classId}} y {{attr:...}}; reglas desactivadas; colisión de ruta con FAIL y REPLACE; rutas inseguras; definición inválida; create y relectura desde disco.",
+      "en": "preview and execute with {{id}}, {{classId}} and {{attr:...}} rules; disabled rules; path collision with FAIL and REPLACE; unsafe paths; invalid definition; create and reread from disk."
+    },
+    "asserts": {
+      "es": "Artefactos exactos (ruta, contenido, regla, elemento) comparados con literales; la regla desactivada no genera; colisión FAIL lanza y REPLACE deja el último; rutas inseguras y definiciones inválidas se rechazan; las reglas guardadas se releen del disco y generan lo mismo.",
+      "en": "Exact artifacts (path, content, rule, element) compared with literals; the disabled rule generates nothing; FAIL collision throws and REPLACE keeps the last one; unsafe paths and invalid definitions are rejected; saved rules are reread from disk and generate the same."
+    },
+    "behavior": {
+      "es": "Las marcas de identificador, clase y atributo de la plantilla se sustituyen de verdad en la ruta y el contenido de cada fichero generado; una regla desactivada no genera nada.",
+      "en": "The id, class and attribute marks of the template are really replaced in the path and content of each generated file; a disabled rule generates nothing."
+    },
+    "rule": {
+      "es": "Solo las reglas activas generan; dos reglas con la misma ruta fallan salvo política de reemplazo; las rutas absolutas o con «..» se bloquean.",
+      "en": "Only enabled rules generate; two rules with the same path fail unless the replace policy is used; absolute or «..» paths are blocked."
+    },
+    "scenario": {
+      "es": "Plantillas con las tres marcas sobre tres elementos, regla desactivada, colisión de rutas, ruta con «..» literal o producida por un dato, regla sobre clase inexistente y guardado con relectura.",
+      "en": "Templates with the three marks over three elements, a disabled rule, path collision, a «..» path literal or produced by data, a rule on a missing class and saving with reread."
+    },
+    "result": {
+      "es": "Cada elemento coincidente produce su fichero con ruta y contenido renderizados exactos; los casos inseguros o inválidos terminan en excepción sin persistir.",
+      "en": "Each matching element produces its file with exact rendered path and content; unsafe or invalid cases end in an exception without persisting."
+    },
+    "expected": {
+      "es": "Las aserciones literales sobre artefactos, mensajes de error y contenido releído se cumplen en los seis casos.",
+      "en": "The literal assertions on artifacts, error messages and reread content hold in all six cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la plantilla de contenido se interpreta con sus tres marcas y de que activar o desactivar una regla cambia lo que se genera.",
+      "en": "Real evidence that the content template is interpreted with its three marks and that enabling or disabling a rule changes what is generated."
+    },
+    "limits": {
+      "es": "Solo plantillas con marcas simples sin guardas; no escribe los ficheros en disco ni usa la interfaz del espacio de generación; sin clases heredadas.",
+      "en": "Only simple-mark templates without guards; does not write the files to disk nor use the generation-space UI; no inherited classes."
+    },
+    "strengthWhy": {
+      "es": "Servicios y persistencia reales, oráculo literal independiente, casos negativos y relectura desde disco.",
+      "en": "Real services and persistence, independent literal oracle, negative cases and reread from disk."
+    },
+    "cases": [
+      {
+        "n": "rendersPathAndContentTokensForEachMatchingElement",
+        "scenario": {
+          "es": "Reglas con {{id}}, {{classId}}, {{attr:...}} y atributo inexistente.",
+          "en": "Rules with {{id}}, {{classId}}, {{attr:...}} and a missing attribute."
+        },
+        "result": {
+          "es": "Tres artefactos con ruta y contenido exactos.",
+          "en": "Three artifacts with exact path and content."
+        }
+      },
+      {
+        "n": "disabledRuleDoesNotGenerate",
+        "scenario": {
+          "es": "Regla desactivada sola y mezclada.",
+          "en": "Disabled rule alone and mixed."
+        },
+        "result": {
+          "es": "Sin artefactos / solo los de la regla activa.",
+          "en": "No artifacts / only the enabled rule's."
+        }
+      },
+      {
+        "n": "pathCollisionFailsOrReplacesAccordingToTheOverwritePolicy",
+        "scenario": {
+          "es": "Dos reglas con la misma ruta, FAIL y REPLACE.",
+          "en": "Two rules with the same path, FAIL and REPLACE."
+        },
+        "result": {
+          "es": "Excepción de colisión / queda el último artefacto.",
+          "en": "Collision exception / the last artifact remains."
+        }
+      },
+      {
+        "n": "unsafePathsAreBlockedBothStaticallyAndAtRenderTime",
+        "scenario": {
+          "es": "Ruta «../» literal y producida por un atributo.",
+          "en": "Literal and attribute-produced «../» path."
+        },
+        "result": {
+          "es": "UNSAFE_OUTPUT_PATH y excepción de ruta no portable.",
+          "en": "UNSAFE_OUTPUT_PATH and non-portable path exception."
+        }
+      },
+      {
+        "n": "savedRulesAreReloadedFromDiskAndGenerateTheSameArtifacts",
+        "scenario": {
+          "es": "create y relectura del repositorio.",
+          "en": "create and repository reread."
+        },
+        "result": {
+          "es": "Reglas idénticas y mismos ficheros generados.",
+          "en": "Identical rules and same generated files."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/text/TransformationTextGenerationServiceIntegrationTests.java",
+        "line": 73
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/text/TransformationTextGenerationServiceIntegrationTests.java",
+        "line": 92
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/text/TransformationTextGenerationServiceIntegrationTests.java",
+        "line": 109
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/text/TransformationTextGenerationServiceIntegrationTests.java",
+        "line": 110
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/text/TransformationTextGenerationServiceIntegrationTests.java",
+        "line": 128
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/text/TransformationTextGenerationServiceIntegrationTests.java",
+        "line": 137
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/text/TransformationTextGenerationServiceIntegrationTests.java",
+        "line": 150
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/text/TransformationTextGenerationServiceIntegrationTests.java",
+        "line": 174
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/text/TransformationTextGenerationServiceIntegrationTests.java",
+        "line": 179
+      }
+    ]
+  }
+]

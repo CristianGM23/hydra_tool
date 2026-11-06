@@ -22,6 +22,8 @@ public class HydraProblemDetailsAdvice implements ResponseBodyAdvice<Object> {
         String path=request.getURI().getPath();
         String operation=request.getMethod()+" "+path;
         String correlation=error.correlationId()==null||error.correlationId().isBlank()?AuditRequestContext.correlationId():error.correlationId();
-        return new HydraProblemDetails("urn:hydra:error:"+code.toLowerCase().replace('_','-'),code,status,error.message(),path,correlation,code,error.message(),error.field(),error.reason(),error.solution(),error.suggestions(),error.technicalDetail(),operation,path,error.impact(),error.retryable(),error.recoveryActions());
+        // T-SEC: every public text of an error body goes out without the server's working, temporary or home directory
+        String message=PublicErrorText.redact(error.message());
+        return new HydraProblemDetails("urn:hydra:error:"+code.toLowerCase().replace('_','-'),code,status,message,path,correlation,code,message,error.field(),PublicErrorText.redact(error.reason()),PublicErrorText.redact(error.solution()),PublicErrorText.redact(error.suggestions()),PublicErrorText.redact(error.technicalDetail()),operation,path,error.impact(),error.retryable(),error.recoveryActions());
     }
 }

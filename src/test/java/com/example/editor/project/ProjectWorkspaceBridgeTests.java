@@ -19,6 +19,7 @@ import com.example.editor.project.storage.*;
 class ProjectWorkspaceBridgeTests {
     @TempDir Path temporary;
     private ProjectWorkspaceBridge bridge;
+    private ProjectWorkspaceContributionRegistry contributions;
     private ProjectDescriptor descriptor;
     private Path project;
     private Path metamodels;
@@ -34,6 +35,7 @@ class ProjectWorkspaceBridgeTests {
         ProjectWorkspaceContributionRegistry registry=new ProjectWorkspaceContributionRegistry(java.util.List.of(
                 new CoreProjectWorkspaceContributor(storage),new EditorProjectWorkspaceContributor(editorProperties,sessionProperties),
                 new EventProjectWorkspaceContributor(eventProperties),new IntegrationProjectWorkspaceContributor(integrationProperties)));
+        contributions=registry;
         bridge=new ProjectWorkspaceBridge(registry,new ProjectArtifactClassifier(),new ProjectFileOperations(),new LocalProjectProperties());
         descriptor=new ProjectDescriptor("1.0","people","People","",Instant.now(),Instant.now(),ProjectStorageMode.LOCAL_DIRECTORY,ProjectLayout.standard(),EnumSet.allOf(ProjectCapability.class),Map.of());
         project=temporary.resolve("project"); Files.createDirectories(project);
@@ -83,6 +85,18 @@ class ProjectWorkspaceBridgeTests {
         ProjectSynchronizationPlan plan=bridge.preview(project,descriptor,new ProjectSyncRequest(WorkspaceTransferDirection.PROJECT_TO_WORKSPACE,WorkspaceTransferMode.MERGE));
         assertThat(plan.warnings()).singleElement().asString().contains("unsaved in-memory changes");
     }
+    @Test void projectToWorkspaceReloadsTheModulesThatCacheWorkspaceStateAndReportsTheirWarnings() throws Exception {
+        java.util.List<String> reloads=new java.util.ArrayList<>();
+        ProjectWorkspaceReloadListener emf=()->{reloads.add("emf");return java.util.List.of("Metamodel people is not available for the EMF runtime (STALE)");};
+        ProjectWorkspaceBridge reloading=new ProjectWorkspaceBridge(contributions,new ProjectArtifactClassifier(),new ProjectFileOperations(),new LocalProjectProperties(),java.util.List.of(emf));
+        Files.createDirectories(project.resolve("metamodels")); Files.writeString(project.resolve("metamodels/people.metamodel.json"),"{}");
+        ProjectSynchronizationResult result=reloading.apply(project,descriptor,new ProjectSyncRequest(WorkspaceTransferDirection.PROJECT_TO_WORKSPACE,WorkspaceTransferMode.REPLACE));
+        assertThat(reloads).containsExactly("emf");
+        assertThat(result.warnings()).containsExactly("Metamodel people is not available for the EMF runtime (STALE)");
+        reloading.apply(project,descriptor,new ProjectSyncRequest(WorkspaceTransferDirection.WORKSPACE_TO_PROJECT,WorkspaceTransferMode.REPLACE));
+        assertThat(reloads).as("only bringing a project into the workspace changes what the modules cache").hasSize(1);
+    }
+
     @Test void projectToWorkspacePreservesNestedArtifactPaths() throws Exception {
         Path nested=project.resolve("generated/java/com/example"); Files.createDirectories(nested); Files.writeString(nested.resolve("Person.java"),"class Person {}");
         bridge.apply(project,descriptor,new ProjectSyncRequest(WorkspaceTransferDirection.PROJECT_TO_WORKSPACE,WorkspaceTransferMode.REPLACE));

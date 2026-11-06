@@ -1,0 +1,98 @@
+[
+  {
+    "id": "pw:e2e/real/metamodel/import-review.spec.ts",
+    "name": {
+      "es": "Importar un metamodelo con fidelidad estructural de extremo a extremo: revisar, completar a mano y guardar",
+      "en": "Importing a metamodel with structural fidelity end to end: review, complete by hand and save"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["delivery"],
+    "caps": ["metamodel", "persistence"],
+    "procs": [
+      { "id": "metamodel_author_import", "stages": ["rv"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/metamodel-designer/MetamodelImportDialog.tsx",
+      "frontend/src/metamodel-designer/importApi.ts",
+      "frontend/src/metamodel-designer/MetamodelDesigner.tsx",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportController.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportService.java",
+      "src/main/java/com/example/editor/metamodel/importing/importers/PlantUmlMetamodelImporter.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportFormat.java",
+      "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java"
+    ],
+    "pre": {
+      "es": "Backend real con almacenamiento temporal propio; el fichero de entrada se genera en la prueba con nombre único.",
+      "en": "Real backend with its own temporary storage; the input file is generated in the test with a unique name."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, ventana de 1700x1000, sin simulaciones; el fichero se sube por el campo real del diálogo. El oráculo es el catálogo de formatos de la API real, la lista de metamodelos guardados y el .metamodel.json del disco.",
+      "en": "Playwright with Chromium, a 1700x1000 window, no simulations; the file is uploaded through the dialog's real input. The oracle is the real API's format catalogue, the list of saved metamodels and the .metamodel.json on disk."
+    },
+    "executes": {
+      "es": "Abre 'Import', sube un diagrama de clases en PlantUML, espera la propuesta, pulsa 'Open in designer', pasa al editor visual, añade a mano un atributo a una clase y guarda con 'Save metamodel'.",
+      "en": "Opens 'Import', uploads a PlantUML class diagram, waits for the proposal, presses 'Open in designer', switches to the visual editor, adds an attribute by hand to a class and saves with 'Save metamodel'."
+    },
+    "asserts": {
+      "es": "La fidelidad que muestra la propuesta es STRUCTURAL y coincide con la del formato detectado en GET /api/metamodel-imports/formats; ni al proponer ni al abrir en el diseñador existe el metamodelo en el backend; el .metamodel.json final trae las dos clases, los atributos propuestos, la relación y el atributo escrito a mano.",
+      "en": "The fidelity shown by the proposal is STRUCTURAL and equals that of the detected format in GET /api/metamodel-imports/formats; neither on proposing nor on opening in the designer does the metamodel exist in the backend; the final .metamodel.json holds the two classes, the proposed attributes, the relation and the hand-written attribute."
+    },
+    "behavior": {
+      "es": "Una persona importa un diagrama con fidelidad estructural, revisa lo que se propone, completa a mano lo que falta y guarda: lo guardado reúne lo propuesto y lo completado.",
+      "en": "A person imports a diagram with structural fidelity, reviews what is proposed, completes by hand what is missing and saves: what is stored combines the proposal and the additions."
+    },
+    "rule": {
+      "es": "Proponer una importación no guarda nada: solo se persiste cuando la persona guarda tras revisarla.",
+      "en": "Proposing an import saves nothing: it is stored only when the person saves after reviewing it."
+    },
+    "scenario": {
+      "es": "Un diagrama de dos clases con atributos y una relación se sube desde el navegador, se revisa la propuesta con su nivel de fidelidad, se abre en el diseñador, se añade un atributo y se guarda.",
+      "en": "A diagram with two classes, attributes and a relation is uploaded from the browser, the proposal is reviewed with its fidelity level, opened in the designer, an attribute is added and it is saved."
+    },
+    "result": {
+      "es": "El metamodelo guardado contiene las clases, los atributos y la relación propuestos más el atributo escrito a mano, y el nivel de fidelidad mostrado era el del formato.",
+      "en": "The stored metamodel contains the proposed classes, attributes and relation plus the hand-written attribute, and the fidelity level shown was the format's."
+    },
+    "expected": {
+      "es": "Una ejecución correcta no guarda nada antes de pulsar Guardar y después guarda propuesta y complemento juntos.",
+      "en": "A passing run saves nothing before Save is pressed and then stores the proposal and the addition together."
+    },
+    "guarantee": {
+      "es": "La revisión de una importación estructural y su completado manual funcionan en un navegador real y el servidor guarda el resultado.",
+      "en": "Reviewing a structural import and completing it by hand works in a real browser and the server stores the result."
+    },
+    "limits": {
+      "es": "Solo se prueba un formato estructural (diagrama PlantUML); no cubre la lectura desde almacenamiento remoto, las carpetas, el modo guiado del diálogo, el análisis con pérdida en modo estricto ni los registros de actividad descargables.",
+      "en": "Only one structural format (a PlantUML diagram) is tested; it does not cover reading from remote storage, folders, the dialog's guided mode, lossy analysis in strict mode or the downloadable activity logs."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Subida real desde el navegador, backend real, fidelidad contrastada con el catálogo de la API y fichero final leído desde Node.",
+      "en": "Real upload from the browser, real backend, fidelity checked against the API catalogue and the final file read from Node."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "la importación estructural propone el metamodelo sin guardarlo, el usuario lo completa a mano y lo guardado contiene ambas partes",
+        "scenario": { "es": "Se sube un diagrama, se revisa la propuesta, se abre en el diseñador, se añade un atributo y se guarda.", "en": "A diagram is uploaded, the proposal is reviewed, opened in the designer, an attribute is added and it is saved." },
+        "result": { "es": "Nada se guarda hasta el final y el metamodelo guardado reúne propuesta y complemento.", "en": "Nothing is saved until the end and the stored metamodel combines proposal and addition." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.metamodel.importing.MetamodelImportHttpPipelineIntegrationTests",
+      "vitest:frontend/src/metamodel-designer/MetamodelImportDialog.window.test.tsx"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/metamodel/import-review.spec.ts", "line": 48 },
+      { "path": "frontend/e2e/real/metamodel/import-review.spec.ts", "line": 49 },
+      { "path": "frontend/e2e/real/metamodel/import-review.spec.ts", "line": 50 },
+      { "path": "frontend/e2e/real/metamodel/import-review.spec.ts", "line": 56 },
+      { "path": "frontend/e2e/real/metamodel/import-review.spec.ts", "line": 74 },
+      { "path": "frontend/e2e/real/metamodel/import-review.spec.ts", "line": 76 },
+      { "path": "frontend/e2e/real/metamodel/import-review.spec.ts", "line": 78 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

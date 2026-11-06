@@ -1,9 +1,14 @@
 package com.example.editor.workbench.capability;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.editor.definition.EditorDefinitionApplicationService;
@@ -29,6 +34,7 @@ import com.example.editor.validation.validation.ValidationModelSummary;
 /** Aggregates independently portable capability layers for metamodel and grammar semantic contexts. */
 @Service
 public class HydraCapabilityReadinessService {
+    private static final Logger LOG = LoggerFactory.getLogger(HydraCapabilityReadinessService.class);
     private final CanonicalMetamodelApplicationService metamodels;
     private final GrammarApplicationService grammars;
     private final GrammarClassDiagramProjectionService grammarProjection;
@@ -83,25 +89,27 @@ public class HydraCapabilityReadinessService {
     /** Descripción: Agrega todas las capas portables de un contexto semántico común. Entradas: tipo, identificadores, nombre, metamodelo y etiqueta estructural del contexto. Salida: devuelve un resumen normalizado con métricas, avisos y recomendaciones. */
     /** Descripción: Ejecuta la operación «summarize» correspondiente a la responsabilidad de HydraCapabilityReadinessService. Entradas: contextType: dato de entrada necesario para la operación; contextId: identificador que delimita el recurso objetivo; contextName: dato de entrada necesario para la operación; artifactContextId: identificador que delimita el recurso objetivo; metamodel: dato de entrada necesario para la operación; structureLabel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private HydraCapabilityReadiness summarize(String contextType, String contextId, String contextName,
             String artifactContextId, MetaModel metamodel, String structureLabel){
-        ValidationModelSummary validation = validations.findAll().stream()
-                .filter(item -> item.metamodelId().equals(artifactContextId)).findFirst().orElse(null);
-        EventModelSummary event = events.list().stream()
-                .filter(item -> item.metamodelId().equals(artifactContextId)).findFirst().orElse(null);
-        EventFlowSummary flow = eventFlows.list().stream()
-                .filter(item -> item.metamodelId().equals(artifactContextId)).findFirst().orElse(null);
+        // Each layer reads only the documents of this context and an unreadable layer becomes a warning: one corrupt document (of this or of
+        // another metamodel) must not hide what is valid, and Home shows the warning, so the cause and its paths go only to the server log
         List<String> warnings = new ArrayList<>();
+        Set<String> unavailable = new HashSet<>();
+        ValidationModelSummary validation = inspect("VALIDATIONS", "Validation", () -> validations.summary(artifactContextId).orElse(null), null, warnings, unavailable);
+        EventModelSummary event = inspect("EVENTS", "Event", () -> events.summary(artifactContextId).orElse(null), null, warnings, unavailable);
+        EventFlowSummary flow = inspect("EVENT_FLOWS", "Event flow", () -> eventFlows.summary(artifactContextId).orElse(null), null, warnings, unavailable);
         GamificationCatalogResult gamificationCatalog;
         try {
             gamificationCatalog = gamification.listWithDiagnostics();
             if(gamificationCatalog == null) gamificationCatalog = GamificationCatalogResult.empty("Gamification catalog returned no result");
         } catch(RuntimeException exception) {
-            gamificationCatalog = GamificationCatalogResult.empty("Gamification readiness could not be inspected: " + safeMessage(exception));
+            // Home shows this warning to the user: the exception message may name server paths, so it goes only to the server log
+            LOG.warn("hydra.capability_readiness_gamification_unavailable correlationId={}", com.example.editor.audit.AuditRequestContext.correlationId(), exception);
+            gamificationCatalog = GamificationCatalogResult.empty("Gamification readiness could not be inspected; the details were recorded in the server log.");
         }
         warnings.addAll(gamificationCatalog.diagnostics());
         GamificationSummary game = gamificationCatalog.summaries().stream()
                 .filter(item -> item.metamodelId().equals(artifactContextId)).findFirst().orElse(null);
-        List<EditorDefinitionSummary> editorDefinitions = editors.list(artifactContextId);
-        List<IntegrationProfileSummary> profiles = integrations.list(artifactContextId);
+        List<EditorDefinitionSummary> editorDefinitions = inspect("EDITORS", "Editor", () -> editors.list(artifactContextId), List.of(), warnings, unavailable);
+        List<IntegrationProfileSummary> profiles = inspect("INTEGRATIONS", "Integration", () -> integrations.list(artifactContextId), List.of(), warnings, unavailable);
 
         List<HydraCapabilityLayerSummary> layers = new ArrayList<>();
         int classifierCount = metamodel.classes().size() + metamodel.enums().size() + metamodel.dataTypes().size();
@@ -130,22 +138,28 @@ public class HydraCapabilityReadinessService {
 
         int configured = (int) layers.stream().filter(HydraCapabilityLayerSummary::configured).count();
         int score = Math.round((configured * 100.0f) / layers.size());
-        List<String> next = layers.stream().filter(item -> !item.configured())
+        List<String> next = layers.stream().filter(item -> !item.configured() && !unavailable.contains(item.id()))
                 .map(item -> "Configure " + item.displayName().toLowerCase()).limit(3).toList();
         if(next.isEmpty()){next = List.of("Validate native targets", "Review round-trip synchronization", "Package an independent editor");}
         return new HydraCapabilityReadiness(contextId, contextName, contextType, artifactContextId, score, configured, layers.size(), layers, next, warnings);
+    }
+
+    /** Descripción: Lee una capa y, si falla, la sustituye por un aviso sin detalles del servidor (el detalle va al log con el correlationId). Entradas: layerId: capa; label: nombre del aviso; read: lectura de la capa; fallback: valor si no puede leerse; warnings y unavailable: acumuladores. Salida: lo leído o el valor de reserva. */
+    private <T> T inspect(String layerId, String label, Supplier<T> read, T fallback, List<String> warnings, Set<String> unavailable){
+        try {
+            return read.get();
+        } catch(RuntimeException exception) {
+            LOG.warn("hydra.capability_readiness_layer_unavailable layer={} correlationId={}", layerId, com.example.editor.audit.AuditRequestContext.correlationId(), exception);
+            warnings.add(label + " readiness could not be inspected; the details were recorded in the server log.");
+            unavailable.add(layerId);
+            return fallback;
+        }
     }
 
     /** Descripción: Construye el resumen de una capa individual. Entradas: identificador, nombre, estado, número de artefactos, métricas y módulo recomendado. Salida: devuelve la capa normalizada. */
     /** Descripción: Ejecuta la operación «layer» correspondiente a la responsabilidad de HydraCapabilityReadinessService. Entradas: id: identificador que delimita el recurso objetivo; name: dato de entrada necesario para la operación; configured: configuración que gobierna el comportamiento; count: dato de entrada necesario para la operación; metrics: dato de entrada necesario para la operación; module: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private HydraCapabilityLayerSummary layer(String id, String name, boolean configured, int count,
             Map<String, Integer> metrics, String module){
         return new HydraCapabilityLayerSummary(id, name, configured, count, metrics, module);
-    }
-
-    /** Descripción: Obtiene un mensaje seguro para un fallo de inspección sin propagar valores nulos. Entradas: exception: error capturado. Salida: devuelve un texto utilizable en diagnósticos. */
-    /** Descripción: Ejecuta la operación «safeMessage» correspondiente a la responsabilidad de HydraCapabilityReadinessService. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String safeMessage(Throwable exception) {
-        if(exception == null || exception.getMessage() == null || exception.getMessage().isBlank()) return "Unknown error";
-        return exception.getMessage();
     }
 
     /** Descripción: Construye un mapa ordenado de métricas a partir de pares nombre-valor. Entradas: values: secuencia alterna de claves y enteros. Salida: devuelve las métricas normalizadas. */

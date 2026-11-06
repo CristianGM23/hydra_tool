@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { GamificationDesigner } from './GamificationDesigner';
 
@@ -8,7 +8,7 @@ vi.mock('../event-designer/api', () => ({
 }));
 
 vi.mock('./api', () => ({
-    checkGamification: vi.fn(), createGamification: vi.fn(), loadGamification: vi.fn(), loadGamificationRuntime: vi.fn(),
+    checkGamification: vi.fn(), createGamification: vi.fn(), loadGamification: vi.fn(), loadGamificationRuntime: vi.fn(), loadGamificationFeedback: vi.fn(),
     replaceGamification: vi.fn(), resetGamificationRuntime: vi.fn(),
     loadGamificationDiagram: vi.fn(), saveGamificationDiagram: vi.fn()
 }));
@@ -136,4 +136,31 @@ describe('gamification designer forms', () => {
         expect(tooltip).toHaveTextContent(/anti-farming/i);
     });
 
+    // D-GAMIF-QUARANTINE-GET: the server answers a stored configuration that cannot be used with 409 CORRUPT_CONFIGURATION and leaves the
+    // files as they are; the designer must report it and must not open as if nothing were stored (only a 404 means that).
+    it('reports a corrupt stored configuration instead of opening as if nothing were stored', async () => {
+        const api = await import('./api');
+        const { ValidationApiError } = await import('../validation/http');
+        const corrupt = "The stored gamification configuration of metamodel 'people' cannot be used: bindings are malformed. The stored files were left unchanged.";
+        vi.mocked(api.loadGamification).mockRejectedValueOnce(new ValidationApiError(409, corrupt));
+        vi.mocked(api.loadGamificationDiagram).mockRejectedValueOnce(new ValidationApiError(409, corrupt));
+        vi.mocked(api.loadGamificationRuntime).mockRejectedValueOnce(new ValidationApiError(404, 'Not found'));
+        vi.mocked(api.loadGamificationFeedback).mockRejectedValueOnce(new ValidationApiError(409, corrupt));
+        const onError = vi.fn();
+        render(<GamificationDesigner metamodelId="people" persisted={true} onError={onError} onMessage={vi.fn()} />);
+        await waitFor(() => expect(onError).toHaveBeenCalled());
+        expect(onError).toHaveBeenCalledTimes(1);
+        expect(onError.mock.calls[0][0]).toMatch(/bindings are malformed/);
+        expect(onError.mock.calls[0][0]).toMatch(/left unchanged/);
+
+        const absent = vi.fn();
+        vi.mocked(api.loadGamification).mockRejectedValueOnce(new ValidationApiError(404, 'Not found'));
+        vi.mocked(api.loadGamificationDiagram).mockRejectedValueOnce(new ValidationApiError(404, 'Not found'));
+        vi.mocked(api.loadGamificationRuntime).mockRejectedValueOnce(new ValidationApiError(404, 'Not found'));
+        vi.mocked(api.loadGamificationFeedback).mockRejectedValueOnce(new ValidationApiError(404, 'Not found'));
+        render(<GamificationDesigner metamodelId="people" persisted={true} onError={absent} onMessage={vi.fn()} />);
+        await waitFor(() => expect(api.loadGamification).toHaveBeenCalledTimes(2));
+        await new Promise(resolve => setTimeout(resolve, 0));
+        expect(absent).not.toHaveBeenCalled();
+    });
 });

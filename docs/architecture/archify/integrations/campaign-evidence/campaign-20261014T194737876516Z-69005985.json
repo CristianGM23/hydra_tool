@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-14T19:47:37+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261014-205900",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "96b8249c258b141263253e4df4fc69c3b44e3ea890c03f42328b8a453e4f327a",
+  "reportCheckpointName": "0024-01792007254792234500-b363a666bdc946678de6910ea306e4b3.json",
+  "testResults": [
+    {
+      "id": "S741",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSiteP2MirrorServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 423.48,
+      "logSha256": "45402b58d4fd2728da58af45b47bc3d997b115897c637b8a333306d8d420b35a",
+      "logRelativePath": "logs/S741.log"
+    },
+    {
+      "id": "S742",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSiteParserFuzzTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 149.14,
+      "logSha256": "277f78ae333aff6f9749e2a131a88aabb55ab9b8def091e66e81d92b96f1ee12",
+      "logRelativePath": "logs/S742.log"
+    },
+    {
+      "id": "S743",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSitePortableSourceMetamodelDeriverTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 90.71,
+      "logSha256": "d191aad8acfa7b5015381fc25e8fe7522f47356420dcf5806eb12464ca210c18",
+      "logRelativePath": "logs/S743.log"
+    },
+    {
+      "id": "S744",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSiteProvenanceServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 97.44,
+      "logSha256": "c699f98422ee35118bc02707428d4da23dab1a952d3ca28eb6c28d8e3f085e6c",
+      "logRelativePath": "logs/S744.log"
+    },
+    {
+      "id": "S745",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRemoteRepositoryServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 94.95,
+      "logSha256": "0ddb14de76698984baebfa70d4e7ba60d1ffdd83c2ee96b5c3ee0bb93ca8107f",
+      "logRelativePath": "logs/S745.log"
+    },
+    {
+      "id": "S746",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRemoteSnapshotServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 116.63,
+      "logSha256": "ce9019714048760e9c0b072f31c425bbb4e0e5f65e27b1601e09416e40ceeec5",
+      "logRelativePath": "logs/S746.log"
+    },
+    {
+      "id": "S747",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRepositoryRootDetectorTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 96.61,
+      "logSha256": "e01db4f3370de4adee30ba95f67351d8a552eb07f86c09a8a46c5d427fc4d26c",
+      "logRelativePath": "logs/S747.log"
+    },
+    {
+      "id": "S748",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSiteScriptSemanticRecoveryTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 93.37,
+      "logSha256": "1b72316bc500d9ecfa43655818ff503c9a3694b577bf0abb5900e3bd13b4cead",
+      "logRelativePath": "logs/S748.log"
+    },
+    {
+      "id": "S749",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSiteSemanticEditorRecoveryServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 95.35,
+      "logSha256": "67b39688d06be2a1406a4ac321bf474fe3c6783c3d1d506037989ce6987e9f54",
+      "logRelativePath": "logs/S749.log"
+    },
+    {
+      "id": "S750",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSiteSourceMetamodelDeriverTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 94.17,
+      "logSha256": "29f102a07fb900f2e8bcbbc8993d435e9765e65088e1a0e8e79c32ad9278db6f",
+      "logRelativePath": "logs/S750.log"
+    },
+    {
+      "id": "S751",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.importing.updatesite.UpdateSiteStreamingStorageTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 117.16,
+      "logSha256": "1d4cc935845d40cd711b0537b9821f5dc9054fad1b581a6f7750e8f58c37e529",
+      "logRelativePath": "logs/S751.log"
+    },
+    {
+      "id": "S752",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.layout.LayeredMetamodelDiagramLayoutEngineTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 91.95,
+      "logSha256": "801146a44b61a1dc6781cf16d0a0093e6e8ad7a016f00cd35b13a289ddec6d59",
+      "logRelativePath": "logs/S752.log"
+    },
+    {
+      "id": "S753",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.layout.MetamodelDiagramLayoutEngineRegistryTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 92.5,
+      "logSha256": "d94208c42ba6b535079758c6c9c4e9ba81ecdf7973681df3b1f9a787f7a02ece",
+      "logRelativePath": "logs/S753.log"
+    },
+    {
+      "id": "S754",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.layout.MetamodelLayoutOptionsTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 97.21,
+      "logSha256": "f0e7e702ec4dc764dd5d7b48656ce12af96cdc497e117a80b51ccd81602b8f28",
+      "logRelativePath": "logs/S754.log"
+    },
+    {
+      "id": "S755",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.layout.routing.DynamicMetamodelPortAssignmentEngineTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 151.65,
+      "logSha256": "d5ea2b50436fefc8e633361bca01f5777a935a896211321887d178f4c1fb67de",
+      "logRelativePath": "logs/S755.log"
+    },
+    {
+      "id": "S756",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.layout.routing.MetamodelDiagramRoutingContractTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 121.17,
+      "logSha256": "4b373236d443149854fa2ff0f03248d00a8c7ca1b7165872b734e2f257f3e1bd",
+      "logRelativePath": "logs/S756.log"
+    },
+    {
+      "id": "S757",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.layout.routing.MetamodelRoutingMetricsAndPipelineTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 95.45,
+      "logSha256": "d78889daa4266a8c9cef694e1b2a667dcd3913ccd40110fe6a693b6d419569fe",
+      "logRelativePath": "logs/S757.log"
+    },
+    {
+      "id": "S758",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.layout.routing.OrthogonalMetamodelEdgeRoutingEngineTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 96.26,
+      "logSha256": "cd9c97e0f4d6c81b7fc90b2748c142d6c2f80fa27eb393a48444df7213478eba",
+      "logRelativePath": "logs/S758.log"
+    },
+    {
+      "id": "S759",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.lifecycle.MetamodelLifecycleExtendedArtifactsTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 102.36,
+      "logSha256": "fca0d3e02b8a89b4eeff7faf03fc89a71e81471a98fd1dd0ed7b5026a8a69caf",
+      "logRelativePath": "logs/S759.log"
+    },
+    {
+      "id": "S760",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.projection.EcoreMirrorServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 129.95,
+      "logSha256": "62831be4e72311643bba926d93a4fa225139a612e5c38c69c8e8ebfa18f89a7d",
+      "logRelativePath": "logs/S760.log"
+    },
+    {
+      "id": "S761",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.projection.JsonProjectionManifestRepositoryTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 134.85,
+      "logSha256": "693531beb9bf9aaeea4021fdaf05cdf3ab5128f7c4a6d8a78802a875c10d4c91",
+      "logRelativePath": "logs/S761.log"
+    },
+    {
+      "id": "S762",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.projection.ProjectionCoordinatorTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 94.74,
+      "logSha256": "c52cbe1f120ae5f834ec1599b9a07b395833cc61f0edbfa7cac690d327d8d110",
+      "logRelativePath": "logs/S762.log"
+    },
+    {
+      "id": "S763",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.registry.MetamodelRegistryServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 107.99,
+      "logSha256": "ae510378f5b1278a5931d1fb8365eda96a3daf9a53719517a3fcf8d7b3037c6a",
+      "logRelativePath": "logs/S763.log"
+    },
+    {
+      "id": "S764",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.roundtrip.TextualMetamodelSemanticRoundTripTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 127.06,
+      "logSha256": "d4cafb780c2d6f3582ab82dacaa192511e85d7670431b42d14cc259e80178f15",
+      "logRelativePath": "logs/S764.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

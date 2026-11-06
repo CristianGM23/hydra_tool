@@ -139,8 +139,9 @@ public class StandaloneEditorGeneratorService {
         put(result, "frontend/index.html", text(template("frontend/index.html.template")
                 .replace("__APPLICATION_NAME_HTML__", escapeHtml(descriptor.name()))));
         put(result, "frontend/app.js", templateBytes(selectedEditor.textual() ? "frontend/textual-app.js" : "frontend/app.js"));
+        put(result, "frontend/native-transport.js", templateBytes("frontend/native-transport.js"));
         put(result, "frontend/runtime.js", templateBytes("frontend/runtime.js"));
-        if(!selectedEditor.textual()) put(result, "frontend/visual-runtime.js", templateBytes("frontend/visual-runtime.js"));
+        put(result, "frontend/visual-runtime.js", templateBytes("frontend/visual-runtime.js"));
         put(result, "frontend/styles.css", templateBytes("frontend/styles.css"));
         put(result, "frontend/config/capabilities.json", json(capabilityIndex(capabilityPackage)));
         put(result, "backend/src/HydraStandaloneServer.java", text(template(
@@ -418,6 +419,8 @@ public class StandaloneEditorGeneratorService {
             if(candidate.documentId().equals(requestedId)) return candidate;
             JsonNode document = value.canonicalDocuments().get(candidate.documentId());
             if(document != null && requestedId.equals(document.path("id").asText(""))) return candidate;
+            // the executable plan compiled from the requested definition (what the editor UI packages) also matches
+            if(document != null && requestedId.equals(document.path("sourceEditorDefinitionId").asText(""))) return candidate;
         }
         return candidates.size() == 1 && requestedId.isBlank() ? candidates.get(0) : null;
     }

@@ -60,6 +60,12 @@ public final class StandaloneProductionReadinessService {
                     || regular(safe(root, "src-tauri/src/lib.rs"));
             if(!rustEntry) error("TAURI_RUST_ENTRY", "src-tauri/src", "Missing Rust application entry point", diagnostics);
             require(root, "src-tauri/capabilities/default.json", "TAURI_CAPABILITIES", diagnostics);
+            // Un proyecto Tauri sin transporte y modelo persistente no está listo para empaquetar.
+            require(root, "src-tauri/src/model_store.rs", "TAURI_MODEL_IPC", diagnostics);
+            require(root, "dist/native-transport.js", "TAURI_FRONTEND_TRANSPORT", diagnostics);
+            require(root, "dist/standalone-editor.json", "TAURI_BUNDLED_CONFIG", diagnostics);
+            require(root, "src-tauri/tauri.conf.json", "TAURI_NATIVE_CONFIGURATION", diagnostics);
+
         }
         if(regular(dist.resolve("index.html"))) {
             try {

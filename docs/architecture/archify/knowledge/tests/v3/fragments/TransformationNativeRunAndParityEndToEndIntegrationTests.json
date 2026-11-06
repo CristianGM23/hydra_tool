@@ -1,0 +1,239 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.nativeexec.TransformationNativeRunAndParityEndToEndIntegrationTests",
+    "external": "real",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Ejecución nativa con puente real y paridad de punta a punta",
+      "en": "End-to-end native run with a real bridge and parity"
+    },
+    "type": "END_TO_END",
+    "layer": "external",
+    "caps": [
+      "transformation",
+      "toolchains"
+    ],
+    "procs": [
+      {
+        "id": "transformation_export_native",
+        "stages": [
+          "rd",
+          "run"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "transformation_parity",
+        "stages": [
+          "ev",
+          "cp",
+          "ru",
+          "kd",
+          "cm",
+          "mt",
+          "bl",
+          "iv"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_transformation_run_and_sync",
+        "stages": [
+          "run",
+          "par"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeParityService.java",
+      "src/main/java/com/example/editor/transformation/parity/TransformationParityService.java",
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeExecutor.java",
+      "src/main/java/com/example/editor/transformation/parity/TransformationParityComparator.java",
+      "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeSupport.java",
+      "src/main/java/com/example/editor/transformation/export/TransformationExportService.java"
+    ],
+    "pre": {
+      "es": "JVM hija lanzable desde java.home y classpath de pruebas; directorio temporal escribible; sin ATL, Java ni ninguna toolchain real.",
+      "en": "Child JVM launchable from java.home and the test classpath; writable temporary directory; no ATL, Java or any real toolchain."
+    },
+    "setup": {
+      "es": "Servicios de exportación, runtime, texto, comparador, ejecutor y política de procesos reales; el puente es una JVM hija real (fixture de la prueba) que implementa la identidad M2M y el renderizado M2T; huellas recalculadas en la prueba.",
+      "en": "Real export, runtime, text, comparator, executor and process-policy services; the bridge is a real child JVM (test fixture) implementing M2M identity and M2T rendering; fingerprints recomputed in the test."
+    },
+    "executes": {
+      "es": "TransformationNativeParityService.execute con puente identidad, que altera un valor, M2T correcto y alterado, lenguaje o tipo no admitido, exportación bloqueada, motor sin configurar y puente que no termina, más TransformationParityService.verify sin modelo.",
+      "en": "TransformationNativeParityService.execute with an identity bridge, one altering a value, correct and altered M2T, unsupported language or kind, blocked export, unconfigured engine and a bridge that never ends, plus TransformationParityService.verify with no model."
+    },
+    "asserts": {
+      "es": "MATCHED con la huella SHA-256 esperada y un PID distinto; MISMATCHED con huellas y diferencias con ruta; M2T compara ficheros; INVALID_EVIDENCE y EXPORT_BLOCKED sin lanzar el puente (el marcador no existe); NOT_CONFIGURED sin informe de paridad; TIMED_OUT y proceso terminado.",
+      "en": "MATCHED with the expected SHA-256 fingerprint and a different PID; MISMATCHED with fingerprints and path differences; M2T compares files; INVALID_EVIDENCE and EXPORT_BLOCKED without launching the bridge (the marker does not exist); NOT_CONFIGURED without a parity report; TIMED_OUT and process terminated."
+    },
+    "behavior": {
+      "es": "HYDRA exporta, lanza la herramienta en un proceso aislado y compara su resultado con el de su propio motor; no ejecuta si la herramienta no está lista o la exportación es incompatible, y corta lo que tarda demasiado.",
+      "en": "HYDRA exports, launches the tool in an isolated process and compares its result with its own engine's; it does not run if the tool is not ready or the export is incompatible, and cuts what takes too long."
+    },
+    "rule": {
+      "es": "Sin herramienta lista o con exportación bloqueada no se lanza ningún proceso; un valor distinto es MISMATCHED; un puente que excede el tiempo se termina.",
+      "en": "With no ready tool or a blocked export no process is launched; a different value is MISMATCHED; a bridge exceeding the time is terminated."
+    },
+    "scenario": {
+      "es": "Ejecutar la identidad M2M con un puente real, uno que altera valores, un M2T con ficheros, combinaciones no admitidas, una exportación con guarda, un motor sin comando y un puente que no responde.",
+      "en": "Run the M2M identity with a real bridge, one altering values, an M2T with files, unsupported combinations, an export with a guard, an engine with no command and an unresponsive bridge."
+    },
+    "result": {
+      "es": "Veredictos y estados de ejecución coinciden con los esperados; el PID del marcador prueba el proceso real y su ausencia prueba que no se lanzó.",
+      "en": "Verdicts and execution states match the expected ones; the marker PID proves the real process and its absence proves it was not launched."
+    },
+    "expected": {
+      "es": "Estados, huellas recalculadas, rutas de diferencia, ficheros marcador y terminación del proceso coinciden con las aserciones.",
+      "en": "States, recomputed fingerprints, difference paths, marker files and process termination match the assertions."
+    },
+    "guarantee": {
+      "es": "Evidencia real del tramo ejecutar-y-comparar con un proceso externo real, incluidos los caminos de rechazo, ausencia de herramienta y tiempo agotado.",
+      "en": "Real evidence of the run-and-compare stretch with a real external process, including rejection paths, missing tool and timeout."
+    },
+    "limits": {
+      "es": "El puente es un fixture propio, no ATL/Java reales: no prueba que una herramienta real transforme bien; solo FORWARD con reglas directas; el diagnóstico READY está en la prueba de ciclo de vida de toolchains.",
+      "en": "The bridge is a custom fixture, not real ATL/Java: it does not prove a real tool transforms correctly; only FORWARD with direct rules; the READY diagnosis is in the toolchain lifecycle test."
+    },
+    "strengthWhy": {
+      "es": "Servicios y proceso real, oráculo independiente (huellas SHA-256 recalculadas, PID, marcador) y casos negativos de cada puerta.",
+      "en": "Real services and process, independent oracle (recomputed SHA-256 fingerprints, PID, marker) and negative cases for each gate."
+    },
+    "cases": [
+      {
+        "n": "m2mIdentityThroughARealBridgeProcessMatchesTheCanonicalResult",
+        "scenario": {
+          "es": "Puente real que copia el modelo.",
+          "en": "Real bridge copying the model."
+        },
+        "result": {
+          "es": "MATCHED con huella esperada.",
+          "en": "MATCHED with the expected fingerprint."
+        }
+      },
+      {
+        "n": "aBridgeThatAltersAValueIsReportedAsMismatchedWithThePath",
+        "scenario": {
+          "es": "Puente que pone los nombres en mayúsculas.",
+          "en": "Bridge upper-casing the names."
+        },
+        "result": {
+          "es": "MISMATCHED con ruta de diferencia.",
+          "en": "MISMATCHED with a difference path."
+        }
+      },
+      {
+        "n": "m2tComparesGeneratedFilesAndDetectsATamperedFile",
+        "scenario": {
+          "es": "M2T correcto y con contenido alterado.",
+          "en": "Correct and tampered M2T."
+        },
+        "result": {
+          "es": "MATCHED / MISMATCHED sobre ficheros.",
+          "en": "MATCHED / MISMATCHED over files."
+        }
+      },
+      {
+        "n": "unsupportedLanguageKindOrMissingSourceModelIsInvalidEvidenceWithoutLaunchingTheBridge",
+        "scenario": {
+          "es": "ACCELEO con M2M, ATL con M2T, REVERSE sin bidireccional, sin modelo.",
+          "en": "ACCELEO with M2M, ATL with M2T, REVERSE without bidirectional, no model."
+        },
+        "result": {
+          "es": "INVALID_EVIDENCE sin proceso.",
+          "en": "INVALID_EVIDENCE without a process."
+        }
+      },
+      {
+        "n": "blockedExportIsExportBlockedWithoutLaunchingAProcess",
+        "scenario": {
+          "es": "ATL con una guarda.",
+          "en": "ATL with a guard."
+        },
+        "result": {
+          "es": "EXPORT_BLOCKED sin proceso.",
+          "en": "EXPORT_BLOCKED without a process."
+        }
+      },
+      {
+        "n": "unconfiguredEngineIsNotConfiguredAndProducesNoParityReport",
+        "scenario": {
+          "es": "ETL sin comando.",
+          "en": "ETL with no command."
+        },
+        "result": {
+          "es": "NOT_CONFIGURED y paridad nula.",
+          "en": "NOT_CONFIGURED and null parity."
+        }
+      },
+      {
+        "n": "aBridgeThatNeverEndsIsTimedOutAndItsProcessIsTerminated",
+        "scenario": {
+          "es": "Puente que duerme 120 s con límite de 4 s.",
+          "en": "Bridge sleeping 120 s with a 4 s limit."
+        },
+        "result": {
+          "es": "TIMED_OUT y proceso terminado.",
+          "en": "TIMED_OUT and process terminated."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 116
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 126
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 147
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 148
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 173
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 184
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 212
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 217
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 233
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 248
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 264
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/nativeexec/TransformationNativeRunAndParityEndToEndIntegrationTests.java",
+        "line": 122
+      }
+    ],
+    "layers2": [
+      "behavior"
+    ]
+  }
+]

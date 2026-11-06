@@ -1,0 +1,157 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.application.GrammarAuthoringCompilePipelineOutcomeTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Resultado real de la compilación de una gramática: metamodelo, congelado, esquema semántico, ficheros y bloqueo por errores",
+      "en": "Real outcome of compiling a grammar: metamodel, freeze, semantic schema, files and blocking on errors"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": [
+      "grammar",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "x_grammar_to_text_model",
+        "stages": [
+          "mm",
+          "d1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_compile_pipeline",
+        "stages": [
+          "s1",
+          "s5",
+          "s11"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_author_save_compile",
+        "stages": [
+          "bl"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java",
+      "src/main/java/com/example/editor/grammar/core/GrammarHashing.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarRepository.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarCompilationRepository.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío por prueba; sin herramientas nativas instaladas (la comprobación nativa se difiere).",
+      "en": "Empty temporary directory per test; no native tools installed (the native check is deferred)."
+    },
+    "setup": {
+      "es": "Cableado real de la compilación: repositorios JSON, proveedores, analizador, coordinador y proyector de diagramas; las huellas se recalculan en la prueba con SHA-256.",
+      "en": "Real compilation wiring: JSON repositories, providers, analyzer, coordinator and diagram projector; hashes are recomputed in the test with SHA-256."
+    },
+    "executes": {
+      "es": "GrammarApplicationService.create/find/list/replace en los tres modos de autoría; GrammarCompilationService.compile con huella esperada, con gramática libre y enlazada, con proyecto generado y con un borrador roto (activando y sin activar); relectura del repositorio de compilaciones.",
+      "en": "GrammarApplicationService.create/find/list/replace in the three authoring modes; GrammarCompilationService.compile with expected hash, free and linked grammar, generated project and a broken draft (with and without activation); compilation repository re-read."
+    },
+    "asserts": {
+      "es": "Fichero guardado con modo y metamodelo literales; rechazo sin fichero nuevo; huella de fuentes recalculada igual a la registrada y texto cambiado rechazado sin snapshot; id y etag del esquema semántico recalculados y modo de capas; huella y tamaño de cada fichero recalculados; fallo con una etapa fallida, sin etapas posteriores ni ficheros y con la versión activa intacta.",
+      "en": "Stored file with literal mode and metamodel; rejection with no new file; recomputed source hash equals the recorded one and changed-text request rejected with no snapshot; recomputed semantic schema id and etag and layer mode; recomputed hash and size of each file; failure with a single failed stage, no later stages, no files and the active version intact."
+    },
+    "behavior": {
+      "es": "El metamodelo solo es obligatorio en los modos enlazado y primero el metamodelo; compilar congela el texto con su huella, fija el esquema semántico, registra cada fichero con su huella y tamaño, y se detiene ante un error bloqueante sin generar nada.",
+      "en": "The metamodel is only mandatory in linked and metamodel-first modes; compiling freezes the text with its hash, fixes the semantic schema, registers each file with its hash and size, and stops on a blocking error without generating anything."
+    },
+    "rule": {
+      "es": "Sin metamodelo no se guardan los modos enlazado ni primero el metamodelo; un texto distinto del esperado se rechaza; un error bloqueante impide generar y activar.",
+      "en": "Without a metamodel the linked and metamodel-first modes are not saved; text different from the expected one is rejected; a blocking error prevents generating and activating."
+    },
+    "scenario": {
+      "es": "Guardar gramáticas en los tres modos, compilar con la huella esperada y con texto cambiado, compilar una gramática libre y una enlazada, inspeccionar los ficheros registrados y compilar un borrador roto sobre una versión activa.",
+      "en": "Save grammars in the three modes, compile with the expected hash and with changed text, compile a free and a linked grammar, inspect the registered files and compile a broken draft over an active version."
+    },
+    "result": {
+      "es": "Huellas, identificadores y tamaños coinciden con los recalculados; los rechazos no dejan ficheros; el fallo conserva la versión activa y no produce ficheros.",
+      "en": "Hashes, identifiers and sizes match the recomputed ones; rejections leave no files; the failure keeps the active version and produces no files."
+    },
+    "expected": {
+      "es": "Todas las aserciones se cumplen, incluidas las de ausencia de ficheros y de etapas posteriores tras un error bloqueante.",
+      "en": "All assertions hold, including the absence of files and later stages after a blocking error."
+    },
+    "guarantee": {
+      "es": "Evidencia real y reproducible de los resultados de cada etapa de compilación comprobada, con oráculo calculado fuera del código probado.",
+      "en": "Real and reproducible evidence of the outcome of each compilation stage checked, with an oracle computed outside the code under test."
+    },
+    "limits": {
+      "es": "Se llama al servicio, no al panel ni a los botones de Compilar y Generar. No se comprueba que el metamodelo enlazado exista. La etapa fallida de un error de análisis se registra como importaciones, no como análisis, y la prueba no lo fija. Importaciones, esquema no derivable y comprobación nativa no se ejercen.",
+      "en": "The service is called, not the panel or the Compile and Generate buttons. It is not checked that the linked metamodel exists. The failed stage of an analysis error is recorded as imports, not analysis, and the test does not pin it. Imports, non-derivable schema and the native check are not exercised."
+    },
+    "strengthWhy": {
+      "es": "Cableado real completo, oráculo recalculado y literales, y casos de éxito y de rechazo.",
+      "en": "Complete real wiring, recomputed and literal oracle, and success and rejection cases."
+    },
+    "cases": [
+      {
+        "n": "theMetamodelIsRequiredOnlyInLinkedAndMetamodelFirstModesAndIsPersisted",
+        "scenario": {
+          "es": "Guardar con y sin metamodelo en los tres modos.",
+          "en": "Save with and without a metamodel in the three modes."
+        },
+        "result": {
+          "es": "Metamodelo en el fichero; sin él se rechazan dos modos sin fichero nuevo.",
+          "en": "Metamodel in the file; without it two modes are rejected with no new file."
+        }
+      },
+      {
+        "n": "freezingRecordsTheRecomputedHashAndRejectsChangedText",
+        "scenario": {
+          "es": "Compilar con la huella esperada y con texto cambiado.",
+          "en": "Compile with the expected hash and with changed text."
+        },
+        "result": {
+          "es": "Huella registrada igual a la recalculada; el texto cambiado se rechaza sin snapshot.",
+          "en": "Recorded hash equals the recomputed one; changed text rejected with no snapshot."
+        }
+      },
+      {
+        "n": "everyGeneratedFileIsRegisteredWithItsRecomputedHashAndSize",
+        "scenario": {
+          "es": "Compilar y comprobar cada fichero registrado.",
+          "en": "Compile and check each registered file."
+        },
+        "result": {
+          "es": "Ruta, huella y tamaño de cada fichero coinciden con los recalculados.",
+          "en": "Path, hash and size of each file match the recomputed ones."
+        }
+      },
+      {
+        "n": "aBlockingErrorStopsBothCompileAndGenerateBeforeAnyFileIsProduced",
+        "scenario": {
+          "es": "Compilar y generar un borrador roto sobre una versión activa.",
+          "en": "Compile and generate a broken draft over an active version."
+        },
+        "result": {
+          "es": "Fallo sin ficheros ni etapas posteriores; versión activa intacta.",
+          "en": "Failure with no files or later stages; active version intact."
+        }
+      }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringCompilePipelineOutcomeTests.java", "line": 193 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringCompilePipelineOutcomeTests.java", "line": 200 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringCompilePipelineOutcomeTests.java", "line": 222 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringCompilePipelineOutcomeTests.java", "line": 238 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringCompilePipelineOutcomeTests.java", "line": 260 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringCompilePipelineOutcomeTests.java", "line": 302 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringCompilePipelineOutcomeTests.java", "line": 355 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarAuthoringCompilePipelineOutcomeTests.java", "line": 360 }
+    ]
+  }
+]

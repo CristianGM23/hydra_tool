@@ -1,0 +1,72 @@
+[
+  {
+    "id": "java:com.example.editor.generated.project.GeneratedProjectProductionCatalogHttpIntegrationTests",
+    "name": {"es": "Proyectos generados con el catálogo de producción", "en": "Generated projects with the production catalog"},
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "caps": ["generated_projects"],
+    "procs": [
+      {"id": "generated_projects_lifecycle", "stages": ["rg", "op"], "match": "direct"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleController.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleService.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectRuntimeProfileCatalog.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectRegistryStore.java"
+    ],
+    "pre": {"es": "Directorios temporales para los proyectos y el registro; no se necesita ninguna herramienta externa.", "en": "Temporary directories for projects and registry; no external tool is needed."},
+    "executes": {
+      "es": "Controlador, servicio, almacén JSON del registro y ejecutor de comandos reales con el catálogo de perfiles de producción sin sustituir; solo se registra y se ejecuta la etapa de apertura, que no lanza comandos.",
+      "en": "Real controller, service, JSON registry store and command runner with the unsubstituted production profile catalog; only registration and the open stage are run, which launches no commands."
+    },
+    "asserts": {
+      "es": "Los cinco perfiles ordenados con su tecnología y etapas; el registro en disco con los proyectos, que sobrevive a un reinicio del servicio; perfil o rutas inválidos devuelven 400 sin cambiar el registro; la apertura devuelve la ruta calculada en el test, no crea ficheros y falla si el directorio no existe.",
+      "en": "The five profiles sorted with their technology and stages; the registry on disk with the projects, surviving a service restart; invalid profile or paths return 400 without changing the registry; opening returns the path computed in the test, creates no files and fails if the directory does not exist."
+    },
+    "behavior": {
+      "es": "Con el catálogo de producción, HYDRA registra un proyecto generado de forma persistente y puede abrirlo sin ejecutar herramientas, rechazando perfiles desconocidos y rutas fuera de la raíz de proyectos.",
+      "en": "With the production catalog, HYDRA persistently registers a generated project and can open it without running tools, rejecting unknown profiles and paths outside the projects root."
+    },
+    "rule": {
+      "es": "Solo se registran perfiles del catálogo y rutas relativas dentro de la raíz; abrir un proyecto no ejecuta comandos y exige que su directorio exista.",
+      "en": "Only catalog profiles and relative paths inside the root are registered; opening a project runs no commands and requires its directory to exist."
+    },
+    "scenario": {
+      "es": "Listar perfiles, registrar un proyecto langium y otro xtext, volver a registrar el primero, probar perfil desconocido, ruta con ../ y ruta absoluta, reiniciar el servicio y abrir proyectos de varios perfiles y uno cuyo directorio no existe.",
+      "en": "List profiles, register a langium and an xtext project, register the first one again, try an unknown profile, a ../ path and an absolute path, restart the service and open projects of several profiles and one whose directory does not exist."
+    },
+    "result": {
+      "es": "El fichero del registro, la lista de perfiles escrita a mano y la ruta calculada demuestran el registro y la apertura sin efectos en el proyecto.",
+      "en": "The registry file, the hand-written profile list and the computed path show the registration and the opening with no effect on the project."
+    },
+    "expected": {
+      "es": "Todos los casos pasan sin necesitar npm, Maven ni Python.",
+      "en": "All cases pass without needing npm, Maven or Python."
+    },
+    "guarantee": {
+      "es": "El registro de proyectos generados del catálogo real es persistente y seguro, y la apertura es una operación sin efectos laterales.",
+      "en": "The generated-project registry of the real catalog is persistent and safe, and opening is an operation without side effects."
+    },
+    "limits": {
+      "es": "No ejecuta generación, validación ni arranque de ningún perfil de producción. El perfil de editor web autónomo solo aparece en el listado: sus etapas con intérprete de comandos las rechaza la política de procesos y están caracterizadas en otro test, por lo que no se reclama su ciclo de vida.",
+      "en": "It does not run generation, validation or launch of any production profile. The standalone web editor profile only appears in the listing: its command-interpreter stages are rejected by the process policy and are characterized in another test, so its lifecycle is not claimed."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Controlador, servicio, almacén y ejecutor reales con el catálogo de producción, oráculos en disco y literales y rechazos con control positivo.",
+      "en": "Real controller, service, store and runner with the production catalog, oracles on disk and literals and rejections with positive control."
+    },
+    "external": "none",
+    "src": [
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectProductionCatalogHttpIntegrationTests.java", "line": 90},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectProductionCatalogHttpIntegrationTests.java", "line": 113},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectProductionCatalogHttpIntegrationTests.java", "line": 117},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectProductionCatalogHttpIntegrationTests.java", "line": 124},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectProductionCatalogHttpIntegrationTests.java", "line": 139},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectProductionCatalogHttpIntegrationTests.java", "line": 144},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectProductionCatalogHttpIntegrationTests.java", "line": 156},
+      {"path": "src/test/java/com/example/editor/generated/project/GeneratedProjectProductionCatalogHttpIntegrationTests.java", "line": 163}
+    ],
+    "confidence": "ANALYZED"
+  }
+]

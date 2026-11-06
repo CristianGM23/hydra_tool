@@ -1,0 +1,3 @@
+- grammar_author_fix.sel: pulsar el diagnóstico que lleva corrección mueve el cursor del editor a su línea (línea 40).
+- grammar_author_fix.ty: el mismo problema ofrece una corrección del servidor y otra local del navegador, y el servidor real confirma el problema con el texto roto (líneas 31-35).
+- grammar_author_fix.ap: pulsar la corrección local deja en el editor el texto corregido; el servidor ya no devuelve el error y lo guardado no cambia (líneas 44-52).

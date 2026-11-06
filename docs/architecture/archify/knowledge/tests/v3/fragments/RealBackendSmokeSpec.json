@@ -1,0 +1,27 @@
+[
+  {
+    "id": "pw:e2e/real/real-backend-smoke.spec.ts",
+    "name": { "es": "Humo del entorno E2E real: navegador, frontend compilado y backend real", "en": "Real E2E environment smoke: browser, built frontend and real backend" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["project"],
+    "procs": [],
+    "pre": null,
+    "executes": { "es": "Abre la aplicación en un navegador real servida desde el frontend compilado y consulta el estado del sistema a través del proxy hacia el backend real.", "en": "Opens the application in a real browser served from the built frontend and queries the system status through the proxy to the real backend." },
+    "asserts": { "es": "El estado del sistema responde HYDRA y UP; la página se renderiza sin errores crudos del servidor.", "en": "The system status answers HYDRA and UP; the page renders without raw server errors." },
+    "behavior": { "es": "Comprueba que el entorno de pruebas de extremo a extremo con backend real funciona; no certifica ninguna etapa por sí mismo.", "en": "Checks that the end-to-end test environment with a real backend works; it certifies no stage by itself." },
+    "rule": null,
+    "scenario": { "es": "Arranque del backend en 127.0.0.1 con almacenamiento temporal propio y navegación a la página principal.", "en": "Backend start on 127.0.0.1 with its own temporary storage and navigation to the main page." },
+    "result": { "es": "La aplicación responde y se muestra.", "en": "The application answers and is displayed." },
+    "expected": { "es": "Estado UP y página sin errores crudos.", "en": "Status UP and a page without raw errors." },
+    "guarantee": { "es": "El entorno E2E real está operativo y aislado.", "en": "The real E2E environment is operational and isolated." },
+    "limits": { "es": "Solo comprueba la infraestructura; no recorre ninguna jornada funcional.", "en": "It only checks the infrastructure; it walks through no functional journey." },
+    "strength": "LIMITED",
+    "strengthWhy": { "es": "Es una prueba de humo del entorno, sin aserciones funcionales.", "en": "It is an environment smoke test, without functional assertions." },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [{ "path": "frontend/e2e/real/real-backend-smoke.spec.ts", "line": 8 }],
+    "confidence": "SKIMMED"
+  }
+]

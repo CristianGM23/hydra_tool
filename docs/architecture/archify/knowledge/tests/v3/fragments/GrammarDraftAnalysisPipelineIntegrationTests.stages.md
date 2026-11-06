@@ -1,0 +1,4 @@
+- grammar_analyze_generate.fast + grammar_author_monaco.an: aValidDraftIsAnalyzedWithoutErrorsAndReturnsItsSymbols (lines 129-132, FAST analysis returns symbols and no errors).
+- grammar_analyze_generate.rf + grammar_author_monaco.an: missingAmbiguousAndStaleReferencesAreReportedWithCandidatesAndActions (lines 143-161: missing, ambiguous and stale references with candidates and replace action).
+- grammar_analyze_generate.rg: leftRecursionBlocksWhileRightRecursionAndUnusedRulesDoNot (lines 172-187: left recursion is an error with leftCount 1, right recursion is informational, unused rule is a warning).
+- grammar_analyze_generate.pj: theDraftClassDiagramIsProjectedFromTheDraftWithoutWritingAnything (lines 200-206: classes, attributes, reference edge, no files written).

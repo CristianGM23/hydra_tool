@@ -3,7 +3,7 @@
   const state={descriptor:null,metamodel:null,editor:null,model:null,etag:'',selectedId:'',activeRepresentationId:'',undo:[],redo:[],dirty:false,capabilityDocuments:{},runtime:null,visualAppearance:null,latestProblems:[]};
   const byId=id=>document.getElementById(id);
   const status=text=>{byId('status').textContent=text;};
-  const jsonRequest=async(path,options={})=>{const response=await fetch(path,options);if(!response.ok)throw new Error((await response.text())||`HTTP ${response.status}`);return {value:response.status===204?null:await response.json(),etag:(response.headers.get('ETag')||'').replaceAll('"','')};};
+  const jsonRequest=(path,options={})=>window.HydraEditorTransport.request(path,options);
   const objectValues=value=>Array.isArray(value)?value:Object.values(value||{});
   const capabilityPath=path=>`/${path.replace(/^frontend\//,'')}`;
   const planRepresentations=()=>state.editor.representationsById?objectValues(state.editor.representationsById):objectValues(state.editor.representations);

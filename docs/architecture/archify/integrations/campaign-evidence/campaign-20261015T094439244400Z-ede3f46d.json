@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-15T09:44:39+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261015-114159",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "9c84a127d76bd271fa54fe73ce7e5ecba498879fdb726de046ee732ca5421588",
+  "reportCheckpointName": "0024-01792057478500920000-b6f95867953f48b28551538c6b356cd8.json",
+  "testResults": [
+    {
+      "id": "S227",
+      "title": "Vitest file: src/designer-ui/DesignerStructureTree.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.2,
+      "logSha256": "0fe59f50f3750f8459fdf9d31361f889554eba7c2dd994d6034a947cad8eff30",
+      "logRelativePath": "logs/S227.log"
+    },
+    {
+      "id": "S228",
+      "title": "Vitest file: src/designer-ui/DiagramInteractionToolbar.dropdown.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.45,
+      "logSha256": "53d87d77d221d83977238c198fb42a1f7dac931a56c42f27b69f0f59a5621202",
+      "logRelativePath": "logs/S228.log"
+    },
+    {
+      "id": "S229",
+      "title": "Vitest file: src/designer-ui/GlobalHelpControlStyle.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.11,
+      "logSha256": "c8fa7322ab05b791f9fa2473ea01fc91c8c61721367be9be96a376a92c1b40b0",
+      "logRelativePath": "logs/S229.log"
+    },
+    {
+      "id": "S230",
+      "title": "Vitest file: src/designer-ui/HydraConnectionVisual.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.33,
+      "logSha256": "3f47bc85ee89403c5dd384c811a433bb2ae66430331171c7ad421442a4f86517",
+      "logRelativePath": "logs/S230.log"
+    },
+    {
+      "id": "S231",
+      "title": "Vitest file: src/designer-ui/HydraDirectedEdge.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.23,
+      "logSha256": "72dbb48322a98ad50aa9f6ca390bbded6f5e6fc14c20388a8aac44ff744f7259",
+      "logRelativePath": "logs/S231.log"
+    },
+    {
+      "id": "S233",
+      "title": "Vitest file: src/designer-ui/ResizableDialogSurfaces.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.36,
+      "logSha256": "73996c1669d54a690353d5d2e585072822121a6defa082a140dff24fd712a589",
+      "logRelativePath": "logs/S233.log"
+    },
+    {
+      "id": "S234",
+      "title": "Vitest file: src/designer-ui/boundedDiagramViewport.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.35,
+      "logSha256": "412523cdbdb31e09b26a0a7b526062e15c0c047d3694d43139132b9b8ef68768",
+      "logRelativePath": "logs/S234.log"
+    },
+    {
+      "id": "S235",
+      "title": "Vitest file: src/designer-ui/diagramGeometry.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 3.91,
+      "logSha256": "ef38ca68bba03545d0fa7217a2a6acf9b60c2edd62cc2a60616bb6e3d8838c62",
+      "logRelativePath": "logs/S235.log"
+    },
+    {
+      "id": "S236",
+      "title": "Vitest file: src/designer-ui/diagramSelection.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.27,
+      "logSha256": "078b1f7fa0b9238fc09108a04b3eec892e4d0e8d277b5072e63cd02dac29b145",
+      "logRelativePath": "logs/S236.log"
+    },
+    {
+      "id": "S238",
+      "title": "Vitest file: src/designer-ui/useResizableDesignerSidebar.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 10.72,
+      "logSha256": "91aafa3eaab9734c02d4c9a8213aa0b351cfe99a0e15f2f1c4b9ac418c9395a7",
+      "logRelativePath": "logs/S238.log"
+    },
+    {
+      "id": "S239",
+      "title": "Vitest file: src/diagram/diagramUtils.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.67,
+      "logSha256": "0b95a84b59030a8ffd2aacb1cd1eb59ecc442f9838815b42668acd027f581c48",
+      "logRelativePath": "logs/S239.log"
+    },
+    {
+      "id": "S240",
+      "title": "Vitest file: src/diagram/elkStyleLayout.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.37,
+      "logSha256": "9c92735f78788ee7e131b93f55bcf95951822cb0edff5dc5b8725d966572d810",
+      "logRelativePath": "logs/S240.log"
+    },
+    {
+      "id": "S241",
+      "title": "Vitest file: src/diagram/flowPerformance.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.68,
+      "logSha256": "76111c9b62d01a19aa9a19a58adeb6a37fc43b861c1d49f4d2cabb112a90341a",
+      "logRelativePath": "logs/S241.log"
+    },
+    {
+      "id": "S242",
+      "title": "Vitest file: src/diagram/performanceTelemetry.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.19,
+      "logSha256": "51778edb9b3e34eb0cd5680fa5fb6e399fa9e86ec4e6a4de503e339f799625e3",
+      "logRelativePath": "logs/S242.log"
+    },
+    {
+      "id": "S314",
+      "title": "Vitest file: src/hooks/hydraOverwritePolicy.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.82,
+      "logSha256": "533c7fb92a547218816ccc4bdf72729df3fb61da9eb4f74ed7ce482e96cfe988",
+      "logRelativePath": "logs/S314.log"
+    },
+    {
+      "id": "S315",
+      "title": "Vitest file: src/hooks/useHydraDialogs.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.41,
+      "logSha256": "24c8fddd6c6149f1c0b578b3b49a0ad3092a72b779d4e51051223b0b56fed7dc",
+      "logRelativePath": "logs/S315.log"
+    },
+    {
+      "id": "S316",
+      "title": "Vitest file: src/i18n/HydraAllLayersSpanishCoverage.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.82,
+      "logSha256": "ddc48c2a4f56e05cc3fb7c636ad655b34a6baffc8c2715dd21b9a62dc5c99230",
+      "logRelativePath": "logs/S316.log"
+    },
+    {
+      "id": "S317",
+      "title": "Vitest file: src/i18n/HydraApplicationSpanishCoverage.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.38,
+      "logSha256": "b08965c1c6fbbcd864b30dff0aa0b651241beed010a54b7390132c562148996f",
+      "logRelativePath": "logs/S317.log"
+    },
+    {
+      "id": "S319",
+      "title": "Vitest file: src/i18n/HydraLanguageContext.test.tsx",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.8,
+      "logSha256": "2a465d7579c1d3266093f7d3ea626e4de3fb6d6a3922f5563c1dc51638430c80",
+      "logRelativePath": "logs/S319.log"
+    },
+    {
+      "id": "S320",
+      "title": "Vitest file: src/i18n/HydraProductionSpanishCoverage.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 17.05,
+      "logSha256": "488907dcfca59833ad305b030e42209d9f87619ae31ae1623b11f17ba6a8e83b",
+      "logRelativePath": "logs/S320.log"
+    },
+    {
+      "id": "S322",
+      "title": "Vitest file: src/i18n/HydraSpanishDomainQuality.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 8.62,
+      "logSha256": "1d33f6f6de14b09541eb150c63a16374e2076f849b55c23a13c0aad2f3fea8e0",
+      "logRelativePath": "logs/S322.log"
+    },
+    {
+      "id": "S323",
+      "title": "Vitest file: src/i18n/guidedSpanishCatalog.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.03,
+      "logSha256": "586919ffee40ca308d59720148c735dd716826f75ac92bc9b86ce2149002b44f",
+      "logRelativePath": "logs/S323.log"
+    },
+    {
+      "id": "S325",
+      "title": "Vitest file: src/i18n/translationCatalog.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.91,
+      "logSha256": "9fe00df1ecbdddc89f573f7f67291de6091a8f5c0a30aa304981eb34615ea372",
+      "logRelativePath": "logs/S325.log"
+    },
+    {
+      "id": "S326",
+      "title": "Vitest file: src/i18n/translationCatalogConflict.test.ts",
+      "group": "frontend-file-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.69,
+      "logSha256": "70220a8e405fefd3b80d9322c0a122f6eae707a721f030a4183656a9de16a158",
+      "logRelativePath": "logs/S326.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

@@ -41,8 +41,13 @@ abstract class PortableSourceMetamodelImporter implements MetamodelImporter {
         String requestedId = options.targetId().isBlank() ? sourceStem(source.fileName()) : options.targetId();
         var metamodel = deriver.derive(artifactKind, combined.toString().getBytes(StandardCharsets.UTF_8), requestedId, source.fileName());
         String formatName = format().displayName();
-        return new MetamodelImportOutput(metamodel, null, List.of(new TransformationWarning(
-                "IMPORT_STATIC_SOURCE_INFERENCE", "$", formatName + " was analyzed statically; imported code was never executed.")));
+        List<TransformationWarning> warnings = new java.util.ArrayList<>();
+        warnings.add(new TransformationWarning("IMPORT_STATIC_SOURCE_INFERENCE", "$", formatName + " was analyzed statically; imported code was never executed."));
+        // the same adaptation, annotations and warning as the Java, Python and GLSP importers
+        metamodel.classes().stream().filter(value -> "STRUCTURAL_INTERFACE_TO_ABSTRACT_CLASS".equals(value.annotations().get("hydra:semanticAdaptation")))
+                .forEach(value -> warnings.add(new TransformationWarning("IMPORT_" + format().name() + "_STRUCTURAL_INTERFACE_ADAPTED", "$.classes[" + value.id() + "]",
+                        formatName + " interface " + value.name() + " was represented as an abstract class because HYDRA structural relations cannot target interfaces")));
+        return new MetamodelImportOutput(metamodel, null, List.copyOf(warnings));
     }
 
     /** Descripción: Ejecuta la operación «sourceStem» correspondiente a la responsabilidad de PortableSourceMetamodelImporter. Entradas: fileName: archivo o contenido que debe procesarse. Salida: devuelve el resultado definido por el contrato del método. */ private String sourceStem(String fileName) {

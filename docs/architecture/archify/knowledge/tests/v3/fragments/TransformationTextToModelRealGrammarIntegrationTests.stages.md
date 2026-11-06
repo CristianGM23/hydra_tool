@@ -1,0 +1,4 @@
+- transformation_author_text2model.gr: validTextProducesTheSemanticModelFromTheActiveGrammarSnapshot (lines 116-118: model elements alpha and beta with the active snapshot id) and invalidTextReturnsDiagnosticsAndNoModel (lines 137-142: null model, error diagnostics).
+- transformation_author_text2model.pt: line 125-126 (blank logical path becomes model.hydra and the preview still works).
+- transformation_author_text2model.ck: withoutAnActiveGrammarOrWithAnUnsafePathThePreviewIsRejected (line 151 blank grammar blocks the check, 153 inactive grammar, 159 unsafe path rejected).
+- transformation_author_text2model.po is NOT claimed: the follow-up model-to-model transformation is not exercised.

@@ -1,0 +1,134 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.application.GrammarApplicationServiceSaveIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Guardado real de una definición de gramática en varios modos de autoría",
+      "en": "Real save of a grammar definition across authoring modes"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "grammar"
+    ],
+    "procs": [
+      {
+        "id": "grammar_define_language",
+        "stages": [
+          "tech",
+          "mode",
+          "gf",
+          "mm",
+          "sv",
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "grammar_author_metamodel",
+        "stages": [
+          "rq",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_language_to_published_editor",
+        "stages": [
+          "d0"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/persistence/JsonGrammarRepository.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarToolchainProfileService.java",
+      "src/main/java/com/example/editor/grammar/provider/GrammarProviderRegistry.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible.",
+      "en": "Writable temp directory."
+    },
+    "executes": {
+      "es": "GrammarApplicationService.create real con sus cuatro colaboradores reales (repositorio JSON, perfiles de toolchain, proveedores neutrales reales), sin mocks ni capa web.",
+      "en": "Real GrammarApplicationService.create with its four real collaborators (JSON repository, toolchain profiles, real neutral providers), with no mocks or web layer."
+    },
+    "asserts": {
+      "es": "Una gramatica real primero-la-gramatica (sin metamodelo) se valida y se guarda de verdad, releible con su tecnologia, modo y documento intactos; una gramatica real en modo enlazado con un metamodelo elegido tambien se guarda; una gramatica en modo metamodelo-primero sin metamodelo lanza una excepcion real y nunca se persiste.",
+      "en": "A real grammar-first definition (no metamodel) is validated and genuinely saved, rereadable with its technology, mode and document intact; a real linked-mode grammar with a chosen metamodel is also saved; a metamodel-first grammar without one throws a real exception and is never persisted."
+    },
+    "behavior": {
+      "es": "Guardar una definicion de gramatica comprueba de verdad las reglas de cada modo de autoria antes de persistirla: el modo primero-la-gramatica no exige metamodelo, los modos enlazado y metamodelo-primero lo exigen, y una gramatica sin el nunca se guarda.",
+      "en": "Saving a grammar definition genuinely checks each authoring mode's rules before persisting it: grammar-first requires no metamodel, linked and metamodel-first require one, and a grammar without it is never saved."
+    },
+    "rule": {
+      "es": "El modo de autoria determina si un metamodelo es obligatorio; una gramatica solo se guarda si cumple la regla de su propio modo.",
+      "en": "The authoring mode determines whether a metamodel is mandatory; a grammar is only saved if it satisfies its own mode's rule."
+    },
+    "scenario": {
+      "es": "Una gramatica real primero-la-gramatica sin metamodelo; una gramatica real enlazada con un metamodelo real elegido; una gramatica metamodelo-primero sin metamodelo.",
+      "en": "A real grammar-first grammar with no metamodel; a real linked grammar with a chosen real metamodel; a metamodel-first grammar with no metamodel."
+    },
+    "result": {
+      "es": "Las dos primeras quedan guardadas de verdad y releibles; la tercera se rechaza antes de guardar.",
+      "en": "The first two are genuinely saved and rereadable; the third is rejected before saving."
+    },
+    "expected": {
+      "es": "Cada escenario produce exactamente el resultado de guardado o rechazo indicado.",
+      "en": "Each scenario produces exactly the stated save or rejection outcome."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que definir un lenguaje textual guarda de verdad la gramatica elegida solo cuando su modo de autoria se cumple, dejandola disponible para compilarse.",
+      "en": "Real evidence that defining a textual language genuinely saves the chosen grammar only when its authoring mode is satisfied, leaving it available to compile."
+    },
+    "limits": {
+      "es": "No ejecuta el diseñador de interfaz en si; no cubre el analisis real del texto, ya evidenciado por otra prueba dedicada, ni el ciclo de correccion y reanalisis.",
+      "en": "Does not run the UI designer itself; does not cover the real text analysis, already evidenced by another dedicated test, nor the fix-and-reanalyse loop."
+    },
+    "strengthWhy": {
+      "es": "Prueba nueva de integracion real sin mocks (traits.mocks=false): no existia ninguna prueba dedicada de GrammarApplicationService en este codigo base; guarda de verdad gramaticas en los tres modos de autoria y rechaza la combinacion invalida, cubriendo directamente tech/mode/gf/mm/txt/sv/art.",
+      "en": "New real, mock-free integration test (traits.mocks=false): no dedicated GrammarApplicationService test existed in this codebase; it genuinely saves grammars across the three authoring modes and rejects the invalid combination, directly covering tech/mode/gf/mm/txt/sv/art."
+    },
+    "cases": [
+      {
+        "n": "savesAGrammarFirstDefinitionThatNeedsNoPriorMetamodel",
+        "scenario": {
+          "es": "Gramatica primero-la-gramatica sin metamodelo",
+          "en": "Grammar-first definition with no metamodel"
+        },
+        "result": {
+          "es": "Guardada de verdad y disponible",
+          "en": "Genuinely saved and available"
+        }
+      },
+      {
+        "n": "savesALinkedDefinitionBoundToARealMetamodelAndRejectsMetamodelFirstWithoutOne",
+        "scenario": {
+          "es": "Modo enlazado con metamodelo; modo metamodelo-primero sin el",
+          "en": "Linked mode with a metamodel; metamodel-first mode without one"
+        },
+        "result": {
+          "es": "La primera se guarda; la segunda se rechaza sin persistir",
+          "en": "The first is saved; the second is rejected without persisting"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.grammar.application.GrammarCompilationServiceEndToEndIntegrationTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarApplicationServiceSaveIntegrationTests.java",
+        "line": 38
+      },
+      {
+        "path": "src/test/java/com/example/editor/grammar/application/GrammarApplicationServiceSaveIntegrationTests.java",
+        "line": 61
+      }
+    ]
+  }
+]

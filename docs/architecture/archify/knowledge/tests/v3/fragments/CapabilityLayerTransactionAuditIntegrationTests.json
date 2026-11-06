@@ -1,0 +1,123 @@
+[
+  {
+    "id": "java:com.example.editor.portability.transaction.CapabilityLayerTransactionAuditIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Capas portables: aplicar y revertir deja rastro en la auditoría",
+      "en": "Portable layers: applying and rolling back leave an audit trail"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "layers2": [
+      "quality"
+    ],
+    "caps": [
+      "portability",
+      "audit"
+    ],
+    "procs": [
+      {
+        "id": "x_package_and_move_capabilities",
+        "stages": [
+          "r2"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionService.java",
+      "src/main/java/com/example/editor/audit/AuditCanonicalDocumentMutationObserver.java",
+      "src/main/java/com/example/editor/audit/DefaultAuditEventPublisher.java",
+      "src/main/java/com/example/editor/audit/JsonlAuditLogStore.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío con almacenamiento de capas y de auditoría propios.",
+      "en": "Empty temporary directory with its own layer and audit storage."
+    },
+    "setup": {
+      "es": "Servicio de transacciones real con el observador de auditoría, el publicador asíncrono y el almacén JSONL reales; el oráculo lee el fichero JSONL crudo.",
+      "en": "Real transaction service with the real audit observer, asynchronous publisher and JSONL store; the oracle reads the raw JSONL file."
+    },
+    "executes": {
+      "es": "apply con persistencia, rollback de la transacción y apply sin persistencia sobre un paquete de capas real.",
+      "en": "apply with persistence, transaction rollback and apply without persistence over a real layer package."
+    },
+    "asserts": {
+      "es": "Tras aplicar hay una línea portability.capability-layer.created con el documento como recurso; tras revertir, una segunda línea ...deleted y el fichero desaparece; una vista previa no escribe ni audita.",
+      "en": "After applying there is one portability.capability-layer.created line naming the document; after rollback a second ...deleted line and the file is gone; a preview neither writes nor audits."
+    },
+    "behavior": {
+      "es": "Cada capa que se escribe o se restaura al aplicar o revertir un paquete queda anotada en el registro de actividad.",
+      "en": "Each layer written or restored when a package is applied or rolled back is recorded in the activity log."
+    },
+    "rule": {
+      "es": "Un cambio real de una capa deja una entrada de auditoría; una simple vista previa no deja nada.",
+      "en": "A real layer change leaves an audit entry; a plain preview leaves nothing."
+    },
+    "scenario": {
+      "es": "Aplicar un paquete de una capa, revertirlo y repetir en modo vista previa.",
+      "en": "Apply a one-layer package, roll it back and repeat in preview mode."
+    },
+    "result": {
+      "es": "Una línea de alta y una de baja con el documento como recurso; sin líneas en la vista previa.",
+      "en": "One create and one delete line naming the document; no lines in the preview."
+    },
+    "expected": {
+      "es": "Las líneas JSONL y el estado del disco coinciden con lo descrito.",
+      "en": "The JSONL lines and disk state match the description."
+    },
+    "guarantee": {
+      "es": "La auditoría de capas portables funciona de extremo a extremo con el almacén real.",
+      "en": "Portable layer auditing works end to end with the real store."
+    },
+    "limits": {
+      "es": "Solo capas de metamodelo en una transacción de un documento; no cubre fallos a mitad de una transacción ni el reclamo de etapas del proceso (no se asocian etapas).",
+      "en": "Metamodel layers only, one document per transaction; does not cover failures mid-transaction nor claim process stages (none are linked)."
+    },
+    "strengthWhy": {
+      "es": "Servicio, observador, publicador y almacén reales y oráculo independiente en disco.",
+      "en": "Real service, observer, publisher and store with an independent on-disk oracle."
+    },
+    "cases": [
+      {
+        "n": "applyingAndRollingBackALayerLeavesOneAuditLineEach",
+        "scenario": {
+          "es": "Aplicar y revertir.",
+          "en": "Apply and roll back."
+        },
+        "result": {
+          "es": "Líneas created y deleted.",
+          "en": "created and deleted lines."
+        }
+      },
+      {
+        "n": "aPreviewOnlyRequestWritesNothingAndAuditsNothing",
+        "scenario": {
+          "es": "Solo vista previa.",
+          "en": "Preview only."
+        },
+        "result": {
+          "es": "Sin fichero ni auditoría.",
+          "en": "No file or audit."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionAuditIntegrationTests.java",
+        "line": 93
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionAuditIntegrationTests.java",
+        "line": 103
+      },
+      {
+        "path": "src/test/java/com/example/editor/portability/transaction/CapabilityLayerTransactionAuditIntegrationTests.java",
+        "line": 115
+      }
+    ]
+  }
+]

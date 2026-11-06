@@ -2,6 +2,9 @@ package com.example.editor.portability.archive;
 
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import com.example.editor.web.ApiExceptionHandler;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,7 @@ import com.example.editor.portability.HydraCapabilityPackage;
 @RequestMapping("/api/capability-packages/archives")
 public class CapabilityPackageArchiveController {
     public static final MediaType HYDRA_PACKAGE = MediaType.parseMediaType("application/vnd.hydra.capability-package+zip");
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(CapabilityPackageArchiveController.class);
     private final CapabilityPackageArchiveService service;
     /** Descripción: Inicializa una instancia de CapabilityPackageArchiveController con sus dependencias y datos de entrada. Entradas: service: servicio colaborador utilizado por la operación. Salida: deja la instancia inicializada y lista para su uso. */ public CapabilityPackageArchiveController(CapabilityPackageArchiveService service) { this.service = service; }
 
@@ -50,5 +54,16 @@ public class CapabilityPackageArchiveController {
         return ResponseEntity.ok().contentType(HYDRA_PACKAGE)
                 .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment().filename(contentHash + ".hydra-cap").build().toString())
                 .body(archive);
+    }
+
+    @ExceptionHandler(CapabilityPackageArchiveException.class)
+    /** Descripción: Traduce los rechazos controlados del paquete físico (paquete inválido, ruta insegura, archivo manipulado, límite o firma) a un 400 estable, sin tocar el manejador global; los fallos de E/S y la función desactivada siguen siendo 500 genérico. Entradas: exception: fallo controlado lanzado por el servicio de archivos de capacidades. Salida: respuesta 400 con código INVALID_REQUEST y el mensaje del rechazo, o 500 INTERNAL_ERROR sin detalles internos. */ public ResponseEntity<ApiExceptionHandler.ApiError> handleArchiveRejection(CapabilityPackageArchiveException exception) {
+        if(exception.getReason() == CapabilityPackageArchiveException.Reason.IO_ERROR
+                || exception.getReason() == CapabilityPackageArchiveException.Reason.DISABLED) {
+            LOGGER.error("hydra.capability_package_archive_error reason={}", exception.getReason(), exception);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiExceptionHandler.ApiError("INTERNAL_ERROR", "An unexpected internal error occurred."));
+        }
+        return ResponseEntity.badRequest().body(new ApiExceptionHandler.ApiError("INVALID_REQUEST", exception.getMessage()));
     }
 }

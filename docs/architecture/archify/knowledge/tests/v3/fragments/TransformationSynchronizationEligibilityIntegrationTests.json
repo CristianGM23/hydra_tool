@@ -1,0 +1,135 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.sync.TransformationSynchronizationEligibilityIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Qué transformaciones pueden abrir una sesión de sincronización incremental",
+      "en": "Which transformations can open an incremental synchronization session"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "layers2": [
+      "definition"
+    ],
+    "caps": [
+      "transformation"
+    ],
+    "procs": [
+      {
+        "id": "x_transformation_run_and_sync",
+        "stages": [
+          "mode"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionService.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java",
+      "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+      "src/main/java/com/example/editor/transformation/runtime/TransformationRuntimeService.java",
+      "src/main/java/com/example/editor/transformation/sync/JsonTransformationSynchronizationSessionRepository.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible y el metamodelo de prueba guardado; sin servidor, sin red y sin herramientas nativas.",
+      "en": "Writable temporary directory and the test metamodel saved; no server, no network and no native tools."
+    },
+    "setup": {
+      "es": "Servicios de transformación, comprobador, motor, repositorio de definiciones y repositorio de sesiones reales sobre carpetas temporales; reloj fijo. Ninguna simulación.",
+      "en": "Real transformation services, checker, engine, definition repository and session repository on temporary folders; fixed clock. No mocks."
+    },
+    "executes": {
+      "es": "Guardado de definiciones (unidireccional, generación de texto, bidireccional sin rastro, bidireccional de generación de texto y bidireccional válida) y apertura de una sesión sobre cada una con el servicio de sesiones real.",
+      "en": "Saving of definitions (one-way, text generation, bidirectional without trace, bidirectional text generation and a valid bidirectional one) and opening a session on each with the real session service."
+    },
+    "asserts": {
+      "es": "Las unidireccionales guardadas rechazan abrir sesión con el mensaje literal y sin ficheros de sesión ni de historial; las bidireccionales sin rastro o de generación de texto se rechazan al guardar con su código de diagnóstico y no existen; la válida crea un fichero de sesión y un punto de control.",
+      "en": "Saved one-way definitions refuse to open a session with the literal message and leave no session or history files; bidirectional ones without trace or for text generation are rejected on save with their diagnostic code and do not exist; the valid one creates a session file and a checkpoint."
+    },
+    "behavior": {
+      "es": "Solo una transformación de modelo a modelo, bidireccional y con rastro activo puede sincronizarse de forma incremental; las demás no llegan a abrir sesión ni dejan nada en disco.",
+      "en": "Only a bidirectional model-to-model transformation with trace enabled can be synchronized incrementally; the others never open a session or leave anything on disk."
+    },
+    "rule": {
+      "es": "La sincronización exige una transformación bidireccional de modelo a modelo con rastro; el resto se rechaza al guardar o al abrir la sesión.",
+      "en": "Synchronization requires a bidirectional model-to-model transformation with trace; anything else is rejected on save or when opening the session."
+    },
+    "scenario": {
+      "es": "Abrir sesión sobre una unidireccional guardada y sobre una de generación de texto; intentar guardar una bidireccional sin rastro y otra de generación de texto; abrir sesión sobre una bidireccional válida.",
+      "en": "Open a session on a saved one-way definition and on a text-generation one; try to save a bidirectional one without trace and a bidirectional text-generation one; open a session on a valid bidirectional one."
+    },
+    "result": {
+      "es": "Los casos no elegibles terminan en rechazo con mensaje o diagnóstico concreto y sin ficheros de sesión; el caso elegible deja una sesión en la revisión 1 con su rastro y su punto de control en disco.",
+      "en": "Ineligible cases end in a rejection with a concrete message or diagnostic and no session files; the eligible case leaves a revision-1 session with its trace and checkpoint on disk."
+    },
+    "expected": {
+      "es": "Mensajes, códigos de diagnóstico y contenido de las carpetas de sesiones, historial y definiciones coinciden con los valores literales escritos en la prueba.",
+      "en": "Messages, diagnostic codes and the content of the sessions, history and definitions folders match the literal values written in the test."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la elegibilidad para sincronizar se aplica de verdad, tanto al guardar la definición como al abrir la sesión, sin dejar estado parcial.",
+      "en": "Real evidence that synchronization eligibility is actually enforced, both when saving the definition and when opening the session, leaving no partial state."
+    },
+    "limits": {
+      "es": "No prueba la sincronización en sí (cambios, conflictos, restauración), que cubre otra prueba; no pasa por la capa web; una unidireccional con reglas de vuelta ni otros tipos de generación quedan fuera.",
+      "en": "It does not test synchronization itself (changes, conflicts, restore), which another test covers; it does not go through the web layer; one-way definitions with return rules and other generation kinds are out of scope."
+    },
+    "strengthWhy": {
+      "es": "Servicios y almacenamiento reales, oráculo de disco independiente y varios rechazos reales, uno por cada motivo de inelegibilidad.",
+      "en": "Real services and storage, independent disk oracle and several real rejections, one for each ineligibility reason."
+    },
+    "cases": [
+      {
+        "n": "unidirectionalAndTextGenerationTransformationsCannotOpenASynchronizationSession",
+        "scenario": {
+          "es": "Sesión sobre una unidireccional guardada y sobre una de generación de texto.",
+          "en": "Session on a saved one-way definition and on a text-generation one."
+        },
+        "result": {
+          "es": "Rechazo con el mensaje literal y sin ficheros de sesión ni de historial.",
+          "en": "Rejection with the literal message and no session or history files."
+        }
+      },
+      {
+        "n": "bidirectionalWithoutTraceOrOutsideModelToModelIsRejectedBeforeAnySessionExists",
+        "scenario": {
+          "es": "Guardar una bidireccional sin rastro y otra de generación de texto.",
+          "en": "Save a bidirectional one without trace and a bidirectional text-generation one."
+        },
+        "result": {
+          "es": "Diagnóstico concreto, rechazo al guardar, la definición no existe y no se puede abrir sesión.",
+          "en": "Concrete diagnostic, rejected on save, the definition does not exist and no session can be opened."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationEligibilityIntegrationTests.java",
+        "line": 84
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationEligibilityIntegrationTests.java",
+        "line": 92
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationEligibilityIntegrationTests.java",
+        "line": 105
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationEligibilityIntegrationTests.java",
+        "line": 108
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationEligibilityIntegrationTests.java",
+        "line": 120
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/sync/TransformationSynchronizationEligibilityIntegrationTests.java",
+        "line": 141
+      }
+    ]
+  }
+]

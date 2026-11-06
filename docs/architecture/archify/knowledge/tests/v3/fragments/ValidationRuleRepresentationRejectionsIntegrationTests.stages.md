@@ -1,0 +1,3 @@
+ValidationRuleRepresentationRejectionsIntegrationTests - stage mapping
+- validation_author_form.rp (advanced section: representation and conversion), backend part only (MEDIUM): externalModeWithCanonicalRepresentationIsReported (l.58) and canonicalRepresentationWithExternalConversionIsReported (l.70) assert exactly one literal error each; anExternalRuleWithProvenanceIsSavedCleanly (l.83-86) asserts no errors and the file on disk.
+- Finding: ValidationModelApplicationService.create reports errors but still persists the document (the report is the gate); the planned "nothing is written" was NOT asserted.

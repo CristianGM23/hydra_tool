@@ -1,0 +1,126 @@
+[
+  {
+    "id": "java:com.example.editor.gamification.GamificationCheckSaveGateAndLevelsIntegrationTests",
+    "name": {
+      "es": "Comprobar y guardar el catálogo por HTTP: puerta de errores y niveles",
+      "en": "Check and save the catalog over HTTP: error gate and levels"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "gamification"
+    ],
+    "procs": [
+      {
+        "id": "gamification_author_source",
+        "stages": [
+          "ck"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "gamification_define",
+        "stages": [
+          "lvl",
+          "chk"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "gamification_author_form",
+        "stages": [
+          "lv",
+          "ck",
+          "ok",
+          "sv"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/gamification/web/CanonicalGamificationController.java",
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/gamification/GamificationChecker.java",
+      "src/main/java/com/example/editor/web/ApiExceptionHandler.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationDefinitionRepository.java"
+    ],
+    "pre": null,
+    "setup": {
+      "es": "MockMvc standalone sobre el controlador real, servicio real, repositorios JSON y metamodelo real en @TempDir; sin Mockito.",
+      "en": "Standalone MockMvc over the real controller, real service, JSON repositories and real metamodel in @TempDir; no Mockito."
+    },
+    "executes": {
+      "es": "POST check, POST create y POST check-saved contra CanonicalGamificationController con ApiExceptionHandler, hasta el checker y los ficheros JSON.",
+      "en": "POST check, POST create and POST check-saved against CanonicalGamificationController with ApiExceptionHandler, down to the checker and JSON files."
+    },
+    "asserts": {
+      "es": "11 diagnósticos exactos (código, elemento, severidad) de un catálogo defectuoso; un catálogo solo con avisos se crea (201) y deja niveles y reglas en el JSON; uno con nivel de tipo inexistente da 400 y no crea ficheros; check-saved coincide con check.",
+      "en": "11 exact diagnostics (code, element, severity) from a defective catalog; a warnings-only catalog is created (201) and leaves levels and rules in the JSON; one with a level of unknown type gives 400 and creates no files; check-saved equals check."
+    },
+    "behavior": {
+      "es": "El diseñador recibe todos los defectos del catálogo, incluidos los niveles; los avisos no bloquean el guardado y un error lo bloquea sin dejar nada en disco.",
+      "en": "The designer receives every catalog defect, levels included; warnings do not block saving and an error blocks it leaving nothing on disk."
+    },
+    "rule": {
+      "es": "Un nivel necesita un tipo de puntos existente; duplicados, referencias inexistentes, penalización con recompensa y límite diario sin máximo son errores; regla sin efecto o sin límite es aviso.",
+      "en": "A level needs an existing point type; duplicates, unknown references, penalty with reward and daily limit without maximum are errors; a rule without effect or limit is a warning."
+    },
+    "scenario": {
+      "es": "Catálogo defectuoso comprobado por HTTP; catálogo con avisos creado y releído del disco; catálogo con error rechazado; comprobación del guardado frente al borrador.",
+      "en": "Defective catalog checked over HTTP; warnings catalog created and read from disk; error catalog refused; saved check compared with draft."
+    },
+    "result": {
+      "es": "Los códigos devueltos coinciden con la lista literal esperada y el disco refleja solo lo permitido.",
+      "en": "Returned codes match the expected literal list and the disk reflects only what is allowed."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan: 200 con diagnósticos exactos, 201 con ETags y ficheros, 400 sin ficheros, informes iguales.",
+      "en": "All assertions pass: 200 with exact diagnostics, 201 with ETags and files, 400 without files, equal reports."
+    },
+    "guarantee": {
+      "es": "La puerta de guardado del servidor bloquea errores de catálogo y de niveles y acepta avisos.",
+      "en": "The server save gate blocks catalog and level errors and accepts warnings."
+    },
+    "limits": {
+      "es": "cooldown required es un error, no un aviso, y no se ejercita aquí; no cubre PUT/DELETE ni la interfaz de edición del JSON fuente.",
+      "en": "cooldown required is an error, not a warning, and is not exercised here; PUT/DELETE and the source JSON editing UI are not covered."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Cadena HTTP real controlador-servicio-repositorio con oráculo independiente (JSON de disco y lista literal) y caso de rechazo.",
+      "en": "Real HTTP controller-service-repository chain with an independent oracle (disk JSON and literal list) and a refusal case."
+    },
+    "external": "none",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCheckSaveGateAndLevelsIntegrationTests.java",
+        "line": 79
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCheckSaveGateAndLevelsIntegrationTests.java",
+        "line": 92
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCheckSaveGateAndLevelsIntegrationTests.java",
+        "line": 123
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCheckSaveGateAndLevelsIntegrationTests.java",
+        "line": 128
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCheckSaveGateAndLevelsIntegrationTests.java",
+        "line": 83
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCheckSaveGateAndLevelsIntegrationTests.java",
+        "line": 119
+      },
+      {
+        "path": "src/test/java/com/example/editor/gamification/GamificationCheckSaveGateAndLevelsIntegrationTests.java",
+        "line": 102
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

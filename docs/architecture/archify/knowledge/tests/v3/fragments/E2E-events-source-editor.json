@@ -1,0 +1,93 @@
+[
+  {
+    "id": "pw:e2e/real/events/source-editor.spec.ts",
+    "name": {
+      "es": "Editor de texto de eventos: editar, aplicar, rechazar y volver a las vistas gráficas, con backend real",
+      "en": "Events text editor: edit, apply, refuse and return to the graphic views, with a real backend"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["events"],
+    "procs": [
+      { "id": "events_author_source", "stages": ["a1", "a2", "a3"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/event-designer/EventDesigner.tsx",
+      "frontend/src/event-designer/eventModelNormalization.ts",
+      "frontend/src/event-designer/eventDesignerValidation.ts",
+      "frontend/src/event-designer/EventArchitectureVisualEditor.tsx",
+      "frontend/src/event-designer/api.ts",
+      "src/main/java/com/example/editor/event/web/CanonicalEventModelController.java",
+      "src/main/java/com/example/editor/event/EventModelApplicationService.java",
+      "src/main/java/com/example/editor/event/EventModelChecker.java",
+      "src/main/java/com/example/editor/event/persistence/JsonEventDefinitionModelRepository.java",
+      "src/main/java/com/example/editor/event/persistence/JsonEventBindingModelRepository.java"
+    ],
+    "pre": {
+      "es": "Metamodelo y un evento propio sembrados por la API real; navegador real contra la aplicación compilada y el backend real con almacenamiento propio.",
+      "en": "Metamodel and one custom event seeded through the real API; real browser against the built application and the real backend with its own storage."
+    },
+    "setup": {
+      "es": "Sin simulaciones de la API. Solo se siembran metamodelo y un evento; editar el texto, aplicar y guardar lo hace el usuario.",
+      "en": "No API simulation. Only the metamodel and one event are seeded; editing the text, applying and saving are done by the user."
+    },
+    "executes": {
+      "es": "Abre la vista de texto, prueba un texto que no es válido y un enlace con destino del sistema, aplica una edición válida con valores omitidos, prueba una condición inexistente al guardar, la quita, guarda y vuelve a formulario y arquitectura.",
+      "en": "Opens the text view, tries text that is not valid and a binding with a system target, applies a valid edit with omitted values, tries a missing condition when saving, removes it, saves and returns to the form and architecture."
+    },
+    "asserts": {
+      "es": "Los textos inválidos se rechazan con aviso y el disco queda igual; la condición inexistente la rechaza el servidor sin cambiar el disco; los ficheros guardados traen el tipo y el enlace nuevos con versión, persistencia y política de error normalizadas; formulario y arquitectura muestran el resultado.",
+      "en": "Invalid texts are refused with a warning and the disk stays the same; the server refuses the missing condition without changing the disk; the saved files hold the new type and binding with normalized version, persistence and error policy; the form and architecture show the result."
+    },
+    "behavior": {
+      "es": "El usuario edita directamente el texto de tipos y enlaces: lo inválido no se aplica, lo válido se normaliza y aplica, el servidor revisa las reglas al guardar y las vistas gráficas muestran lo guardado.",
+      "en": "The user edits the text of types and bindings directly: what is invalid is not applied, what is valid is normalized and applied, the server checks the rules when saving and the graphic views show what was saved."
+    },
+    "rule": {
+      "es": "El texto debe ser válido, referir el metamodelo elegido y enlazar solo con eventos propios como destino; una condición debe existir para guardarse.",
+      "en": "The text must be valid, refer to the chosen metamodel and link only to custom events as target; a condition must exist to be saved."
+    },
+    "scenario": {
+      "es": "Texto roto y destino del sistema rechazados; tipo y enlace nuevos con campos omitidos; condición inexistente rechazada al guardar; guardado correcto; vuelta a formulario y arquitectura.",
+      "en": "Broken text and system target refused; new type and binding with omitted fields; missing condition refused when saving; correct save; return to the form and architecture."
+    },
+    "result": {
+      "es": "Queda guardado un tipo y un enlace nuevos con valores por defecto completados y las vistas gráficas los muestran.",
+      "en": "A new type and binding are saved with default values filled in and the graphic views show them."
+    },
+    "expected": {
+      "es": "El disco solo cambia con el guardado correcto y refleja el texto normalizado.",
+      "en": "The disk changes only with the correct save and reflects the normalized text."
+    },
+    "guarantee": {
+      "es": "Lo que el usuario escribe en el editor de texto, si es válido, llega al backend normalizado; lo inválido no se aplica ni se guarda.",
+      "en": "What the user writes in the text editor, if valid, reaches the backend normalized; what is invalid is neither applied nor saved."
+    },
+    "limits": {
+      "es": "No prueba el modo guiado ni la importación de otros formatos. La normalización de la pantalla se comprueba con los valores por defecto del tipo y del enlace nuevos, no con todas las combinaciones posibles de campos omitidos.",
+      "en": "It does not test the guided mode or importing other formats. The screen's normalization is checked with the default values of the new type and binding, not with every possible combination of omitted fields."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones reales de usuario, backend real y oráculo en disco; un segundo test separa la normalización de la pantalla (texto completado sin ninguna escritura hacia el servidor) de lo que el servidor guarda.",
+      "en": "Real user actions, real backend and a disk oracle; a second test separates the screen's normalization (text completed with no write to the server) from what the server saves."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 39 },
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 47 },
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 63 },
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 64 },
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 82 },
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 90 },
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 104 },
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 139 },
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 141 },
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 144 },
+      { "path": "frontend/e2e/real/events/source-editor.spec.ts", "line": 154 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

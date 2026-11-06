@@ -91,6 +91,12 @@ public final class HydraSchemaEvolutionService {
     /** Descripción: Devuelve los namespaces para los que existe al menos una migración registrada. Entradas: no requiere parámetros. Salida: lista ordenada de namespaces. */
     public List<String> namespaces() { return evolutions.keySet().stream().sorted().toList(); }
 
+    /** Descripción: Indica si {@link #evolve} puede cambiar algún documento del namespace; sin migraciones registradas siempre lo devuelve intacto. Entradas: namespace: familia documental. Salida: verdadero si hay al menos una migración para ese namespace. */
+    public boolean hasEvolutions(String namespace) {
+        Map<String, HydraJsonSchemaEvolution> steps = namespace == null ? null : evolutions.get(namespace);
+        return steps != null && !steps.isEmpty();
+    }
+
     /** Descripción: Ejecuta una cadena validada de migraciones hasta que no haya más pasos o se alcance la versión destino. Entradas: namespace: familia documental; source: documento; targetVersion: destino opcional. Salida: resultado de evolución. */
     private EvolutionResult evolveChain(String namespace, JsonNode source, String targetVersion) {
         Map<String, HydraJsonSchemaEvolution> steps = evolutions.getOrDefault(namespace, Map.of());

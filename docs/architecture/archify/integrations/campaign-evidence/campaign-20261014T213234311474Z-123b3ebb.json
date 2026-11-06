@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-14T21:32:33+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261014-214741",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "f6005b47014b768622d40ff2a8ef1faa5a7d2c9b172669bcd552020e201135ba",
+  "reportCheckpointName": "0024-01792013551298677600-02e8a251001846768de4e7cc7392f5ab.json",
+  "testResults": [
+    {
+      "id": "S765",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.validation.MetamodelValidationAdvisorCoverageTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 136.01,
+      "logSha256": "d554db1474bf182897bc9324faeb84a2293fc0ff5a7994239d8661ecf88a3c08",
+      "logRelativePath": "logs/S765.log"
+    },
+    {
+      "id": "S766",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.validation.MetamodelValidationGateTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 142.0,
+      "logSha256": "6ebdedb5f6b093b257cf387f54f2bd4f6d584c0c50cc76a72609be4524d010f7",
+      "logRelativePath": "logs/S766.log"
+    },
+    {
+      "id": "S767",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.validation.NeutralMetamodelValidatorTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 129.44,
+      "logSha256": "72e2b4910a201a0ada48c7ba0223c109b30bcf3585d0ac1b9b9e696ed66f6e9e",
+      "logRelativePath": "logs/S767.log"
+    },
+    {
+      "id": "S768",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.validation.OperationBehaviorModelValidatorTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 129.7,
+      "logSha256": "779ace04d97856b204019f27d6ca9dd620cc91610d45ae17e37383b0ec455072",
+      "logRelativePath": "logs/S768.log"
+    },
+    {
+      "id": "S769",
+      "title": "Archify pendiente: java:com.example.editor.metamodel.web.MetamodelControllerTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 133.87,
+      "logSha256": "c9cccf2e05edb30a9e97d96edc78347c566f4df378f9efddfc6e7fddfa840514",
+      "logRelativePath": "logs/S769.log"
+    },
+    {
+      "id": "S770",
+      "title": "Archify pendiente: java:com.example.editor.model.ModelDocumentTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2997.73,
+      "logSha256": "0428b92fce13211979674d5e282ecc13f799f4a3f0f3ae71648d3109112b2be2",
+      "logRelativePath": "logs/S770.log"
+    },
+    {
+      "id": "S771",
+      "title": "Archify pendiente: java:com.example.editor.model.ModelSessionManagerTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 110.83,
+      "logSha256": "21a641c33bed04df426e80044236c4c5fd32a5c6c8f6eb4ef26a256db9f04fa4",
+      "logRelativePath": "logs/S771.log"
+    },
+    {
+      "id": "S772",
+      "title": "Archify pendiente: java:com.example.editor.observability.HydraOperationTraceRegistryTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 98.19,
+      "logSha256": "af4a6b05b5d3fb42ff2c5141c995e81ca62344723dc6a2b39879ac3c2212d3d0",
+      "logRelativePath": "logs/S772.log"
+    },
+    {
+      "id": "S773",
+      "title": "Archify pendiente: java:com.example.editor.performance.CapabilityPerformanceAutomationServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 91.93,
+      "logSha256": "d07c083fdb861b3ed1189edfa8bb66620f27614055183e6a6eaac4280c4cfff2",
+      "logRelativePath": "logs/S773.log"
+    },
+    {
+      "id": "S774",
+      "title": "Archify pendiente: java:com.example.editor.performance.CapabilityPerformanceServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 93.87,
+      "logSha256": "914c84947fb3f1ddf41fec246081bc9ab90b7552d332298ef2a613d12fb459f6",
+      "logRelativePath": "logs/S774.log"
+    },
+    {
+      "id": "S775",
+      "title": "Archify pendiente: java:com.example.editor.persistence.CanonicalPersistenceFactoryTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 101.73,
+      "logSha256": "81facad2e8e013b5da2a33e5ac2fc5451f030c33e7294ded78cd21e30da2c8e5",
+      "logRelativePath": "logs/S775.log"
+    },
+    {
+      "id": "S776",
+      "title": "Archify pendiente: java:com.example.editor.persistence.evolution.AtomicJsonDocumentStoreSchemaEvolutionTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 107.02,
+      "logSha256": "a2bcb24a1cde92d02c28d9642485c975222f632aaa3243542ca36e65b28119a2",
+      "logRelativePath": "logs/S776.log"
+    },
+    {
+      "id": "S777",
+      "title": "Archify pendiente: java:com.example.editor.persistence.evolution.HydraSchemaEvolutionPlanningTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 93.8,
+      "logSha256": "127cb72faee2ab1f73f12cbd541cd3ca538351790f0b5620f9ab190a1c91bdf5",
+      "logRelativePath": "logs/S777.log"
+    },
+    {
+      "id": "S778",
+      "title": "Archify pendiente: java:com.example.editor.persistence.evolution.HydraSchemaEvolutionServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 89.58,
+      "logSha256": "b45f4999f0fdd898ba3eb9267f6ae080efeee6e9e15ca05da58990540d89fe8e",
+      "logRelativePath": "logs/S778.log"
+    },
+    {
+      "id": "S779",
+      "title": "Archify pendiente: java:com.example.editor.policy.bundle.HydraPolicyBundleServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 134.79,
+      "logSha256": "8b63e1c66388a763f4a263a8c30e3af580fbfeec9e5cced0ccff3df688bbfd2f",
+      "logRelativePath": "logs/S779.log"
+    },
+    {
+      "id": "S780",
+      "title": "Archify pendiente: java:com.example.editor.portability.CapabilityPackageTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 135.06,
+      "logSha256": "95e6ff1e72e46dafe32df46c593e8723fe3bc07209088bf6f9f0c1e6f8157d8c",
+      "logRelativePath": "logs/S780.log"
+    },
+    {
+      "id": "S781",
+      "title": "Archify pendiente: java:com.example.editor.portability.CapabilityVersionRangeTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 138.24,
+      "logSha256": "3e67e1d2ac756c0c7b6a8faebb6c72a0daaa33da0032c5c6b27cad352696b456",
+      "logRelativePath": "logs/S781.log"
+    },
+    {
+      "id": "S782",
+      "title": "Archify pendiente: java:com.example.editor.portability.archive.CapabilityPackageArchiveServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 145.76,
+      "logSha256": "c267c775a5a10d74ee82020d6208f557c55dfe528ff4af8ef644a9a145747e2d",
+      "logRelativePath": "logs/S782.log"
+    },
+    {
+      "id": "S783",
+      "title": "Archify pendiente: java:com.example.editor.portability.merge.CapabilitySemanticMergeServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 134.29,
+      "logSha256": "491ca34af1b6c337108898257afaa771c72a05eeccbdb9b7c824320d64489939",
+      "logRelativePath": "logs/S783.log"
+    },
+    {
+      "id": "S784",
+      "title": "Archify pendiente: java:com.example.editor.portability.orchestration.CapabilityOrchestrationServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 135.56,
+      "logSha256": "877286b01d71b9a7fdcd9c46f55f24c8715a8e22663cb4f658eb2f225cd013ec",
+      "logRelativePath": "logs/S784.log"
+    },
+    {
+      "id": "S785",
+      "title": "Archify pendiente: java:com.example.editor.portability.transaction.CapabilityLayerTransactionServiceTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 139.86,
+      "logSha256": "48691b2f150ef20496f5dc0574434c036f9f706c1418953a5450c5f664e56be0",
+      "logRelativePath": "logs/S785.log"
+    },
+    {
+      "id": "S786",
+      "title": "Archify pendiente: java:com.example.editor.project.HydraProjectPresetTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 529.38,
+      "logSha256": "6fe63629b6ee40b3ce824721e5b0b55228e68d088d0f28218bac49c0a7d59d53",
+      "logRelativePath": "logs/S786.log"
+    },
+    {
+      "id": "S787",
+      "title": "Archify pendiente: java:com.example.editor.project.LocalDirectoryProjectStorageTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 182.4,
+      "logSha256": "b470d57ece1f6f3f79bc497d3ce09163008666cc6ce275f88b5d2999d7bd047b",
+      "logRelativePath": "logs/S787.log"
+    },
+    {
+      "id": "S788",
+      "title": "Archify pendiente: java:com.example.editor.project.ProjectArtifactClassifierTests",
+      "group": "archify-priority",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 157.21,
+      "logSha256": "fcc752801472fcf7280f3a9f6b56d2a92a55cca6695bd6b678b5441946b02fd9",
+      "logRelativePath": "logs/S788.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

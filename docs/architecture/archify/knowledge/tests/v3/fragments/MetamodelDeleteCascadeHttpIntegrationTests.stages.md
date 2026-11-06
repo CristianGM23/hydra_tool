@@ -1,0 +1,5 @@
+- metamodel_delete_cascade.prep / x_metamodel_save_and_cascade.prep: deletionImpactListsTheDependents (line 159) and the journal with expectedFiles (line 182).
+- metamodel_delete_cascade.ab: obsoleteEtagAbortsTheDeletionAndKeepsEverything (lines 179-184, 412 + ABORTED + intact).
+- metamodel_delete_cascade.prim / x_metamodel_save_and_cascade.prim, c_ed, c_ev, c_gm: validEtagDeletesTheMetamodelAndAllDependents (lines 200-203, canonical 404 and editor, events, gamification files gone).
+- metamodel_delete_cascade.rec / x_metamodel_save_and_cascade.rec: recoveryAfterACrashCleansTheResidues (lines 222-229) and recoveryRequiredJournalIsResumedToCompleted (lines 245-254).
+- metamodel_delete_cascade.art: COMPLETED journal JSON read from disk (lines 203, 229, 252). d1: INDIRECT (the RECOVERY_REQUIRED outcome of a real delete is not forced).

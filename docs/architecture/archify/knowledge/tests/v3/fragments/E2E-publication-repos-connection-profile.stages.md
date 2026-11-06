@@ -1,0 +1,5 @@
+- repos_author_connection.b: identificador, nombre y proveedor escritos por el usuario acaban en el perfil que devuelve el servidor y en el fichero de perfiles (líneas 75-80).
+- repos_author_connection.c: los campos de destino cambian con el proveedor (línea 46) y las coordenadas de GitHub y GitLab quedan guardadas (líneas 75, 80, 103); sin carpeta raíz se rechaza (línea 65).
+- repos_author_connection.a (direct): alternar asistente/avanzado (línea 32) y, en el tercer test, guardar desde el asistente: sin dirección no se guarda (línea 119) y con una URL de GitHub el servidor y el fichero traen los mismos bloques que en avanzado (líneas 130 y 132).
+- Sin secretos: el fichero de perfiles no contiene token ni contraseña (línea 81).
+- Fuera de alcance: asistente por dirección web, acceso con proveedor, prueba de conexión, Dropbox/OneDrive/Google Drive.

@@ -13,6 +13,10 @@ check('Fix105 installation matrix covers spaces and unicode',all(x in (ROOT/'con
 check('Fix105 installation verifier exists',(ROOT/'scripts/release/verify_installation_matrix.py').exists())
 check('Fix106 onboarding has seven verified documents',len(list((ROOT/'docs/rc1').glob('*.md')))>=7 and (ROOT/'scripts/testing/verify_rc1_onboarding.py').exists())
 check('Fix107 RC1 policy and qualifier exist',(ROOT/'config/rc1-qualification-policy.json').exists() and (ROOT/'scripts/release/qualify_rc1.py').exists())
+rc1=(ROOT/'scripts/release/qualify_rc1.py').read_text(encoding='utf-8'); backend=rc1[rc1.index('def managed_backend'):rc1.index('def sync_steps')]
+check('RC1 managed backend terminates the whole process tree','_kill_tree(proc' in backend and 'proc.terminate()' not in backend)
+check('RC1 managed backend refuses an occupied port','connect_ex' in backend and 'already in use' in backend)
+check('RC1 managed backend runs the packaged jar, not spring-boot:run','spring-boot:run' not in backend and "'package'" in backend and "'-jar'" in backend)
 final=(ROOT/'scripts/validation/verify_final_tree.py').read_text(encoding='utf-8'); check('RC1 gate participates in final tree','Fix101-107 RC1 product qualification' in final)
 ci=(ROOT/'.github/workflows/hydra-ci.yml').read_text(encoding='utf-8'); check('CI executes RC1 full qualification','qualify_rc1.py --full' in ci)
 inv=(ROOT/'scripts/release/source_inventory.py').read_text(encoding='utf-8'); check('reference-projects are in reproducible source inventory',"'reference-projects'" in inv)

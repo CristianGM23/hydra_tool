@@ -1,0 +1,89 @@
+[
+  {
+    "id": "pw:e2e/real/grammar/fix-diagnostic.spec.ts",
+    "name": {
+      "es": "Corregir un problema de la gramática desde el panel de problemas",
+      "en": "Fixing a grammar problem from the problems panel"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": ["behavior"],
+    "caps": ["grammar"],
+    "procs": [
+      { "id": "grammar_author_fix", "stages": ["sel", "ty", "ap"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/grammar-designer/GrammarProblemsPanel.tsx",
+      "frontend/src/grammar-designer/GrammarStatusDock.tsx",
+      "frontend/src/grammar-designer/GrammarDesigner.tsx",
+      "frontend/src/grammar-designer/grammarLocalQuickFixes.ts",
+      "frontend/src/grammar-language-service/grammarCodeActions.ts",
+      "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java"
+    ],
+    "pre": {
+      "es": "Una gramática válida se siembra por la API real como paso previo; el error lo escribe la persona en el editor.",
+      "en": "A valid grammar is seeded through the real API as a prior step; the error is typed by the person in the editor."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, sin simulaciones. El oráculo hace llamadas directas a la API real de análisis y lee el fichero guardado.",
+      "en": "Playwright with Chromium, no simulations. The oracle makes direct calls to the real analysis API and reads the stored file."
+    },
+    "executes": {
+      "es": "Abre la gramática sembrada, escribe en Monaco una referencia con mayúsculas erróneas, localiza en el panel de problemas la corrección local y la del servidor, pulsa el diagnóstico y luego la corrección local; después analiza el texto resultante con una llamada directa a la API.",
+      "en": "Opens the seeded grammar, types into Monaco a reference with wrong capitalisation, finds the local and the server fix in the problems panel, clicks the diagnostic and then the local fix; then analyses the resulting text with a direct API call."
+    },
+    "asserts": {
+      "es": "Hay una corrección local y otra del servidor para el mismo problema; la llamada directa confirma el problema con el texto roto; elegir el diagnóstico lleva el cursor a la línea 2; el texto del editor queda corregido y la llamada directa ya no devuelve el error; la gramática guardada conserva etag, contenido y fecha.",
+      "en": "There is a local fix and a server fix for the same problem; the direct call confirms the problem on the broken text; choosing the diagnostic moves the cursor to line 2; the editor text ends up corrected and the direct call no longer returns the error; the stored grammar keeps its etag, content and timestamp."
+    },
+    "behavior": {
+      "es": "Ante un problema con corrección, la persona ve las soluciones que propone el servidor y las que calcula el propio navegador, elige una y el texto del borrador queda arreglado sin guardarse.",
+      "en": "Facing a problem with a fix, the person sees the solutions proposed by the server and those computed by the browser itself, picks one and the draft text is repaired without being saved."
+    },
+    "rule": {
+      "es": "Aplicar una corrección solo edita el borrador; lo guardado no cambia hasta que la persona guarda.",
+      "en": "Applying a fix only edits the draft; what is stored does not change until the person saves."
+    },
+    "scenario": {
+      "es": "Se escribe una referencia a una regla con la inicial en minúscula, cuando la regla existe con mayúscula, y se aplica la corrección local.",
+      "en": "A reference to a rule is written with a lowercase initial although the rule exists with a capital, and the local fix is applied."
+    },
+    "result": {
+      "es": "El texto vuelve a la forma correcta, el servidor deja de señalar el error y el fichero guardado sigue idéntico.",
+      "en": "The text returns to the correct form, the server stops reporting the error and the stored file stays identical."
+    },
+    "expected": {
+      "es": "Una ejecución correcta termina con la referencia corregida en pantalla, sin problema abierto de ese tipo y con la gramática guardada intacta.",
+      "en": "A passing run ends with the reference corrected on screen, no open problem of that kind and the stored grammar untouched."
+    },
+    "guarantee": {
+      "es": "El botón de corrección del panel arregla de verdad el texto del borrador, con el servidor real como juez, y no guarda por su cuenta.",
+      "en": "The panel's fix button really repairs the draft text, with the real server as judge, and does not save by itself."
+    },
+    "limits": {
+      "es": "Solo se aplica la corrección local; la del servidor se comprueba que existe pero no se pulsa. No cubre la recursión por la izquierda ni otros tipos de problema. Los textos exactos de los botones dependen del idioma.",
+      "en": "Only the local fix is applied; the server fix is shown to exist but is not pressed. It does not cover left recursion or other kinds of problem. The exact button texts depend on the language."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Interacción real con el panel y el editor, servidor real como oráculo independiente y comprobación de que lo guardado no cambia.",
+      "en": "Real interaction with the panel and the editor, real server as an independent oracle and a check that the stored data does not change."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "vitest:frontend/src/grammar-designer/GrammarProblemsPanel.test.tsx"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/grammar/fix-diagnostic.spec.ts", "line": 31 },
+      { "path": "frontend/e2e/real/grammar/fix-diagnostic.spec.ts", "line": 32 },
+      { "path": "frontend/e2e/real/grammar/fix-diagnostic.spec.ts", "line": 35 },
+      { "path": "frontend/e2e/real/grammar/fix-diagnostic.spec.ts", "line": 40 },
+      { "path": "frontend/e2e/real/grammar/fix-diagnostic.spec.ts", "line": 44 },
+      { "path": "frontend/e2e/real/grammar/fix-diagnostic.spec.ts", "line": 51 },
+      { "path": "frontend/e2e/real/grammar/fix-diagnostic.spec.ts", "line": 52 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

@@ -16,6 +16,9 @@ final class HydraRecoveryAdvice {
     static Details from(String code) {
         String normalized=code==null?"":code.trim().toUpperCase(Locale.ROOT);
         return switch(normalized) {
+            case "CORRUPT_CONFIGURATION" -> new Details(
+                    "The stored configuration could not be used. HYDRA left the stored files unchanged: nothing was moved, rewritten or deleted.", false,
+                    List.of(new HydraRecoveryAction("inspect-configuration-recovery","Inspect the recovery status of the stored configuration where its module offers one and quarantine it explicitly before creating a clean one, or restore the stored document from a backup or the project history; HYDRA never repairs, moves or deletes it on its own.","OPEN_RECOVERY",true),diagnostics()));
             case "CONFLICT","STATE_MISMATCH","PRECONDITION_FAILED" -> new Details(
                     "The requested write was not applied because the client state is older or incompatible with the current resource.", true,
                     List.of(refresh(), diagnostics()));

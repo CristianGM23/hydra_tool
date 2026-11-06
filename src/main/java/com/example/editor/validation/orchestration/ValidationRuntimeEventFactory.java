@@ -24,7 +24,7 @@ public final class ValidationRuntimeEventFactory {
 
     /** Descripción: Ejecuta la operación «diagnostic» correspondiente a la responsabilidad de ValidationRuntimeEventFactory. Entradas: eventTypeId: identificador que delimita el recurso objetivo; report: dato de entrada necesario para la operación; diagnostic: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public static CanonicalEvent diagnostic(String eventTypeId, ModelValidationReport report, ModelValidationDiagnostic diagnostic) {
         return event(eventTypeId, report.metamodelId(), report.modelId(), EventSubjectKind.VALIDATION_DIAGNOSTIC,
-                diagnostic.id(), diagnostic.targetFeatureId(), Map.of("ruleId", diagnostic.ruleId(), "severity", diagnostic.severity().name(),
+                diagnostic.id(), diagnostic.targetFeatureId(), Map.of("diagnosticId", diagnostic.id(), "ruleId", diagnostic.ruleId(), "severity", diagnostic.severity().name(),
                         "elementId", diagnostic.targetElementId(), "message", diagnostic.message()), "");
     }
 

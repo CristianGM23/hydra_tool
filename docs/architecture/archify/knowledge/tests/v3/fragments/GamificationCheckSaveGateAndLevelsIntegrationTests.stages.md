@@ -1,0 +1,4 @@
+- gamification_define.chk: checkEndpointReportsEveryDefectOfABrokenCatalogIncludingLevels (L79), 11 diagnósticos exactos por HTTP.
+- gamification_author_source.ck: mismo test (L79) y warningOnlyCatalogIsSavedWithItsLevelsOnDiskAndCheckSavedMatchesCheckDraft (L92), check-saved igual a check.
+- gamification_define.lvl: warningOnly... (L92) niveles level:one/level:two leídos del JSON de disco; catalogWithALevelOfAnUnknownPointType... (L123) nivel con tipo inexistente da 400 y no persiste.
+- Rechazo/puerta: L123 comprueba que no existen los ficheros de definiciones ni de bindings.

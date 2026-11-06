@@ -1,0 +1,5 @@
+- metamodel_author_wizard.id: nombre vacío deshabilita 'Next step' y no se guarda nada (línea 21); el .metamodel.json guardado lleva el nombre escrito (línea 53 y GET, línea 60).
+- metamodel_author_wizard.cl: '+ Class/+ Interface/+ Enumeration/+ Datatype' (líneas 29-33) acaban en 3 clases (una INTERFACE), 1 enumerado y 1 tipo de datos en disco (líneas 53-58).
+- metamodel_define_save.def: segunda prueba, atributo 'title' y referencia 'owner' creados en pantalla y presentes en el fichero (líneas 98-100); también las clases/enumerado/tipo de datos de la primera.
+- metamodel_author_wizard.st (direct): tercer test; en el paso 'Properties and relationships' se ve '0 relation(s)' (línea 115), se abre el editor desde su botón (117) y el atributo 'code' y la referencia 'peer' llegan a disco y API (líneas 133-135). El paso solo resume y remite; la escritura ocurre en el editor.
+- Rechazo: sin nombre no hay avance (línea 21) y el borrador no existe en el backend antes de guardar (líneas 22 y 34).

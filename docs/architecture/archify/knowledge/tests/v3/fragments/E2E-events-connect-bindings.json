@@ -1,0 +1,117 @@
+[
+  {
+    "id": "pw:e2e/real/events/connect-bindings.spec.ts",
+    "name": {
+      "es": "Arquitectura de eventos: conectar un evento reservado con uno propio, rechazar conexiones y copiar datos, con backend real",
+      "en": "Event architecture: connect a system event to a custom one, refuse connections and copy data, with a real backend"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["events"],
+    "procs": [
+      { "id": "events_author_connect", "stages": ["a1", "a2", "d1", "a3", "a4"], "match": "direct" },
+      { "id": "events_author_form", "stages": ["a6"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/event-designer/EventDesigner.tsx",
+      "frontend/src/event-designer/EventArchitectureVisualEditor.tsx",
+      "frontend/src/event-designer/eventConnections.ts",
+      "frontend/src/event-designer/EventDesignerParts.tsx",
+      "frontend/src/event-designer/eventDesignerValidation.ts",
+      "frontend/src/event-designer/api.ts",
+      "src/main/java/com/example/editor/event/web/CanonicalEventModelController.java",
+      "src/main/java/com/example/editor/event/EventModelApplicationService.java",
+      "src/main/java/com/example/editor/event/EventModelChecker.java",
+      "src/main/java/com/example/editor/event/persistence/JsonEventBindingModelRepository.java"
+    ],
+    "pre": {
+      "es": "Metamodelo y dos eventos propios (uno con un campo obligatorio) sembrados por la API real; navegador real contra la aplicación compilada y el backend real con almacenamiento propio.",
+      "en": "Metamodel and two custom events (one with a required field) seeded through the real API; real browser against the built application and the real backend with its own storage."
+    },
+    "setup": {
+      "es": "Sin simulaciones de la API. Solo se siembran metamodelo y eventos propios; colocar eventos, conectar, rellenar y guardar lo hace el usuario en la interfaz.",
+      "en": "No API simulation. Only the metamodel and custom events are seeded; placing events, connecting, filling in and saving are done by the user in the interface."
+    },
+    "executes": {
+      "es": "Abre la arquitectura de eventos, coloca un evento reservado y los dos propios, conecta (arrastrando o con clics en los puertos), intenta destino reservado, bucle y par repetido, rellena la copia de datos, prueba una condición inexistente, guarda y recarga.",
+      "en": "Opens the event architecture, places a system event and the two custom ones, connects (dragging or clicking the ports), tries a system target, a loop and a repeated pair, fills in the data copy, tries a missing condition, saves and reloads."
+    },
+    "asserts": {
+      "es": "El fichero de enlaces escrito por el backend contiene el enlace activo, de política avisar y sin condición ni copias, y el segundo con la copia exacta; las conexiones prohibidas no crean enlace; sin copia obligatoria o con condición inexistente no se guarda y el disco no cambia.",
+      "en": "The bindings file written by the backend holds the active binding with the report policy and no condition or copies, and the second one with the exact data copy; forbidden connections create no binding; without the required copy or with a missing condition nothing is saved and the disk is unchanged."
+    },
+    "behavior": {
+      "es": "El usuario enlaza un evento del sistema con un evento propio en el lienzo: el enlace nace activo, sin condición ni copias y avisando de errores; solo valen destinos propios y pares nuevos; el campo obligatorio exige su copia antes de guardar.",
+      "en": "The user links a system event to a custom event on the canvas: the binding starts active, with no condition or copies and reporting errors; only custom targets and new pairs are valid; the required field needs its copy before saving."
+    },
+    "rule": {
+      "es": "Un evento del sistema solo puede ser origen; no se conecta un evento consigo mismo ni se repite un par; todo campo obligatorio del destino necesita una copia de datos.",
+      "en": "A system event can only be a source; an event is not connected to itself and a pair is not repeated; every required target field needs a data copy."
+    },
+    "scenario": {
+      "es": "Enlace del evento «modelo guardado» a un evento sin datos; intentos de destino del sistema, de bucle y de par repetido; segundo enlace a un evento con campo obligatorio, guardar sin copia, con condición inexistente y por fin con la copia; recargar.",
+      "en": "Link from the “model saved” event to an event without data; attempts with a system target, a loop and a repeated pair; second link to an event with a required field, saving without the copy, with a missing condition and finally with the copy; reload."
+    },
+    "result": {
+      "es": "Dos enlaces guardados: el primero con valores por defecto y el segundo con la copia de datos del campo obligatorio; las pantallas recargadas dibujan los dos.",
+      "en": "Two saved bindings: the first with default values and the second with the data copy of the required field; the reloaded screens draw both."
+    },
+    "expected": {
+      "es": "El disco refleja exactamente lo conectado y copiado, y lo rechazado no deja rastro.",
+      "en": "The disk reflects exactly what was connected and copied, and what was refused leaves no trace."
+    },
+    "guarantee": {
+      "es": "Lo que el usuario conecta y copia en la arquitectura de eventos llega al backend como enlace persistido con sus valores por defecto, y las conexiones inválidas no se guardan.",
+      "en": "What the user connects and copies in the event architecture reaches the backend as a persisted binding with its default values, and invalid connections are not saved."
+    },
+    "limits": {
+      "es": "El arrastre puede caer en la conexión por clics sobre los puertos, y parte de las conexiones y la selección del enlace en el lienzo se activan con eventos de clic. El modelo de expresiones de la condición válida se siembra por la API (esta pantalla no lo crea). El bucle se comprueba solo por clics.",
+      "en": "Dragging may fall back to connecting by clicking the ports, and part of the connections and the selection of the link on the canvas are triggered with click events. The expressions model of the valid condition is seeded through the API (this screen does not create it). The loop is checked by clicks only."
+    },
+    "strength": "MEDIUM",
+    "strengthWhy": {
+      "es": "Navegador y backend reales con oráculo en disco y rechazos, pero parte de las conexiones y la selección del enlace en el lienzo se activan con eventos de clic.",
+      "en": "Real browser and backend with a disk oracle and refusals, but part of the connections and the link selection on the canvas are triggered with click events."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "enlace por defecto",
+        "scenario": { "es": "Del evento «modelo guardado» a un evento sin datos.", "en": "From the “model saved” event to an event without data." },
+        "result": { "es": "Enlace activo, avisar de errores, sin condición ni copias.", "en": "Active binding, report errors, no condition or copies." }
+      },
+      {
+        "n": "conexiones prohibidas",
+        "scenario": { "es": "Destino del sistema, evento consigo mismo y par repetido.", "en": "System target, event to itself and repeated pair." },
+        "result": { "es": "No se crea ningún enlace; el par repetido muestra aviso.", "en": "No binding is created; the repeated pair shows a warning." }
+      },
+      {
+        "n": "campo obligatorio",
+        "scenario": { "es": "Guardar sin copia, con condición inexistente y con copia.", "en": "Save without the copy, with a missing condition and with the copy." },
+        "result": { "es": "Solo se guarda con la copia y sin condición inexistente.", "en": "It is saved only with the copy and without the missing condition." }
+      },
+      {
+        "n": "editar enlace guardado",
+        "scenario": { "es": "Abrir un enlace ya guardado, quitar su copia obligatoria, reponerla con otra ruta, poner una condición que existe y guardar; después retirar la condición desde el lienzo.", "en": "Open an already saved binding, remove its required copy, put it back with another path, set a condition that exists and save; then remove the condition from the canvas." },
+        "result": { "es": "Sin copia no se guarda; con la copia nueva y la condición existente el mismo enlace queda guardado y sin errores; retirada la condición, queda vacía.", "en": "Without the copy it is not saved; with the new copy and the existing condition the same binding is saved with no errors; once the condition is removed it is empty." }
+      }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 47 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 62 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 71 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 81 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 94 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 107 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 125 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 135 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 172 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 189 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 196 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 207 },
+      { "path": "frontend/e2e/real/events/connect-bindings.spec.ts", "line": 214 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

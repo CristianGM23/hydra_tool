@@ -24,7 +24,7 @@ check('SBOM inventories Maven dependencies','pom.xml' in sbom_script and 'pkg:ma
 workflow=(ROOT/'.github/workflows/hydra-ci.yml').read_text(encoding='utf-8')
 check('CI runs on Windows and Linux','windows-latest' in workflow and 'ubuntu-latest' in workflow)
 check('CI uses npm ci','npm ci' in workflow)
-check('CI uses Java 24',"java-version: '24'" in workflow or 'java-version: 24' in workflow)
+check('CI uses the patched Java 25.0.5 LTS runtime',"java-version: '25.0.5'" in workflow)
 wrapper=(ROOT/'.mvn/wrapper/maven-wrapper.properties').read_text(encoding='utf-8')
 check('Maven Wrapper pins Maven 3.9.16','apache-maven-3.9.16-bin.zip' in wrapper)
 check('Maven Wrapper pins distribution SHA-256','distributionSha256Sum=5af3b743dd8b876b5c45da33b676251e5f1687712644abb4ee519ca56e1d89ce' in wrapper)

@@ -23,6 +23,25 @@ ROOT = Path(__file__).resolve().parents[2]
 TEMPLATE = ROOT/'src/main/resources/standalone-template/backend/src/HydraStandaloneServer.java.template'
 FRONTEND = ROOT/'src/main/resources/standalone-template/frontend'
 
+
+def java_executable() -> str:
+    """The real JVM of JAVA_HOME when available, so that stopping the server stops the JVM and not only a launcher."""
+    home = os.environ.get('JAVA_HOME')
+    candidate = Path(home)/'bin'/('java.exe' if os.name == 'nt' else 'java') if home else None
+    return str(candidate) if candidate and candidate.is_file() else 'java'
+
+
+def processes_with_argument(fragment: str) -> list[str]:
+    """Command lines of live processes that contain `fragment` (used to prove that no server survives a stop)."""
+    if os.name == 'nt':
+        script = ("Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -and $_.CommandLine.Contains($env:HYDRA_FIX180_FRAGMENT) } "
+                  "| ForEach-Object { [string]$_.ProcessId + ' ' + $_.CommandLine }")
+        listed = subprocess.run(['powershell','-NoProfile','-Command',script],capture_output=True,text=True,encoding='utf-8',errors='replace',
+                                timeout=60,env={**os.environ,'HYDRA_FIX180_FRAGMENT':fragment})
+    else:
+        listed = subprocess.run(['ps','-eo','pid,args'],capture_output=True,text=True,timeout=30)
+    return [line for line in listed.stdout.splitlines() if fragment in line and 'Get-CimInstance' not in line]
+
 class RealStandaloneLifecycle(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -49,7 +68,7 @@ class RealStandaloneLifecycle(unittest.TestCase):
         with socket.socket() as sock:
             sock.bind(('127.0.0.1',0))
             cls.port=sock.getsockname()[1]
-        cls.server=subprocess.Popen(['java','-cp',str(cls.root),'HydraStandaloneServer',f'--root={cls.root}',f'--port={cls.port}',f'--data-root={cls.data_root}'],stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+        cls.server=subprocess.Popen([java_executable(),'-cp',str(cls.root),'HydraStandaloneServer',f'--root={cls.root}',f'--port={cls.port}',f'--data-root={cls.data_root}'],stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
         cls.url=f'http://127.0.0.1:{cls.port}'
         for attempt in range(90):
             if cls.server.poll() is not None:
@@ -64,7 +83,11 @@ class RealStandaloneLifecycle(unittest.TestCase):
     @classmethod
     def stop_server(cls):
         if cls.server.poll() is None:
-            cls.server.terminate()
+            if os.name == 'nt':
+                # A launcher such as Oracle's javapath\java.exe starts the real JVM as a child; terminate() would only end the launcher.
+                subprocess.run(['taskkill','/PID',str(cls.server.pid),'/T','/F'],capture_output=True,timeout=30)
+            else:
+                cls.server.terminate()
             try: cls.server.wait(timeout=6)
             except subprocess.TimeoutExpired: cls.server.kill();cls.server.wait(timeout=6)
         cls.server.stderr.close()
@@ -245,6 +268,17 @@ class RealStandaloneLifecycle(unittest.TestCase):
         self.start_server()
         self.assertEqual(self.fetch('/api/models/'+id)[1],stored)
         self.assertEqual(self.fetch('/api/models/'+id)[2]['etag'],headers['etag'])
+
+    def test_stopping_the_server_leaves_no_jvm_behind(self):
+        # DEF-001: every stop must end the real JVM too, not only the process that was launched
+        self.assertTrue(processes_with_argument(f'--root={self.root}'), 'the running server must be visible before the stop')
+        self.stop_server()
+        deadline=time.time()+10
+        while processes_with_argument(f'--root={self.root}') and time.time()<deadline: time.sleep(.2)
+        try:
+            self.assertEqual(processes_with_argument(f'--root={self.root}'),[])
+        finally:
+            self.start_server()
 
 if __name__=='__main__':
     unittest.main(verbosity=2)

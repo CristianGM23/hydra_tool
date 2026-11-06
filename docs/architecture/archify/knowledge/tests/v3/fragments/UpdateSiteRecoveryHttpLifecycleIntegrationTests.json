@@ -1,0 +1,143 @@
+[
+{
+    "id":  "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRecoveryHttpLifecycleIntegrationTests",
+    "name":  {
+                 "es":  "Recuperación de update site por HTTP: analizar, materializar y deshacer",
+                 "en":  "Update-site recovery over HTTP: analyze, materialize and roll back"
+             },
+    "type":  "INTEGRATION",
+    "layer":  "behavior",
+    "caps":  [
+                 "recovery"
+             ],
+    "procs":  [
+                  {
+                      "id":  "recovery_author_wizard",
+                      "stages":  [
+                                     "d"
+                                 ],
+                      "match":  "direct"
+                  },
+                  {
+                      "id":  "recovery_author_workspace",
+                      "stages":  [
+                                     "d",
+                                     "f"
+                                 ],
+                      "match":  "direct"
+                  },
+                  {
+                      "id":  "recovery_lifecycle",
+                      "stages":  [
+                                     "a1",
+                                     "a6"
+                                 ],
+                      "match":  "direct"
+                  },
+                  {
+                      "id":  "recovery_author_workspace",
+                      "stages":  [
+                                     "g",
+                                     "h"
+                                 ],
+                      "match":  "indirect"
+                  },
+                  {
+                      "id":  "recovery_lifecycle",
+                      "stages":  [
+                                     "a3",
+                                     "a4"
+                                 ],
+                      "match":  "indirect"
+                  },
+                  {
+                      "id":  "recovery_persist_rollback",
+                      "stages":  [
+                                     "d3"
+                                 ],
+                      "match":  "indirect"
+                  }
+              ],
+    "prod":  [
+                 "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteMaterializationController.java",
+                 "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationService.java",
+                 "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportApplicationService.java",
+                 "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryController.java",
+                 "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+                 "src/main/java/com/example/editor/project/recovery/ExternalValidationRecoveryService.java"
+             ],
+    "pre":  {
+                "es":  "Fixture src/test/resources/fixtures/sirius-complete; almacenes en un directorio temporal.",
+                "en":  "Fixture src/test/resources/fixtures/sirius-complete; stores in a temp directory."
+            },
+    "executes":  {
+                     "es":  "SpringBootTest con el contexto real y MockMvc: sube el fixture Sirius como multipart a analyze, reconcile y materialize (persist=false y persist=true). Servicios, adaptadores profundos y repositorios son reales; los almacenes viven en un directorio temporal.",
+                     "en":  "SpringBootTest with the real context and MockMvc: uploads the Sirius fixture as multipart to analyze, reconcile and materialize (persist=false and persist=true). Services, deep adapters and repositories are real; stores live in a temp directory."
+                 },
+    "asserts":  {
+                    "es":  "analyze devuelve las clases esperadas del fixture; reconcile funciona con cualquier candidato primario; con todas las capas los ids de mapping son únicos; con una representación el preview es aplicable y no escribe; persist=true se guarda o da 400 (nunca 5xx) y un rechazo no deja documentos.",
+                    "en":  "analyze returns the expected fixture classes; reconcile works with any primary candidate; with all layers mapping ids are unique; with one representation the preview is applicable and writes nothing; persist=true is saved or answers 400 (never 5xx) and a refusal leaves no documents."
+                },
+    "behavior":  {
+                     "es":  "Analizar y previsualizar la recuperación de un proyecto Sirius funciona sin escribir nada; guardarla se guarda o se rechaza con un error de petición, y un rechazo no deja documentos.",
+                     "en":  "Analyzing and previewing the recovery of a Sirius project works without writing anything; saving it is either saved or refused with a request error, and a refusal leaves no documents."
+                 },
+    "rule":  {
+                 "es":  "La vista previa nunca escribe; una persistencia rechazada no deja documentos en los almacenes.",
+                 "en":  "Preview never writes; a refused persistence leaves no documents in the stores."
+             },
+    "scenario":  {
+                     "es":  "Analizar, reconciliar, previsualizar con todas las capas y con una, y pedir la persistencia del fixture Sirius completo con contexto real.",
+                     "en":  "Analyze, reconcile, preview with all layers and with one, and request persistence of the complete Sirius fixture with a real context."
+                 },
+    "result":  {
+                   "es":  "Los ficheros de los almacenes temporales leídos del disco demuestran que nada queda escrito; las clases esperadas provienen de un fichero junto al fixture.",
+                   "en":  "Files of the temporary stores read from disk show nothing is left written; expected classes come from a file next to the fixture."
+               },
+    "expected":  {
+                     "es":  "Todos los pasos pasan en orden.",
+                     "en":  "All steps pass in order."
+                 },
+    "guarantee":  {
+                      "es":  "El análisis y la vista previa de recuperación no tienen efectos en disco, y un rechazo de persistencia no deja estado parcial.",
+                      "en":  "Recovery analysis and preview have no disk effects, and a persistence refusal leaves no partial state."
+                  },
+    "limits":  {
+                   "es":  "Pendiente: un rechazo de persistencia aún puede dejar un activo de imagen del editor visual (almacenado por contenido). El resultado de persistir con el fixture Sirius (guardado o rechazo) no se fija; guardar reglas y deshacer no se acreditan.",
+                   "en":  "Pending: a refused persistence may still leave a visual-editor image asset (stored by content). The outcome of persisting the Sirius fixture (saved or refused) is not pinned; saving rules and rollback are not credited."
+               },
+    "strength":  "MEDIUM",
+    "external":  "none",
+    "src":  [
+                {
+                    "path":  "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryHttpLifecycleIntegrationTests.java",
+                    "line":  172
+                },
+                {
+                    "path":  "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryHttpLifecycleIntegrationTests.java",
+                    "line":  176
+                },
+                {
+                    "path":  "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryHttpLifecycleIntegrationTests.java",
+                    "line":  199
+                },
+                {
+                    "path":  "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryHttpLifecycleIntegrationTests.java",
+                    "line":  213
+                },
+                {
+                    "path":  "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryHttpLifecycleIntegrationTests.java",
+                    "line":  226
+                },
+                {
+                    "path":  "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryHttpLifecycleIntegrationTests.java",
+                    "line":  259
+                },
+                {
+                    "path":  "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryHttpLifecycleIntegrationTests.java",
+                    "line":  289
+                }
+            ],
+    "confidence":  "ANALYZED"
+}
+]

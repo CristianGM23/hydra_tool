@@ -11,7 +11,7 @@ def text(p): return (ROOT/p).read_text(encoding='utf-8')
 support=text('src/main/java/com/example/editor/integration/compiler/TechnologyAdapterSelfContainedDependencySupport.java')
 for token in ['NPM_VENDOR_BUNDLE','PYTHON_WHEELHOUSE','ECLIPSE_P2_VENDOR_REPOSITORY','MAVEN_RUNTIME_LIBS']:
     check('bundle kind '+token, token in support)
-check('npm reuses installed host packages','npm\',[\'ls\'' in support and 'missing=required.filter' in support)
+check('npm reuses installed host packages', "runNpm(['ls'" in support and 'missing=required.filter' in support)
 check('pip offline install','--no-index' in support and '--find-links' in support)
 check('eclipse local p2 install','org.eclipse.equinox.p2.director' in support and 'file:$HERE/p2' in support)
 check('ordered dependency contract','detect-installed-ius' in support and 'install-missing-from-local-p2' in support and 'restart' in support)
@@ -53,20 +53,30 @@ check('GLSP Java runtime vendor','mavenRuntimeVendorFiles' in glsp)
 check('GLSP Java copies runtime dependencies','maven-dependency-plugin' in glsp and 'copy-dependencies' in glsp and 'distribution/lib' in glsp)
 check('Maven runtime vendor has integrity verification','sha256' in support and 'Corrupt HYDRA Maven runtime jar' in support)
 
-# Execute representative offline installers in a fake environment: npm path where all deps are already present must not install.
-with tempfile.TemporaryDirectory() as td:
-    td=Path(td); (td/'npm').mkdir();
-    fake=td/'fakebin'; fake.mkdir(); log=td/'calls.log'
-    npm=fake/'npm'; npm.write_text('#!/bin/sh\necho "$@" >> "'+str(log)+'"\nif [ "$1" = "ls" ]; then exit 0; fi\nexit 88\n'); npm.chmod(0o755)
-    js=("import {readdirSync} from 'node:fs'; import {spawnSync} from 'node:child_process'; import {dirname,join} from 'node:path'; import {fileURLToPath} from 'node:url';\n"
-        "const required=['react','@besser/wme'], here=dirname(fileURLToPath(import.meta.url)), vendor=join(here,'npm');\n"
-        "const installed=new Set(); for(const name of required){const r=spawnSync('npm',['ls',name,'--depth=0','--json'],{encoding:'utf8'});if(r.status===0)installed.add(name);}\n"
-        "const missing=required.filter(x=>!installed.has(x)); if(missing.length){const tgz=readdirSync(vendor).filter(x=>x.endsWith('.tgz')).map(x=>join(vendor,x));const r=spawnSync('npm',['install','--ignore-scripts','--no-audit','--no-fund',...tgz],{stdio:'inherit'});if(r.status!==0)process.exit(r.status??1);}\n"
-        "console.log(`PASS missing=${missing.length}`);\n")
-    f=td/'install.mjs'; f.write_text(js)
-    import os
-    env=os.environ.copy(); env['PATH']=str(fake)+os.pathsep+env['PATH']
-    run=subprocess.run(['node',str(f)],capture_output=True,text=True,env=env,timeout=5)
-    check('npm host reuse executable smoke',run.returncode==0 and 'missing=0' in run.stdout and 'install' not in log.read_text())
+# Exercise the real generated JS template using a fake npm-cli.js, without
+# invoking a Windows .cmd stub, a shell, the Internet or a real npm install.
+import os, sys
+with tempfile.TemporaryDirectory(prefix='hydra-npm-portable-') as td:
+    td=Path(td); vendor=td/'npm-cache';vendor.mkdir()
+    fake=td/'npm-cli.js'; calls=td/'calls.txt'
+    fake.write_text("""const fs=require('node:fs');
+fs.appendFileSync(process.env.HYDRA_NPM_PROBE_LOG,process.argv.slice(2).join(' ')+'\\n');
+if(process.argv[2]==='ls')process.exit(process.env.HYDRA_NPM_PROBE_MISSING==='1'?1:0);
+process.exit(88);
+""",encoding='utf-8')
+    java_src=support
+    prefix='private static String npmInstall(List<String> packages)'
+    part=java_src.split(prefix,1)[1].split('"""',2)[1]
+    # Replace only the first interpolation placeholder; generated package spec is trusted fixture data.
+    js=part.replace('%s',"'react','@besser/wme'",1)
+    f=td/'install.mjs';f.write_text(js,encoding='utf-8')
+    env=os.environ.copy();env['npm_execpath']=str(fake);env['HYDRA_NPM_PROBE_LOG']=str(calls)
+    run=subprocess.run(['node',str(f)],capture_output=True,text=True,env=env,timeout=30)
+    check('npm host reuse executable smoke',run.returncode==0 and 'missing=0' in run.stdout and 'install' not in calls.read_text())
+    check('npm no shell used for npm CLI', 'shell:' not in js and 'runNpm' in js)
+    # Fail closed when installed dependencies are unavailable and local cache is missing.
+    env['HYDRA_NPM_PROBE_MISSING']='1'
+    failed=subprocess.run(['node',str(f)],capture_output=True,text=True,env=env,timeout=30)
+    check('npm missing cache fails closed',failed.returncode!=0 and 'vendor cache is missing or incomplete' in failed.stderr)
 
 print(f'V43314_SELF_CONTAINED_EDITOR_DEPENDENCIES={len(checks)}/{len(checks)} PASS')

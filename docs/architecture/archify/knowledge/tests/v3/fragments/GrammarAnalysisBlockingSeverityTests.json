@@ -1,0 +1,139 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.GrammarAnalysisBlockingSeverityTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Qué hallazgos de la gramática bloquean, qué corrección exige revisión y qué metamodelo se deduce en Xtext",
+      "en": "Which grammar findings block, which fix needs review and which metamodel is deduced for Xtext"
+    },
+    "type": "BEHAVIOR",
+    "layer": "definition",
+    "caps": [
+      "grammar"
+    ],
+    "procs": [
+      {
+        "id": "grammar_diagnostics_actions",
+        "stages": [
+          "sa"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_language_to_published_editor",
+        "stages": [
+          "g1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_grammar_to_text_model",
+        "stages": [
+          "an"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarRuleGraphAnalyzer.java",
+      "src/main/java/com/example/editor/grammar/diagnostic/GrammarDiagnosticCatalog.java"
+    ],
+    "pre": {
+      "es": "Ninguna: el analizador neutral se construye directamente, sin ficheros ni red.",
+      "en": "None: the neutral analyzer is built directly, with no files or network."
+    },
+    "setup": {
+      "es": "Analizador neutral real; textos de gramática literales en Langium, ANTLR y Xtext; aplicador de ediciones propio.",
+      "en": "Real neutral analyzer; literal grammar texts in Langium, ANTLR and Xtext; own edit applier."
+    },
+    "executes": {
+      "es": "GrammarSourceAnalyzer.analyze sobre gramáticas con recursión izquierda directa y con asignaciones, soportada por ANTLR, segura, regla sin uso, entrada inexistente, referencia sin resolver y una referencia mal escrita en Xtext.",
+      "en": "GrammarSourceAnalyzer.analyze over grammars with direct left recursion with and without assignments, ANTLR-supported, safe, unused rule, missing entry, unresolved reference and a mistyped reference in Xtext."
+    },
+    "asserts": {
+      "es": "Severidad literal de cada hallazgo; la corrección con asignaciones no es automática, exige revisión y su texto es el esperado; reanálisis sin errores; metamodelo candidato de Xtext con clases, confianza 0,72 y marca de revisión.",
+      "en": "Literal severity of each finding; the fix with assignments is not automatic, needs review and its text is the expected one; re-analysis without errors; Xtext candidate metamodel with classes, confidence 0.72 and review flag."
+    },
+    "behavior": {
+      "es": "La recursión por la izquierda no soportada es un error, mientras que la soportada por ANTLR, la segura y una regla sin uso solo informan o avisan; la corrección que podría cambiar el significado queda para revisión humana.",
+      "en": "Unsupported left recursion is an error, while ANTLR-supported recursion, safe recursion and an unused rule only inform or warn; a fix that could change the meaning is left for human review."
+    },
+    "rule": {
+      "es": "Una regla de entrada inexistente y una referencia sin resolver también bloquean, de modo que no solo la recursión izquierda impide compilar.",
+      "en": "A missing entry rule and an unresolved reference also block, so left recursion is not the only thing that prevents compiling."
+    },
+    "scenario": {
+      "es": "Analizar gramáticas con cada tipo de hallazgo, pedir la corrección de una recursión con asignaciones y corregir una referencia mal escrita en una gramática Xtext.",
+      "en": "Analyze grammars with each kind of finding, request the fix for a recursion with assignments and correct a mistyped reference in an Xtext grammar."
+    },
+    "result": {
+      "es": "Severidades, textos de corrección y metamodelo candidato coinciden con los literales esperados.",
+      "en": "Severities, fix texts and candidate metamodel match the expected literals."
+    },
+    "expected": {
+      "es": "Todas las aserciones se cumplen, incluida la rama no automática de la corrección.",
+      "en": "All assertions hold, including the non-automatic branch of the fix."
+    },
+    "guarantee": {
+      "es": "Evidencia real de qué bloquea el análisis y de que una corrección dudosa no se aplica sola.",
+      "en": "Real evidence of what blocks the analysis and that a doubtful fix is not applied on its own."
+    },
+    "limits": {
+      "es": "Solo analizador, sin panel ni asistente. La descripción de la etapa de análisis dice que solo bloquea la recursión izquierda, pero también bloquean entrada inexistente, referencias y símbolos duplicados; por eso se marca como indirecta. Importaciones entre documentos y la herramienta nativa no se ejercen.",
+      "en": "Analyzer only, no panel or wizard. The analysis stage description says only left recursion blocks, but missing entry, references and duplicate symbols also block, so it is marked indirect. Imports across documents and the native tool are not exercised."
+    },
+    "strengthWhy": {
+      "es": "Analizador real sin mocks, literales independientes y casos positivos y negativos.",
+      "en": "Real analyzer with no mocks, independent literals and positive and negative cases."
+    },
+    "cases": [
+      {
+        "n": "unsupportedLeftRecursionIsAnErrorWhileSupportedSafeAndUnusedRuleFindingsDoNotBlock",
+        "scenario": {
+          "es": "Cuatro gramáticas con recursión no soportada, soportada, segura y regla sin uso.",
+          "en": "Four grammars with unsupported, supported and safe recursion and an unused rule."
+        },
+        "result": {
+          "es": "Solo la primera es un error; las demás informan o avisan.",
+          "en": "Only the first is an error; the others inform or warn."
+        }
+      },
+      {
+        "n": "leftRecursionWithAssignmentsOffersANonAutomaticFixThatRequiresReview",
+        "scenario": {
+          "es": "Recursión izquierda con asignaciones.",
+          "en": "Left recursion with assignments."
+        },
+        "result": {
+          "es": "Corrección no automática con revisión; aplicada deja cero errores.",
+          "en": "Non-automatic fix with review; applied it leaves zero errors."
+        }
+      },
+      {
+        "n": "anXtextGrammarIsAnalysedDeducesACandidateMetamodelAndTheFixLoopClearsItsErrors",
+        "scenario": {
+          "es": "Gramática Xtext con una referencia mal escrita.",
+          "en": "Xtext grammar with a mistyped reference."
+        },
+        "result": {
+          "es": "Corrección aplicada, cero errores y metamodelo candidato con confianza 0,72.",
+          "en": "Fix applied, zero errors and a candidate metamodel with confidence 0.72."
+        }
+      }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/grammar/GrammarAnalysisBlockingSeverityTests.java", "line": 82 },
+      { "path": "src/test/java/com/example/editor/grammar/GrammarAnalysisBlockingSeverityTests.java", "line": 87 },
+      { "path": "src/test/java/com/example/editor/grammar/GrammarAnalysisBlockingSeverityTests.java", "line": 98 },
+      { "path": "src/test/java/com/example/editor/grammar/GrammarAnalysisBlockingSeverityTests.java", "line": 114 },
+      { "path": "src/test/java/com/example/editor/grammar/GrammarAnalysisBlockingSeverityTests.java", "line": 134 },
+      { "path": "src/test/java/com/example/editor/grammar/GrammarAnalysisBlockingSeverityTests.java", "line": 138 },
+      { "path": "src/test/java/com/example/editor/grammar/GrammarAnalysisBlockingSeverityTests.java", "line": 170 },
+      { "path": "src/test/java/com/example/editor/grammar/GrammarAnalysisBlockingSeverityTests.java", "line": 179 }
+    ]
+  }
+]

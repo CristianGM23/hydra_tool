@@ -1,0 +1,6 @@
+- gamification_author_guided.p: tipo de puntos creado desde el paso 1 de la guía, presente en el JSON del backend (l.93).
+- gamification_author_guided.r: recompensa, logro y reto creados desde el paso 2 (l.94-96).
+- gamification_author_guided.ru: regla creada desde el paso 3 con evento, puntos y recompensa (l.97-99).
+- gamification_author_guided.c: «Comprobar» cuyo informe coincide con una segunda consulta independiente y muestra el aviso (l.79-83).
+- gamification_author_guided.d: con error, «Siguiente» deshabilitado, sin peticiones de comprobación/guardado y sin ficheros (l.57-64).
+- gamification_author_guided.sv: «Guardar» del último paso escribe definiciones y reglas en disco (l.93-98); el diagrama guardado lleva la conexión regla-puntos (l.106-108).

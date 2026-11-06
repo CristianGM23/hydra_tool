@@ -1,0 +1,4 @@
+- transformation_execute.in (MEDIUM): executeDraftForwardReturnsTheTargetModelOfTheSavedMetamodel (lines 70-88) establishes that executeDraft resolves the saved metamodel and returns the literal target model without persisting.
+- transformation_execute.in: defaultDirectionIsForwardAndMissingInputsAreRejected (lines 93-104) establishes the FORWARD default and the null-input rejection.
+- transformation_execute.in: unknownSourceTypeIsRejectedBeforeExecutingAnything (lines 114-118) and unsupportedExecutionPolicyIsRejectedBeforeExecutingAnything (lines 130-136) establish refusal to execute non-compilable drafts.
+- Not proven: which metamodel is input vs output (same metamodel on both sides) and the REVERSE direction.

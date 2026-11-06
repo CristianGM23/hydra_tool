@@ -1,0 +1,162 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.textmodel.TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Texto a modelo con una definición guardada y una transformación posterior de modelo a modelo",
+      "en": "Text to model with a saved definition and a later model-to-model transformation"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "layers2": [
+      "definition"
+    ],
+    "caps": [
+      "transformation",
+      "grammar"
+    ],
+    "procs": [
+      {
+        "id": "transformation_author_text2model",
+        "stages": [
+          "gr",
+          "pt",
+          "po"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_grammar_to_text_model",
+        "stages": [
+          "t2m"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/textmodel/TransformationTextToModelService.java",
+      "src/main/java/com/example/editor/transformation/textmodel/GrammarTransformationTextParserGateway.java",
+      "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+      "src/main/java/com/example/editor/transformation/runtime/TransformationRuntimeService.java",
+      "src/main/java/com/example/editor/textual/runtime/NeutralTextualModelParser.java",
+      "src/main/java/com/example/editor/grammar/runtime/LastKnownGoodGrammarService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible; gramáticas compiladas y activadas con el analizador neutral, sin herramientas nativas; metamodelos de origen y destino guardados por la propia prueba.",
+      "en": "Writable temporary directory; grammars compiled and activated with the neutral analyzer, no native tools; source and target metamodels saved by the test itself."
+    },
+    "setup": {
+      "es": "Gramáticas reales compiladas y activadas, repositorios JSON reales, servicios de transformación reales y la transformación de modelo a modelo guardada. El metamodelo y la clase de origen se toman de la propia lectura de la gramática para registrarlos.",
+      "en": "Real grammars compiled and activated, real JSON repositories, real transformation services and the saved model-to-model transformation. The source metamodel and class are taken from the grammar's own reading in order to register them."
+    },
+    "executes": {
+      "es": "Ejecución por identificador de definiciones de texto a modelo guardadas: con una gramática y ruta lógica propias y una transformación posterior guardada; con otra gramática y sin transformación posterior; con texto inválido, gramática sin activar, ruta insegura y transformación posterior inexistente.",
+      "en": "Execution by identifier of saved text-to-model definitions: with its own grammar and logical path and a saved later transformation; with another grammar and no later transformation; with invalid text, an inactive grammar, an unsafe path and a missing later transformation."
+    },
+    "asserts": {
+      "es": "Se usa el snapshot activo de la gramática elegida; los nombres leídos salen del texto; la huella incluye la ruta guardada; el JSON en disco conserva ruta y transformación posterior; el modelo final tiene una entrada por nodo con el valor fijo y su traza; sin transformación posterior es el leído; los rechazos lanzan o informan lo esperado.",
+      "en": "The active snapshot of the chosen grammar is used; the names read come from the text; the fingerprint includes the saved path; the JSON on disk keeps the path and later transformation; the final model has one entry per node with the fixed value and its trace; without a later transformation it is the read model; rejections throw or report as expected."
+    },
+    "behavior": {
+      "es": "Una definición guardada de texto a modelo lee el texto con la gramática activa que eligió y con la ruta lógica que fijó y, si tiene una transformación posterior de modelo a modelo, entrega el modelo proyectado en lugar del leído.",
+      "en": "A saved text-to-model definition reads the text with the active grammar it chose and the logical path it set and, if it has a later model-to-model transformation, delivers the projected model instead of the read one."
+    },
+    "rule": {
+      "es": "La definición elige la gramática, la ruta lógica del texto y, opcionalmente, la transformación posterior; un texto inválido no llega a la proyección; sin gramática activa o con ruta insegura no se ejecuta.",
+      "en": "The definition chooses the grammar, the logical path of the text and, optionally, the later transformation; invalid text never reaches the projection; with no active grammar or an unsafe path nothing runs."
+    },
+    "scenario": {
+      "es": "Dos gramáticas distintas activas; una definición con ruta propia y transformación posterior sobre un texto de dos nodos; otra definición sin transformación posterior; texto inválido, gramática sin activar, ruta con salida de carpeta y transformación posterior que no existe.",
+      "en": "Two different active grammars; a definition with its own path and a later transformation on a two-node text; another definition without a later transformation; invalid text, an inactive grammar, a path that leaves the folder and a later transformation that does not exist."
+    },
+    "result": {
+      "es": "El modelo leído contiene alpha y beta; el proyectado contiene dos entradas con el valor fijo y su traza; la otra definición devuelve el modelo leído; todos los rechazos informan o lanzan sin devolver un modelo a medias.",
+      "en": "The read model contains alpha and beta; the projected one contains two entries with the fixed value and their trace; the other definition returns the read model; every rejection reports or throws without returning a half-built model."
+    },
+    "expected": {
+      "es": "Nombres, valores, huella del texto, contenido del JSON en disco y tipos de error coinciden con lo calculado a mano a partir del texto y de la regla escritos en la prueba.",
+      "en": "Names, values, text fingerprint, content of the JSON on disk and error kinds match what is computed by hand from the text and rule written in the test."
+    },
+    "guarantee": {
+      "es": "Evidencia real de la elección de gramática y ruta en una definición guardada y de la proyección posterior sobre modelos reales.",
+      "en": "Real evidence of the grammar and path choice in a saved definition and of the later projection on real models."
+    },
+    "limits": {
+      "es": "Una sola regla de proyección con valor fijo; no ejecuta el analizador nativo del lenguaje; guardar la definición no comprueba que la transformación posterior exista ni que sea de modelo a modelo (solo falla al ejecutar), y una ruta insegura se guarda y solo se rechaza al ejecutar.",
+      "en": "A single projection rule with a fixed value; it does not run the language's native analyzer; saving the definition does not check that the later transformation exists or is model-to-model (it only fails on execution), and an unsafe path is saved and only rejected on execution."
+    },
+    "strengthWhy": {
+      "es": "Gramáticas, almacenamiento y motor reales, oráculos escritos a mano e independientes y varios rechazos reales.",
+      "en": "Real grammars, storage and engine, hand-written independent oracles and several real rejections."
+    },
+    "cases": [
+      {
+        "n": "aSavedDefinitionReadsTheTextAndProjectsItThroughThePostTransformation",
+        "scenario": {
+          "es": "Definición guardada con gramática, ruta propia y transformación posterior sobre dos nodos.",
+          "en": "Saved definition with grammar, own path and later transformation on two nodes."
+        },
+        "result": {
+          "es": "Modelo leído con alpha y beta y modelo final con dos entradas proyectadas y su traza.",
+          "en": "Read model with alpha and beta and final model with two projected entries and their trace."
+        }
+      },
+      {
+        "n": "invalidTextInactiveGrammarUnsafePathAndMissingPostTransformationAreRejected",
+        "scenario": {
+          "es": "Texto inválido, gramática sin activar, ruta insegura y transformación posterior inexistente.",
+          "en": "Invalid text, inactive grammar, unsafe path and missing later transformation."
+        },
+        "result": {
+          "es": "Diagnósticos sin modelo o error concreto en cada caso.",
+          "en": "Diagnostics with no model or a concrete error in each case."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests.java",
+        "line": 223
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests.java",
+        "line": 226
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests.java",
+        "line": 230
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests.java",
+        "line": 235
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests.java",
+        "line": 242
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests.java",
+        "line": 259
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests.java",
+        "line": 261
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests.java",
+        "line": 283
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests.java",
+        "line": 291
+      },
+      {
+        "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelSavedDefinitionPostProjectionIntegrationTests.java",
+        "line": 295
+      }
+    ]
+  }
+]

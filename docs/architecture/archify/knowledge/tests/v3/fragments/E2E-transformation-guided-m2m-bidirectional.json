@@ -1,0 +1,79 @@
+[
+  {
+    "id": "pw:e2e/real/transformation/guided-m2m-bidirectional.spec.ts",
+    "name": { "es": "Asistente guiado de transformación bidireccional en navegador real", "en": "Guided bidirectional transformation wizard in a real browser" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["transformation"],
+    "procs": [
+      { "id": "transformation_author_guided", "stages": ["nm", "ty", "isM", "di", "isB", "cn", "mm", "wk"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/transformation-designer/TransformationDesigner.tsx",
+      "frontend/src/transformation-designer/TransformationMappingWorkspace.tsx",
+      "frontend/src/transformation-designer/transformationDesignerModel.ts",
+      "frontend/src/design-system/HydraGuidedWorkflow.tsx",
+      "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java",
+      "src/main/java/com/example/editor/transformation/persistence/JsonTransformationRepository.java"
+    ],
+    "pre": { "es": "Dos metamodelos sembrados por la API real; sin red ni credenciales.", "en": "Two metamodels seeded through the real API; no network or credentials." },
+    "executes": {
+      "es": "Un navegador real recorre el asistente: escribe el nombre, cambia el tipo y comprueba que la direccionalidad aparece y desaparece, elige bidireccional, política de conflicto y casillas, metamodelos, crea la regla de ida y la de vuelta y guarda.",
+      "en": "A real browser walks through the wizard: types the name, switches the type checking that directionality appears and disappears, picks bidirectional, conflict policy and checkboxes, metamodels, creates the forward and backward rules and saves."
+    },
+    "asserts": {
+      "es": "El backend real devuelve y guarda en disco nombre, tipo, bidireccional, rastro activo, política elegida, metamodelos, y dos reglas emparejadas por la misma correspondencia; tras recargar la pantalla muestra lo guardado; sin regla de vuelta no se guarda.",
+      "en": "The real backend returns and stores on disk name, type, bidirectional, trace on, chosen policy, metamodels and two rules paired by the same correspondence; after reload the screen shows what was saved; without a backward rule nothing is saved."
+    },
+    "behavior": {
+      "es": "El usuario define en el asistente una transformación modelo a modelo bidireccional con su política de cambios simultáneos y la guarda; solo se piden las opciones de sincronización cuando es bidireccional.",
+      "en": "The user defines a bidirectional model-to-model transformation with its concurrent-change policy in the wizard and saves it; synchronization options are only asked when it is bidirectional."
+    },
+    "rule": {
+      "es": "La direccionalidad solo se pregunta en modelo a modelo y las opciones de sincronización solo en bidireccional; una bidireccional sin regla de vuelta no se puede guardar.",
+      "en": "Directionality is only asked for model-to-model and synchronization options only for bidirectional; a bidirectional definition without a backward rule cannot be saved."
+    },
+    "scenario": {
+      "es": "Jornada completa en el asistente con dos metamodelos reales y una segunda jornada que intenta guardar solo la regla de ida.",
+      "en": "A full wizard journey with two real metamodels and a second journey that tries to save only the forward rule."
+    },
+    "result": {
+      "es": "La definición bidireccional queda guardada con los valores elegidos y se recupera al recargar; la incompleta es rechazada y no aparece en el backend.",
+      "en": "The bidirectional definition is saved with the chosen values and recovered on reload; the incomplete one is rejected and does not appear in the backend."
+    },
+    "expected": {
+      "es": "Los valores leídos del backend y del disco coinciden con lo que el usuario eligió en pantalla.",
+      "en": "Values read from the backend and from disk match what the user chose on screen."
+    },
+    "guarantee": {
+      "es": "Evidencia real, de navegador a disco, de que lo que se elige en el asistente es lo que HYDRA guarda.",
+      "en": "Real evidence, from browser to disk, that what is chosen in the wizard is what HYDRA stores."
+    },
+    "limits": {
+      "es": "No ejecuta la transformación ni la sincroniza, no cubre el modo avanzado ni el texto a modelo, y los textos se localizan con la interfaz en inglés.",
+      "en": "It does not run or synchronize the transformation, does not cover advanced mode or text-to-model, and texts are located with the interface in English."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones reales del usuario en navegador, backend real, lectura independiente del disco y caso de rechazo.",
+      "en": "Real user actions in a browser, real backend, independent disk reading and a rejection case."
+    },
+    "external": "none",
+    "cases": [
+      { "n": "asistente completo", "scenario": { "es": "Nombre, tipo, bidireccional, política y reglas de ida y vuelta.", "en": "Name, type, bidirectional, policy and forward/backward rules." }, "result": { "es": "Guardado y releído tras recargar.", "en": "Saved and reread after reload." } },
+      { "n": "solo regla de ida", "scenario": { "es": "Bidireccional con una única regla.", "en": "Bidirectional with a single rule." }, "result": { "es": "Rechazo sin dejar nada guardado.", "en": "Rejected, nothing saved." } }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/transformation/guided-m2m-bidirectional.spec.ts", "line": 26 },
+      { "path": "frontend/e2e/real/transformation/guided-m2m-bidirectional.spec.ts", "line": 34 },
+      { "path": "frontend/e2e/real/transformation/guided-m2m-bidirectional.spec.ts", "line": 74 },
+      { "path": "frontend/e2e/real/transformation/guided-m2m-bidirectional.spec.ts", "line": 76 },
+      { "path": "frontend/e2e/real/transformation/guided-m2m-bidirectional.spec.ts", "line": 84 },
+      { "path": "frontend/e2e/real/transformation/guided-m2m-bidirectional.spec.ts", "line": 94 },
+      { "path": "frontend/e2e/real/transformation/guided-m2m-bidirectional.spec.ts", "line": 120 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

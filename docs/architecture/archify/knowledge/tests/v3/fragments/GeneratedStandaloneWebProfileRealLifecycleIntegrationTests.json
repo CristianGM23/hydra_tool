@@ -1,0 +1,107 @@
+[
+  {
+    "id": "java:com.example.editor.generated.project.GeneratedStandaloneWebProfileRealLifecycleIntegrationTests",
+    "name": {
+      "es": "Perfil standalone-web de producción: compilar y verificar un editor generado con procesos reales",
+      "en": "Production standalone-web profile: build and verify a generated editor with real processes"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "caps": [
+      "generated_projects",
+      "toolchains"
+    ],
+    "procs": [
+      {
+        "id": "generated_projects_lifecycle",
+        "stages": [
+          "ge",
+          "va",
+          "op"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "generated_projects_lifecycle",
+        "stages": [
+          "la"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectRuntimeProfileCatalog.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleService.java",
+      "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleController.java",
+      "src/main/java/com/example/editor/standalone/StandaloneEditorGeneratorService.java",
+      "src/main/resources/standalone-template/backend/src/HydraStandaloneServer.java.template",
+      "src/main/java/com/example/editor/security/process/HydraExternalProcessRunner.java",
+      "src/main/java/com/example/editor/security/process/HydraExternalProcessPolicy.java"
+    ],
+    "pre": {
+      "es": "Un JDK completo en el PATH (javac y java); sin red, sin node, npm ni mvn.",
+      "en": "A full JDK on the PATH (javac and java); no network, node, npm or mvn needed."
+    },
+    "executes": {
+      "es": "Generador de editores autónomos real, controlador y servicio del ciclo de vida reales, registro en disco y la política de procesos por defecto, con el catálogo de perfiles de producción sin sustituir. Se extrae el editor generado al directorio del proyecto y se ejecutan las etapas por HTTP.",
+      "en": "Real standalone editor generator, real lifecycle controller and service, on-disk registry and the default process policy, with the production profile catalog unreplaced. The generated editor is extracted into the project directory and the stages run over HTTP."
+    },
+    "asserts": {
+      "es": "Generar = PASSED con código de salida 0 y la clase compilada del servidor en disco; validar = PASSED con código 0; abrir = PASSED; sin frontend/index.html la validación falla con código de salida 1; el lanzamiento planificado usa el servidor compilado.",
+      "en": "Generate = PASSED with exit code 0 and the compiled server class on disk; validate = PASSED with code 0; open = PASSED; without frontend/index.html validation fails with exit code 1; the planned launch uses the compiled server."
+    },
+    "behavior": {
+      "es": "HYDRA compila de verdad el servidor de un editor autónomo generado, verifica que el proyecto está completo y resuelve su directorio, usando solo procesos permitidos por la política de seguridad.",
+      "en": "HYDRA genuinely builds the server of a generated standalone editor, verifies the project is complete and resolves its directory, using only processes allowed by the security policy."
+    },
+    "rule": {
+      "es": "Un proyecto generado incompleto no supera la verificación.",
+      "en": "An incomplete generated project does not pass verification."
+    },
+    "scenario": {
+      "es": "Generar un editor, registrarlo con el perfil standalone-web, ejecutar generar, validar y abrir, y repetir la validación tras borrar el frontend.",
+      "en": "Generate an editor, register it with the standalone-web profile, run generate, validate and open, and repeat validation after deleting the frontend."
+    },
+    "result": {
+      "es": "El fichero compilado existe en disco y los códigos de salida reales del proceso hijo coinciden con el informe.",
+      "en": "The compiled file exists on disk and the real child-process exit codes match the report."
+    },
+    "expected": {
+      "es": "Los tres casos pasan sin ampliar la lista de ejecutables permitidos.",
+      "en": "All three cases pass without widening the allowed-executables list."
+    },
+    "guarantee": {
+      "es": "El perfil de producción standalone-web es ejecutable bajo la política de procesos por defecto.",
+      "en": "The production standalone-web profile is executable under the default process policy."
+    },
+    "limits": {
+      "es": "No lanza el servidor generado (el lanzamiento solo se planifica) y no cubre los otros perfiles (Langium, Xtext, GLSP, BESSER), que necesitan herramientas externas.",
+      "en": "It does not launch the generated server (launch is only planned) and does not cover the other profiles (Langium, Xtext, GLSP, BESSER), which need external tools."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Procesos nativos reales sobre un proyecto producido por el generador real, con el catálogo y la política de producción; el oráculo es el fichero compilado en disco y el código de salida real, incluido el caso negativo.",
+      "en": "Real native processes over a project produced by the real generator, with the production catalog and policy; the oracle is the compiled file on disk and the real exit code, including the negative case."
+    },
+    "external": "real",
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/generated/project/GeneratedStandaloneWebProfileRealLifecycleIntegrationTests.java",
+        "line": 126
+      },
+      {
+        "path": "src/test/java/com/example/editor/generated/project/GeneratedStandaloneWebProfileRealLifecycleIntegrationTests.java",
+        "line": 129
+      },
+      {
+        "path": "src/test/java/com/example/editor/generated/project/GeneratedStandaloneWebProfileRealLifecycleIntegrationTests.java",
+        "line": 133
+      },
+      {
+        "path": "src/test/java/com/example/editor/generated/project/GeneratedStandaloneWebProfileRealLifecycleIntegrationTests.java",
+        "line": 147
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

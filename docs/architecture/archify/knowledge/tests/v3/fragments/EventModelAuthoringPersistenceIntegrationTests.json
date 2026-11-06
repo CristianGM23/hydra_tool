@@ -1,0 +1,189 @@
+[
+  {
+    "id": "java:com.example.editor.event.EventModelAuthoringPersistenceIntegrationTests",
+    "name": {
+      "es": "Autoria y guardado real del modelo de eventos: tipos, campos, enlaces y copias",
+      "en": "Real authoring and persistence of the event model: types, fields, bindings and mappings"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": [
+      "events"
+    ],
+    "procs": [
+      {
+        "id": "events_define",
+        "stages": [
+          "a1",
+          "a2",
+          "a3",
+          "a4",
+          "a5",
+          "a6",
+          "d1",
+          "r1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "events_author_form",
+        "stages": [
+          "d1",
+          "a8",
+          "r1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "events_author_connect",
+        "stages": [
+          "a5"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "events_author_source",
+        "stages": [
+          "a3",
+          "d1"
+        ],
+        "match": "indirect"
+      },
+      {
+        "id": "events_author_form",
+        "stages": [
+          "a7"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/event/EventModelApplicationService.java",
+      "src/main/java/com/example/editor/event/EventModelChecker.java",
+      "src/main/java/com/example/editor/event/persistence/JsonEventDefinitionModelRepository.java",
+      "src/main/java/com/example/editor/event/persistence/JsonEventBindingModelRepository.java",
+      "src/main/java/com/example/editor/event/web/CanonicalEventModelController.java",
+      "src/main/java/com/example/editor/event/EventFieldDefinition.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible y un metamodelo real ya guardado.",
+      "en": "Writable temp directory and a real, already-saved metamodel."
+    },
+    "executes": {
+      "es": "EventModelApplicationService con repositorios JSON reales, EventModelChecker real y el controlador REST real (MockMvc standalone), todo sobre un directorio temporal.",
+      "en": "EventModelApplicationService with real JSON repositories, real EventModelChecker and the real REST controller (standalone MockMvc), all on a temp directory."
+    },
+    "asserts": {
+      "es": "Lee el JSON crudo del disco y recalcula el SHA-256 de los bytes para comparar los ETag; compara literales de codigos de diagnostico; comprueba que un error bloqueante no escribe nada y que un ETag obsoleto deja los ficheros byte a byte iguales.",
+      "en": "Reads the raw JSON from disk and recomputes the SHA-256 of the bytes to compare ETags; compares literal diagnostic codes; checks a blocking error writes nothing and a stale ETag leaves files byte-for-byte unchanged."
+    },
+    "behavior": {
+      "es": "Un modelo de eventos valido (tipos, campos, enlaces y copias de datos) se guarda con exactamente lo declarado; un modelo con errores no se guarda y cada incoherencia da su codigo; reemplazar exige el ETag vigente.",
+      "en": "A valid event model (types, fields, bindings and data mappings) is saved with exactly what was declared; a model with errors is not saved and each inconsistency has its code; replacing requires the current ETag."
+    },
+    "rule": {
+      "es": "Origen y destino deben existir y el destino ser un evento propio; no se redefinen eventos reservados; los campos obligatorios se copian; un campo ENUM exige enumTypeId; una copia tiene exactamente una fuente.",
+      "en": "Source and target must exist and the target be an own event; reserved events cannot be redefined; required fields are mapped; an ENUM field needs enumTypeId; a mapping has exactly one source."
+    },
+    "scenario": {
+      "es": "Crear tipos, campos, enlaces y copias; reemplazar con ETag obsoleto y vigente (servicio y API); modelos con origen/destino desconocido, reservado, duplicados y campo obligatorio sin copiar; JSON crudo invalido.",
+      "en": "Create types, fields, bindings and mappings; replace with stale and current ETag (service and API); models with unknown source/target, reserved, duplicates and unmapped required field; invalid raw JSON."
+    },
+    "result": {
+      "es": "El JSON de disco contiene lo declarado, los ETag coinciden con el hash recalculado, el conflicto devuelve 412 sin cambiar nada y los avisos (espacio de nombres ajeno) no bloquean el guardado.",
+      "en": "The disk JSON holds what was declared, ETags match the recomputed hash, the conflict returns 412 with nothing changed and warnings (foreign namespace) do not block saving."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan: contenido en disco, hashes, codigos exactos y rechazos sin escritura.",
+      "en": "All assertions pass: on-disk content, hashes, exact codes and rejections without writes."
+    },
+    "guarantee": {
+      "es": "El guardado de eventos persiste fielmente el modelo valido, bloquea el invalido y protege contra sobrescrituras concurrentes.",
+      "en": "Event saving faithfully persists the valid model, blocks the invalid one and protects against concurrent overwrites."
+    },
+    "limits": {
+      "es": "No ejercita la interfaz del formulario ni la normalizacion del cliente (a7 y source.a3 solo indirectos); la API se prueba con la capa web simulada standalone, sin servidor ni seguridad.",
+      "en": "Does not exercise the form UI or client-side normalization (a7 and source.a3 only indirect); the API is tested with standalone the simulated web layer, without server or security."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Colaboradores y persistencia reales, sin mocks, oraculo independiente (JSON crudo y SHA-256 propio) y casos negativos.",
+      "en": "Real collaborators and persistence, no mocks, independent oracle (raw JSON and own SHA-256) and negative cases."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "validTypesFieldsAndBindingsArePersistedAsRawJson",
+        "scenario": {
+          "es": "Crear un modelo valido y leer el JSON de disco.",
+          "en": "Create a valid model and read the disk JSON."
+        },
+        "result": {
+          "es": "Tipos, campos, enlace y copias estan en disco y el ETag es el hash de los bytes.",
+          "en": "Types, fields, binding and mappings are on disk and the ETag is the byte hash."
+        }
+      },
+      {
+        "n": "replaceWithStaleEtagConflictsAndLeavesFilesIntactWhileCurrentEtagPersists",
+        "scenario": {
+          "es": "Reemplazar con ETag obsoleto y luego vigente.",
+          "en": "Replace with stale then current ETag."
+        },
+        "result": {
+          "es": "El obsoleto falla sin tocar el disco; el vigente persiste y cambia el ETag.",
+          "en": "The stale one fails without touching disk; the current one persists and changes the ETag."
+        }
+      },
+      {
+        "n": "theCheckerGivesExactDiagnosticCodesAndBlockingErrorsAreNeverPersisted",
+        "scenario": {
+          "es": "Modelos con cada tipo de incoherencia.",
+          "en": "Models with each kind of inconsistency."
+        },
+        "result": {
+          "es": "Codigos exactos, nada en disco y el aviso no bloquea.",
+          "en": "Exact codes, nothing on disk and the warning does not block."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/event/EventModelAuthoringPersistenceIntegrationTests.java",
+        "line": 158
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/EventModelAuthoringPersistenceIntegrationTests.java",
+        "line": 186
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/EventModelAuthoringPersistenceIntegrationTests.java",
+        "line": 212
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/EventModelAuthoringPersistenceIntegrationTests.java",
+        "line": 242
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/EventModelAuthoringPersistenceIntegrationTests.java",
+        "line": 265
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/EventModelAuthoringPersistenceIntegrationTests.java",
+        "line": 297
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/EventModelAuthoringPersistenceIntegrationTests.java",
+        "line": 262
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/EventModelAuthoringPersistenceIntegrationTests.java",
+        "line": 130
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/EventModelAuthoringPersistenceIntegrationTests.java",
+        "line": 271
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

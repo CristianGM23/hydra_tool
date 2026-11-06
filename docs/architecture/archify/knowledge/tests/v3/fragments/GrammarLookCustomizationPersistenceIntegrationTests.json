@@ -1,0 +1,92 @@
+[
+  {
+    "id": "java:com.example.editor.grammar.application.GrammarLookCustomizationPersistenceIntegrationTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Aspecto del editor textual guardado con la gramática: valores válidos, valores peligrosos y compilación",
+      "en": "Textual editor look saved with the grammar: valid values, dangerous values and compilation"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": ["grammar", "persistence"],
+    "procs": [
+      { "id": "grammar_author_look", "stages": ["f", "k", "ro", "h", "sv"], "match": "direct" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/grammar/core/GrammarTextualEditorCustomization.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+      "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío; sin herramientas nativas.",
+      "en": "Empty temporary directory; no native tools."
+    },
+    "setup": {
+      "es": "Servicio de gramáticas con repositorio JSON real y servicio de compilación real; los valores esperados son literales del test.",
+      "en": "Grammar service with a real JSON repository and real compilation service; the expected values are literals in the test."
+    },
+    "executes": {
+      "es": "GrammarApplicationService.create/replace con ajustes hydra.textual.* válidos y peligrosos; relectura con find; GrammarTextualEditorCustomization.from y applyTo; GrammarCompilationService.compile antes y después de cambiar los ajustes.",
+      "en": "GrammarApplicationService.create/replace with valid and dangerous hydra.textual.* settings; re-read with find; GrammarTextualEditorCustomization.from and applyTo; GrammarCompilationService.compile before and after changing the settings."
+    },
+    "asserts": {
+      "es": "Los ajustes releídos son idénticos a los guardados; los válidos se restauran (fuente, tamaño, colores, palabras clave, estilos por rol y por regla, descripciones emergentes); los peligrosos se acotan a los valores por defecto y las claves ajenas se conservan; los ficheros generados son idénticos con y sin ajustes.",
+      "en": "Re-read settings equal the saved ones; valid ones are restored (font, size, colours, keywords, role and rule styles, hovers); dangerous ones are bounded to defaults and foreign keys are kept; generated files are identical with and without settings."
+    },
+    "behavior": {
+      "es": "El aspecto del editor textual se guarda con la gramática, se restaura acotado y saneado, conserva las claves ajenas y no cambia el proyecto que se genera al compilar.",
+      "en": "The textual editor look is saved with the grammar, restored bounded and sanitised, keeps foreign keys and does not change the project generated on compilation."
+    },
+    "rule": {
+      "es": "Los valores fuera de rango o con contenido ejecutable vuelven a su valor por defecto; el aspecto no afecta a la compilación.",
+      "en": "Out-of-range values or values with executable content fall back to their default; the look does not affect compilation."
+    },
+    "scenario": {
+      "es": "Guardar una gramática con ajustes de aspecto válidos y otra con valores como javascript:, tamaños absurdos o claves inválidas; releer y restaurar; compilar con y sin ajustes.",
+      "en": "Save a grammar with valid look settings and another with values such as javascript:, absurd sizes or invalid keys; re-read and restore; compile with and without settings."
+    },
+    "result": {
+      "es": "Valores válidos intactos; peligrosos sustituidos por los valores por defecto; clave ajena conservada; mismo proyecto generado.",
+      "en": "Valid values intact; dangerous ones replaced by defaults; foreign key kept; same generated project."
+    },
+    "expected": {
+      "es": "Los valores restaurados coinciden con los literales esperados y los ficheros generados son idénticos.",
+      "en": "Restored values match the expected literals and the generated files are identical."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que el aspecto se persiste, se sanea al restaurarlo y no altera la compilación.",
+      "en": "Real evidence that the look is persisted, sanitised on restore and does not alter compilation."
+    },
+    "limits": {
+      "es": "El guardado conserva los valores peligrosos tal cual: el saneado ocurre al restaurar. La neutralidad de la compilación se comprueba comparando dos ejecuciones, no contra un valor fijo; no se prueba el pintado en el navegador.",
+      "en": "Saving keeps dangerous values as they are: sanitising happens on restore. Compilation neutrality is checked by comparing two runs, not against a fixed value; rendering in the browser is not tested."
+    },
+    "strengthWhy": {
+      "es": "Colaboradores reales y literales como oráculo; la neutralidad de la compilación usa una comparación entre dos ejecuciones, por eso no es fuerte.",
+      "en": "Real collaborators and literals as oracle; compilation neutrality uses a comparison between two runs, so it is not strong."
+    },
+    "cases": [
+      {
+        "n": "validLookSettingsSurviveSaveAndRestore",
+        "scenario": { "es": "Ajustes de aspecto válidos.", "en": "Valid look settings." },
+        "result": { "es": "Se releen y restauran idénticos.", "en": "Re-read and restored identically." }
+      },
+      {
+        "n": "dangerousLookSettingsAreBoundedOnRestoreAndForeignKeysAreKept",
+        "scenario": { "es": "Valores peligrosos o inválidos.", "en": "Dangerous or invalid values." },
+        "result": { "es": "Acotados; clave ajena conservada.", "en": "Bounded; foreign key kept." }
+      }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarLookCustomizationPersistenceIntegrationTests.java", "line": 131 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarLookCustomizationPersistenceIntegrationTests.java", "line": 141 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarLookCustomizationPersistenceIntegrationTests.java", "line": 160 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarLookCustomizationPersistenceIntegrationTests.java", "line": 163 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarLookCustomizationPersistenceIntegrationTests.java", "line": 173 },
+      { "path": "src/test/java/com/example/editor/grammar/application/GrammarLookCustomizationPersistenceIntegrationTests.java", "line": 198 }
+    ]
+  }
+]

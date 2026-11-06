@@ -71,14 +71,13 @@ public class ApiExceptionHandler {
             status = HttpStatus.BAD_REQUEST;
         } else if (reason == Reason.NOT_FOUND) {
             status = HttpStatus.NOT_FOUND;
-        } else if (reason == Reason.CONFLICT) {
+        } else if (reason == Reason.CONFLICT || reason == Reason.CORRUPT_CONFIGURATION) {
             status = HttpStatus.CONFLICT;
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        ApiError error = new ApiError(reason.name(), exception.getMessage());
-        return ResponseEntity.status(status).body(error);
+        return respond(status, reason.name(), exception);
     }
 
     /**
@@ -131,8 +130,7 @@ public class ApiExceptionHandler {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        ApiError error = new ApiError(exception.getReason().name(), exception.getMessage());
-        return ResponseEntity.status(status).body(error);
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /**
@@ -159,8 +157,7 @@ public class ApiExceptionHandler {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        ApiError error = new ApiError(exception.getReason().name(), exception.getMessage());
-        return ResponseEntity.status(status).body(error);
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /**
@@ -185,8 +182,7 @@ public class ApiExceptionHandler {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        ApiError error = new ApiError(exception.getReason().name(), exception.getMessage());
-        return ResponseEntity.status(status).body(error);
+        return respond(status, exception.getReason().name(), exception);
     }
 
     @ExceptionHandler(MetamodelDesignException.class)
@@ -201,8 +197,7 @@ public class ApiExceptionHandler {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        ApiError error = new ApiError(exception.getReason().name(), exception.getMessage());
-        return ResponseEntity.status(status).body(error);
+        return respond(status, exception.getReason().name(), exception);
     }
 
 
@@ -217,11 +212,12 @@ public class ApiExceptionHandler {
             case CONFLICT -> HttpStatus.CONFLICT;
             case VALIDATION_ERROR -> HttpStatus.UNPROCESSABLE_CONTENT;
             case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
+            // D-MM-CORRUPT-CONTRATO: a stored metamodel that is not a valid metamodel is a state of the resource (409), its message is public
+            case CORRUPT_CONFIGURATION -> HttpStatus.CONFLICT;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
 
-        ApiError error = new ApiError(exception.getReason().name(), exception.getMessage());
-        return ResponseEntity.status(status).body(error);
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /**
@@ -232,11 +228,11 @@ public class ApiExceptionHandler {
         HttpStatus status = switch (exception.getReason()) {
             case INVALID_REQUEST -> HttpStatus.BAD_REQUEST;
             case NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case CORRUPT_CONFIGURATION -> HttpStatus.CONFLICT;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
 
-        ApiError error = new ApiError(exception.getReason().name(), exception.getMessage());
-        return ResponseEntity.status(status).body(error);
+        return respond(status, exception.getReason().name(), exception);
     }
 
 
@@ -251,7 +247,7 @@ public class ApiExceptionHandler {
             case NOT_EXECUTABLE -> HttpStatus.UNPROCESSABLE_CONTENT;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
 
@@ -265,7 +261,7 @@ public class ApiExceptionHandler {
             case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /** Convierte los errores del subsistema canónico de validaciones. */
@@ -278,7 +274,7 @@ public class ApiExceptionHandler {
             case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /** Convierte los errores de los bindings de operaciones. */
@@ -292,7 +288,7 @@ public class ApiExceptionHandler {
             case VALIDATION_ERROR -> HttpStatus.UNPROCESSABLE_CONTENT;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /** Convierte los errores de ejecución de operaciones del editor. */
@@ -304,7 +300,22 @@ public class ApiExceptionHandler {
             case NOT_EXECUTABLE, EXECUTION_FAILED -> HttpStatus.UNPROCESSABLE_CONTENT;
             case UNDO_NOT_AVAILABLE -> HttpStatus.CONFLICT;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
+    }
+
+    /** Convierte los errores del almacén JSON compartido cuando llegan sin una capa de aplicación que los traduzca (p. ej. sesiones textuales): un conflicto optimista entre peticiones concurrentes es 412/409, no un 500. */
+    @ExceptionHandler(com.example.editor.validation.persistence.CanonicalDocumentStoreException.class)
+    /** Descripción: Traduce el motivo estable de CanonicalDocumentStoreException a su código HTTP. Entradas: exception: error del almacén. Salida: respuesta con el motivo y el mensaje. */ public ResponseEntity<ApiError> handleCanonicalDocumentStoreException(com.example.editor.validation.persistence.CanonicalDocumentStoreException exception) {
+        // DEF-API-STORE-ERROR-DISCLOSURE: a storage failure names server paths; respond() logs it with its correlation id and answers with the
+        // public STORAGE_ERROR message, like every other subsystem (T-SEC)
+        HttpStatus status = switch(exception.getReason()) {
+            case INVALID_REQUEST -> HttpStatus.BAD_REQUEST;
+            case NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case CONFLICT -> HttpStatus.CONFLICT;
+            case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
+            case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /** Convierte los errores de definiciones y bindings de eventos. */
@@ -317,7 +328,7 @@ public class ApiExceptionHandler {
             case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /** Convierte los errores del contrato y runtime de flujos. */
@@ -331,7 +342,7 @@ public class ApiExceptionHandler {
             case NOT_EXECUTABLE -> HttpStatus.UNPROCESSABLE_CONTENT;
             case STORAGE_ERROR, EXECUTION_FAILED -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /** Convierte los errores del módulo opcional de gamificación. */
@@ -340,11 +351,11 @@ public class ApiExceptionHandler {
         HttpStatus status = switch(exception.getReason()) {
             case INVALID_REQUEST -> HttpStatus.BAD_REQUEST;
             case NOT_FOUND -> HttpStatus.NOT_FOUND;
-            case CONFLICT -> HttpStatus.CONFLICT;
+            case CONFLICT, CORRUPT_CONFIGURATION -> HttpStatus.CONFLICT;
             case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
             case STORAGE_ERROR, EXECUTION_FAILED -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /** Convierte los errores de las definiciones de editores configurables. */
@@ -357,7 +368,7 @@ public class ApiExceptionHandler {
             case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
 
@@ -373,7 +384,7 @@ public class ApiExceptionHandler {
             case NOT_EXECUTABLE -> HttpStatus.UNPROCESSABLE_CONTENT;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /** Convierte los errores de perfiles de integración. */
@@ -386,7 +397,7 @@ public class ApiExceptionHandler {
             case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /** Convierte errores del compilador y motor de validaciones. */
@@ -398,7 +409,7 @@ public class ApiExceptionHandler {
             case NOT_EXECUTABLE -> HttpStatus.UNPROCESSABLE_CONTENT;
             case EXECUTION_FAILED -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
 
@@ -411,7 +422,7 @@ public class ApiExceptionHandler {
             case NOT_EXECUTABLE, EXECUTION_FAILED -> HttpStatus.UNPROCESSABLE_CONTENT;
             case UNDO_NOT_AVAILABLE, REDO_NOT_AVAILABLE -> HttpStatus.CONFLICT;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
     /** Convierte los errores del módulo de proyectos locales. */
@@ -426,9 +437,21 @@ public class ApiExceptionHandler {
             case FILE_TOO_LARGE -> HttpStatus.PAYLOAD_TOO_LARGE;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(),exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception, exception.publicMessage());
     }
 
+
+    /** Una petición de generación standalone inválida o desactivada es un error del cliente o de configuración, no un fallo interno. */
+    @ExceptionHandler(com.example.editor.standalone.StandaloneEditorGenerationException.class)
+    /** Descripción: Procesa la operación «handleStandaloneEditorGenerationException» coordinando las responsabilidades de ApiExceptionHandler. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public ResponseEntity<ApiError> handleStandaloneEditorGenerationException(com.example.editor.standalone.StandaloneEditorGenerationException exception) {
+        HttpStatus status = switch(exception.getReason()) {
+            case DISABLED -> HttpStatus.SERVICE_UNAVAILABLE;
+            case INVALID_REQUEST -> HttpStatus.BAD_REQUEST;
+            case LIMIT_EXCEEDED -> HttpStatus.PAYLOAD_TOO_LARGE;
+            case GENERATION_FAILED -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
+        return respond(status, exception.getReason().name(), exception);
+    }
 
     /** Convierte fallos de proveedores remotos sin exponer tokens ni respuestas completas. */
     @ExceptionHandler(RemoteStorageException.class)
@@ -444,7 +467,7 @@ public class ApiExceptionHandler {
             case CAPACITY_EXCEEDED -> HttpStatus.TOO_MANY_REQUESTS;
             case REMOTE_ERROR -> HttpStatus.BAD_GATEWAY;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(),exception.getMessage()));
+        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(),RemoteSecretRedactor.redact(exception.getMessage())));
     }
 
     /** Convierte errores de autenticación remota sin exponer material OAuth. */
@@ -511,6 +534,18 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiError("NOT_FOUND", exception.getMessage()));
     }
 
+    /** A textual editor whose grammar has no active successful compilation is a resource state the user can resolve (compile), not a server fault. */
+    @ExceptionHandler(com.example.editor.textual.definition.TextualGrammarSnapshotUnavailableException.class)
+    /** Descripción: Procesa la operación «handleTextualGrammarSnapshotUnavailable» coordinando las responsabilidades de ApiExceptionHandler. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public ResponseEntity<ApiError> handleTextualGrammarSnapshotUnavailable(com.example.editor.textual.definition.TextualGrammarSnapshotUnavailableException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError("CONFLICT", exception.getMessage()));
+    }
+
+    /** Every textual parse permit is busy: a temporary unavailability the client retries, not a server fault (CONC part D found it as a 500). */
+    @ExceptionHandler(com.example.editor.textual.runtime.TextualParseCapacityExceededException.class)
+    /** Descripción: Traduce la saturación de permisos de análisis textual a 503 con Retry-After. Entradas: exception: rechazo temporal. Salida: devuelve la respuesta 503. */ public ResponseEntity<ApiError> handleTextualParseCapacityExceeded(com.example.editor.textual.runtime.TextualParseCapacityExceededException exception) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).header(org.springframework.http.HttpHeaders.RETRY_AFTER, "1").body(new ApiError("CAPACITY_EXCEEDED", exception.getMessage()));
+    }
+
     /** Converts invalid allowlisted technical/configuration values into a stable client error. */
     @ExceptionHandler(IllegalArgumentException.class)
     /** Descripción: Procesa la operación «handleIllegalArgumentException» coordinando las responsabilidades de ApiExceptionHandler. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public ResponseEntity<ApiError> handleIllegalArgumentException(IllegalArgumentException exception) {
@@ -520,9 +555,70 @@ public class ApiExceptionHandler {
     /** Last-resort API boundary: details stay server-side and are correlated for diagnosis. */
     @ExceptionHandler(Exception.class)
     /** Descripción: Procesa la operación «handleUnexpectedException» coordinando las responsabilidades de ApiExceptionHandler. Entradas: exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ public ResponseEntity<ApiError> handleUnexpectedException(Exception exception) {
+        // DEF-API-SPRING-MVC-ERRORS-AS-500: the standard Spring MVC errors (405, 404, 415, missing parameter or part, upload too large...) carry
+        // their own status and a detail written for the client; they are not internal failures
+        if(exception instanceof org.springframework.web.ErrorResponse response && response.getStatusCode().value() != HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+            HttpStatus status = HttpStatus.valueOf(response.getStatusCode().value());
+            String detail = response.getBody().getDetail();
+            return ResponseEntity.status(status).headers(response.getHeaders()).body(new ApiError(clientCode(status), detail == null || detail.isBlank() ? status.getReasonPhrase() : detail));
+        }
+        if(exception instanceof org.springframework.web.method.annotation.MethodArgumentTypeMismatchException mismatch) {
+            return ResponseEntity.badRequest().body(new ApiError("INVALID_REQUEST", "Request parameter '" + mismatch.getName() + "' has an invalid value"));
+        }
+        if(exception instanceof org.springframework.web.multipart.MultipartException) {
+            return ResponseEntity.badRequest().body(new ApiError("INVALID_REQUEST", "The multipart request could not be read"));
+        }
         LOG.error("hydra.api_unexpected_error correlationId={} exception={}", AuditRequestContext.correlationId(), exception.getClass().getName(), exception);
         String suffix = AuditRequestContext.correlationId().isBlank() ? "" : " Correlation ID: " + AuditRequestContext.correlationId();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiError("INTERNAL_ERROR", "An unexpected internal error occurred." + suffix));
+    }
+
+    /**
+     * Descripción: T-SEC (DEF-API-SERVER-ERROR-DISCLOSURE): a client error keeps its message, which the client needs to correct the request; a server failure
+     * keeps its distinguishable code (STORAGE_ERROR, EXECUTION_FAILED, GENERATION_FAILED...) but its message, which names server files or
+     * internal exceptions, goes to the server log with the correlation id and the client receives the public message of that code.
+     * Entradas: status: dato de entrada necesario para la operación; code: dato de entrada necesario para la operación; exception: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método.
+     */
+    private ResponseEntity<ApiError> respond(HttpStatus status, String code, Exception exception) {
+        return respond(status, code, exception, "");
+    }
+
+    /**
+     * Descripción: Like {@link #respond(HttpStatus, String, Exception)}; a server failure that carries an explicit public message (written for the client,
+     * without internal details, e.g. which canonical documents a failed import left pending) answers it instead of the generic one.
+     * Entradas: status: dato de entrada necesario para la operación; code: dato de entrada necesario para la operación; exception: dato de entrada necesario para la operación; publicMessage: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método.
+     */
+    private ResponseEntity<ApiError> respond(HttpStatus status, String code, Exception exception, String publicMessage) {
+        if(status != HttpStatus.INTERNAL_SERVER_ERROR) return ResponseEntity.status(status).body(new ApiError(code, exception.getMessage()));
+        String correlationId = AuditRequestContext.correlationId();
+        LOG.error("hydra.api_server_error code={} correlationId={} exception={}", code, correlationId, exception.getClass().getName(), exception);
+        String suffix = correlationId.isBlank() ? "" : " Correlation ID: " + correlationId;
+        return ResponseEntity.status(status).body(new ApiError(code, (publicMessage == null || publicMessage.isBlank() ? serverMessage(code) : publicMessage) + suffix));
+    }
+
+    /** Descripción: Mensaje público de un fallo del servidor según su código. Entradas: code: código del error. Salida: texto sin detalles internos. */
+    static String serverMessage(String code) {
+        return switch(code) {
+            case "STORAGE_ERROR" -> "The server could not read or write the stored data. The details were recorded in the server log.";
+            case "EXECUTION_FAILED" -> "The operation failed while running on the server. The details were recorded in the server log.";
+            case "GENERATION_FAILED" -> "The server could not complete the generation. The details were recorded in the server log.";
+            default -> "An unexpected internal error occurred.";
+        };
+    }
+
+    /** Descripción: Código estable de un error estándar de Spring MVC según su estado. Entradas: status: estado HTTP. Salida: código. */
+    private static String clientCode(HttpStatus status) {
+        return switch(status) {
+            case BAD_REQUEST -> "INVALID_REQUEST";
+            case NOT_FOUND -> "NOT_FOUND";
+            case METHOD_NOT_ALLOWED -> "METHOD_NOT_ALLOWED";
+            case NOT_ACCEPTABLE -> "NOT_ACCEPTABLE";
+            case CONFLICT -> "CONFLICT";
+            case CONTENT_TOO_LARGE, PAYLOAD_TOO_LARGE -> "FILE_TOO_LARGE";
+            case UNSUPPORTED_MEDIA_TYPE -> "UNSUPPORTED_MEDIA_TYPE";
+            case SERVICE_UNAVAILABLE -> "SERVICE_UNAVAILABLE";
+            default -> status.name();
+        };
     }
 
     /** Convierte los errores de ejecución de transformaciones en una respuesta estable y accionable. */
@@ -541,7 +637,7 @@ public class ApiExceptionHandler {
             case PRECONDITION_FAILED -> HttpStatus.PRECONDITION_FAILED;
             case STORAGE_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
-        return ResponseEntity.status(status).body(new ApiError(exception.getReason().name(), exception.getMessage()));
+        return respond(status, exception.getReason().name(), exception);
     }
 
 }

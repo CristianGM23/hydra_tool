@@ -1,0 +1,145 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.importing.MetamodelImportHttpPipelineIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Importación de metamodelos por HTTP: subida, análisis asíncrono, propuesta y confirmación",
+      "en": "Metamodel import over HTTP: upload, asynchronous analysis, proposal and confirmation"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "layers2": [
+      "delivery"
+    ],
+    "caps": [
+      "metamodel"
+    ],
+    "procs": [
+      {
+        "id": "metamodel_author_import",
+        "stages": [
+          "src",
+          "str",
+          "an",
+          "d1",
+          "art"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "metamodel_define_save",
+        "stages": [
+          "imp"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportController.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportAnalysisJobService.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportStagingService.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportService.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring completo con directorios y staging de importación en un directorio temporal.",
+      "en": "Full Spring context with directories and import staging in a temporary directory."
+    },
+    "setup": {
+      "es": "@SpringBootTest + MockMvc multipart; el trabajo corre en el executor real y se sondea hasta COMPLETED/FAILED (espera acotada); el oráculo lee el JSON persistido.",
+      "en": "@SpringBootTest + MockMvc multipart; the job runs on the real executor and is polled until COMPLETED/FAILED (bounded wait); the oracle reads the persisted JSON."
+    },
+    "executes": {
+      "es": "POST /analysis-jobs, GET /analysis-jobs/{id} y POST /analysis-jobs/{id}/import con importadores reales de Ecore, JSON neutro y PlantUML.",
+      "en": "POST /analysis-jobs, GET /analysis-jobs/{id} and POST /analysis-jobs/{id}/import with real Ecore, neutral JSON and PlantUML importers."
+    },
+    "asserts": {
+      "es": "El análisis propone el metamodelo sin persistir nada; tras confirmar el JSON en disco contiene las clases esperadas; importar sobre un id existente da 409 y deja el fichero igual, con overwrite=true lo reemplaza; strict=true bloquea una reconstrucción con pérdida.",
+      "en": "Analysis proposes the metamodel without persisting anything; after confirming, the JSON on disk holds the expected classes; importing over an existing id gives 409 and leaves the file unchanged, with overwrite=true it replaces it; strict=true blocks a lossy reconstruction."
+    },
+    "behavior": {
+      "es": "Un metamodelo se puede importar desde un fichero: se analiza, se revisa la propuesta y solo al confirmar se guarda; la estrategia decide si se sobrescribe o se bloquea una pérdida de información.",
+      "en": "A metamodel can be imported from a file: it is analysed, the proposal is reviewed and only on confirmation is it saved; the strategy decides whether to overwrite or block information loss."
+    },
+    "rule": {
+      "es": "Sin confirmar no se persiste nada; un id existente solo se reemplaza con overwrite; el modo estricto rechaza las pérdidas semánticas.",
+      "en": "Nothing is persisted without confirmation; an existing id is only replaced with overwrite; strict mode rejects semantic loss."
+    },
+    "scenario": {
+      "es": "Subir un .ecore (autodetectado), JSON y PlantUML, esperar el análisis, comprobar el disco, confirmar, reimportar sobre el mismo id con y sin overwrite, y un PlantUML en modo estricto y no estricto.",
+      "en": "Upload an .ecore (auto-detected), JSON and PlantUML, wait for the analysis, check disk, confirm, reimport over the same id with and without overwrite, and a PlantUML in strict and non-strict mode."
+    },
+    "result": {
+      "es": "Tres formatos importados y verificados en disco, 409 sin overwrite, reemplazo con overwrite, trabajo FAILED en modo estricto y COMPLETED con advertencia en modo normal.",
+      "en": "Three formats imported and verified on disk, 409 without overwrite, replacement with overwrite, FAILED job in strict mode and COMPLETED with a warning otherwise."
+    },
+    "expected": {
+      "es": "Estados de trabajo, HTTP, advertencias y contenido de los ficheros coinciden en los cinco escenarios.",
+      "en": "Job states, HTTP, warnings and file contents match in the five scenarios."
+    },
+    "guarantee": {
+      "es": "Evidencia real de la importación de punta a punta por HTTP para tres formatos representativos.",
+      "en": "Real end-to-end evidence of import over HTTP for three representative formats."
+    },
+    "limits": {
+      "es": "Solo Ecore, JSON y PlantUML de los 18 formatos permitidos (sql-ddl no está habilitado en la configuración); sin Java, Markdown ni directorios; la elección de formato en el diálogo es UI.",
+      "en": "Only Ecore, JSON and PlantUML of the 18 allowed formats (sql-ddl is not enabled by configuration); no Java, Markdown or directories; picking the format in the dialog is UI."
+    },
+    "strengthWhy": {
+      "es": "Pipeline real (staging, trabajo asíncrono, importadores, persistencia), oráculo en disco y casos negativos reales.",
+      "en": "Real pipeline (staging, asynchronous job, importers, persistence), on-disk oracle and real negative cases."
+    },
+    "cases": [
+      {
+        "n": "existingIdConflictsWithoutOverwriteAndIsReplacedWithOverwrite",
+        "scenario": {
+          "es": "Reimportar sobre un id existente.",
+          "en": "Reimport over an existing id."
+        },
+        "result": {
+          "es": "409 sin overwrite; reemplazo con overwrite.",
+          "en": "409 without overwrite; replacement with overwrite."
+        }
+      },
+      {
+        "n": "strictModeBlocksLossyReconstruction",
+        "scenario": {
+          "es": "PlantUML (siempre con avisos IMPORT_LOSSY), strict true/false.",
+          "en": "PlantUML (always with IMPORT_LOSSY warnings), strict true/false."
+        },
+        "result": {
+          "es": "FAILED con mensaje estricto; COMPLETED con aviso IMPORT_LOSSY.",
+          "en": "FAILED with strict message; COMPLETED with IMPORT_LOSSY warning."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/MetamodelImportHttpPipelineIntegrationTests.java",
+        "line": 88
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/MetamodelImportHttpPipelineIntegrationTests.java",
+        "line": 143
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/MetamodelImportHttpPipelineIntegrationTests.java",
+        "line": 154
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/MetamodelImportHttpPipelineIntegrationTests.java",
+        "line": 173
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/MetamodelImportHttpPipelineIntegrationTests.java",
+        "line": 198
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/importing/MetamodelImportHttpPipelineIntegrationTests.java",
+        "line": 214
+      }
+    ]
+  }
+]

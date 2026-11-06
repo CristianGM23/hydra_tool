@@ -2,9 +2,12 @@ package com.example.editor.metamodel.adapter.ecore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -41,6 +44,8 @@ import com.example.editor.metamodel.importing.canonicalization.EcoreImportMetada
 
 /** Reads an EMF EPackage into HYDRA's neutral metamodel. */
 final class EcoreProjectionReader {
+    /** Anotación de una clase abstracta que en Ecore era una interfaz (ver adaptStructuralInterfaces). */
+    static final String DECLARED_INTERFACE = "ecore:declaredInterface";
     private final EcoreAdapterProperties properties;
     private final EcorePrimitiveTypeRegistry primitiveTypeRegistry;
 
@@ -60,6 +65,8 @@ final class EcoreProjectionReader {
         List<MetaDataType> dataTypes = readDataTypes(ePackage, dataTypeIds);
         List<MetaClass> classes = readClasses(ePackage, enumIds, dataTypeIds, classIds, warnings);
         List<MetaRelation> relations = readRelations(ePackage, classIds, referenceIds, storedRelations, warnings);
+        classes = adaptStructuralInterfaces(classes, relations, warnings);
+        relations = normalizeGeneralizations(classes, relations);
         String fallbackId = removeExtension(artifactName);
         String metamodelId = EcoreDesignIdSupport.readId(ePackage, fallbackId);
         String packageName = safeText(ePackage.getName(), fallbackId);
@@ -124,13 +131,16 @@ final class EcoreProjectionReader {
                     MetaTypeReference type = resolveTypeReference(attribute, enumIds, dataTypeIds, warnings);
                     Multiplicity multiplicity = fromEcoreBounds(attribute.getLowerBound(), attribute.getUpperBound());
                     String defaultValue = attribute.getDefaultValueLiteral() == null ? "" : attribute.getDefaultValueLiteral();
-                    attributes.add(new MetaAttribute(attributeId, attribute.getName(), type, multiplicity, attribute.isOrdered(), attribute.isUnique(), defaultValue, EcoreImportMetadata.attribute(readAnnotations(attribute), attribute.isChangeable())));
+                    attributes.add(new MetaAttribute(attributeId, attribute.getName(), type, multiplicity, attribute.isOrdered(), attribute.isUnique(), defaultValue, EcoreImportMetadata.attribute(readAnnotations(attribute), attribute.isChangeable(), attribute.isTransient(), attribute.isVolatile(), attribute.isDerived(), attribute.isUnsettable(), attribute.isID())));
                 }
 
                 List<MetaOperation> operations = new ArrayList<>();
+                Set<String> operationIds = new HashSet<>();
                 for(EOperation operation : eClass.getEOperations()) {
                     String classId = classIds.get(eClass);
-                    String operationId = EcoreDesignIdSupport.readId(operation, "operation:" + classId + ":" + normalizeName(operation.getName()));
+                    // Ecore allows overloads (Ecore.ecore: EClass.getEStructuralFeature(int) and (String)); later overloads get :2, :3... in declaration order
+                    String operationId = EcoreDesignIdSupport.readId(operation, uniqueId("operation:" + classId + ":" + normalizeName(operation.getName()), operationIds));
+                    operationIds.add(operationId);
                     List<MetaParameter> parameters = new ArrayList<>();
                     for(EParameter parameter : operation.getEParameters()) {
                         String parameterId = EcoreDesignIdSupport.readId(parameter, "parameter:" + operationId + ":" + normalizeName(parameter.getName()));
@@ -197,7 +207,7 @@ final class EcoreProjectionReader {
                     }
                 }
 
-                MetaRelation relation = new MetaRelation(referenceId, reference.getName(), sourceId, targetId, kind, sourceMultiplicity, fromEcoreBounds(reference.getLowerBound(), reference.getUpperBound()), oppositeId, reference.isOrdered(), reference.isUnique(), EcoreImportMetadata.relation(annotations, reference.isChangeable(), reference.isResolveProxies()));
+                MetaRelation relation = new MetaRelation(referenceId, reference.getName(), sourceId, targetId, kind, sourceMultiplicity, fromEcoreBounds(reference.getLowerBound(), reference.getUpperBound()), oppositeId, reference.isOrdered(), reference.isUnique(), EcoreImportMetadata.relation(annotations, reference.isChangeable(), reference.isResolveProxies(), reference.isTransient(), reference.isVolatile(), reference.isDerived(), reference.isUnsettable()));
                 result.add(relation);
             }
 
@@ -235,6 +245,70 @@ final class EcoreProjectionReader {
             }
         }
 
+        return List.copyOf(result);
+    }
+
+    /** Descripción: Devuelve base, o base:2, base:3... la primera que no esté usada. Entradas: base: dato de entrada necesario para la operación; used: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
+    String uniqueId(String base, Set<String> used) {
+        String candidate = base;
+        for(int index = 2; used.contains(candidate); index++) candidate = base + ":" + index;
+        return candidate;
+    }
+
+    /**
+     * Descripción: Ecore permite que una referencia apunte a una interfaz; el metamodelo neutral no (STRUCTURAL_RELATION_TO_INTERFACE). Aplica la
+     * política declarada STRUCTURAL_INTERFACE_TO_ABSTRACT_CLASS de los demás importadores: la interfaz pasa a clase abstracta anotada (y con ella
+     * las interfaces que la extienden), con un aviso por clase; la exportación a Ecore restaura interface="true" a partir de la anotación.
+     * Entradas: classes: dato de entrada necesario para la operación; relations: dato de entrada necesario para la operación; warnings: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método.
+     */
+    List<MetaClass> adaptStructuralInterfaces(List<MetaClass> classes, List<MetaRelation> relations, List<TransformationWarning> warnings) {
+        Map<String, MetaClassKind> kinds = new HashMap<>();
+        classes.forEach(value -> kinds.put(value.id(), value.kind()));
+        Set<String> adapted = new LinkedHashSet<>();
+        for(MetaRelation relation : relations) {
+            boolean structural = relation.kind() == MetaRelationKind.REFERENCE || relation.kind() == MetaRelationKind.CONTAINMENT || relation.kind() == MetaRelationKind.AGGREGATION;
+            if(structural && kinds.get(relation.targetTypeId()) == MetaClassKind.INTERFACE) adapted.add(relation.targetTypeId());
+        }
+        boolean changed = !adapted.isEmpty();
+        while(changed) {
+            changed = false;
+            for(MetaRelation relation : relations) {
+                boolean generalization = relation.kind() == MetaRelationKind.INHERITANCE || relation.kind() == MetaRelationKind.IMPLEMENTATION;
+                if(generalization && adapted.contains(relation.targetTypeId()) && kinds.get(relation.sourceTypeId()) == MetaClassKind.INTERFACE) changed |= adapted.add(relation.sourceTypeId());
+            }
+        }
+        if(adapted.isEmpty()) return classes;
+        List<MetaClass> result = new ArrayList<>();
+        for(MetaClass value : classes) {
+            if(!adapted.contains(value.id())) {
+                result.add(value);
+                continue;
+            }
+            Map<String, String> annotations = new LinkedHashMap<>(value.annotations());
+            annotations.put(DECLARED_INTERFACE, "true");
+            annotations.put("hydra:semanticAdaptation", "STRUCTURAL_INTERFACE_TO_ABSTRACT_CLASS");
+            result.add(new MetaClass(value.id(), value.name(), MetaClassKind.ABSTRACT_CLASS, value.attributes(), value.operations(), annotations));
+            warnings.add(new TransformationWarning("ECORE_STRUCTURAL_INTERFACE_ADAPTED", "$.classes[" + value.id() + "]",
+                    "Ecore interface " + value.name() + " was represented as an abstract class because HYDRA structural relations cannot target interfaces; the Ecore export restores it as an interface"));
+        }
+        return List.copyOf(result);
+    }
+
+    /** Descripción: Un supertipo es IMPLEMENTATION solo de una clase hacia una interfaz; entre dos interfaces o dos clases es INHERITANCE. Entradas: classes: dato de entrada necesario para la operación; relations: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
+    List<MetaRelation> normalizeGeneralizations(List<MetaClass> classes, List<MetaRelation> relations) {
+        Map<String, MetaClassKind> kinds = new HashMap<>();
+        classes.forEach(value -> kinds.put(value.id(), value.kind()));
+        List<MetaRelation> result = new ArrayList<>();
+        for(MetaRelation relation : relations) {
+            if(relation.kind() != MetaRelationKind.INHERITANCE && relation.kind() != MetaRelationKind.IMPLEMENTATION) {
+                result.add(relation);
+                continue;
+            }
+            boolean implementation = kinds.get(relation.targetTypeId()) == MetaClassKind.INTERFACE && kinds.get(relation.sourceTypeId()) != MetaClassKind.INTERFACE;
+            MetaRelationKind kind = implementation ? MetaRelationKind.IMPLEMENTATION : MetaRelationKind.INHERITANCE;
+            result.add(kind == relation.kind() ? relation : new MetaRelation(relation.id(), relation.name(), relation.sourceTypeId(), relation.targetTypeId(), kind,
+                    relation.sourceMultiplicity(), relation.targetMultiplicity(), relation.oppositeRelationId(), relation.ordered(), relation.unique(), relation.annotations()));
+        }
         return List.copyOf(result);
     }
 

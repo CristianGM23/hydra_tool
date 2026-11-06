@@ -15,6 +15,7 @@ import com.example.editor.grammar.core.GrammarDefinitionModel;
 import com.example.editor.grammar.core.GrammarSemanticBindingMap;
 import com.example.editor.grammar.core.GrammarSourceDocument;
 import com.example.editor.grammar.core.GrammarTechnology;
+import com.example.editor.grammar.diagnostic.GrammarTextEdit;
 
 class GrammarSourceAnalyzerLexicalIsolationTests {
 
@@ -30,6 +31,7 @@ class GrammarSourceAnalyzerLexicalIsolationTests {
         var result = analyze(source);
 
         assertThat(result.diagnostics()).isEmpty();
+        assertThat(result.hasErrors()).isFalse();
         assertThat(result.symbols()).noneMatch(symbol -> symbol.kind().equals("CROSS_REFERENCE"));
         assertThat(result.symbols()).noneMatch(symbol -> symbol.name().equals("_a") || symbol.name().equals("w_"));
     }
@@ -45,8 +47,45 @@ class GrammarSourceAnalyzerLexicalIsolationTests {
 
         assertThat(result.diagnostics()).anyMatch(diagnostic -> diagnostic.code().startsWith("REFERENCE_")
                 && diagnostic.message().contains("Missing"));
+        assertThat(result.hasErrors()).isTrue();
         assertThat(result.diagnostics()).noneMatch(diagnostic -> diagnostic.message().contains("_a")
                 || diagnostic.message().contains("w_"));
+    }
+
+    @Test
+    void anUnresolvedReferenceWithARealCandidateAnalysesCleanAfterApplyingItsOwnRealCodeAction() {
+        String source = """
+                grammar Main
+                entry Model: elements+=Elemant*;
+                Element: 'element' name=ID;
+                hidden terminal WS: /\\s+/;
+                terminal ID: /[_a-zA-Z][\\w_]*/;
+                """;
+        var result = analyze(source);
+
+        assertThat(result.hasErrors()).isTrue();
+        assertThat(result.diagnostics()).anyMatch(diagnostic -> diagnostic.code().equals("REFERENCE_NOT_FOUND")
+                && diagnostic.message().contains("Elemant"));
+        assertThat(result.codeActions()).isNotEmpty();
+        GrammarTextEdit edit = result.codeActions().get(0).edits().get(0);
+        assertThat(edit.replacement()).isEqualTo("Element");
+
+        String corrected = applyEdit(source, edit);
+        var reanalyzed = analyze(corrected);
+
+        assertThat(reanalyzed.hasErrors()).isFalse();
+        assertThat(reanalyzed.diagnostics()).isEmpty();
+    }
+
+    private static String applyEdit(String source, GrammarTextEdit edit) {
+        String[] lines = source.split("\n", -1);
+        int startOffset = 0;
+        for (int i = 0; i < edit.range().start().line(); i++) startOffset += lines[i].length() + 1;
+        startOffset += edit.range().start().column();
+        int endOffset = 0;
+        for (int i = 0; i < edit.range().end().line(); i++) endOffset += lines[i].length() + 1;
+        endOffset += edit.range().end().column();
+        return source.substring(0, startOffset) + edit.replacement() + source.substring(endOffset);
     }
 
 

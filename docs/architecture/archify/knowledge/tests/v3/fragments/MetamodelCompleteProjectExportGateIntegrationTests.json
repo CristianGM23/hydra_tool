@@ -1,0 +1,140 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.export.project.MetamodelCompleteProjectExportGateIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Puerta de generación de proyectos: marca de validez vigente antes de exportar",
+      "en": "Project generation gate: current validity mark before exporting"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "layers2": [
+      "definition"
+    ],
+    "caps": [
+      "metamodel"
+    ],
+    "procs": [
+      {
+        "id": "metamodel_export_generate",
+        "stages": [
+          "chk",
+          "d1",
+          "fix"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "metamodel_export_generate",
+        "stages": [
+          "gen"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/metamodel/export/project/MetamodelCompleteProjectExportService.java",
+      "src/main/java/com/example/editor/metamodel/web/MetamodelProjectExportController.java",
+      "src/main/java/com/example/editor/metamodel/validation/MetamodelValidationApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/validation/MetamodelValidationReceiptStore.java",
+      "src/main/java/com/example/editor/metamodel/export/project/MetamodelProjectArtifactAssembler.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring completo con directorios y raíz de recibos en un directorio temporal.",
+      "en": "Full Spring context with directories and the receipt root in a temporary directory."
+    },
+    "setup": {
+      "es": "@SpringBootTest + MockMvc y @DynamicPropertySource hacia @TempDir; el ZIP se abre con java.util.zip y los recibos se leen del disco.",
+      "en": "@SpringBootTest + MockMvc and @DynamicPropertySource to @TempDir; the ZIP is opened with java.util.zip and receipts are read from disk."
+    },
+    "executes": {
+      "es": "POST /api/metamodels/{id}/project-exports/emf-eclipse y validation/run con el servicio de exportación, el compilador tecnológico y el almacén de recibos reales.",
+      "en": "POST /api/metamodels/{id}/project-exports/emf-eclipse and validation/run with the real export service, technology compiler and receipt store."
+    },
+    "asserts": {
+      "es": "Sin validación previa el export da 400 'requires a successful current metamodel validation'; tras validar da 200 con ZIP y evidencia de la puerta; guardar no renueva el recibo (bytes iguales) y el export se rechaza por obsoleto; revalidar lo habilita; un metamodelo con errores no queda listo.",
+      "en": "Without prior validation the export gives 400 'requires a successful current metamodel validation'; after validating it gives 200 with a ZIP and gate evidence; saving does not renew the receipt (same bytes) and export is rejected as obsolete; revalidating enables it; a metamodel with errors is never ready."
+    },
+    "behavior": {
+      "es": "Solo se puede generar un proyecto completo si el metamodelo tiene una validación satisfactoria y vigente; cualquier cambio posterior exige validar otra vez.",
+      "en": "A complete project can only be generated if the metamodel has a successful and current validation; any later change requires validating again."
+    },
+    "rule": {
+      "es": "La marca de validez se renueva al validar lo guardado, no al guardar; un cambio la deja obsoleta y los errores bloqueantes impiden generar.",
+      "en": "The validity mark is renewed by validating the stored metamodel, not by saving; a change makes it obsolete and blocking errors prevent generation."
+    },
+    "scenario": {
+      "es": "Guardar un metamodelo válido y exportar sin validar, validar y exportar, modificar y guardar, exportar, revalidar y exportar, y un metamodelo con errores.",
+      "en": "Save a valid metamodel and export without validating, validate and export, modify and save, export, revalidate and export, and a metamodel with errors."
+    },
+    "result": {
+      "es": "Rechazos 400 con el motivo exacto, ZIP válido con evidencia de la puerta tras validar, recibo sin cambios tras guardar y huella nueva tras revalidar.",
+      "en": "400 rejections with the exact reason, valid ZIP with gate evidence after validating, receipt unchanged after saving and new fingerprint after revalidating."
+    },
+    "expected": {
+      "es": "Estados HTTP, mensajes, bytes del recibo y entradas del ZIP coinciden en los cuatro escenarios.",
+      "en": "HTTP statuses, messages, receipt bytes and ZIP entries match in the four scenarios."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la generación de proyectos está condicionada a una validación vigente.",
+      "en": "Real evidence that project generation is conditioned on a current validation."
+    },
+    "limits": {
+      "es": "Solo el proveedor emf-eclipse y solo se inspeccionan las entradas de evidencia del ZIP, no el contenido completo del proyecto generado (etapa gen, indirecta).",
+      "en": "Only the emf-eclipse provider, and only the ZIP's evidence entries are inspected, not the full generated project content (gen stage, indirect)."
+    },
+    "strengthWhy": {
+      "es": "Servicios, recibos y compilador reales por HTTP, oráculo independiente (recibo y ZIP leídos aparte) y rechazos reales.",
+      "en": "Real services, receipts and compiler over HTTP, independent oracle (receipt and ZIP read separately) and real rejections."
+    },
+    "cases": [
+      {
+        "n": "saveAloneDoesNotRenewTheReceiptButValidateStoredDoes",
+        "scenario": {
+          "es": "Modificar y guardar tras validar.",
+          "en": "Modify and save after validating."
+        },
+        "result": {
+          "es": "Recibo igual, export 400; tras revalidar, huella nueva y export 200.",
+          "en": "Same receipt, export 400; after revalidating, new fingerprint and export 200."
+        }
+      },
+      {
+        "n": "metamodelWithErrorsNeverEnablesGeneration",
+        "scenario": {
+          "es": "Documento con ciclo de herencia en disco.",
+          "en": "Document with inheritance cycle on disk."
+        },
+        "result": {
+          "es": "valid=false, generationReady=false y export 400.",
+          "en": "valid=false, generationReady=false and export 400."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/metamodel/export/project/MetamodelCompleteProjectExportGateIntegrationTests.java",
+        "line": 117
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/export/project/MetamodelCompleteProjectExportGateIntegrationTests.java",
+        "line": 136
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/export/project/MetamodelCompleteProjectExportGateIntegrationTests.java",
+        "line": 159
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/export/project/MetamodelCompleteProjectExportGateIntegrationTests.java",
+        "line": 171
+      },
+      {
+        "path": "src/test/java/com/example/editor/metamodel/export/project/MetamodelCompleteProjectExportGateIntegrationTests.java",
+        "line": 203
+      }
+    ]
+  }
+]

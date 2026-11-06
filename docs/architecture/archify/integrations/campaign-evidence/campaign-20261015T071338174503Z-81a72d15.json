@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-15T07:13:38+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261015-091248",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "192c509554769051ed2a5345558d6903c78e910a4dc75d3e4c97f564169ec6a9",
+  "reportCheckpointName": "0024-01792048417208899500-a766e8bde00c461cb25852517d3558f3.json",
+  "testResults": [
+    {
+      "id": "S013",
+      "title": "No visual release/schema versions",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.84,
+      "logSha256": "4ee0715efd5c88ba87321c59c866dae41b685e15b43260b7bc6c17af56c3c9c0",
+      "logRelativePath": "logs/S013.log"
+    },
+    {
+      "id": "S014",
+      "title": "P0/P1 product contracts",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.43,
+      "logSha256": "d13ac776633434294d995a05983b531c5bcba4685cd5350d8278f7555f41e9ff",
+      "logRelativePath": "logs/S014.log"
+    },
+    {
+      "id": "S015",
+      "title": "Core metamodel contracts",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.14,
+      "logSha256": "e7cfd88287277bf9e16fb82ea3d9be307da7872c5b3964319898424e0ba61303",
+      "logRelativePath": "logs/S015.log"
+    },
+    {
+      "id": "S016",
+      "title": "Expression capability",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.31,
+      "logSha256": "9ba5b568512ebb30afc04c32f548721476331a5252303778974bc3eabd5c109b",
+      "logRelativePath": "logs/S016.log"
+    },
+    {
+      "id": "S017",
+      "title": "Validation capability",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 1.22,
+      "logSha256": "0bc4c42b9fb21193246564a9d9e61c59810466cf9eb17438b48499e9574163f3",
+      "logRelativePath": "logs/S017.log"
+    },
+    {
+      "id": "S020",
+      "title": "Validation help and accessibility",
+      "group": "a11y",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.26,
+      "logSha256": "1a70fcd9e8e49d3df3f5fc51819611cbeb3eedb96a2da17eb4d8df94a2cb74ad",
+      "logRelativePath": "logs/S020.log"
+    },
+    {
+      "id": "S021",
+      "title": "Operations core",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.33,
+      "logSha256": "ec31bf9ed6f99f0e5e36afd73a56aaae007257edc21d9ee2eee83580c304b8f1",
+      "logRelativePath": "logs/S021.log"
+    },
+    {
+      "id": "S022",
+      "title": "Operations persistence/runtime",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.25,
+      "logSha256": "ab320c7beec6d0a0481dfffba4c50a0abb5d6b41f0695879ebba50301ade0f9c",
+      "logRelativePath": "logs/S022.log"
+    },
+    {
+      "id": "S024",
+      "title": "GLSP/Eclipse transactional runtime lifecycle",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 7.35,
+      "logSha256": "a3eb242bbe6ab04400e91a62b3122d53663e5a150d8dab34c224fd9e9336417e",
+      "logRelativePath": "logs/S024.log"
+    },
+    {
+      "id": "S025",
+      "title": "Xtext/Langium transactional runtime lifecycle",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 9.01,
+      "logSha256": "4c6278d7b28c72ea56c23a41d7c039dce4f6aa0fcd06ad4d95666c6d83f5f580",
+      "logRelativePath": "logs/S025.log"
+    },
+    {
+      "id": "S026",
+      "title": "Sirius transactional runtime lifecycle",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 5.01,
+      "logSha256": "ffee233773e01496190761c02a7a3c9a10037debd81e314157eed5a2106549f0",
+      "logRelativePath": "logs/S026.log"
+    },
+    {
+      "id": "S027",
+      "title": "EMF transactional runtime lifecycle",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 4.3,
+      "logSha256": "a3b560d238afe31ed69a1b0ef6edeaab1ac9ab3b439dc01ef02a0dfb991744a6",
+      "logRelativePath": "logs/S027.log"
+    },
+    {
+      "id": "S028",
+      "title": "Portable host transactional runtime lifecycle",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.38,
+      "logSha256": "4f46479a4aad954395566d08e2c4476843716b33cbf4a525a94079192c3acbe4",
+      "logRelativePath": "logs/S028.log"
+    },
+    {
+      "id": "S029",
+      "title": "Generated portable host project lifecycle suites",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 6.9,
+      "logSha256": "6df710fa014268f264bede44d4debffa155f64f74ad7877d97c1336e1cf7aa82",
+      "logRelativePath": "logs/S029.log"
+    },
+    {
+      "id": "S030",
+      "title": "mxGraph/draw.io injectable",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 2.9,
+      "logSha256": "43859a9d432e81ff3b1c04446852ce719a09628ca92242cf9104387d96d327e9",
+      "logRelativePath": "logs/S030.log"
+    },
+    {
+      "id": "S031",
+      "title": "Editor runtime capability",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.23,
+      "logSha256": "ad1aa8896bce0f47aa4250e75665dda04836b8e09ea640598ed298992ca802dd",
+      "logRelativePath": "logs/S031.log"
+    },
+    {
+      "id": "S034",
+      "title": "Reported semantic/frontend test contracts",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.22,
+      "logSha256": "c44af294bd3f2a891f622e9f7b29e3bae12c094d0913aef4707727e36647e1f2",
+      "logRelativePath": "logs/S034.log"
+    },
+    {
+      "id": "S035",
+      "title": "Model editor React Flow selection-loop closure",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.19,
+      "logSha256": "6fcffde0b9fb92cd0e22c15182bbbdc08e6ecedfe2322a2814e2177415f564f9",
+      "logRelativePath": "logs/S035.log"
+    },
+    {
+      "id": "S036",
+      "title": "Editor definition Vitest timeout budget",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.22,
+      "logSha256": "89aa33ca28f5ad7b235d4432a620d65c1ac48190b13003da1a636f1c8f76da11",
+      "logRelativePath": "logs/S036.log"
+    },
+    {
+      "id": "S037",
+      "title": "Semantic runtime execution closure",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.39,
+      "logSha256": "09cc50776f707f8eada39a69f65e3e9af9c40ea23e0eee94f6de0f77f1fa2f1e",
+      "logRelativePath": "logs/S037.log"
+    },
+    {
+      "id": "S038",
+      "title": "Semantic export and audit closure",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.37,
+      "logSha256": "9f67c6d0d19923b3136f0bcac5acd1b6c6639d6577374b8719cf9552d2adfc8a",
+      "logRelativePath": "logs/S038.log"
+    },
+    {
+      "id": "S039",
+      "title": "Events and editor definitions",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.64,
+      "logSha256": "fdaa879331689840697f560795f239ef0f7470a5f57f32c0b2cfa0295a5ee8c2",
+      "logRelativePath": "logs/S039.log"
+    },
+    {
+      "id": "S040",
+      "title": "Editor definition classpath resources",
+      "group": "backend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.21,
+      "logSha256": "11b1fa120e3e8a7a9819d3b656fc0adc95e1ee1d99e67e653f6d873bba27c99e",
+      "logRelativePath": "logs/S040.log"
+    },
+    {
+      "id": "S041",
+      "title": "Unified designer UI",
+      "group": "frontend",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 0.29,
+      "logSha256": "756b949ae4a68bf6179ae6ebfc99538733f90589c4d9f1fc9a229cc018e79dc5",
+      "logRelativePath": "logs/S041.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

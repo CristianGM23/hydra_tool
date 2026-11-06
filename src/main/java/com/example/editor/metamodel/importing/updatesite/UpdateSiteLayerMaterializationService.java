@@ -30,6 +30,7 @@ import com.example.editor.metamodel.application.CanonicalMetamodelApplicationSer
 import com.example.editor.metamodel.core.MetaClass;
 import com.example.editor.metamodel.core.MetaClassKind;
 import com.example.editor.metamodel.core.MetaModel;
+import com.example.editor.metamodel.design.MetamodelDiagramStorageService;
 import com.example.editor.project.recovery.ExternalProjectMaterializationResult;
 import com.example.editor.project.recovery.ExternalProjectSemanticMaterializationService;
 import com.example.editor.validation.action.ActionModelApplicationException;
@@ -51,6 +52,18 @@ public class UpdateSiteLayerMaterializationService {
     private final ValidationModelApplicationService validationService;
     private final ActionModelApplicationService actionService;
     private final ExpressionModelApplicationService expressionService;
+    private final MetamodelDiagramStorageService diagramStorage;
+
+    /** Constructor de compatibilidad sin almacén de diagramas: la limpieza no elimina el diagrama del metamodelo. */
+    /** Descripción: Inicializa una instancia de UpdateSiteLayerMaterializationService sin almacén de diagramas. Entradas: importService, checker, editorService, metamodelService, archiveReader, externalMaterialization, validationService, actionService y expressionService: colaboradores de la operación. Salida: deja la instancia inicializada y lista para su uso. */ public UpdateSiteLayerMaterializationService(UpdateSiteImportApplicationService importService,
+            EditorDefinitionChecker checker, EditorDefinitionApplicationService editorService,
+            CanonicalMetamodelApplicationService metamodelService, UpdateSiteArchiveReader archiveReader,
+            ExternalProjectSemanticMaterializationService externalMaterialization,
+            ValidationModelApplicationService validationService, ActionModelApplicationService actionService,
+            ExpressionModelApplicationService expressionService) {
+        this(importService, checker, editorService, metamodelService, archiveReader, externalMaterialization,
+                validationService, actionService, expressionService, null);
+    }
 
     @Autowired
     /** Inicializa el materializador con el pipeline profundo compartido por las importaciones externas. */
@@ -59,7 +72,8 @@ public class UpdateSiteLayerMaterializationService {
             CanonicalMetamodelApplicationService metamodelService, UpdateSiteArchiveReader archiveReader,
             ExternalProjectSemanticMaterializationService externalMaterialization,
             ValidationModelApplicationService validationService, ActionModelApplicationService actionService,
-            ExpressionModelApplicationService expressionService) {
+            ExpressionModelApplicationService expressionService, MetamodelDiagramStorageService diagramStorage) {
+        this.diagramStorage = diagramStorage;
         this.importService = importService;
         this.checker = checker;
         this.editorService = editorService;
@@ -122,7 +136,8 @@ public class UpdateSiteLayerMaterializationService {
                         editorId, loaded.etag(), true, true, diagnostics);
             }
             if(rich != null && requiresDeepVisualFidelity(analysis, request.selection())) {
-                throw new IllegalStateException("Selected Sirius/GMF/GLSP visual definitions could not be materialized with full fidelity; HYDRA refused to replace them with a lossy generic editor");
+                // Rechazo de negocio previsible (la petición no puede materializarse sin pérdida): 400 INVALID_REQUEST, no 500.
+                throw new IllegalArgumentException("Selected Sirius/GMF/GLSP visual definitions could not be materialized with full fidelity; HYDRA refused to replace them with a lossy generic editor");
             }
 
             // Fallback solo para formatos neutrales que todavía no tienen adaptador profundo.
@@ -167,6 +182,10 @@ public class UpdateSiteLayerMaterializationService {
         deleteValidationIfPresent(metamodelId, diagnostics, failures);
         deleteActionIfPresent(metamodelId, diagnostics, failures);
         deleteExpressionIfPresent(metamodelId, diagnostics, failures);
+        if(diagramStorage != null) {
+            try { diagramStorage.delete(metamodelId); diagnostics.add("Removed imported metamodel diagram."); }
+            catch(RuntimeException exception) { failures.add(exception); diagnostics.add("Metamodel diagram rollback failed: " + exception.getMessage()); }
+        }
 
         try {
             metamodelService.delete(metamodelId, metamodelEtag);
@@ -292,19 +311,21 @@ public class UpdateSiteLayerMaterializationService {
             String representationId = safe("representation:" + draft.id());
             List<NodeMapping> nodes = new ArrayList<>();
             Set<String> mappedClassIds = new LinkedHashSet<>();
+            // Los mappings de nodo son únicos en todo el editor: con varias representaciones se califican con la representación.
+            String scope = effectiveRepresentations.size() > 1 ? draft.id() + ":" : "";
             for(UpdateSiteMappingDraft mapping : mappingDrafts) {
                 if(mapping.mappingKind().toLowerCase(Locale.ROOT).contains("edge")) continue;
                 MetaClass target = resolveClass(classes, mapping.semanticElement());
                 if(target == null) continue;
-                if(mappedClassIds.add(target.id())) nodes.add(nodeMapping(mapping.id(), target, mapping));
+                if(mappedClassIds.add(target.id())) nodes.add(nodeMapping(scope + mapping.id(), target, mapping));
             }
             for(String root : draft.rootElements()) {
                 MetaClass target = resolveClass(classes, root);
-                if(target != null && mappedClassIds.add(target.id())) nodes.add(nodeMapping("root:" + target.id(), target, null));
+                if(target != null && mappedClassIds.add(target.id())) nodes.add(nodeMapping(scope + "root:" + target.id(), target, null));
             }
             if(nodes.isEmpty()) {
                 metamodel.classes().stream().filter(value -> value.kind() == MetaClassKind.CLASS).limit(30)
-                        .forEach(value -> nodes.add(nodeMapping("auto:" + value.id(), value, null)));
+                        .forEach(value -> nodes.add(nodeMapping(scope + "auto:" + value.id(), value, null)));
             }
             List<String> representationToolIds = toolRepresentation.entrySet().stream().filter(item -> item.getValue().equals(representationId)).map(Map.Entry::getKey).toList();
             representations.add(new RepresentationDefinition(representationId, draft.name(), representationKind(draft.kind()),

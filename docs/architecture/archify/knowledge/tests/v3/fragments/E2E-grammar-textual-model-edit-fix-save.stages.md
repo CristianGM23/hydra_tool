@@ -1,0 +1,6 @@
+- grammar_author_textmodel.ex y x_grammar_to_text_model.ses: el editor abre con el ejemplo derivado de la gramática y 'New session' arranca una sesión real con ese texto.
+- grammar_author_textmodel.wr y grammar_textual_editing.wr: el texto tecleado llega a la sesión del servidor con su modelo semántico.
+- grammar_diagnostics_actions.m y grammar_textual_editing.fx (a mano): el token inválido da error con el último modelo válido conservado y promover bloqueado; corregido, sin diagnósticos.
+- grammar_diagnostics_actions.ap: la sugerencia del panel repara el texto y el servidor lo acepta.
+- Promoción (final del test): la sesión servida lleva `draftValid` (corregido con `@JsonProperty` en `TextualModelSession`), la pantalla muestra «validated», habilita «Promote valid model» y el modelo comprometido queda en el servidor y en el fichero. No se reclama ninguna etapa nueva por ello.
+- NO se reclama x_grammar_to_text_model.cont (no hay botón 'abrir en el editor de modelos').

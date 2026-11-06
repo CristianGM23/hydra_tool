@@ -1,0 +1,6 @@
+- recovery_author_wizard.a: la carpeta subida por el usuario es la que el servidor analiza; recuentos de ficheros y candidatos iguales a la llamada directa (línea 51).
+- recovery_author_wizard.b: el plan sin mapeos llega al servidor: su respuesta no trae mapeos y coincide con la llamada directa (líneas 43-46), y la pantalla muestra esos recuentos (líneas 51-53).
+- recovery_author_wizard.f: en la revisión, los candidatos y su evidencia coinciden con el análisis real y el elegido se reanaliza (líneas 59, 83).
+- recovery_author_workspace.a: lista de candidatos con nivel, método, confianza y justificación reales (línea 64 y siguientes).
+- recovery_author_workspace.b: los filtros de texto y confianza dejan tantas filas como la evidencia real (líneas 103, 107, 109).
+- Sin guardado: ningún almacén cambia (línea 116).

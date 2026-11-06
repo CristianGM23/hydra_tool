@@ -1,0 +1,74 @@
+[
+  {
+    "id": "pw:e2e/real/transformation/native-toolchain-compatibility-run.spec.ts",
+    "name": { "es": "Comprobación de herramientas nativas elegida en el asistente, en navegador real", "en": "Native tool check chosen in the wizard, in a real browser" },
+    "type": "END_TO_END",
+    "layer": "platform",
+    "caps": ["toolchains"],
+    "procs": [
+      { "id": "toolchains_author_available", "stages": ["a", "b"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/compatibility-center/NativeCompatibilityCenter.tsx",
+      "frontend/src/compatibility-center/api.ts",
+      "src/main/java/com/example/editor/integration/compatibility/NativeToolchainCompatibilityController.java",
+      "src/main/java/com/example/editor/integration/compatibility/NativeToolchainCompatibilityApplicationService.java",
+      "src/main/java/com/example/editor/integration/compatibility/NativeToolchainProbeCatalog.java"
+    ],
+    "pre": { "es": "Las herramientas del catálogo pueden estar o no instaladas: la prueba no exige ninguna, solo que el resultado quede registrado.", "en": "The catalog tools may or may not be installed: the test requires none, only that the result is recorded." },
+    "executes": {
+      "es": "En un navegador real el usuario abre el centro de compatibilidad en modo guiado, marca todas, las vacía, marca solo una tecnología, pulsa ejecutar las comprobaciones y revisa el resultado.",
+      "en": "In a real browser the user opens the compatibility center in guided mode, selects all, clears them, selects a single technology, presses run and reviews the result."
+    },
+    "asserts": {
+      "es": "Sin ninguna marcada no se puede avanzar; la petición real lleva solo la tecnología marcada; la matriz que devuelve el backend y la guardada en disco contienen únicamente esa tecnología con estado y duración; la pantalla muestra el mismo estado global.",
+      "en": "With none selected one cannot advance; the real request carries only the selected technology; the matrix returned by the backend and the one saved on disk contain only that technology with status and duration; the screen shows the same overall status."
+    },
+    "behavior": {
+      "es": "Al lanzar las comprobaciones, HYDRA ejecuta solo las tecnologías que el usuario marcó y guarda su resultado, que la pantalla muestra.",
+      "en": "When the checks are launched, HYDRA runs only the technologies the user selected and stores their result, which the screen shows."
+    },
+    "rule": {
+      "es": "No se puede continuar sin marcar al menos una comprobación.",
+      "en": "One cannot continue without selecting at least one check."
+    },
+    "scenario": {
+      "es": "Siete tecnologías en el catálogo; se elige solo una y se lanzan las comprobaciones en la máquina que ejecuta la prueba.",
+      "en": "Seven technologies in the catalog; only one is chosen and the checks run on the machine executing the test."
+    },
+    "result": {
+      "es": "El resultado guardado contiene solo la tecnología elegida y la pantalla refleja su estado global.",
+      "en": "The stored result contains only the chosen technology and the screen reflects its overall status."
+    },
+    "expected": {
+      "es": "Petición, matriz del backend, fichero en disco y pantalla coinciden en tecnología y estado.",
+      "en": "Request, backend matrix, file on disk and screen agree on technology and status."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la selección hecha en pantalla es la que se ejecuta y se registra.",
+      "en": "Real evidence that the selection made on screen is the one that is run and recorded."
+    },
+    "limits": {
+      "es": "No exige un resultado concreto (depende de lo instalado), no prueba el modo completo ni las demás tecnologías y el nombre de la tecnología se lee del catálogo del backend.",
+      "en": "It does not require a specific outcome (it depends on what is installed), does not test the full workspace nor the other technologies and the technology name is read from the backend catalog."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción real en navegador, ejecución real de las sondas, lectura independiente de la matriz por API y disco y puerta de selección vacía.",
+      "en": "Real browser action, real execution of the probes, independent reading of the matrix through the API and disk and an empty-selection gate."
+    },
+    "external": "none",
+    "cases": [],
+    "related": ["java:com.example.editor.integration.compatibility.NativeToolchainProbeCatalogTests"],
+    "src": [
+      { "path": "frontend/e2e/real/transformation/native-toolchain-compatibility-run.spec.ts", "line": 23 },
+      { "path": "frontend/e2e/real/transformation/native-toolchain-compatibility-run.spec.ts", "line": 25 },
+      { "path": "frontend/e2e/real/transformation/native-toolchain-compatibility-run.spec.ts", "line": 35 },
+      { "path": "frontend/e2e/real/transformation/native-toolchain-compatibility-run.spec.ts", "line": 40 },
+      { "path": "frontend/e2e/real/transformation/native-toolchain-compatibility-run.spec.ts", "line": 41 },
+      { "path": "frontend/e2e/real/transformation/native-toolchain-compatibility-run.spec.ts", "line": 46 },
+      { "path": "frontend/e2e/real/transformation/native-toolchain-compatibility-run.spec.ts", "line": 52 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

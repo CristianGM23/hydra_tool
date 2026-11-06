@@ -1,0 +1,94 @@
+[
+  {
+    "id": "java:com.example.editor.transformation.textmodel.TransformationTextToModelRealGrammarIntegrationTests",
+    "external": "none",
+    "strength": "MEDIUM",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Vista previa de texto a modelo con una gramática real compilada y activada",
+      "en": "Text-to-model preview with a real compiled and activated grammar"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "layers2": ["definition"],
+    "caps": ["transformation", "grammar"],
+    "procs": [
+      { "id": "transformation_author_text2model", "stages": ["gr", "pt", "ck"], "match": "direct" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/transformation/textmodel/TransformationTextToModelService.java",
+      "src/main/java/com/example/editor/transformation/textmodel/GrammarTransformationTextParserGateway.java",
+      "src/main/java/com/example/editor/grammar/runtime/LastKnownGoodGrammarService.java",
+      "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío; sin herramientas nativas.",
+      "en": "Empty temporary directory; no native tools."
+    },
+    "setup": {
+      "es": "Compilación real de una gramática Langium con activación, servicio de última gramática válida, comprobador de transformaciones y servicio de texto a modelo reales; sin transformación posterior de modelo a modelo.",
+      "en": "Real compilation of a Langium grammar with activation, last-known-good grammar service, transformation checker and text-to-model service; no follow-up model-to-model transformation."
+    },
+    "executes": {
+      "es": "TransformationTextToModelService.preview con una definición de texto a modelo: texto válido, texto inválido, gramática en blanco, gramática sin activar, gramática inexistente y ruta fuera del área permitida.",
+      "en": "TransformationTextToModelService.preview with a text-to-model definition: valid text, invalid text, blank grammar, non-activated grammar, non-existent grammar and a path outside the allowed area."
+    },
+    "asserts": {
+      "es": "El texto válido da elementos alpha y beta, sin diagnósticos y con el identificador del snapshot activo; el inválido da modelo nulo y diagnósticos de error; sin gramática la comprobación bloquea; gramática sin activar o inexistente falla; la ruta en blanco toma model.hydra y una ruta insegura se rechaza.",
+      "en": "Valid text gives elements alpha and beta, no diagnostics and the active snapshot identifier; invalid text gives a null model and error diagnostics; without a grammar the check blocks; a non-activated or non-existent grammar fails; a blank path takes model.hydra and an unsafe path is rejected."
+    },
+    "behavior": {
+      "es": "La vista previa de texto a modelo lee el texto con el snapshot activo de la gramática elegida y devuelve el modelo con sus nodos o los diagnósticos, y falla si la gramática no está asignada o activa.",
+      "en": "The text-to-model preview reads the text with the active snapshot of the chosen grammar and returns the model with its nodes or the diagnostics, and fails if the grammar is not assigned or active."
+    },
+    "rule": {
+      "es": "Sin gramática asignada la comprobación bloquea; sin gramática activa no hay vista previa; un texto inválido no produce modelo.",
+      "en": "Without an assigned grammar the check blocks; without an active grammar there is no preview; invalid text produces no model."
+    },
+    "scenario": {
+      "es": "Compilar y activar una gramática, previsualizar un texto válido y otro inválido, y probar los casos sin gramática, sin activar, inexistente y con ruta insegura.",
+      "en": "Compile and activate a grammar, preview a valid and an invalid text, and try the cases with no grammar, not activated, non-existent and an unsafe path."
+    },
+    "result": {
+      "es": "Modelo con dos nodos para el texto válido; diagnósticos y sin modelo para el inválido; rechazo en los demás casos.",
+      "en": "Model with two nodes for the valid text; diagnostics and no model for the invalid one; rejection in the other cases."
+    },
+    "expected": {
+      "es": "Todos los literales de elementos, diagnósticos y mensajes de rechazo coinciden.",
+      "en": "All literals for elements, diagnostics and rejection messages match."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que el texto a modelo usa el snapshot activo de una gramática compilada y de que sus rechazos funcionan.",
+      "en": "Real evidence that text-to-model uses the active snapshot of a compiled grammar and that its rejections work."
+    },
+    "limits": {
+      "es": "No ejecuta la transformación posterior de modelo a modelo ni la ruta por identificador de definición guardada; la gramática se lee con el analizador neutral, no con el runtime nativo.",
+      "en": "It does not run the follow-up model-to-model transformation or the saved-definition lookup by identifier; the grammar is read with the neutral analyser, not the native runtime."
+    },
+    "strengthWhy": {
+      "es": "Colaboradores reales y literales, pero se ejerce solo una parte de la cadena (sin proyección), por eso queda en medio.",
+      "en": "Real collaborators and literals, but only part of the chain is exercised (no projection), so it stays medium."
+    },
+    "cases": [
+      {
+        "n": "validTextProducesTheSemanticModelFromTheActiveGrammarSnapshot",
+        "scenario": { "es": "Texto válido con gramática activa.", "en": "Valid text with an active grammar." },
+        "result": { "es": "Modelo con alpha y beta y snapshot activo.", "en": "Model with alpha and beta and the active snapshot." }
+      },
+      {
+        "n": "withoutAnActiveGrammarOrWithAnUnsafePathThePreviewIsRejected",
+        "scenario": { "es": "Sin gramática, sin activar o con ruta insegura.", "en": "No grammar, not activated or unsafe path." },
+        "result": { "es": "Rechazo con su motivo.", "en": "Rejection with its reason." }
+      }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelRealGrammarIntegrationTests.java", "line": 116 },
+      { "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelRealGrammarIntegrationTests.java", "line": 118 },
+      { "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelRealGrammarIntegrationTests.java", "line": 125 },
+      { "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelRealGrammarIntegrationTests.java", "line": 137 },
+      { "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelRealGrammarIntegrationTests.java", "line": 151 },
+      { "path": "src/test/java/com/example/editor/transformation/textmodel/TransformationTextToModelRealGrammarIntegrationTests.java", "line": 153 }
+    ]
+  }
+]

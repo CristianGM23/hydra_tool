@@ -1,0 +1,169 @@
+[
+  {
+    "id": "java:com.example.editor.audit.CanonicalDocumentMutationAuditIntegrationTests",
+    "name": {
+      "es": "Mutación canónica real anotada en la auditoría de principio a fin",
+      "en": "Real canonical mutation noted in the audit end to end"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "audit",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "persistence_save_etag",
+        "stages": [
+          "c",
+          "r"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_remote_repository_exchange",
+        "stages": [
+          "r2"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_project_lifecycle_overview",
+        "stages": [
+          "ps"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "audit_record_mutation",
+        "stages": [
+          "a",
+          "b",
+          "r"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/audit/AuditCanonicalDocumentMutationObserver.java",
+      "src/main/java/com/example/editor/audit/DefaultAuditEventPublisher.java",
+      "src/main/java/com/example/editor/audit/GenericAuditDiffStrategy.java",
+      "src/main/java/com/example/editor/audit/JsonlAuditLogStore.java",
+      "src/main/java/com/example/editor/persistence/CanonicalDocumentMutation.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío; publicador de auditoría real inicializado (worker arrancado) sin colaboradores simulados.",
+      "en": "Empty temporary directory; real audit publisher initialized (worker started) without simulated collaborators."
+    },
+    "setup": {
+      "es": "Se construyen a mano, sin Spring, todos los colaboradores reales: AuditLogProperties, AuditRedactionRegistry, AuditDiffStrategyRegistry con GenericAuditDiffStrategy real, AuditSnapshotService, LocalAuditActorContext, LocalWorkspaceContext, JsonlAuditLogStore y DefaultAuditEventPublisher (con su hilo trabajador real arrancado vía afterPropertiesSet).",
+      "en": "All real collaborators are wired by hand, without Spring: AuditLogProperties, AuditRedactionRegistry, AuditDiffStrategyRegistry with a real GenericAuditDiffStrategy, AuditSnapshotService, LocalAuditActorContext, LocalWorkspaceContext, JsonlAuditLogStore and DefaultAuditEventPublisher (with its real worker thread started via afterPropertiesSet)."
+    },
+    "executes": {
+      "es": "AuditCanonicalDocumentMutationObserver.onMutation(...) con una CanonicalDocumentMutation real (CREATE y UPDATE), seguido de publisher.flushPending() para forzar el drenaje síncrono del pipeline asíncrono real hasta el fichero en disco.",
+      "en": "AuditCanonicalDocumentMutationObserver.onMutation(...) with a real CanonicalDocumentMutation (CREATE and UPDATE), followed by publisher.flushPending() to force a synchronous drain of the real asynchronous pipeline down to the file on disk."
+    },
+    "asserts": {
+      "es": "El fichero JSONL leído de forma independiente contiene una entrada con activityType, action, workspaceId y recurso correctos, con un diff real del campo cambiado; un namespace excluido no produce fichero.",
+      "en": "The independently read JSONL file contains an entry with the correct activityType, action, workspaceId and resource, with a real diff of the changed field; an excluded namespace produces no file."
+    },
+    "behavior": {
+      "es": "Cuando cualquier almacén canónico guarda un documento, el cambio queda anotado de verdad en el registro de auditoría append-only, con el detalle real de qué campo cambió, salvo que el namespace esté explícitamente excluido de la captura.",
+      "en": "When any canonical store saves a document, the change is genuinely noted in the append-only audit log, with the real detail of which field changed, unless the namespace is explicitly excluded from capture."
+    },
+    "rule": {
+      "es": "Toda mutación canónica cuyo namespace no esté en la lista de exclusión produce exactamente una entrada de auditoría con un diff calculado sobre el estado antes/después real; una mutación en un namespace excluido no produce ninguna entrada.",
+      "en": "Every canonical mutation whose namespace is not on the ignore list produces exactly one audit entry with a diff computed over the real before/after state; a mutation in an excluded namespace produces no entry at all."
+    },
+    "scenario": {
+      "es": "Mutación UPDATE real con cambio de dos campos; mutación CREATE real sin estado previo; mutación en un namespace excluido por política.",
+      "en": "Real UPDATE mutation with a two-field change; real CREATE mutation with no prior state; mutation in a policy-excluded namespace."
+    },
+    "result": {
+      "es": "Entrada de auditoría en disco con el diff correcto para UPDATE, entrada sin estado previo para CREATE, y ausencia total de fichero de auditoría para el namespace excluido.",
+      "en": "On-disk audit entry with the correct diff for UPDATE, an entry with no prior state for CREATE, and a total absence of an audit file for the excluded namespace."
+    },
+    "expected": {
+      "es": "Las aserciones sobre el contenido crudo del fichero JSONL coinciden con lo esperado en los tres casos.",
+      "en": "Assertions on the raw JSONL file content match expectations in all three cases."
+    },
+    "guarantee": {
+      "es": "Evidencia real, de extremo a extremo y sin mocks, de que guardar un documento efectivamente deja una anotación de auditoría verificable de forma independiente.",
+      "en": "Real, end-to-end, mock-free evidence that saving a document genuinely leaves an independently verifiable audit annotation."
+    },
+    "limits": {
+      "es": "No ejercita un almacén real de dominio (metamodelo, perfil, etc.); el evento de guardado se construye directamente. No cubre concurrencia entre procesos ni HTTP.",
+      "en": "Does not exercise a real domain store (metamodel, profile, etc.); the save event is built directly. Does not cover inter-process concurrency or HTTP."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Integración real entre varios componentes de producción reales (observador, publicador asíncrono con hilo real, estrategia de diff real, almacén en disco real), sin mocks, con oráculo independiente y caso negativo real (namespace excluido).",
+      "en": "Real integration across several real production components (observer, real async publisher with a real thread, real diff strategy, real on-disk store), without mocks, with an independent oracle and a real negative case (excluded namespace)."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "realCanonicalUpdateMutationIsObservedDiffedAndPersistedToAnIndependentlyReadableAuditFile",
+        "scenario": {
+          "es": "Mutación UPDATE con cambio de versión",
+          "en": "UPDATE mutation with a version change"
+        },
+        "result": {
+          "es": "Entrada de auditoría con diff real de 'version'",
+          "en": "Audit entry with a real 'version' diff"
+        }
+      },
+      {
+        "n": "realCanonicalCreateMutationIsRecordedWithoutABeforeState",
+        "scenario": {
+          "es": "Mutación CREATE sin estado previo",
+          "en": "CREATE mutation with no prior state"
+        },
+        "result": {
+          "es": "Entrada de auditoría de tipo 'created'",
+          "en": "Audit entry of type 'created'"
+        }
+      },
+      {
+        "n": "mutationsInANamespaceIgnoredByPolicyProduceNoAuditFileAtAll",
+        "scenario": {
+          "es": "Namespace en la lista de exclusión",
+          "en": "Namespace on the ignore list"
+        },
+        "result": {
+          "es": "Ningún fichero de auditoría creado",
+          "en": "No audit file created"
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.audit.JsonlAuditLogStoreTests"
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/audit/CanonicalDocumentMutationAuditIntegrationTests.java",
+        "line": 92
+      },
+      {
+        "path": "src/test/java/com/example/editor/audit/CanonicalDocumentMutationAuditIntegrationTests.java",
+        "line": 119
+      },
+      {
+        "path": "src/test/java/com/example/editor/audit/CanonicalDocumentMutationAuditIntegrationTests.java",
+        "line": 134
+      },
+      {
+        "path": "src/test/java/com/example/editor/audit/CanonicalDocumentMutationAuditIntegrationTests.java",
+        "line": 95
+      },
+      {
+        "path": "src/test/java/com/example/editor/audit/CanonicalDocumentMutationAuditIntegrationTests.java",
+        "line": 99
+      },
+      {
+        "path": "src/test/java/com/example/editor/audit/CanonicalDocumentMutationAuditIntegrationTests.java",
+        "line": 107
+      }
+    ]
+  }
+]

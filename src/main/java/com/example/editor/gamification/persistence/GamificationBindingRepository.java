@@ -1,4 +1,5 @@
 package com.example.editor.gamification.persistence;
+import java.util.List;
 import java.util.Optional;
 import com.example.editor.gamification.GamificationBindingModel;
 import com.example.editor.validation.persistence.StoredCanonicalDocument;
@@ -8,4 +9,5 @@ public interface GamificationBindingRepository {
     /** Descripción: Obtiene la información correspondiente a «find» dentro de GamificationBindingRepository. Entradas: metamodelId: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ Optional<StoredCanonicalDocument<GamificationBindingModel>> find(String metamodelId);
     /** Descripción: Elimina o libera el recurso gestionado por «delete» de forma controlada. Entradas: metamodelId: identificador que delimita el recurso objetivo; etag: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void delete(String metamodelId, String etag);
     /** Descripción: Elimina o libera el recurso gestionado por «deleteIfExists» de forma controlada. Entradas: metamodelId: identificador que delimita el recurso objetivo. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void deleteIfExists(String metamodelId);
+    /** Descripción: Lista los metamodelos que tienen bindings almacenados, también los que no tienen definiciones (par incompleto). Entradas: ninguna. Salida: identificadores; la implementación por defecto no conoce ninguno. */ default List<String> listIds() { return List.of(); }
 }

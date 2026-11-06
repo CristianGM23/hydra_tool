@@ -2,10 +2,12 @@ package com.example.editor.textual.web;
 
 import java.util.List;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.editor.textual.interaction.*;
 import com.example.editor.textual.runtime.*;
+import com.example.editor.web.ApiExceptionHandler;
 import com.example.editor.validation.quickfix.QuickFixDescriptor;
 import com.example.editor.validation.quickfix.QuickFixExecutionRequest;
 
@@ -61,4 +63,6 @@ public class TextualModelSessionController {
     @PostMapping("/{id}/interactions/invalidation")public TextualDependencyInvalidationPlan invalidation(@PathVariable String id,@RequestBody List<String>changedDocuments){return interactions.invalidation(id,changedDocuments);}
     /** Descripción: Evalúa compatibilidad entre snapshots de gramática. Entradas: id y request. Salida: devuelve política de reutilización, reparse o migración. */
     @PostMapping("/{id}/interactions/snapshot-compatibility")public TextualSnapshotCompatibilityReport snapshotCompatibility(@PathVariable String id,@RequestBody TextualSnapshotCompatibilityRequest request){interactions.capabilities(id);return interactions.snapshotCompatibility(request);}
+    /** Descripción: Traduce a un conflicto de cliente (409) las consultas, quick fixes y guardados que exigen un borrador válido cuando el actual está roto; solo aplica a este controlador y no altera el manejador global. Entradas: exception: rechazo del borrador no listo. Salida: respuesta 409 con código CONFLICT y el mensaje del rechazo. */
+    @ExceptionHandler(TextualDraftNotReadyException.class)public ResponseEntity<ApiExceptionHandler.ApiError>draftNotReady(TextualDraftNotReadyException exception){return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiExceptionHandler.ApiError("CONFLICT",exception.getMessage()));}
 }

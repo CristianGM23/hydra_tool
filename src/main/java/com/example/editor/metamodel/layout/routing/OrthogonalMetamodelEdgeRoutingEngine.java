@@ -2,12 +2,10 @@ package com.example.editor.metamodel.layout.routing;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
@@ -46,6 +44,8 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
         Map<String, EdgeDesign> routed = new LinkedHashMap<>();
 
         for(EdgeDesign edge : ordered) {
+            // the import analysis job cancels with an interrupt when it exceeds its deadline: stop instead of routing the rest
+            checkInterrupted();
             NodeDesign source = nodes.get(edge.sourceClassId());
             NodeDesign target = nodes.get(edge.targetClassId());
 
@@ -127,51 +127,88 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
     }
 
     /** Descripción: Obtiene la información correspondiente a «findPath» dentro de SearchNode. Entradas: grid: identificador que delimita el recurso objetivo; start: dato de entrada necesario para la operación; goal: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private List<GridPoint> findPath(RoutingGrid grid, GridPoint start, GridPoint goal) {
-        PriorityQueue<SearchNode> open = new PriorityQueue<>(Comparator.comparingDouble(SearchNode::estimatedTotal).thenComparingInt(item -> item.point().x()).thenComparingInt(item -> item.point().y()).thenComparingInt(SearchNode::direction));
-        Map<SearchState, Double> bestCost = new HashMap<>();
-        Map<SearchState, SearchState> previous = new HashMap<>();
-        SearchState initial = new SearchState(start, Direction.NONE.code);
-        bestCost.put(initial, 0.0);
-        open.add(new SearchNode(start, Direction.NONE.code, 0, heuristic(start, goal)));
+        // the A* below would flood the whole free region reachable from start before giving up; when the goal cannot be reached at all
+        // the answer (no grid route -> fallback) is known in O(1) from the connected components of the free cells
+        if(!grid.connected(start, goal)) {
+            return List.of();
+        }
+
+        // Same A* as before (same costs, same neighbour order, same total order of the open set: estimated total, x, y, direction), with the
+        // search state indexed by cell and direction in arrays instead of hash maps of records: the expansions, and so the routes, are identical.
+        SearchSpace space = grid.searchSpace();
+        space.begin();
+        StateHeap open = new StateHeap(grid.width());
+        int startState = grid.state(start.x(), start.y(), Direction.NONE.code);
+        space.set(startState, 0.0, -1);
+        open.add(heuristic(start.x(), start.y(), goal), 0, startState);
         int expanded = 0;
+        int budget = Math.max(1000, properties.getRoutingMaximumExpandedStates());
+        int width = grid.width();
 
-        while(!open.isEmpty() && expanded < Math.max(1000, properties.getRoutingMaximumExpandedStates())) {
-            SearchNode currentNode = open.poll();
-            SearchState current = new SearchState(currentNode.point(), currentNode.direction());
-            double knownCost = bestCost.getOrDefault(current, Double.POSITIVE_INFINITY);
+        while(open.size() > 0 && expanded < budget) {
+            double currentCost = open.topCost();
+            int current = open.poll();
+            double knownCost = space.cost(current);
 
-            if(currentNode.cost() > knownCost + 0.0001) {
+            if(currentCost > knownCost + 0.0001) {
                 continue;
             }
 
-            if(current.point().equals(goal)) {
-                return reconstruct(current, previous);
+            int cell = current / 3;
+            int x = cell % width;
+            int y = cell / width;
+            int direction = current % 3;
+
+            if(x == goal.x() && y == goal.y()) {
+                return reconstruct(grid, space, current);
             }
 
             expanded += 1;
 
-            for(Step step : grid.neighbours(current.point())) {
-                if(grid.isBlocked(step.point()) && !step.point().equals(goal) && !step.point().equals(start)) {
+            if((expanded & 1023) == 0) {
+                checkInterrupted();
+            }
+
+            for(int k = 0; k < 4; k += 1) {
+                int nx = x + NEIGHBOUR_DX[k];
+                int ny = y + NEIGHBOUR_DY[k];
+
+                if(!grid.inside(nx, ny)) {
                     continue;
                 }
 
-                int nextDirection = step.horizontal() ? Direction.HORIZONTAL.code : Direction.VERTICAL.code;
+                if(grid.blocked(nx, ny) && !(nx == goal.x() && ny == goal.y()) && !(nx == start.x() && ny == start.y())) {
+                    continue;
+                }
+
+                boolean horizontal = k < 2;
+                int nextDirection = horizontal ? Direction.HORIZONTAL.code : Direction.VERTICAL.code;
                 double transition = grid.gridSize();
-                transition += turnCost(current.direction(), nextDirection);
-                transition += grid.congestionCost(current.point(), step.point(), step.horizontal(), properties);
-                SearchState next = new SearchState(step.point(), nextDirection);
+                transition += turnCost(direction, nextDirection);
+                transition += grid.congestionCost(x, y, nx, ny, horizontal, properties);
+                int next = grid.state(nx, ny, nextDirection);
                 double nextCost = knownCost + transition;
 
-                if(nextCost + 0.0001 < bestCost.getOrDefault(next, Double.POSITIVE_INFINITY)) {
-                    bestCost.put(next, nextCost);
-                    previous.put(next, current);
-                    open.add(new SearchNode(step.point(), nextDirection, nextCost, nextCost + heuristic(step.point(), goal)));
+                if(nextCost + 0.0001 < space.cost(next)) {
+                    space.set(next, nextCost, current);
+                    open.add(nextCost + heuristic(nx, ny, goal), nextCost, next);
                 }
             }
         }
 
         return List.of();
     }
+
+    /** Descripción: Abandona el encaminado si el hilo ha sido interrumpido (misma convención que el analizador textual). Salida: lanza CancellationException. Entradas: no requiere parámetros de entrada. */
+    private static void checkInterrupted() {
+        if(Thread.currentThread().isInterrupted()) {
+            throw new java.util.concurrent.CancellationException("Metamodel edge routing cancelled");
+        }
+    }
+
+    // neighbour order of RoutingGrid.neighbours: left, right, up, down (the first two are horizontal steps)
+    private static final int[] NEIGHBOUR_DX = {-1, 1, 0, 0};
+    private static final int[] NEIGHBOUR_DY = {0, 0, -1, 1};
 
     /** Descripción: Ejecuta la operación «turnCost» correspondiente a la responsabilidad de SearchNode. Entradas: previousDirection: dato de entrada necesario para la operación; nextDirection: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private double turnCost(int previousDirection, int nextDirection) {
         if(previousDirection == Direction.NONE.code || previousDirection == nextDirection) {
@@ -181,18 +218,18 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
         return Math.max(0, properties.getRoutingTurnCost());
     }
 
-    /** Descripción: Ejecuta la operación «heuristic» correspondiente a la responsabilidad de SearchNode. Entradas: current: dato de entrada necesario para la operación; goal: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private double heuristic(GridPoint current, GridPoint goal) {
-        return (Math.abs(goal.x() - current.x()) + Math.abs(goal.y() - current.y())) * Math.max(1, properties.getRoutingGridSize());
+    /** Descripción: Ejecuta la operación «heuristic» correspondiente a la responsabilidad de SearchNode. Entradas: current: dato de entrada necesario para la operación; goal: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private double heuristic(int x, int y, GridPoint goal) {
+        return (Math.abs(goal.x() - x) + Math.abs(goal.y() - y)) * Math.max(1, properties.getRoutingGridSize());
     }
 
-    /** Descripción: Ejecuta la operación «reconstruct» correspondiente a la responsabilidad de SearchNode. Entradas: goal: dato de entrada necesario para la operación; previous: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private List<GridPoint> reconstruct(SearchState goal, Map<SearchState, SearchState> previous) {
+    /** Descripción: Reconstruye el camino desde el estado destino siguiendo los predecesores. Entradas: rejilla, espacio de búsqueda y estado destino. Salida: celdas del camino, del origen al destino. */ private List<GridPoint> reconstruct(RoutingGrid grid, SearchSpace space, int goal) {
         List<GridPoint> reversed = new ArrayList<>();
-        SearchState current = goal;
-        reversed.add(current.point());
+        int current = goal;
+        reversed.add(grid.point(current));
 
-        while(previous.containsKey(current)) {
-            current = previous.get(current);
-            reversed.add(current.point());
+        while(space.previous(current) >= 0) {
+            current = space.previous(current);
+            reversed.add(grid.point(current));
         }
 
         java.util.Collections.reverse(reversed);
@@ -305,17 +342,130 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
     private record GridPoint(int x, int y) {
     }
 
-    private record SearchState(GridPoint point, int direction) {
-    }
-
-    private record SearchNode(GridPoint point, int direction, double cost, double estimatedTotal) {
-    }
-
     private record Step(GridPoint point, boolean horizontal) {
     }
 
     /**
-     * Representa la cuadrícula, los obstáculos y los canales ya utilizados.
+     * Estado del A* por estado (celda x dirección) en arrays reutilizables: el coste y el predecesor solo valen para la búsqueda en curso
+     * (marca de generación), así que no se reinicializan entre aristas.
+     */
+    private static final class SearchSpace {
+        private final double[] cost;
+        private final int[] previous;
+        private final int[] generationOf;
+        private int generation;
+
+        /** Descripción: Reserva el espacio de una rejilla. Entradas: número de estados (celdas x 3 direcciones). Salida: deja la instancia inicializada y lista para su uso. */ private SearchSpace(int states) {
+            cost = new double[states];
+            previous = new int[states];
+            generationOf = new int[states];
+        }
+
+        /** Descripción: Empieza una búsqueda nueva invalidando la anterior en O(1). Entradas: no requiere parámetros de entrada. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void begin() {
+            generation += 1;
+        }
+
+        /** Descripción: Coste conocido de un estado en esta búsqueda (infinito si no se ha alcanzado). Entradas: state: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private double cost(int state) {
+            return generationOf[state] == generation ? cost[state] : Double.POSITIVE_INFINITY;
+        }
+
+        /** Descripción: Predecesor de un estado en esta búsqueda (-1 si no tiene). Entradas: state: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private int previous(int state) {
+            return generationOf[state] == generation ? previous[state] : -1;
+        }
+
+        /** Descripción: Registra el mejor coste de un estado y su predecesor. Entradas: state: dato de entrada necesario para la operación; value: valor de entrada que debe procesarse; from: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void set(int state, double value, int from) {
+            generationOf[state] = generation;
+            cost[state] = value;
+            previous[state] = from;
+        }
+    }
+
+    /**
+     * Montículo binario de estados abiertos con el MISMO orden total que la PriorityQueue anterior: coste estimado total (Double.compare), x,
+     * y, dirección. Dos entradas distintas nunca empatan en esa clave, así que el orden de extracción es el mismo con cualquier montículo.
+     */
+    private static final class StateHeap {
+        private final int width;
+        private double[] estimated = new double[256];
+        private double[] cost = new double[256];
+        private int[] state = new int[256];
+        private int size;
+
+        /** Descripción: Crea el montículo. Entradas: ancho de la rejilla en celdas (para desempatar por x e y). Salida: deja la instancia inicializada y lista para su uso. */ private StateHeap(int width) {
+            this.width = width;
+        }
+
+        /** Descripción: Ejecuta la operación «size» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private int size() {
+            return size;
+        }
+
+        /** Descripción: Ejecuta la operación «topCost» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private double topCost() {
+            return cost[0];
+        }
+
+        /** Descripción: Ejecuta la operación «add» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: estimatedTotal: dato de entrada necesario para la operación; knownCost: dato de entrada necesario para la operación; value: valor de entrada que debe procesarse. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void add(double estimatedTotal, double knownCost, int value) {
+            if(size == state.length) {
+                estimated = java.util.Arrays.copyOf(estimated, size * 2);
+                cost = java.util.Arrays.copyOf(cost, size * 2);
+                state = java.util.Arrays.copyOf(state, size * 2);
+            }
+            int index = size++;
+            while(index > 0) {
+                int parent = (index - 1) >>> 1;
+                if(compare(estimatedTotal, value, estimated[parent], state[parent]) >= 0) break;
+                move(parent, index);
+                index = parent;
+            }
+            estimated[index] = estimatedTotal;
+            cost[index] = knownCost;
+            state[index] = value;
+        }
+
+        /** Descripción: Ejecuta la operación «poll» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private int poll() {
+            int result = state[0];
+            size -= 1;
+            if(size > 0) {
+                double lastEstimated = estimated[size];
+                double lastCost = cost[size];
+                int lastState = state[size];
+                int index = 0;
+                while(true) {
+                    int child = 2 * index + 1;
+                    if(child >= size) break;
+                    if(child + 1 < size && compare(estimated[child + 1], state[child + 1], estimated[child], state[child]) < 0) child += 1;
+                    if(compare(lastEstimated, lastState, estimated[child], state[child]) <= 0) break;
+                    move(child, index);
+                    index = child;
+                }
+                estimated[index] = lastEstimated;
+                cost[index] = lastCost;
+                state[index] = lastState;
+            }
+            return result;
+        }
+
+        /** Descripción: Ejecuta la operación «move» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: from: dato de entrada necesario para la operación; to: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void move(int from, int to) {
+            estimated[to] = estimated[from];
+            cost[to] = cost[from];
+            state[to] = state[from];
+        }
+
+        /** Descripción: Orden de la PriorityQueue anterior: estimado, x, y, dirección. Entradas: firstEstimated: dato de entrada necesario para la operación; first: dato de entrada necesario para la operación; secondEstimated: dato de entrada necesario para la operación; second: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private int compare(double firstEstimated, int first, double secondEstimated, int second) {
+            int byEstimate = Double.compare(firstEstimated, secondEstimated);
+            if(byEstimate != 0) return byEstimate;
+            int firstCell = first / 3;
+            int secondCell = second / 3;
+            int byX = Integer.compare(firstCell % width, secondCell % width);
+            if(byX != 0) return byX;
+            int byY = Integer.compare(firstCell / width, secondCell / width);
+            if(byY != 0) return byY;
+            return Integer.compare(first % 3, second % 3);
+        }
+    }
+
+    /**
+     * Representa la cuadrícula, los obstáculos y los canales ya utilizados (arrays por celda y por segmento; las reglas y la aritmética son las
+     * de la versión anterior con conjuntos y mapas).
      */
     private static final class RoutingGrid {
 
@@ -324,24 +474,34 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
         private final double originY;
         private final int maximumX;
         private final int maximumY;
-        private final Set<GridPoint> blocked;
-        private final Map<GridSegment, Integer> horizontalUsage = new HashMap<>();
-        private final Map<GridSegment, Integer> verticalUsage = new HashMap<>();
-        private final Map<GridPoint, Integer> horizontalCells = new HashMap<>();
-        private final Map<GridPoint, Integer> verticalCells = new HashMap<>();
+        private final int width;
+        private final boolean[] blocked;
+        // uso de un segmento horizontal (x, y)-(x+1, y) en el índice de la celda (x, y); vertical (x, y)-(x, y+1) en el de (x, y)
+        private final int[] horizontalUsage;
+        private final int[] verticalUsage;
+        // celdas de llegada de los tramos reservados (para el coste de cruce)
+        private final int[] horizontalCells;
+        private final int[] verticalCells;
         private final List<NodeDesign> nodes;
+        private SearchSpace searchSpace;
 
-        /** Descripción: Inicializa una instancia de RoutingGrid con sus dependencias y datos de entrada. Entradas: gridSize: dato de entrada necesario para la operación; originX: dato de entrada necesario para la operación; originY: dato de entrada necesario para la operación; maximumX: dato de entrada necesario para la operación; maximumY: dato de entrada necesario para la operación; blocked: dato de entrada necesario para la operación; nodes: dato de entrada necesario para la operación. Salida: deja la instancia inicializada y lista para su uso. */ private RoutingGrid(double gridSize, double originX, double originY, int maximumX, int maximumY, Set<GridPoint> blocked, List<NodeDesign> nodes) {
+        /** Descripción: Inicializa la rejilla. Entradas: tamaño, origen, extensión, celdas bloqueadas y nodos. Salida: deja la instancia inicializada y lista para su uso. */ private RoutingGrid(double gridSize, double originX, double originY, int maximumX, int maximumY, boolean[] blocked, List<NodeDesign> nodes) {
             this.gridSize = gridSize;
             this.originX = originX;
             this.originY = originY;
             this.maximumX = maximumX;
             this.maximumY = maximumY;
+            this.width = maximumX + 1;
             this.blocked = blocked;
+            int cells = blocked.length;
+            this.horizontalUsage = new int[cells];
+            this.verticalUsage = new int[cells];
+            this.horizontalCells = new int[cells];
+            this.verticalCells = new int[cells];
             this.nodes = List.copyOf(nodes);
         }
 
-        /** Descripción: Crea o prepara el resultado de «create» dentro de SearchNode. Entradas: nodes: dato de entrada necesario para la operación; properties: configuración que gobierna el comportamiento. Salida: devuelve el resultado definido por el contrato del método. */ private static RoutingGrid create(List<NodeDesign> nodes, MetamodelLayoutProperties properties) {
+        /** Descripción: Crea la rejilla de los nodos con su holgura. Entradas: nodos y propiedades. Salida: la rejilla. */ private static RoutingGrid create(List<NodeDesign> nodes, MetamodelLayoutProperties properties) {
             double gridSize = Math.max(5, properties.getRoutingGridSize());
             double clearance = Math.max(gridSize, properties.getRoutingNodeClearance());
             double minimumX = nodes.stream().mapToDouble(NodeDesign::x).min().orElse(0) - clearance * 4;
@@ -352,7 +512,7 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
             double originY = Math.floor(minimumY / gridSize) * gridSize;
             int maximumX = Math.max(1, (int) Math.ceil((maximumCoordinateX - originX) / gridSize));
             int maximumY = Math.max(1, (int) Math.ceil((maximumCoordinateY - originY) / gridSize));
-            Set<GridPoint> blocked = new HashSet<>();
+            boolean[] blocked = new boolean[(maximumX + 1) * (maximumY + 1)];
 
             for(NodeDesign node : nodes) {
                 int left = (int) Math.floor((node.x() - clearance - originX) / gridSize);
@@ -362,7 +522,7 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
 
                 for(int x = Math.max(0, left); x <= Math.min(maximumX, right); x += 1) {
                     for(int y = Math.max(0, top); y <= Math.min(maximumY, bottom); y += 1) {
-                        blocked.add(new GridPoint(x, y));
+                        blocked[y * (maximumX + 1) + x] = true;
                     }
                 }
             }
@@ -370,17 +530,17 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
             return new RoutingGrid(gridSize, originX, originY, maximumX, maximumY, blocked, nodes);
         }
 
-        /** Descripción: Ejecuta la operación «snap» correspondiente a la responsabilidad de SearchNode. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private GridPoint snap(RoutePointDesign point) {
+        /** Descripción: Ajusta un punto a la celda más próxima dentro de la rejilla. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private GridPoint snap(RoutePointDesign point) {
             int x = (int) Math.round((point.x() - originX) / gridSize);
             int y = (int) Math.round((point.y() - originY) / gridSize);
             return new GridPoint(Math.max(0, Math.min(maximumX, x)), Math.max(0, Math.min(maximumY, y)));
         }
 
-        /** Descripción: Ejecuta la operación «toPoint» correspondiente a la responsabilidad de SearchNode. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private RoutePointDesign toPoint(GridPoint point) {
+        /** Descripción: Coordenadas de diagrama de una celda. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private RoutePointDesign toPoint(GridPoint point) {
             return new RoutePointDesign(originX + point.x() * gridSize, originY + point.y() * gridSize);
         }
 
-        /** Descripción: Ejecuta la operación «neighbours» correspondiente a la responsabilidad de SearchNode. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private List<Step> neighbours(GridPoint point) {
+        /** Descripción: Vecinos dentro de la rejilla en el orden izquierda, derecha, arriba, abajo. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private List<Step> neighbours(GridPoint point) {
             List<Step> result = new ArrayList<>(4);
             add(result, point.x() - 1, point.y(), true);
             add(result, point.x() + 1, point.y(), true);
@@ -389,32 +549,122 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
             return result;
         }
 
-        /** Descripción: Ejecuta la operación «add» correspondiente a la responsabilidad de SearchNode. Entradas: result: dato de entrada necesario para la operación; x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación; horizontal: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void add(List<Step> result, int x, int y, boolean horizontal) {
-            if(x >= 0 && x <= maximumX && y >= 0 && y <= maximumY) {
+        /** Descripción: Ejecuta la operación «add» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: result: dato de entrada necesario para la operación; x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación; horizontal: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void add(List<Step> result, int x, int y, boolean horizontal) {
+            if(inside(x, y)) {
                 result.add(new Step(new GridPoint(x, y), horizontal));
             }
         }
 
-        /** Descripción: Evalúa la condición «isBlocked» sin modificar el estado externo. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean isBlocked(GridPoint point) {
-            return blocked.contains(point);
+        /** Descripción: Ejecuta la operación «inside» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean inside(int x, int y) {
+            return x >= 0 && x <= maximumX && y >= 0 && y <= maximumY;
         }
 
-        /** Descripción: Ejecuta la operación «congestionCost» correspondiente a la responsabilidad de SearchNode. Entradas: first: dato de entrada necesario para la operación; second: dato de entrada necesario para la operación; horizontal: dato de entrada necesario para la operación; properties: configuración que gobierna el comportamiento. Salida: devuelve el resultado definido por el contrato del método. */ private double congestionCost(GridPoint first, GridPoint second, boolean horizontal, MetamodelLayoutProperties properties) {
-            GridSegment segment = GridSegment.of(first, second);
-            Map<GridSegment, Integer> usage = horizontal ? horizontalUsage : verticalUsage;
-            Map<GridPoint, Integer> perpendicular = horizontal ? verticalCells : horizontalCells;
-            double edgeGapFactor = 1 + Math.max(0, properties.getRoutingEdgeGap()) / Math.max(1, gridSize);
-            double result = usage.getOrDefault(segment, 0) * Math.max(0, properties.getRoutingCongestionCost()) * edgeGapFactor;
-            result += perpendicular.getOrDefault(second, 0) * Math.max(0, properties.getRoutingCrossingCost());
+        /** Descripción: Evalúa la condición «isBlocked» sin modificar el estado externo. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean isBlocked(GridPoint point) {
+            return blocked[index(point)];
+        }
 
-            if(!properties.isParallelRouting() && usage.getOrDefault(segment, 0) > 0) {
+        /** Descripción: Ejecuta la operación «blocked» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean blocked(int x, int y) {
+            return blocked[y * width + x];
+        }
+
+        /** Descripción: Ejecuta la operación «width» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private int width() {
+            return width;
+        }
+
+        /** Descripción: Índice de estado (celda x 3 + dirección). Entradas: x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación; direction: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private int state(int x, int y, int direction) {
+            return (y * width + x) * 3 + direction;
+        }
+
+        /** Descripción: Ejecuta la operación «point» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: state: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private GridPoint point(int state) {
+            int cell = state / 3;
+            return new GridPoint(cell % width, cell / width);
+        }
+
+        /** Descripción: Espacio de búsqueda reutilizado por todas las aristas de esta rejilla. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private SearchSpace searchSpace() {
+            if(searchSpace == null) searchSpace = new SearchSpace(blocked.length * 3);
+            return searchSpace;
+        }
+
+        /**
+         * Descripción: Indica si findPath puede llegar de start a goal con sus mismas reglas de paso: una celda bloqueada solo se pisa si es el
+         * origen o el destino. El origen une las componentes de sus vecinos libres; el destino es alcanzable si es el origen, es vecino suyo o
+         * él o un vecino libre suyo cae en una de esas componentes. Los obstáculos no cambian durante el encaminado (reserve solo altera costes),
+         * así que las componentes se calculan una vez. Entradas: start y goal. Salida: false solo cuando no existe ningún camino.
+         */
+        private boolean connected(GridPoint start, GridPoint goal) {
+            if(start.equals(goal)) {
+                return true;
+            }
+            int[] labels = components();
+            Set<Integer> reachable = new HashSet<>();
+            if(!isBlocked(start)) reachable.add(labels[index(start)]);
+            for(Step step : neighbours(start)) {
+                if(step.point().equals(goal)) return true;
+                if(!isBlocked(step.point())) reachable.add(labels[index(step.point())]);
+            }
+            if(!isBlocked(goal) && reachable.contains(labels[index(goal)])) return true;
+            for(Step step : neighbours(goal)) {
+                if(!isBlocked(step.point()) && reachable.contains(labels[index(step.point())])) return true;
+            }
+            return false;
+        }
+
+        private int[] componentLabels;
+
+        /** Descripción: Etiqueta (una vez) las componentes conexas de las celdas libres con un recorrido en anchura. Salida: etiqueta por celda (-1 si está bloqueada). Entradas: no requiere parámetros de entrada. */
+        private int[] components() {
+            if(componentLabels != null) return componentLabels;
+            int[] labels = new int[blocked.length];
+            java.util.Arrays.fill(labels, -1);
+            int next = 0;
+            int[] queue = new int[blocked.length];
+            for(int seed = 0; seed < blocked.length; seed += 1) {
+                if(labels[seed] != -1 || blocked[seed]) continue;
+                int head = 0;
+                int tail = 0;
+                labels[seed] = next;
+                queue[tail++] = seed;
+                while(head < tail) {
+                    int cell = queue[head++];
+                    int x = cell % width;
+                    int y = cell / width;
+                    for(int k = 0; k < 4; k += 1) {
+                        int nx = x + NEIGHBOUR_DX[k];
+                        int ny = y + NEIGHBOUR_DY[k];
+                        if(!inside(nx, ny)) continue;
+                        int neighbour = ny * width + nx;
+                        if(labels[neighbour] == -1 && !blocked[neighbour]) {
+                            labels[neighbour] = next;
+                            queue[tail++] = neighbour;
+                        }
+                    }
+                }
+                next += 1;
+            }
+            componentLabels = labels;
+            return labels;
+        }
+
+        /** Descripción: Ejecuta la operación «index» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: point: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private int index(GridPoint point) {
+            return point.y() * width + point.x();
+        }
+
+        /** Descripción: Coste de congestión y cruce de un paso de (x, y) a (nx, ny), con la misma fórmula que la versión con mapas. Entradas: x: dato de entrada necesario para la operación; y: dato de entrada necesario para la operación; nx: dato de entrada necesario para la operación; ny: dato de entrada necesario para la operación; horizontal: dato de entrada necesario para la operación; properties: configuración que gobierna el comportamiento. Salida: devuelve el resultado definido por el contrato del método. */ private double congestionCost(int x, int y, int nx, int ny, boolean horizontal, MetamodelLayoutProperties properties) {
+            int segment = horizontal ? y * width + Math.min(x, nx) : Math.min(y, ny) * width + x;
+            int used = horizontal ? horizontalUsage[segment] : verticalUsage[segment];
+            int crossing = horizontal ? verticalCells[ny * width + nx] : horizontalCells[ny * width + nx];
+            double edgeGapFactor = 1 + Math.max(0, properties.getRoutingEdgeGap()) / Math.max(1, gridSize);
+            double result = used * Math.max(0, properties.getRoutingCongestionCost()) * edgeGapFactor;
+            result += crossing * Math.max(0, properties.getRoutingCrossingCost());
+
+            if(!properties.isParallelRouting() && used > 0) {
                 result += properties.getRoutingCrossingCost() * 5;
             }
 
             return result;
         }
 
-        /** Descripción: Ejecuta la operación «reserve» correspondiente a la responsabilidad de SearchNode. Entradas: route: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void reserve(List<RoutePointDesign> route) {
+        /** Descripción: Reserva los tramos ortogonales de una ruta ya trazada. Entradas: route: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void reserve(List<RoutePointDesign> route) {
             for(int index = 0; index < route.size() - 1; index += 1) {
                 GridPoint first = snap(route.get(index));
                 GridPoint second = snap(route.get(index + 1));
@@ -423,41 +673,26 @@ public class OrthogonalMetamodelEdgeRoutingEngine implements MetamodelEdgeRoutin
                     int minimum = Math.min(first.y(), second.y());
 
                     for(int y = minimum; y < Math.max(first.y(), second.y()); y += 1) {
-                        GridPoint start = new GridPoint(first.x(), y);
-                        GridPoint end = new GridPoint(first.x(), y + 1);
-                        verticalUsage.merge(GridSegment.of(start, end), 1, Integer::sum);
-                        verticalCells.merge(end, 1, Integer::sum);
+                        verticalUsage[y * width + first.x()] += 1;
+                        verticalCells[(y + 1) * width + first.x()] += 1;
                     }
                 } else if(first.y() == second.y()) {
                     int minimum = Math.min(first.x(), second.x());
 
                     for(int x = minimum; x < Math.max(first.x(), second.x()); x += 1) {
-                        GridPoint start = new GridPoint(x, first.y());
-                        GridPoint end = new GridPoint(x + 1, first.y());
-                        horizontalUsage.merge(GridSegment.of(start, end), 1, Integer::sum);
-                        horizontalCells.merge(end, 1, Integer::sum);
+                        horizontalUsage[first.y() * width + x] += 1;
+                        horizontalCells[first.y() * width + x + 1] += 1;
                     }
                 }
             }
         }
 
-        /** Descripción: Ejecuta la operación «gridSize» correspondiente a la responsabilidad de SearchNode. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private double gridSize() {
+        /** Descripción: Ejecuta la operación «gridSize» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private double gridSize() {
             return gridSize;
         }
 
-        /** Descripción: Ejecuta la operación «nodes» correspondiente a la responsabilidad de SearchNode. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private List<NodeDesign> nodes() {
+        /** Descripción: Ejecuta la operación «nodes» correspondiente a la responsabilidad de OrthogonalMetamodelEdgeRoutingEngine. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ private List<NodeDesign> nodes() {
             return nodes;
-        }
-    }
-
-    private record GridSegment(GridPoint first, GridPoint second) {
-
-        /** Descripción: Ejecuta la operación «of» correspondiente a la responsabilidad de SearchNode. Entradas: first: dato de entrada necesario para la operación; second: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private static GridSegment of(GridPoint first, GridPoint second) {
-            if(first.x() < second.x() || first.x() == second.x() && first.y() <= second.y()) {
-                return new GridSegment(first, second);
-            }
-
-            return new GridSegment(second, first);
         }
     }
 }

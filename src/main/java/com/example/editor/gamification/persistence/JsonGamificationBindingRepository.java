@@ -1,4 +1,5 @@
 package com.example.editor.gamification.persistence;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -25,4 +26,5 @@ public class JsonGamificationBindingRepository implements GamificationBindingRep
     /** Descripción: Obtiene la información correspondiente a «find» dentro de JsonGamificationBindingRepository. Entradas: id: identificador que delimita el recurso objetivo. Salida: devuelve el resultado definido por el contrato del método. */ public Optional<StoredCanonicalDocument<GamificationBindingModel>> find(String id) { return store.find(id); }
     /** Descripción: Elimina o libera el recurso gestionado por «delete» de forma controlada. Entradas: id: identificador que delimita el recurso objetivo; etag: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void delete(String id, String etag) { store.delete(id, etag); }
     /** Descripción: Elimina o libera el recurso gestionado por «deleteIfExists» de forma controlada. Entradas: id: identificador que delimita el recurso objetivo. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void deleteIfExists(String id) { store.deleteIfExists(id); }
+    /** Descripción: Lista los metamodelos con bindings almacenados. Entradas: ninguna. Salida: identificadores ordenados. */ @Override public List<String> listIds() { return store.listIds(); }
 }

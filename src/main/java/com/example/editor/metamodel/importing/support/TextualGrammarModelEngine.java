@@ -223,6 +223,7 @@ final class TextualGrammarModelEngine {
         final String sourceFormat;
         final Map<String, String> annotations = new LinkedHashMap<>();
         final List<Assignment> assignments = new ArrayList<>();
+        final Map<Assignment, Multiplicity> multiplicityOverrides = new LinkedHashMap<>();
         final List<MetaAttribute> attributes = new ArrayList<>();
         final Set<String> identifierFeatures = new LinkedHashSet<>();
         final Set<String> usedFeatureNames = new LinkedHashSet<>();
@@ -244,8 +245,32 @@ final class TextualGrammarModelEngine {
             }
         }
 
-        /** Descripción: Obtiene la información correspondiente a «readFeatureSpecs» dentro de EnumRegistry. Entradas: enums: dato de entrada necesario para la operación; dataTypes: dato de entrada necesario para la operación; classes: dato de entrada necesario para la operación; warnings: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void readFeatureSpecs(EnumRegistry enums, Map<String, MetaDataType> dataTypes, Map<String, ClassBuilder> classes, List<TransformationWarning> warnings) {
-            assignments.addAll(readAssignments(body));
+        /** Descripción: Obtiene la información correspondiente a «readFeatureSpecs» dentro de EnumRegistry. Entradas: enums: dato de entrada necesario para la operación; dataTypes: dato de entrada necesario para la operación; classes: dato de entrada necesario para la operación; warnings: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void readFeatureSpecs(EnumRegistry enums, Map<String, MetaDataType> dataTypes, Map<String, ClassBuilder> classes, List<TransformationWarning> warnings, Map<String, String> terminals,
+                Map<ClassBuilder, Set<ClassBuilder>> ancestors) {
+            // a feature assigned in several places of one rule with the same operator and expression is ONE feature (Xtext/Langium semantics,
+            // e.g. params+=P (',' params+=P)*); its multiplicity is the union of the occurrences. Same name with another operator or type
+            // stays a conflict (renamed and warned by uniqueFeatureName). Since D-2/D-3 one class can gather several rules and actions: two
+            // occurrences are also one feature when their targets are the same class (e2=Mult and e2=Prim both produce Expr), when they are
+            // terminals of the same primitive type (color=ID | color=HEX) or keyword groups (op=('+'|'-') and op=('*'|'/') unite their literals).
+            Map<String, Assignment> firstByName = new LinkedHashMap<>();
+            for(Assignment assignment : readAssignments(body)) {
+                Assignment first = firstByName.get(assignment.featureName());
+                String merged = first == null || !first.operator().equals(assignment.operator()) ? null : mergedExpression(first.expression(), assignment.expression(), classes, terminals, ancestors);
+                if(merged != null) {
+                    Multiplicity combined = union(multiplicityOverrides.getOrDefault(first, multiplicity(first)), multiplicity(assignment));
+                    if(!merged.equals(first.expression())) {
+                        Assignment widened = new Assignment(first.featureName(), first.operator(), merged, first.immediateQuantifier(), first.enclosingQuantifiers(), first.offset());
+                        assignments.set(assignments.indexOf(first), widened);
+                        multiplicityOverrides.remove(first);
+                        firstByName.put(first.featureName(), widened);
+                        first = widened;
+                    }
+                    multiplicityOverrides.put(first, combined);
+                    continue;
+                }
+                firstByName.putIfAbsent(assignment.featureName(), assignment);
+                assignments.add(assignment);
+            }
 
             for(Assignment assignment : assignments) {
                 String expression = assignment.expression();
@@ -257,11 +282,58 @@ final class TextualGrammarModelEngine {
             }
         }
 
-        /** Descripción: Ejecuta la operación «materializeFeatures» correspondiente a la responsabilidad de EnumRegistry. Entradas: enums: dato de entrada necesario para la operación; dataTypes: dato de entrada necesario para la operación; classes: dato de entrada necesario para la operación; relations: dato de entrada necesario para la operación; warnings: dato de entrada necesario para la operación; forwardingRules: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void materializeFeatures(EnumRegistry enums, Map<String, MetaDataType> dataTypes, Map<String, ClassBuilder> classes, List<MetaRelation> relations, List<TransformationWarning> warnings, Map<String, String> forwardingRules) {
+        /**
+         * Descripción: Expresión común de dos asignaciones de la misma característica, o null si son características distintas. Entradas: first,
+         * second: expresiones; classes: clases por regla; terminals: tipos de los terminales. Salida: expresión resultante.
+         */
+        static String mergedExpression(String first, String second, Map<String, ClassBuilder> classes, Map<String, String> terminals, Map<ClassBuilder, Set<ClassBuilder>> ancestors) {
+            if(first.equals(second)) return first;
+            if(first.startsWith("[") && second.startsWith("[")) {
+                ClassBuilder a = classes.get(parseCrossReference(first).targetRule()), b = classes.get(parseCrossReference(second).targetRule());
+                return a == null || b == null ? null : a == b || ancestors.getOrDefault(b, Set.of()).contains(a) ? first : ancestors.getOrDefault(a, Set.of()).contains(b) ? second : null;
+            }
+            if(first.startsWith("(") && second.startsWith("(")) {
+                List<String> a = quotedValues(first), b = quotedValues(second);
+                if(a.isEmpty() || b.isEmpty() || !onlyKeywords(first) || !onlyKeywords(second)) return null;
+                Set<String> literals = new LinkedHashSet<>(a);
+                literals.addAll(b);
+                return "(" + String.join(" | ", literals.stream().map(value -> "'" + value.replace("'", "\\'") + "'").toList()) + ")";
+            }
+            String a = simpleExpressionName(first), b = simpleExpressionName(second);
+            if(a.isBlank() || b.isBlank()) return null;
+            ClassBuilder targetA = classes.get(a), targetB = classes.get(b);
+            if(targetA != null || targetB != null) {
+                // the same class, or one is a supertype of the other: the feature is typed by the more general one (Langium infers the union)
+                if(targetA == null || targetB == null) return null;
+                if(targetA == targetB || ancestors.getOrDefault(targetB, Set.of()).contains(targetA)) return first;
+                return ancestors.getOrDefault(targetA, Set.of()).contains(targetB) ? second : null;
+            }
+            String primitiveA = primitiveKeyword(a, terminals), primitiveB = primitiveKeyword(b, terminals);
+            return primitiveA != null && primitiveA.equals(primitiveB) ? first : null;
+        }
+
+        /** Descripción: Indica si un grupo solo contiene palabras clave alternativas. Entradas: expression. Salida: indicador. */
+        private static boolean onlyKeywords(String expression) {
+            return QUOTED_LITERAL.matcher(expression).replaceAll("").replaceAll("[()|\\s]", "").isEmpty();
+        }
+
+        /** Descripción: Palabra primitiva de una regla primitiva o de un terminal declarado. Entradas: name, terminals. Salida: palabra o null. */
+        private static String primitiveKeyword(String name, Map<String, String> terminals) {
+            if(terminals.containsKey(name)) return terminals.get(name);
+            return isPrimitiveExpression(name) ? primitiveType(name).targetId() : null;
+        }
+
+        /** Descripción: Multiplicidad que cubre las dos dadas (mínimo de las cotas inferiores; sin cota superior si alguna no la tiene). Entradas: first: dato de entrada necesario para la operación; second: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */
+        static Multiplicity union(Multiplicity first, Multiplicity second) {
+            Integer upper = first.upperBound() == null || second.upperBound() == null ? null : Math.max(first.upperBound(), second.upperBound());
+            return new Multiplicity(Math.min(first.lowerBound(), second.lowerBound()), upper);
+        }
+
+        /** Descripción: Ejecuta la operación «materializeFeatures» correspondiente a la responsabilidad de EnumRegistry. Entradas: enums: dato de entrada necesario para la operación; dataTypes: dato de entrada necesario para la operación; classes: dato de entrada necesario para la operación; relations: dato de entrada necesario para la operación; warnings: dato de entrada necesario para la operación; forwardingRules: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ void materializeFeatures(EnumRegistry enums, Map<String, MetaDataType> dataTypes, Map<String, ClassBuilder> classes, List<MetaRelation> relations, List<TransformationWarning> warnings, Map<String, String> forwardingRules, Map<String, String> terminals) {
             for(Assignment assignment : assignments) {
                 String featurePath = "$.rules[" + ruleName + "].features[" + assignment.featureName() + "]@line" + line;
                 String featureName = uniqueFeatureName(assignment.featureName(), usedFeatureNames, featurePath, warnings);
-                Multiplicity featureMultiplicity = multiplicity(assignment);
+                Multiplicity featureMultiplicity = multiplicityOverrides.getOrDefault(assignment, multiplicity(assignment));
                 String expression = assignment.expression();
 
                 if(expression.startsWith("[")) {
@@ -340,6 +412,9 @@ final class TextualGrammarModelEngine {
                     type = MetaTypeReference.primitive(MetaPrimitiveType.STRING);
                 } else if(isPrimitiveExpression(simple)) {
                     type = primitiveType(simple);
+                } else if(terminals.containsKey(simple)) {
+                    // a terminal rule types its value with its «returns» type (string when it declares none), never as an unknown type
+                    type = primitiveType(terminals.get(simple));
                 } else if(!simple.isBlank()) {
                     type = ImportParsingSupport.typeReference(simple);
                 } else {

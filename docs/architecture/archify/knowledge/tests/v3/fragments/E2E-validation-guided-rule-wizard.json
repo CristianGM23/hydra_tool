@@ -1,0 +1,43 @@
+[
+  {
+    "id": "pw:e2e/real/validation/guided-rule-wizard.spec.ts",
+    "name": { "es": "Asistente guiado de reglas en el navegador real: de la identidad a la revisión y el guardado", "en": "Guided rule wizard in a real browser: from identity to review and save" },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "caps": ["validation", "persistence"],
+    "procs": [
+      { "id": "validation_author_guided", "stages": ["id", "ctx", "dg", "cn", "rv"], "match": "direct" }
+    ],
+    "pre": { "es": "Un metamodelo guardado con Person (edad y nombre), sembrado con la API real.", "en": "A saved metamodel with Person (age and name), seeded through the real API." },
+    "executes": { "es": "Un navegador real recorre los pasos del asistente de reglas: identidad, contexto, mensaje y momentos, condición guiada con dos cláusulas unidas con «O» y una negada, quick fixes opcionales y revisión; guarda y recarga.", "en": "A real browser walks through the rule wizard steps: identity, context, message and triggers, guided condition with two clauses joined with OR and one negated, optional quick fixes and review; it saves and reloads." },
+    "asserts": { "es": "El resumen de revisión muestra nombre, código, mensaje, gravedad, ámbito y ejecución, y coincide con la regla que el servidor devuelve; la condición guardada es «edad ≥ 18 O NO(número de personas ≥ 1)»; el fichero escrito en disco tiene la regla.", "en": "The review summary shows name, code, message, severity, scope and execution and matches the rule the server returns; the saved condition is 'age at least 18 OR NOT(number of people at least 1)'; the file written to disk has the rule." },
+    "behavior": { "es": "Quien sigue el asistente paso a paso obtiene una regla guardada igual a la que ve en la revisión, con la condición construida sin escribir código.", "en": "Whoever follows the wizard step by step gets a saved rule equal to the one shown in the review, with the condition built without writing code." },
+    "rule": { "es": "El resumen de revisión refleja lo que realmente se guarda.", "en": "The review summary reflects what is really saved." },
+    "scenario": { "es": "Regla «cliente mayor de edad» con una cláusula de atributo y otra de recuento del modelo negada.", "en": "'Adult customer' rule with an attribute clause and a negated model-count clause." },
+    "result": { "es": "Regla y condición guardadas, y visibles tras recargar.", "en": "Rule and condition saved and visible after reloading." },
+    "expected": { "es": "Datos guardados iguales a lo introducido y al resumen.", "en": "Saved data equal to what was entered and to the summary." },
+    "guarantee": { "es": "Cada paso del asistente contribuye a la regla que se persiste y la revisión no engaña.", "en": "Every wizard step contributes to the persisted rule and the review does not mislead." },
+    "limits": { "es": "No usa la cláusula de relación ni quick fixes asociados; no ejecuta la regla contra un modelo; la combinación Y se cubre solo por el uso de «O».", "en": "It uses neither the relation clause nor linked quick fixes; it does not run the rule against a model; the AND join is not covered, only OR." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Acción real de usuario en cada paso, servidor real y comprobación independiente de la regla, la condición y el disco.", "en": "Real user action at every step, real server and independent checks of rule, condition and disk." },
+    "external": "none",
+    "cases": [],
+    "related": ["pw:e2e/real/validation/rule-form-authoring.spec.ts"],
+    "src": [
+      { "path": "frontend/e2e/real/validation/guided-rule-wizard.spec.ts", "line": 41 },
+      { "path": "frontend/e2e/real/validation/guided-rule-wizard.spec.ts", "line": 48 },
+      { "path": "frontend/e2e/real/validation/guided-rule-wizard.spec.ts", "line": 57 },
+      { "path": "frontend/e2e/real/validation/guided-rule-wizard.spec.ts", "line": 59 },
+      { "path": "frontend/e2e/real/validation/guided-rule-wizard.spec.ts", "line": 64 },
+      { "path": "frontend/e2e/real/validation/guided-rule-wizard.spec.ts", "line": 73 }
+    ],
+    "prod": [
+      "frontend/src/validation-designer/ValidationRuleEditor.tsx",
+      "frontend/src/validation-designer/GuidedConditionBuilder.tsx",
+      "frontend/src/design-system/HydraGuidedWorkflow.tsx",
+      "frontend/src/validation-designer/ValidationDesigner.tsx",
+      "frontend/src/validation/validationApi.ts"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

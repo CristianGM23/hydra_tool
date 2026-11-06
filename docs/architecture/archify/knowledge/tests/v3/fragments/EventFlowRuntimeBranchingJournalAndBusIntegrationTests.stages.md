@@ -1,0 +1,5 @@
+EventFlowRuntimeBranchingJournalAndBusIntegrationTests - stage mapping
+- events_execute_flow.a7 (follow the chosen transition): theExitIsChosenByTheDecisionResultTheStepOutcomeAndABranchWithoutExitEnds (l.156-189): true/false decision exits, error exit vs normal exit of a step, and a failing step without error exit ends as FAILED with no further node.
+- events_execute_flow.a8 (save trace and state): theTraceAndTheEngineStateAreSavedToTheJournalAndRestoredByANewEngine (l.255-276): journal JSON read from disk (traces and deduplication state) and a new engine over the same disk discards the already seen event.
+- events_execute_flow.a9 (publish derived events): anEmittedEventReturnsToTheBusAndTriggersAnotherFlow (l.225-238): derived event seen on the bus with causation and depth, and the second flow trace; switched-off flows add nothing.
+- events_author_run.a5 (stop or clear state): stoppingPreventsAutomaticReactivationAndClearingTheStateRemovesTheJournal (l.289-309): no processing while stopped, explicit start resumes, clearState deletes the journal file.

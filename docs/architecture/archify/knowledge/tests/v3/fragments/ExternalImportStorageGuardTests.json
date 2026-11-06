@@ -1,0 +1,181 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalImportStorageGuardTests",
+    "name": {
+      "es": "Las pruebas de importación y reinicio se niegan a usar el almacenamiento real",
+      "en": "The import and restart tests refuse to use the real storage"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "recovery",
+      "persistence"
+    ],
+    "procs": [],
+    "prod": [],
+    "pre": null,
+    "executes": {
+      "es": "Comprueba rutas de almacén dentro del directorio de datos real, fuera de la raíz temporal, con «..» y temporales; y lanza un proceso hijo con un almacén real y otro temporal.",
+      "en": "Checks storage paths inside the real data directory, outside the temporary root, with «..» and temporary ones; and starts a child process with a real and a temporary storage."
+    },
+    "asserts": {
+      "es": "Se rechaza todo almacén real, fuera de la raíz o con «..»; se acepta el temporal; el proceso hijo termina con el código de rechazo ante el almacén real y con éxito ante el temporal; el directorio de datos real no cambia.",
+      "en": "Any real storage, outside the root or with «..» is rejected; the temporary one is accepted; the child process ends with the rejection code for the real storage and succeeds for the temporary one; the real data directory does not change."
+    },
+    "behavior": {
+      "es": "Las pruebas de reinicio no pueden escribir en los datos del proyecto del usuario aunque se configuren mal.",
+      "en": "The restart tests cannot write to the user's project data even if misconfigured."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Cinco rutas de almacén y dos procesos hijo.",
+      "en": "Five storage paths and two child processes."
+    },
+    "result": {
+      "es": "Rechazo o aceptación según la ruta.",
+      "en": "Rejection or acceptance depending on the path."
+    },
+    "expected": {
+      "es": "Código de salida 3 ante el almacén real y 0 ante el temporal, con el directorio de datos sin cambios.",
+      "en": "Exit code 3 for the real storage and 0 for the temporary one, with the data directory unchanged."
+    },
+    "guarantee": {
+      "es": "Una configuración equivocada detiene la prueba antes de tocar datos reales.",
+      "en": "A wrong configuration stops the test before touching real data."
+    },
+    "limits": {
+      "es": "Protege las pruebas de importación y reinicio; no impide que otras pruebas del proyecto usen el directorio real si no lo aíslan.",
+      "en": "It protects the import and restart tests; it does not stop other project tests from using the real directory if they do not isolate it."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Protección de infraestructura de pruebas, no de un comportamiento del producto.",
+      "en": "Protection of the test infrastructure, not of product behavior."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [],
+    "confidence": "ANALYZED",
+    "src": []
+  },
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalImportStorageGuard",
+    "name": {
+      "es": "Protección que impide que las pruebas de reinicio usen el almacenamiento real",
+      "en": "Guard that stops the restart tests from using the real storage"
+    },
+    "type": "OTHER",
+    "layer": "platform",
+    "caps": [
+      "recovery",
+      "persistence"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "No contiene casos: comprueba, antes de arrancar la aplicación en un proceso hijo, que todo almacén y el directorio de trabajo están dentro de la raíz temporal.",
+      "en": "Contains no cases: before the application starts in a child process it checks that every store and the working directory are inside the temporary root."
+    },
+    "asserts": {
+      "es": "No hay aserciones sobre el producto.",
+      "en": "There are no assertions on the product."
+    },
+    "behavior": {
+      "es": "No verifica comportamiento del producto por sí mismo.",
+      "en": "Verifies no product behaviour by itself."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Ninguno: soporte o herramienta de la certificación.",
+      "en": "None: certification support or tooling."
+    },
+    "result": {
+      "es": "No produce resultado de prueba del producto.",
+      "en": "Produces no product test result."
+    },
+    "expected": {
+      "es": "No aplica.",
+      "en": "Not applicable."
+    },
+    "guarantee": {
+      "es": "Ninguna sobre el producto.",
+      "en": "None about the product."
+    },
+    "limits": {
+      "es": "No es una prueba y no debe contarse como evidencia; la ejercen las pruebas de reinicio y la del propio guardián.",
+      "en": "It is not a test and must not be counted as evidence; the restart tests and the guard test exercise it."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Soporte o herramienta auxiliar, no una prueba del producto.",
+      "en": "Support or auxiliary tooling, not a product test."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.project.recovery.ExternalImportStorageGuardTests"
+    ],
+    "confidence": "ANALYZED",
+    "src": []
+  },
+  {
+    "id": "script:scripts/archify/v3/tests/Test-HydraCertificationSupport.ps1",
+    "name": {
+      "es": "Pruebas del módulo de apoyo del lanzador de certificación",
+      "en": "Tests of the certification launcher support module"
+    },
+    "type": "UNIT",
+    "layer": "behavior",
+    "caps": [
+      "recovery",
+      "persistence"
+    ],
+    "procs": [],
+    "pre": null,
+    "executes": {
+      "es": "Ejecuta en Windows PowerShell las reglas del lanzador: huellas por contenido, puntos de control, comparación del almacenamiento real y aislamiento del entorno de ejecución.",
+      "en": "Runs in Windows PowerShell the launcher rules: content fingerprints, checkpoints, real storage comparison and isolation of the execution environment."
+    },
+    "asserts": {
+      "es": "No hay aserciones sobre el producto.",
+      "en": "There are no assertions on the product."
+    },
+    "behavior": {
+      "es": "No verifica comportamiento del producto por sí mismo.",
+      "en": "Verifies no product behaviour by itself."
+    },
+    "rule": null,
+    "scenario": {
+      "es": "Ninguno: soporte o herramienta de la certificación.",
+      "en": "None: certification support or tooling."
+    },
+    "result": {
+      "es": "No produce resultado de prueba del producto.",
+      "en": "Produces no product test result."
+    },
+    "expected": {
+      "es": "No aplica.",
+      "en": "Not applicable."
+    },
+    "guarantee": {
+      "es": "Ninguna sobre el producto.",
+      "en": "None about the product."
+    },
+    "limits": {
+      "es": "Prueba la herramienta de certificación, no el producto; no demuestra ninguna etapa.",
+      "en": "Tests the certification tool, not the product; it proves no stage."
+    },
+    "strength": "LIMITED",
+    "strengthWhy": {
+      "es": "Soporte o herramienta auxiliar, no una prueba del producto.",
+      "en": "Support or auxiliary tooling, not a product test."
+    },
+    "external": "none",
+    "cases": [],
+    "related": [
+      "java:com.example.editor.project.recovery.ExternalImportStorageGuardTests"
+    ],
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]

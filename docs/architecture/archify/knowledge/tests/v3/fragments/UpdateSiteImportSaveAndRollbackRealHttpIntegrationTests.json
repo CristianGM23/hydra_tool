@@ -1,0 +1,101 @@
+[
+  {
+    "id": "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests",
+    "name": {
+      "es": "Importar, guardar y revertir un update site sin Sirius por HTTP real",
+      "en": "Import, save and roll back a non-Sirius update site over real HTTP"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["recovery"],
+    "procs": [
+      {"id": "recovery_author_wizard", "stages": ["h"], "match": "direct"},
+      {"id": "recovery_lifecycle", "stages": ["a1"], "match": "direct"},
+      {"id": "recovery_persist_rollback", "stages": ["d1", "d3"], "match": "direct"},
+      {"id": "recovery_author_workspace", "stages": ["g", "h"], "match": "direct"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryController.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteMaterializationController.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryPackageStore.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal vacío para todos los almacenes; el modelo Ecore del fixture Sirius más un diagrama Ecore clásico, sin definición Sirius.",
+      "en": "Empty temporary directory for every store; the Ecore model of the Sirius fixture plus a classic Ecore diagram, with no Sirius definition."
+    },
+    "setup": {
+      "es": "Servidor Tomcat real en puerto aleatorio y cliente HTTP real; controladores, servicios y almacenes canónicos reales sin dobles. Los pasos son ordenados y comparten el estado del disco.",
+      "en": "Real Tomcat server on a random port and a real HTTP client; real controllers, services and canonical stores with no test doubles. Steps are ordered and share the disk state."
+    },
+    "executes": {
+      "es": "HttpClient contra /api/update-site-imports: analyze, materialize (persist=false, persist=true con selección vacía y con una representación), materialize/rollback e import (dos veces), con el contexto Spring real y todos los almacenes en un directorio temporal.",
+      "en": "HttpClient against /api/update-site-imports: analyze, materialize (persist=false, persist=true with an empty selection and with one representation), materialize/rollback and import (twice), over the real Spring context with every store in a temp directory."
+    },
+    "asserts": {
+      "es": "Ficheros .metamodel.json y .editor.json leídos del disco: ausentes tras analizar, previsualizar y guardar con selección vacía (400); presentes tras guardar con las clases del fichero de expectativas y una sola representación; ausentes tras el rollback; import deja solo el metamodelo y su paquete y un segundo import da 4xx con los bytes intactos.",
+      "en": "Files .metamodel.json and .editor.json read from disk: absent after analyze, preview and an empty-selection save (400); present after saving with the classes of the expectations file and one representation; absent after rollback; import leaves only the metamodel and its package and a second import gives 4xx with bytes untouched."
+    },
+    "behavior": {
+      "es": "Importar un update site sin Sirius guarda el metamodelo recuperado y su paquete de recuperación; materializar solo guarda si se pide, escribe únicamente las capas elegidas y se puede revertir por completo.",
+      "en": "Importing a non-Sirius update site saves the recovered metamodel and its recovery package; materializing only saves when asked, writes only the chosen layers and can be fully rolled back."
+    },
+    "rule": {
+      "es": "Una vista previa nunca escribe; una selección vacía no se puede guardar; revertir con los identificadores devueltos deja los almacenes como al inicio; importar dos veces el mismo metamodelo no lo sobrescribe.",
+      "en": "A preview never writes; an empty selection cannot be saved; rolling back with the returned identifiers leaves the stores as at the start; importing the same metamodel twice does not overwrite it."
+    },
+    "scenario": {
+      "es": "Subir por HTTP real el modelo Ecore del fixture con un diagrama clásico: analizar, previsualizar, intentar guardar con selección vacía, guardar con una representación, revertir, e importar y guardar dos veces.",
+      "en": "Upload over real HTTP the fixture Ecore model with a classic diagram: analyze, preview, try to save with an empty selection, save with one representation, roll back, and import and save twice."
+    },
+    "result": {
+      "es": "Los documentos de metamodelo y de editor aparecen en disco solo tras guardar, con las clases esperadas y una representación; tras revertir no queda ninguno; el segundo import se rechaza sin cambiar el documento.",
+      "en": "Metamodel and editor documents appear on disk only after saving, with the expected classes and one representation; after rollback none is left; the second import is refused without changing the document."
+    },
+    "expected": {
+      "es": "Todas las aserciones sobre disco y códigos de respuesta se cumplen en los seis pasos ordenados.",
+      "en": "All assertions on disk and response codes hold across the six ordered steps."
+    },
+    "guarantee": {
+      "es": "Guardar, revertir y guardar directamente una recuperación de update site funciona de extremo a extremo por HTTP y deja en disco exactamente lo esperado.",
+      "en": "Saving, rolling back and directly saving an update-site recovery works end to end over HTTP and leaves exactly the expected content on disk."
+    },
+    "limits": {
+      "es": "Solo cubre un update site sin Sirius (editor genérico): no prueba guardar ni deshacer con las capas del adaptador Sirius (reglas, acciones e imágenes del editor), ni la reversión con una versión obsoleta, ni capas distintas del diagrama clásico. Los límites de partes del multipart se elevan para el test.",
+      "en": "Covers only a non-Sirius update site (generic editor): it does not test saving or undoing with the Sirius adapter layers (rules, actions and editor images), rollback with a stale version, or layers other than the classic diagram. Multipart part limits are raised for the test."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Servidor y almacenes reales, oráculo independiente en disco y casos de rechazo reales.",
+      "en": "Real server and stores, independent on-disk oracle and real refusal cases."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "savingANonApplicablePreviewIsRejectedWithoutWriting",
+        "scenario": {"es": "Guardar con una selección explícita vacía.", "en": "Save with an explicit empty selection."},
+        "result": {"es": "Respuesta 400 y ningún documento en disco.", "en": "400 response and no document on disk."}
+      },
+      {
+        "n": "importAndSaveWritesTheMetamodelAndRefusesToOverwriteIt",
+        "scenario": {"es": "Importar y guardar dos veces el mismo update site.", "en": "Import and save the same update site twice."},
+        "result": {"es": "Solo el metamodelo y su paquete; el segundo intento da 4xx sin cambiar el documento.", "en": "Only the metamodel and its package; the second attempt gives 4xx without changing the document."}
+      }
+    ],
+    "src": [
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests.java", "line": 203},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests.java", "line": 220},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests.java", "line": 222},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests.java", "line": 232},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests.java", "line": 244},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests.java", "line": 255},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests.java", "line": 260},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests.java", "line": 273},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests.java", "line": 289},
+      {"path": "src/test/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportSaveAndRollbackRealHttpIntegrationTests.java", "line": 301}
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

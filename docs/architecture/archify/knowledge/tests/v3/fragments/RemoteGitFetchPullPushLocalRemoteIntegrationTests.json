@@ -1,0 +1,106 @@
+[
+  {
+    "id": "java:com.example.editor.remote.git.RemoteGitFetchPullPushLocalRemoteIntegrationTests",
+    "external": "real",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Traer, fusionar y enviar con Git real contra un remoto local",
+      "en": "Fetch, pull and push with real Git against a local remote"
+    },
+    "type": "INTEGRATION",
+    "layer": "external",
+    "caps": ["external_repositories"],
+    "procs": [
+      { "id": "repos_author_git", "stages": ["a"], "match": "direct" },
+      { "id": "repos_author_git", "stages": ["b"], "match": "indirect" },
+      { "id": "x_remote_repository_exchange", "stages": ["g1", "d3"], "match": "indirect" }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/remote/git/RemoteGitWorkspaceService.java",
+      "src/main/java/com/example/editor/remote/git/NativeGitRunner.java",
+      "src/main/java/com/example/editor/remote/git/GitRemoteUrlResolver.java",
+      "src/main/java/com/example/editor/remote/storage/ConfiguredRemoteStorageCredentialResolver.java"
+    ],
+    "pre": {
+      "es": "Git instalado en el equipo; un repositorio remoto vacío en una carpeta temporal; sin red ni credenciales reales.",
+      "en": "Git installed on the machine; an empty remote repository in a temporary folder; no network or real credentials."
+    },
+    "setup": {
+      "es": "Servicio real con el binario git; el perfil apunta al nombre de GitHub y la configuración local del repositorio redirige esa dirección a la carpeta del remoto; un segundo clon simula a otra persona.",
+      "en": "Real service with the git binary; the profile points at the GitHub name and the repository's local configuration redirects that address to the remote folder; a second clone simulates another person."
+    },
+    "executes": {
+      "es": "RemoteGitWorkspaceService.execute (PUSH, FETCH, PULL, COMMIT_ALL, ABORT_MERGE) y repositoryTree sobre NativeGitRunner real y un proyecto local; git se ejecuta aparte sobre el remoto y el segundo clon.",
+      "en": "RemoteGitWorkspaceService.execute (PUSH, FETCH, PULL, COMMIT_ALL, ABORT_MERGE) and repositoryTree over a real NativeGitRunner and a local project; git is run separately on the remote and the second clone."
+    },
+    "asserts": {
+      "es": "Identificadores de commit y contenido leídos del remoto con git; adelanto y retraso tras traer; ramas locales y remotas con sus commits, padres y estado; envío divergente rechazado con el remoto intacto; conflicto con marcas, fusión cancelada y literales de las operaciones disponibles.",
+      "en": "Commit ids and content read from the remote with git; ahead and behind after fetching; local and remote branches with their commits, parents and status; divergent push rejected with the remote intact; conflict with markers, cancelled merge and literals of the available operations."
+    },
+    "behavior": {
+      "es": "Tras enviar y traer, el árbol de ramas muestra las ramas locales y remotas con sus commits recientes y cuánto se adelanta o retrasa cada una; traer, fusionar y enviar mueven commits reales; un envío con historia divergente se rechaza sin pisar el remoto y un conflicto nunca se resuelve en silencio.",
+      "en": "After pushing and fetching, the branch tree shows local and remote branches with their recent commits and how far each is ahead or behind; fetch, pull and push move real commits; a push with divergent history is rejected without overwriting the remote and a conflict is never resolved silently."
+    },
+    "rule": {
+      "es": "Nunca se fuerza un envío ni se reinicia el repositorio; si las historias divergen, el avance se rechaza o el conflicto se muestra marcado.",
+      "en": "A push is never forced and the repository is never reset; if histories diverge, the update is rejected or the conflict is shown marked."
+    },
+    "scenario": {
+      "es": "Un proyecto local que envía su primer commit, otra persona que publica un commit en el remoto, el proyecto que trae y fusiona, y luego historias divergentes sobre el mismo fichero.",
+      "en": "A local project that pushes its first commit, another person who publishes a commit to the remote, the project that fetches and pulls, and then divergent histories on the same file."
+    },
+    "result": {
+      "es": "El remoto recibe exactamente el commit local; tras traer, el proyecto va un commit por detrás y el árbol lo refleja; tras fusionar coincide con el remoto; el envío divergente falla con el remoto intacto; la fusión con conflicto deja marcas y se cancela por completo.",
+      "en": "The remote receives exactly the local commit; after fetching, the project is one commit behind and the tree reflects it; after pulling it matches the remote; the divergent push fails with the remote intact; the conflicting merge leaves markers and is cancelled completely."
+    },
+    "expected": {
+      "es": "Las aserciones sobre identificadores, contenidos, árbol, rechazo y conflicto se cumplen en los tres casos con git real.",
+      "en": "The assertions on ids, contents, tree, rejection and conflict hold in the three cases with real git."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que el árbol de ramas y las operaciones de traer, fusionar y enviar funcionan contra un remoto Git sin forzar ni resolver conflictos por su cuenta.",
+      "en": "Real evidence that the branch tree and the fetch, pull and push operations work against a Git remote without forcing or resolving conflicts on their own."
+    },
+    "limits": {
+      "es": "El remoto es una carpeta local reescrita desde el nombre de GitHub: no se prueban red, autenticación ni el proveedor real. Elegir la operación es interfaz (g1 y b solo indirectas) y la rama de versión distinta de la transferencia de archivos no se ejerce aquí (d3 indirecta).",
+      "en": "The remote is a local folder rewritten from the GitHub name: network, authentication and the real provider are not tested. Choosing the operation is interface (g1 and b only indirect) and the different-version branch of file transfer is not exercised here (d3 indirect)."
+    },
+    "strengthWhy": {
+      "es": "Git y disco reales, oráculo independiente (git ejecutado aparte sobre el remoto y otro clon) y casos negativos, aunque el remoto sea local.",
+      "en": "Real git and disk, independent oracle (git run separately on the remote and another clone) and negative cases, although the remote is local."
+    },
+    "cases": [
+      {
+        "n": "afterPushingAndFetchingTheTreeShowsLocalAndRemoteBranchesWithRecentCommits",
+        "scenario": { "es": "Enviar, otra persona publica y traer.", "en": "Push, another person publishes and fetch." },
+        "result": { "es": "Árbol con ramas locales y remotas, commits y retraso 1.", "en": "Tree with local and remote branches, commits and behind 1." }
+      },
+      {
+        "n": "pullMovesRealCommitsAndADivergentPushIsRejectedWithoutOverwritingTheRemote",
+        "scenario": { "es": "Fusionar lo traído y enviar con historia divergente.", "en": "Pull what was fetched and push with divergent history." },
+        "result": { "es": "Se actualiza el proyecto; el envío divergente se rechaza.", "en": "The project updates; the divergent push is rejected." }
+      },
+      {
+        "n": "withoutChangesAllIsFineAndWithDivergentHistoriesTheConflictIsShownAndNeverResolvedSilently",
+        "scenario": { "es": "Sin cambios y con cambios en la misma línea.", "en": "Without changes and with changes on the same line." },
+        "result": { "es": "Todo correcto, avance rechazado y conflicto marcado y cancelable.", "en": "All fine, update rejected and conflict marked and cancellable." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.remote.git.RemoteGitWorkspaceServiceLocalOperationsIntegrationTests",
+      "java:com.example.editor.remote.storage.RemoteGithubLoopbackTransferIntegrationTests"
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/remote/git/RemoteGitFetchPullPushLocalRemoteIntegrationTests.java", "line": 105 },
+      { "path": "src/test/java/com/example/editor/remote/git/RemoteGitFetchPullPushLocalRemoteIntegrationTests.java", "line": 118 },
+      { "path": "src/test/java/com/example/editor/remote/git/RemoteGitFetchPullPushLocalRemoteIntegrationTests.java", "line": 125 },
+      { "path": "src/test/java/com/example/editor/remote/git/RemoteGitFetchPullPushLocalRemoteIntegrationTests.java", "line": 151 },
+      { "path": "src/test/java/com/example/editor/remote/git/RemoteGitFetchPullPushLocalRemoteIntegrationTests.java", "line": 153 },
+      { "path": "src/test/java/com/example/editor/remote/git/RemoteGitFetchPullPushLocalRemoteIntegrationTests.java", "line": 178 },
+      { "path": "src/test/java/com/example/editor/remote/git/RemoteGitFetchPullPushLocalRemoteIntegrationTests.java", "line": 188 },
+      { "path": "src/test/java/com/example/editor/remote/git/RemoteGitFetchPullPushLocalRemoteIntegrationTests.java", "line": 194 }
+    ]
+  }
+]

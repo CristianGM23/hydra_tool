@@ -1,0 +1,177 @@
+[
+  {
+    "id": "pw:e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+    "name": {
+      "es": "Importar un update-site sin Sirius de extremo a extremo: opciones de rigor y de guardado y escritura en disco",
+      "en": "Importing a non-Sirius update site end to end: strictness and saving options and what lands on disk"
+    },
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": [
+      "recovery"
+    ],
+    "procs": [
+      {
+        "id": "recovery_author_wizard",
+        "stages": [
+          "c",
+          "g"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "frontend/src/update-site-import-center/UpdateSiteImportCenter.tsx",
+      "frontend/src/update-site-import-center/api.ts",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryController.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryPackageStore.java",
+      "src/main/java/com/example/editor/metamodel/importing/MetamodelImportService.java"
+    ],
+    "pre": {
+      "es": "Servidor real con almacenamiento temporal propio; se sube desde el navegador solo la carpeta del proyecto de metamodelo del ejemplo (un modelo Ecore y su GenModel, sin definición Sirius).",
+      "en": "Real server with its own temporary storage; only the sample's metamodel project folder (an Ecore model and its GenModel, no Sirius definition) is uploaded from the browser."
+    },
+    "setup": {
+      "es": "Navegador real, interfaz en inglés, sin simulaciones. Identificadores únicos por ejecución; las capas visuales se desmarcan para importar solo el metamodelo.",
+      "en": "Real browser, interface in English, no simulations. Identifiers unique per run; visual layers are unticked to import only the metamodel."
+    },
+    "executes": {
+      "es": "Abre #/update-site-imports en modo guiado, sube la carpeta, escribe el identificador de destino, desmarca las tres capas, ajusta 'Strict exact recovery', 'Overwrite existing metamodel' y 'Persist recovery package', analiza, avanza y pulsa 'Finish import'; repite sin sobrescribir y con sobrescribir.",
+      "en": "Opens #/update-site-imports in guided mode, uploads the folder, types the target id, unticks the three layers, sets 'Strict exact recovery', 'Overwrite existing metamodel' and 'Persist recovery package', analyzes, moves on and presses 'Finish import'; repeats without and with overwrite."
+    },
+    "asserts": {
+      "es": "Antes de pulsar el botón final no existe ni el metamodelo ni el paquete; después existen con el identificador elegido; sin sobrescribir el segundo intento muestra un error y el documento no cambia, con sobrescribir se acepta; sin 'guardar paquete' no se escribe paquete; con modo estricto la puerta sigue a la decisión del análisis real.",
+      "en": "Before pressing the final button neither the metamodel nor the package exists; afterwards they exist with the chosen id; without overwrite the second attempt shows an error and the document does not change, with overwrite it is accepted; without 'persist package' no package is written; in strict mode the gate follows the real analysis decision."
+    },
+    "behavior": {
+      "es": "Una persona importa el metamodelo recuperado de un update-site eligiendo el rigor y si se guarda el paquete de recuperación; nada se guarda hasta el último botón y lo guardado respeta esas opciones.",
+      "en": "A person imports the metamodel recovered from an update site choosing the strictness and whether the recovery package is saved; nothing is saved until the last button and what is saved respects those options."
+    },
+    "rule": {
+      "es": "Importar un identificador ya existente exige marcar sobrescribir, el paquete de recuperación solo se guarda si se pide y el modo estricto solo admite recuperación exacta.",
+      "en": "Importing an existing id requires ticking overwrite, the recovery package is only saved when requested and strict mode only admits exact recovery."
+    },
+    "scenario": {
+      "es": "Proyecto de metamodelo con su modelo Ecore: importación con paquete, segunda importación sin y con sobrescribir, importación sin paquete e importación en modo estricto.",
+      "en": "Metamodel project with its Ecore model: import with package, second import without and with overwrite, import without package and import in strict mode."
+    },
+    "result": {
+      "es": "El metamodelo y, si se pidió, el paquete de recuperación quedan en disco con el identificador elegido; lo no permitido se rechaza sin cambiar nada.",
+      "en": "The metamodel and, if requested, the recovery package land on disk with the chosen id; what is not allowed is rejected without changing anything."
+    },
+    "expected": {
+      "es": "Una ejecución correcta escribe solo lo pedido, rechaza el reemplazo sin permiso y acepta el reemplazo autorizado.",
+      "en": "A passing run writes only what was requested, rejects replacement without permission and accepts authorized replacement."
+    },
+    "guarantee": {
+      "es": "Las opciones de rigor y de guardado del asistente de recuperación determinan lo que el servidor real escribe en disco al importar.",
+      "en": "The wizard's strictness and saving options determine what the real server writes to disk on import."
+    },
+    "limits": {
+      "es": "La interfaz no tiene cuadro de confirmación ni botón de cancelar al importar: la confirmación es el botón final y cancelar es abandonar el asistente. Se prueba que el botón final está protegido hasta analizar, que abandonar no escribe nada y que pulsarlo sí escribe. Solo se importa el metamodelo, sin capas visuales.",
+      "en": "The interface has no confirmation dialog or cancel button on import: confirmation is the final button and cancelling is leaving the wizard. It is tested that the final button is protected until analysis, that leaving writes nothing and that pressing it does write. Only the metamodel is imported, with no visual layers."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción real, servidor real y oráculo independiente (ficheros en disco y análisis directo) sobre el resultado de las opciones de rigor, sobrescritura y paquete, con rechazos.",
+      "en": "Real action, real server and an independent oracle (files on disk and direct analysis) on the outcome of the strictness, overwrite and package options, with rejections."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "importar guarda el metamodelo y el paquete; sin sobrescribir se rechaza el segundo intento y con sobrescribir se acepta",
+        "scenario": {
+          "es": "Importación, repetición sin sobrescribir y repetición con sobrescribir.",
+          "en": "Import, repetition without overwrite and repetition with overwrite."
+        },
+        "result": {
+          "es": "Escritura inicial, rechazo sin cambios y aceptación autorizada.",
+          "en": "Initial write, unchanged rejection and authorized acceptance."
+        }
+      },
+      {
+        "n": "desmarcar guardar paquete importa sin escribir el paquete",
+        "scenario": {
+          "es": "Se quita 'Persist recovery package' y se importa.",
+          "en": "'Persist recovery package' is unticked and the import runs."
+        },
+        "result": {
+          "es": "El metamodelo existe y ningún paquete lleva su identificador.",
+          "en": "The metamodel exists and no package carries its id."
+        }
+      },
+      {
+        "n": "abandonar el asistente en el último paso no escribe nada y la importación solo ocurre al pulsar el botón final",
+        "scenario": {
+          "es": "Se llega al último paso, se abandona, y se repite el recorrido pulsando el botón final.",
+          "en": "The last step is reached, abandoned, and the walk-through is repeated pressing the final button."
+        },
+        "result": {
+          "es": "Al abandonar no hay metamodelo ni paquete; al confirmar existen ambos.",
+          "en": "On leaving there is no metamodel or package; on confirming both exist."
+        }
+      },
+      {
+        "n": "con el modo estricto la puerta de importación sigue a la decisión del análisis real",
+        "scenario": {
+          "es": "Modo estricto con la misma carpeta.",
+          "en": "Strict mode with the same folder."
+        },
+        "result": {
+          "es": "Se importa o se bloquea igual que decide el análisis directo.",
+          "en": "It imports or is blocked exactly as the direct analysis decides."
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 35
+      },
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 47
+      },
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 58
+      },
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 61
+      },
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 68
+      },
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 78
+      },
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 91
+      },
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 105
+      },
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 116
+      },
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 101
+      },
+      {
+        "path": "frontend/e2e/real/publication/recovery-update-site-import-confirm.spec.ts",
+        "line": 109
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

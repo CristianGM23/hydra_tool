@@ -3,6 +3,7 @@ import { readValidationJson } from '../validation/http';
 import type { EventArchitectureDiagramDocument, EventArchitectureDiagramLoadResult, EventModelLoadResult, EventModelSaveResponse, EventBindingModel, EventDefinitionModel } from './types';
 import { normalizeEventModelLoadResult, normalizeEventModelSaveResponse } from './eventModelNormalization';
 import { measureHydraDiagramAsyncOperation } from '../diagram/performanceTelemetry';
+import { withHydraConnectionDefaults } from '../designer-ui/HydraConnectionVisual';
 const route = (metamodelId: string): string => `/api/canonical-metamodels/${encodeURIComponent(metamodelId)}/events`;
 export async function loadEventModels(metamodelId: string): Promise<EventModelLoadResult> {
     return normalizeEventModelLoadResult(await readValidationJson<EventModelLoadResult>(await backendFetch(route(metamodelId))));
@@ -26,6 +27,6 @@ export async function saveEventArchitectureDiagram(metamodelId: string, diagram:
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (etag !== '') headers['If-Match'] = etag;
     return measureHydraDiagramAsyncOperation(`event-architecture:${metamodelId}`, 'commit', async () =>
-        readValidationJson<EventArchitectureDiagramLoadResult>(await backendFetch(diagramRoute(metamodelId), { method: 'PUT', headers, body: JSON.stringify(diagram) })),
+        readValidationJson<EventArchitectureDiagramLoadResult>(await backendFetch(diagramRoute(metamodelId), { method: 'PUT', headers, body: JSON.stringify({ ...diagram, edges: diagram.edges.map(withHydraConnectionDefaults) }) })),
         { nodeCount: diagram.nodes.length, edgeCount: diagram.edges.length });
 }

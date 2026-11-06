@@ -1,0 +1,171 @@
+[
+  {
+    "id": "java:com.example.editor.event.runtime.EventBindingRuntimeRealChainIntegrationTests",
+    "name": {
+      "es": "Cadena real de enlaces de eventos en ejecucion",
+      "en": "Real chain of event bindings at runtime"
+    },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": [
+      "events"
+    ],
+    "procs": [
+      {
+        "id": "events_binding_runtime",
+        "stages": [
+          "d0",
+          "a1",
+          "d1",
+          "a2",
+          "a3",
+          "a4",
+          "d2",
+          "r1"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "events_publish_session",
+        "stages": [
+          "a5"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "x_event_flow_to_reward",
+        "stages": [
+          "bind"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/event/runtime/EventBindingRuntimeService.java",
+      "src/main/java/com/example/editor/event/runtime/EventBindingValueResolver.java",
+      "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java",
+      "src/main/java/com/example/editor/event/EventModelApplicationService.java",
+      "src/main/java/com/example/editor/event/expression/CanonicalEventExpressionContext.java"
+    ],
+    "pre": {
+      "es": "Directorio temporal escribible, un metamodelo real y un modelo de expresiones real guardados.",
+      "en": "Writable temp directory, a real metamodel and a real expression model already saved."
+    },
+    "executes": {
+      "es": "EventBindingRuntimeService con bus en memoria real, EventModelApplicationService y repositorios JSON reales, repositorio de expresiones JSON real y ExpressionEvaluator real, sin Mockito.",
+      "en": "EventBindingRuntimeService with a real in-memory bus, real EventModelApplicationService and JSON repositories, real JSON expression repository and real ExpressionEvaluator, without Mockito."
+    },
+    "asserts": {
+      "es": "Compara con literales los eventos que el bus entrega (tipos, payload, causa, correlacion, profundidad), el corte exacto a 33 eventos con profundidad 32 y los avisos capturados con un ListAppender de logback.",
+      "en": "Compares with literals the events the bus delivers (types, payload, cause, correlation, depth), the exact cut at 33 events with depth 32 and the warnings captured with a logback ListAppender."
+    },
+    "behavior": {
+      "es": "Un enlace solo actua si esta activo, su origen coincide y su condicion es verdadera; rellena el destino por ruta, expresion o valor fijo; las cadenas de enlaces se cortan a 32 niveles; la politica de error decide si se reintenta, se avisa o se desactiva.",
+      "en": "A binding only acts if it is enabled, its source matches and its condition is true; it fills the target by path, expression or fixed value; binding chains are cut at 32 levels; the error policy decides whether to retry, warn or disable."
+    },
+    "rule": {
+      "es": "SKIP y REPORT siguen intentando tras un fallo; disable binding deja de actuar aunque se arregle la causa hasta que refresh(ambito) lo reactiva; REPORT escribe un aviso.",
+      "en": "SKIP and REPORT keep trying after a failure; disable binding stops acting even if the cause is fixed until refresh(scope) reactivates it; REPORT writes a warning."
+    },
+    "scenario": {
+      "es": "Condicion verdadera/falsa, enlace desactivado, tres copias, bucle A->B->A y tres politicas de error con una expresion rota que luego se arregla.",
+      "en": "True/false condition, disabled binding, three mappings, A->B->A loop and three error policies with a broken expression that is later fixed."
+    },
+    "result": {
+      "es": "Los eventos derivados aparecen solo cuando corresponde, con payload, causa y profundidad esperados; el bucle produce 33 eventos; DISABLE no actua hasta el refresh.",
+      "en": "Derived events appear only when due, with expected payload, cause and depth; the loop yields 33 events; DISABLE does not act until the refresh."
+    },
+    "expected": {
+      "es": "Todas las aserciones pasan con literales exactos.",
+      "en": "All assertions pass with exact literals."
+    },
+    "guarantee": {
+      "es": "El motor de enlaces deriva eventos solo bajo las reglas declaradas, evita bucles infinitos y aplica la politica de error configurada.",
+      "en": "The binding engine derives events only under the declared rules, avoids infinite loops and applies the configured error policy."
+    },
+    "limits": {
+      "es": "El estado de desactivacion solo vive en memoria y no se prueba tras reiniciar; no cubre el arranque con Spring ni tipos de campo en las copias.",
+      "en": "The disabled state only lives in memory and is not tested after a restart; does not cover Spring startup or field types in mappings."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Cadena real completa sin mocks, oraculo con literales y observacion independiente de bus y log, con casos negativos.",
+      "en": "Full real chain without mocks, literal oracle and independent observation of bus and log, with negative cases."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "aBooleanConditionActsOnlyWhenTrueAndDisabledOrUnboundSourcesAreIgnored",
+        "scenario": {
+          "es": "Condicion sobre el payload y enlace desactivado.",
+          "en": "Payload condition and disabled binding."
+        },
+        "result": {
+          "es": "Solo la condicion verdadera deriva.",
+          "en": "Only the true condition derives."
+        }
+      },
+      {
+        "n": "aCycleBetweenTwoBindingsIsCutExactlyAtDepthThirtyTwo",
+        "scenario": {
+          "es": "Enlaces A->B y B->A.",
+          "en": "A->B and B->A bindings."
+        },
+        "result": {
+          "es": "33 eventos y el ultimo con profundidad 32.",
+          "en": "33 events and the last at depth 32."
+        }
+      },
+      {
+        "n": "errorPoliciesSkipReportAndDisable...",
+        "scenario": {
+          "es": "Expresion rota y luego arreglada.",
+          "en": "Broken then fixed expression."
+        },
+        "result": {
+          "es": "DISABLE se reactiva solo con refresh.",
+          "en": "DISABLE reactivates only with refresh."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/event/runtime/EventBindingRuntimeRealChainIntegrationTests.java",
+        "line": 154
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/runtime/EventBindingRuntimeRealChainIntegrationTests.java",
+        "line": 185
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/runtime/EventBindingRuntimeRealChainIntegrationTests.java",
+        "line": 211
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/runtime/EventBindingRuntimeRealChainIntegrationTests.java",
+        "line": 221
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/runtime/EventBindingRuntimeRealChainIntegrationTests.java",
+        "line": 253
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/runtime/EventBindingRuntimeRealChainIntegrationTests.java",
+        "line": 264
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/runtime/EventBindingRuntimeRealChainIntegrationTests.java",
+        "line": 266
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/runtime/EventBindingRuntimeRealChainIntegrationTests.java",
+        "line": 248
+      },
+      {
+        "path": "src/test/java/com/example/editor/event/runtime/EventBindingRuntimeRealChainIntegrationTests.java",
+        "line": 183
+      }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

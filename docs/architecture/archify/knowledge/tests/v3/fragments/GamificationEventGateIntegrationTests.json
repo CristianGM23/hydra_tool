@@ -1,0 +1,43 @@
+[
+  {
+    "id": "java:com.example.editor.gamification.GamificationEventGateIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": { "es": "Gamificación: qué eventos llegan a puntuar", "en": "Gamification: which events get to score" },
+    "type": "INTEGRATION",
+    "layer": "behavior",
+    "caps": ["gamification", "events"],
+    "procs": [{ "id": "x_event_flow_to_reward", "stages": ["gate", "disc"], "match": "direct" }],
+    "prod": [
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+      "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java",
+      "src/main/java/com/example/editor/definition/runtime/session/EditorSessionEventPublisher.java"
+    ],
+    "pre": { "es": "Catálogo con una regla que da 2 puntos y directorio temporal vacío.", "en": "Catalogue with one rule worth 2 points and an empty temporary directory." },
+    "setup": { "es": "Bus de eventos, servicio de gamificación y repositorios JSON reales; el libro de puntos se lee aparte del disco.", "en": "Real event bus, gamification service and JSON repositories; the points ledger is read separately from disk." },
+    "executes": { "es": "Publicar por el bus eventos sin metamodelo, con profundidad 16 y 17, con el interruptor apagado en los metadatos, con profundidad 15 y eventos normales.", "en": "Publish on the bus events with no metamodel, with depth 16 and 17, with the switch off in the metadata, with depth 15 and ordinary events." },
+    "asserts": { "es": "Tras cada evento descartado el libro no existe; solo el de profundidad 15 crea una entrada de 2 puntos; dos eventos normales suman 4 puntos con sus identificadores literales.", "en": "After each discarded event the ledger does not exist; only the depth-15 event creates a 2-point entry; two ordinary events total 4 points with their literal identifiers." },
+    "behavior": { "es": "La gamificación ignora eventos sin metamodelo, demasiado encadenados o con la gamificación apagada, y puntúa el resto.", "en": "Gamification ignores events with no metamodel, chained too deeply or with gamification switched off, and scores the rest." },
+    "rule": { "es": "Solo puntúan los eventos con metamodelo, con la gamificación activa y con menos de 16 saltos de encadenamiento.", "en": "Only events with a metamodel, with gamification on and under 16 chaining hops score." },
+    "scenario": { "es": "Cinco eventos con distinta información de contexto y profundidad publicados en el bus real.", "en": "Five events with different context and depth information published on the real bus." },
+    "result": { "es": "El libro en disco solo contiene el evento de profundidad 15 con 2 puntos.", "en": "The ledger on disk holds only the depth-15 event with 2 points." },
+    "expected": { "es": "Los ficheros del libro coinciden con los conteos literales.", "en": "The ledger files match the literal counts." },
+    "guarantee": { "es": "El filtro de entrada del runtime de gamificación se comporta como se describe con el bus real.", "en": "The gamification runtime entry filter behaves as described with the real bus." },
+    "limits": { "es": "El apagado desde el editor se prueba publicando con el publicador del editor y no recorriendo una sesión completa de edición; no prueba el interruptor de flujos de eventos.", "en": "Switching off from the editor is tested by publishing through the editor publisher, not by walking a full editing session; it does not test the event-flow switch." },
+    "strengthWhy": { "es": "Bus, runtime y almacén reales con oráculo en disco y conteos literales.", "en": "Real bus, runtime and store with an on-disk oracle and literal counts." },
+    "cases": [
+      { "n": "onlyAnEventWithMetamodelBelowTheDepthLimitAndNotSwitchedOffScores", "scenario": { "es": "Cuatro eventos filtrados y uno válido.", "en": "Four filtered events and one valid." }, "result": { "es": "Una entrada de 2 puntos.", "en": "One 2-point entry." } },
+      { "n": "anOrdinaryEventScoresOnceAndTheLedgerCountIsLiteral", "scenario": { "es": "Dos eventos válidos y uno sin metamodelo.", "en": "Two valid events and one without metamodel." }, "result": { "es": "Dos entradas, 4 puntos.", "en": "Two entries, 4 points." } },
+      { "n": "anEditorEventWithGamificationSwitchedOffDoesNotScore", "scenario": { "es": "Evento del editor con la gamificación apagada.", "en": "Editor event with gamification switched off." }, "result": { "es": "No se crea el libro de puntos.", "en": "No points ledger is created." } },
+      { "n": "anEditorEventWithGamificationSwitchedOnScores", "scenario": { "es": "Evento del editor con la gamificación encendida.", "en": "Editor event with gamification switched on." }, "result": { "es": "Una entrada en el libro.", "en": "One ledger entry." } }
+    ],
+    "src": [
+      { "path": "src/test/java/com/example/editor/gamification/GamificationEventGateIntegrationTests.java", "line": 98 },
+      { "path": "src/test/java/com/example/editor/gamification/GamificationEventGateIntegrationTests.java", "line": 110 },
+      { "path": "src/test/java/com/example/editor/gamification/GamificationEventGateIntegrationTests.java", "line": 131 },
+      { "path": "src/test/java/com/example/editor/gamification/GamificationEventGateIntegrationTests.java", "line": 148 }
+    ]
+  }
+]

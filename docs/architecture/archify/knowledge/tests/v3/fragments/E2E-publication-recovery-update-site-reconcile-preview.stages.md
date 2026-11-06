@@ -1,0 +1,3 @@
+- recovery_author_workspace.d: las decisiones elegidas en cada desplegable (línea 32) viajan en la petición real (línea 44), la respuesta de reconciliar coincide con la llamada directa y la vista previa muestra sus recuentos (líneas 54 y siguientes); solo se ejerce si el ejemplo produce conflictos.
+- recovery_author_workspace.f: la materialización previsualizada con una sola representación no guarda y coincide con la llamada directa (líneas 69, 75 y 81) y no cambia ningún almacén (línea 87).
+- Sin guardado: no hay mensaje de importación ni reversión y los almacenes quedan iguales (línea 87).

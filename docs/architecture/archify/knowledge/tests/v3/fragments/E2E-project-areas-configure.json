@@ -1,0 +1,47 @@
+[
+  {
+    "id": "pw:e2e/real/project/areas-configure.spec.ts",
+    "name": { "es": "Áreas del proyecto: modo, casillas y dependencias con guardado real", "en": "Project areas: mode, checkboxes and dependencies saved for real" },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["project"],
+    "procs": [
+      { "id": "project_author_areas", "stages": ["a", "b", "c", "d"], "match": "direct" }
+    ],
+    "pre": null,
+    "executes": { "es": "Navegador real sobre la aplicación compilada y el backend real: abre el diálogo de áreas de un proyecto sembrado, cambia el modo, marca y desmarca áreas y pulsa aplicar o cancelar.", "en": "Real browser on the built application and the real backend: opens the areas dialog of a seeded project, changes the mode, ticks and unticks areas and presses apply or cancel." },
+    "asserts": { "es": "Las áreas dependientes se apagan o se encienden al instante en pantalla; al aplicar, el fichero del proyecto y la sesión del backend tienen el modo y las áreas esperados; al cancelar no cambia nada.", "en": "Dependent areas switch off or on immediately on screen; after applying, the project file and the backend session hold the expected mode and areas; after cancelling nothing changes." },
+    "behavior": { "es": "El usuario elige entre modo guiado y libre, marca o desmarca áreas y HYDRA mantiene coherentes las áreas que dependen unas de otras antes de guardar.", "en": "The user chooses between guided and free mode, ticks or unticks areas and HYDRA keeps interdependent areas consistent before saving." },
+    "rule": { "es": "Activar un área activa las que necesita, desactivarla apaga las que dependen de ella, y nada se guarda hasta confirmar.", "en": "Enabling an area enables what it needs, disabling it switches off what depends on it, and nothing is saved until the user confirms." },
+    "scenario": { "es": "Proyecto con calidad, correcciones, eventos y flujos activos: pasa a modo libre, apaga calidad, enciende correcciones (vuelve calidad), apaga eventos y aplica. En otra prueba cancela.", "en": "A project with quality rules, corrections, events and flows enabled: switch to free mode, switch quality off, switch corrections on (quality returns), switch events off and apply. Another test cancels." },
+    "result": { "es": "Tras aplicar, el proyecto queda en modo libre solo con calidad y correcciones; tras cancelar, queda exactamente como estaba.", "en": "After applying, the project is in free mode with only quality rules and corrections; after cancelling it is exactly as it was." },
+    "expected": { "es": "Casillas y contadores coherentes en pantalla, fichero y sesión del backend con el resultado aplicado, y sin cambios tras cancelar.", "en": "Consistent checkboxes and counters on screen, the file and backend session showing the applied result, and no change after cancelling." },
+    "guarantee": { "es": "El diálogo de áreas aplica las dependencias en ambos sentidos y guarda únicamente lo que el usuario confirma.", "en": "The areas dialog applies dependencies in both directions and saves only what the user confirms." },
+    "limits": { "es": "Solo recorre cuatro áreas con dependencias; no prueba todas las áreas ni cómo cambian las demás pantallas al activar o apagar un área. Interfaz en inglés.", "en": "It walks through four areas with dependencies only; it does not test every area or how the other screens react when an area is switched on or off. English interface." },
+    "strength": "STRONG",
+    "strengthWhy": { "es": "Acción real del usuario en navegador, backend real, lectura independiente del fichero guardado y rechazo comprobado al cancelar.", "en": "Real user action in a browser, real backend, independent reading of the saved file and a checked rejection when cancelling." },
+    "external": "none",
+    "cases": [
+      { "n": "modo libre, dependencias y guardado", "scenario": { "es": "Cambia a libre, apaga y enciende áreas con dependencias y aplica.", "en": "Switches to free, toggles areas with dependencies and applies." }, "result": { "es": "Se guardan modo libre y solo calidad y correcciones.", "en": "Free mode and only quality rules and corrections are saved." } },
+      { "n": "cancelar", "scenario": { "es": "Cambia modo y áreas pero cancela.", "en": "Changes mode and areas but cancels." }, "result": { "es": "El proyecto no cambia y el diálogo vuelve a mostrar lo guardado.", "en": "The project does not change and the dialog shows what was saved again." } }
+    ],
+    "related": [],
+    "src": [
+      { "path": "frontend/e2e/real/project/areas-configure.spec.ts", "line": 40 },
+      { "path": "frontend/e2e/real/project/areas-configure.spec.ts", "line": 48 },
+      { "path": "frontend/e2e/real/project/areas-configure.spec.ts", "line": 59 },
+      { "path": "frontend/e2e/real/project/areas-configure.spec.ts", "line": 71 },
+      { "path": "frontend/e2e/real/project/areas-configure.spec.ts", "line": 99 }
+    ],
+    "prod": [
+      "frontend/src/project-explorer/ProjectCapabilitiesDialog.tsx",
+      "frontend/src/project-explorer/ProjectExplorerWorkspace.tsx",
+      "frontend/src/project-explorer/projectApi.ts",
+      "src/main/java/com/example/editor/project/web/ProjectController.java",
+      "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java",
+      "src/main/java/com/example/editor/project/ProjectCapabilityDependencies.java",
+      "src/main/java/com/example/editor/project/ProjectDescriptor.java"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

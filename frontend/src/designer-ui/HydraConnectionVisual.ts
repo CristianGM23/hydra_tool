@@ -133,6 +133,24 @@ export function normalizeHydraConnectionVisual(value: Partial<HydraConnectionVis
     };
 }
 
+/**
+ * Completa con sus valores por defecto todos los campos de aspecto de una conexión persistida. El backend deserializa
+ * los números primitivos sin tolerar su ausencia, así que toda arista nueva debe viajar con el aspecto completo.
+ */
+export function withHydraConnectionDefaults<T extends HydraPersistedConnectionAppearance>(edge: T): T {
+    const visual = normalizeHydraConnectionVisual(edge as unknown as Partial<HydraConnectionVisualData>);
+    return {
+        ...edge,
+        routeStyle: visual.routeStyle, lineStyle: visual.lineStyle, lineColor: visual.lineColor, lineWidth: visual.lineWidth,
+        lineOpacity: visual.lineOpacity, lineBorderColor: visual.lineBorderColor, lineBorderWidth: visual.lineBorderWidth,
+        sourceTerminator: visual.sourceTerminator, targetTerminator: visual.targetTerminator,
+        sourceTerminatorFillColor: visual.sourceTerminatorFillColor, sourceTerminatorBorderColor: visual.sourceTerminatorBorderColor,
+        sourceTerminatorBorderWidth: visual.sourceTerminatorBorderWidth, sourceTerminatorSize: visual.sourceTerminatorSize,
+        targetTerminatorFillColor: visual.targetTerminatorFillColor, targetTerminatorBorderColor: visual.targetTerminatorBorderColor,
+        targetTerminatorBorderWidth: visual.targetTerminatorBorderWidth, targetTerminatorSize: visual.targetTerminatorSize
+    };
+}
+
 export function isHydraConnectionTerminator(value: unknown): value is HydraConnectionTerminator {
     return typeof value === 'string' && (HYDRA_CONNECTION_TERMINATORS as readonly string[]).includes(value);
 }

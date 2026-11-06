@@ -1,0 +1,4 @@
+- publication_author_codegen.ns: el espacio de nombres y el nombre escritos aparecen en la vista previa y en el fichero descargado, idéntico a la generación directa (líneas 52, 69, 77, 81).
+- publication_author_codegen.ok: tras ver la vista previa el usuario cambia una opción y el resultado cambia (líneas 54 y 59); la descarga usa las opciones finales (línea 81).
+- publication_generate_publish.t (direct): elegir destino cambia extensión y contenido (líneas 136-145); tercer test: sin modelo abierto la orden está deshabilitada y no viaja ninguna generación (línea 161), con Python se descarga un .py idéntico a la generación directa (líneas 179 y 185). El destino obligatorio no es alcanzable desde la pantalla (el selector siempre trae uno).
+- Fuera de alcance: paquete con pruebas, generación sobre una selección, destinos distintos de Java y Python.

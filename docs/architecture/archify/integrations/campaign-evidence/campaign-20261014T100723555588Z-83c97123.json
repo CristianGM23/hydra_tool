@@ -1,0 +1,262 @@
+{
+  "generatedBy": "HYDRA_ARCHIFY_MEGABRIDGE_V1",
+  "schemaVersion": 1,
+  "importedUtc": "2026-10-14T10:07:23+00:00",
+  "sourceRoot": "C:\\Users\\cristian.gomez\\Documents\\editor\\hydra",
+  "campaignReportDir": "C:\\Users\\cristian.gomez\\AppData\\Local\\HydraArchifyFuerteV1\\runs\\20261014-103039-040afc\\reports\\20261014-112856",
+  "campaignState": "PASS",
+  "completeCampaign": true,
+  "manifestMatchesCurrent": true,
+  "evidenceType": "LOCAL_CAMPAIGN_OBSERVATIONS_NOT_NATIVE_CERTIFICATION",
+  "nativeOfficialCertification": "NOT_EVALUATED",
+  "reportCheckpointSha256": "4843201eae7ffa1475ce05d31325de37bf185c83475614e698ddfc57ee87beba",
+  "reportCheckpointName": "0024-01791972442605713200-c4b564d198844782bdcd7ffe34296be5.json",
+  "testResults": [
+    {
+      "id": "S475",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/adapter/besser/BesserSdkTechnologyAdapterTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 94.0,
+      "logSha256": "930cfc5c4925867462645d49c7ac9dcec7c37b167cb741a6c3043fbddfc9117d",
+      "logRelativePath": "logs/S475.log"
+    },
+    {
+      "id": "S476",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/adapter/eclipse/EclipseModelingDistributionTechnologyAdapterTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 91.51,
+      "logSha256": "1a91ff3afd8ff417b06c35e33f3a62cba87755eca9b2f417211880b421684a83",
+      "logRelativePath": "logs/S476.log"
+    },
+    {
+      "id": "S477",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/adapter/emf/EmfTechnologyAdapterTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 95.79,
+      "logSha256": "745a509da163a291519212b2be930b7fb2f7d2539041608dcf59c9dd438741ce",
+      "logRelativePath": "logs/S477.log"
+    },
+    {
+      "id": "S478",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/adapter/glsp/EclipseGlspTechnologyAdapterTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 105.77,
+      "logSha256": "4f1d8ac9e69ad00e3d27872d44a6cfc11e8bb7bac50a7a02a0cb4015f64f112f",
+      "logRelativePath": "logs/S478.log"
+    },
+    {
+      "id": "S479",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/adapter/langium/LangiumTechnologyAdapterTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 90.02,
+      "logSha256": "05a1f89875442e3e71d9628a278ba9310845d6d41b286c96ab81c52cfefe3fa0",
+      "logRelativePath": "logs/S479.log"
+    },
+    {
+      "id": "S480",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/adapter/mxgraph/MxGraphDrawioTechnologyAdapterTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 103.52,
+      "logSha256": "0ac856ecd0e7781374f51ac029e378929eba95c8dba375153a22479bf19b713b",
+      "logRelativePath": "logs/S480.log"
+    },
+    {
+      "id": "S481",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/adapter/sirius/SiriusDesktopTechnologyAdapterTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 97.78,
+      "logSha256": "5d5299f906ccac635818256ef6b376175a7cd890168f982729b305b48e9f9feb",
+      "logRelativePath": "logs/S481.log"
+    },
+    {
+      "id": "S482",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/adapter/vscode/VsCodeExtensionTechnologyAdapterTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 93.69,
+      "logSha256": "dde39ae9f9fedf907fbe488d10b41693106d50e69e6a295fee5c5c93ea43cc24",
+      "logRelativePath": "logs/S482.log"
+    },
+    {
+      "id": "S483",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/adapter/xtext/XtextTechnologyAdapterTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 90.44,
+      "logSha256": "b16d86440ac1ba18f9194fee5b1c988502db65abf0272f08f8cd3760020c4e21",
+      "logRelativePath": "logs/S483.log"
+    },
+    {
+      "id": "S484",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/bridge/HostFeedbackPresentationServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 96.29,
+      "logSha256": "a4a9ba9d0562a893e8e4bc4c71193427406fc717fd52d67d9a79558960953c8f",
+      "logRelativePath": "logs/S484.log"
+    },
+    {
+      "id": "S485",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/compatibility/NativeToolchainCompatibilityApplicationServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 95.7,
+      "logSha256": "29caf7171a5b2f29548fc1c19a256367840d6d6ca278ab1451b9e2c802e3bbab",
+      "logRelativePath": "logs/S485.log"
+    },
+    {
+      "id": "S486",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/compiler/TechnologyAdapterVisualFullStackSupportTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 106.33,
+      "logSha256": "98975c1b4d6d297fb4d1efce11e3d869102e4017c6831830051bfb2be800cd7b",
+      "logRelativePath": "logs/S486.log"
+    },
+    {
+      "id": "S487",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/injection/SafeTechnologyInjectionServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 97.17,
+      "logSha256": "81e61fa2deef4bd49eaa7091593515ce1a51654998c54ac8b6daa986f6c002a6",
+      "logRelativePath": "logs/S487.log"
+    },
+    {
+      "id": "S488",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/parity/NativeParityEvidenceAssessorTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 87.18,
+      "logSha256": "844d3bbcb42f9c26ca6764cf914c4246d2415787f571b8140d8f0170ed372b74",
+      "logRelativePath": "logs/S488.log"
+    },
+    {
+      "id": "S489",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/persistence/JsonIntegrationProfileRepositoryTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 93.99,
+      "logSha256": "57c07ca9148f9576517a509cc6dac98c403dbfa5dd9ace67c52c6910d1cf6e2c",
+      "logRelativePath": "logs/S489.log"
+    },
+    {
+      "id": "S490",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/projection/canonical/CanonicalProjectionRoundTripTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 91.55,
+      "logSha256": "fc05852786f520b4fdffc57f908d4cfd8be19b29a521388f026b307c40ebc35e",
+      "logRelativePath": "logs/S490.log"
+    },
+    {
+      "id": "S491",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/representable/RepresentableImportServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 95.3,
+      "logSha256": "ef904fc4e08bd70c1d2da054aace118f07259ad5facbd7cb44408a9a7b1a9573",
+      "logRelativePath": "logs/S491.log"
+    },
+    {
+      "id": "S492",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/roundtrip/RoundTripSyncServiceTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 101.07,
+      "logSha256": "1b0d9c49115096031f678d9087131eaa0d0ba2542968b2c4e84848d2bcb3db03",
+      "logRelativePath": "logs/S492.log"
+    },
+    {
+      "id": "S493",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/roundtrip/resolution/AdvancedRoundTripConflictResolverTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 95.71,
+      "logSha256": "6540c3c52471ac2ab6f101db190f38a8383689397d16770516b6459a509d0f64",
+      "logRelativePath": "logs/S493.log"
+    },
+    {
+      "id": "S494",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/verification/AggressiveGeneratedArtifactLifecycleTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 94.65,
+      "logSha256": "ee87aeea5025383f8bca44dd23b5b66df4aff1044304a5845c63463f6484e239",
+      "logRelativePath": "logs/S494.log"
+    },
+    {
+      "id": "S495",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/web/CanonicalIntegrationProfileControllerTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 96.5,
+      "logSha256": "60d4957ae14a5b497f9c7bc0e7652f33066b162232c8c20079a926636b111036",
+      "logRelativePath": "logs/S495.log"
+    },
+    {
+      "id": "S496",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/integration/workflow/TechnologyDeliveryReadinessControllerTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 94.84,
+      "logSha256": "fc2cc2c7ddde30aad7baabc3a08c79c3a78654967b546b57ffc751d962b1e89e",
+      "logRelativePath": "logs/S496.log"
+    },
+    {
+      "id": "S497",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/io/BoundedIoTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 104.38,
+      "logSha256": "f970e744ba8a8b7f09540b836b893d37b74c461073a3ac4d235d86c4254de42c",
+      "logRelativePath": "logs/S497.log"
+    },
+    {
+      "id": "S498",
+      "title": "Maven JUnit class: src/test/java/com/example/editor/metamodel/MetamodelIdPolicyTests.java",
+      "group": "backend-class-isolation",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSeconds": 91.64,
+      "logSha256": "cead929576ecaef26801d0d79df8b0c3723c27fd836e245f61080c89459bc6ea",
+      "logRelativePath": "logs/S498.log"
+    }
+  ],
+  "summary": {
+    "PASS": 24,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "TIMEOUT": 0
+  }
+}

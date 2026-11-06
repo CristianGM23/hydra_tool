@@ -44,6 +44,8 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
             IntegrationArtifactKind.GAMIFICATION_DEFINITIONS, IntegrationArtifactKind.GAMIFICATION_BINDINGS,
             IntegrationArtifactKind.GRAMMAR, IntegrationArtifactKind.TEXTUAL_EDITOR_DEFINITION, IntegrationArtifactKind.TEXTUAL_SYNTAX_STYLE,
             IntegrationArtifactKind.CODE_GENERATION);
+    /** Satisface ~1.0.11 (Langium 3) y ~1.0.13 (Langium 4), de modo que npm comparte una única copia con Langium. */
+    private static final String TEXT_DOCUMENT_VERSION = "1.0.16";
     private final JsonMapper mapper;
 
     /** Descripción: Inicializa una instancia de LangiumTechnologyAdapter con sus dependencias y datos de entrada. Entradas: mapper: componente de conversión utilizado durante el procesamiento. Salida: deja la instancia inicializada y lista para su uso. */ public LangiumTechnologyAdapter(JsonMapper mapper){this.mapper = mapper;}
@@ -67,7 +69,7 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
             String packageName = TechnologyAdapterGenerationSupport.npmPackage(request.profile().target().settings().get("packageName"),
                     "@hydra-generated/" + TechnologyAdapterSupport.slug(semanticId) + "-langium");
             String extension = request.profile().target().settings().getOrDefault("fileExtension", TechnologyAdapterSupport.slug(semanticId));
-            String langiumVersion = request.profile().target().settings().getOrDefault("langiumVersion", "4.3.0");
+            String langiumVersion = request.profile().target().settings().getOrDefault("langiumVersion", "4.4.0");
             String typescriptVersion = request.profile().target().settings().getOrDefault("typescriptVersion", "6.0.2");
             String sourceRoot = root + "/src/language";
             List<String> sourceIds = TechnologyAdapterGenerationSupport.sourceIds(request);
@@ -91,7 +93,7 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
                         TechnologyAdapterRuntimeLifecycleSupport.typescriptSemanticRuntimeSource(), sourceIds));
             files.add(TechnologyAdapterSupport.text(sourceRoot + "/hydra-language-runtime.ts", "text/typescript", languageRuntimeSource(), sourceIds));
             files.add(TechnologyAdapterSupport.text(sourceRoot + "/hydra-document-update-handler.ts", "text/typescript", documentUpdateHandlerSource(), sourceIds));
-            files.add(TechnologyAdapterSupport.text(root + "/src/main.ts", "text/typescript", mainSource(languageName), sourceIds));
+            files.add(TechnologyAdapterSupport.text(root + "/src/main.ts", "text/typescript", mainSource(languageName, langiumVersion), sourceIds));
             files.add(TechnologyAdapterSupport.text(root + "/src/extension.ts", "text/typescript", extensionSource(languageName), sourceIds));
             if(textualCustomization){var customization=TechnologyAdapterTextualCustomizationSupport.customization(request,mapper);files.addAll(TechnologyAdapterTextualCustomizationSupport.neutralFiles(root,request,mapper));files.add(TechnologyAdapterSupport.text(root + "/syntaxes/hydra-custom.tmLanguage.json","application/json",textMateCustomization(languageName,customization),sourceIds));}
             files.add(TechnologyAdapterSupport.text(root + "/src/language/" + languageName.toLowerCase() + ".test.ts", "text/typescript", parserTestSource(languageName, metamodel != null), sourceIds));
@@ -99,8 +101,8 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
             files.add(TechnologyAdapterSupport.text(root + "/README.md", "text/markdown", readme(request, semanticId, packageName, metamodel != null), sourceIds));
             List<IntegrationDiagnostic> diagnostics = new ArrayList<>(TechnologyAdapterSupport.unsupportedDiagnostics(request, SUPPORTED, "Langium"));
             List<IntegrationDependencyChange> dependencies = List.of(
-                    dependency("langium", langiumVersion), dependency("vscode-languageserver", "9.0.1"),
-                    dependency("vscode-languageserver-textdocument", "1.0.12"), dependency("typescript", typescriptVersion));
+                    dependency("langium", langiumVersion), dependency("vscode-languageserver", languageServerVersion(langiumVersion)),
+                    dependency("vscode-languageserver-textdocument", TEXT_DOCUMENT_VERSION), dependency("typescript", typescriptVersion));
             List<IntegrationVerificationStep> verification = List.of(
                     new IntegrationVerificationStep("install-langium-dependencies", "Install pinned Langium dependencies", root,
                             List.of("npm", "install", "--ignore-scripts"), 0, true),
@@ -135,17 +137,27 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
                 "check": "npm run langium:generate && npm run build && npm test"
               },
               "dependencies": {
-                "langium": "^%s",
-                "vscode-languageserver": "^9.0.1",
-                "vscode-languageserver-textdocument": "^1.0.12"
+                "langium": "%s",
+                "vscode-languageserver": "%s",
+                "vscode-languageserver-textdocument": "%s"
               },
-              "devDependencies": {"typescript": "^%s", "vitest": "^4.1.10", "langium-cli": "^%s"},
+              "devDependencies": {"typescript": "%s", "vitest": "5.0.5", "langium-cli": "%s"},
               "contributes": {
                 "languages": [{"id": "%s", "extensions": [".%s"], "aliases": ["%s"]}],%s
                 "commands": [{"command": "hydra.toggleRuntime", "title": "HYDRA: Enable/disable runtime"}]
               }
             }
-            """.formatted(packageName, langiumVersion, typescriptVersion, langiumVersion, languageName.toLowerCase(), extension, languageName, grammarContribution);
+            """.formatted(packageName, langiumVersion, languageServerVersion(langiumVersion), TEXT_DOCUMENT_VERSION, typescriptVersion, langiumVersion,
+                languageName.toLowerCase(), extension, languageName, grammarContribution);
+    }
+    /** Descripción: Elige la versión exacta de vscode-languageserver que exige la línea de Langium: Langium 4.4 depende de ~10.1, Langium 4.0-4.3 de ~10.0
+     * (ambas LSP 3.18) y Langium 3 de ~9.0 (LSP 3.17); declarar otra línea instala una segunda copia de vscode-languageserver y rompe los tipos LSP
+     * compartidos con Langium. También la usa el scaffold de LangiumGrammarProvider. Entradas: langiumVersion: versión de Langium declarada. Salida: versión exacta compatible. */
+    public static String languageServerVersion(String langiumVersion){
+        if(langiumVersion.startsWith("3.")) return "9.0.1";
+        String[] parts = langiumVersion.split("\\.");
+        int minor = parts.length > 1 && parts[1].chars().allMatch(Character::isDigit) && !parts[1].isEmpty() ? Integer.parseInt(parts[1]) : 0;
+        return parts[0].equals("4") && minor < 4 ? "10.0.1" : "10.1.2";
     }
     /** Descripción: Ejecuta la operación «textMateCustomization» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: languageName: dato de entrada necesario para la operación; c: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String textMateCustomization(String languageName,com.example.editor.grammar.core.GrammarTextualEditorCustomization c){String keywords=java.util.Arrays.stream(c.keywords().split(",")).filter(v->!v.isBlank()).map(java.util.regex.Pattern::quote).reduce((a,b)->a+"|"+b).orElse("(?!)");return """
             {"name":"HYDRA %s","scopeName":"source.%s.hydra","patterns":[{"name":"keyword.control.hydra","match":"\\b(?:%s)\\b"},{"name":"string.quoted.double.hydra","begin":"\"","end":"\""},{"name":"comment.line.double-slash.hydra","match":"//.*$"},{"name":"constant.numeric.hydra","match":"\\b[0-9]+(?:\\.[0-9]+)?\\b"}]}
@@ -179,23 +191,14 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
         return source.toString();
     }
     /** Descripción: Ejecuta la operación «structural» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: kind: dato de entrada necesario para la operación. Salida: devuelve un indicador que expresa el resultado de la condición. */ private boolean structural(MetaRelationKind kind){return kind == MetaRelationKind.REFERENCE || kind == MetaRelationKind.CONTAINMENT || kind == MetaRelationKind.AGGREGATION;}
-    /** Descripción: Ejecuta la operación «attributeFragment» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: attribute: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String attributeFragment(MetaAttribute attribute, MetaModel metamodel){
-        String terminal = langiumType(attribute.type(), metamodel);
-        boolean many = attribute.multiplicity() != null && (attribute.multiplicity().unbounded() || attribute.multiplicity().upperBound() != null && attribute.multiplicity().upperBound() > 1);
-        boolean optional = attribute.multiplicity() == null || attribute.multiplicity().lowerBound() == 0;
-        String assignment = attribute.name() + (many ? "+=" : "=") + terminal;
-        if(many){return " ('" + attribute.name() + "' " + assignment + ")*";}
-        if(optional){return " ('" + attribute.name() + "' " + assignment + ")?";}
-        return " '" + attribute.name() + "' " + assignment;
+    /** Descripción: Construye campos de Langium respetando mínimos y máximos del metamodelo. Entradas: atributo y metamodelo. Salida: fragmento de gramática del atributo. */
+    private String attributeFragment(MetaAttribute attribute, MetaModel metamodel){
+        return LangiumMultiplicityEmitter.fragment(attribute.name(),langiumType(attribute.type(),metamodel),attribute.multiplicity());
     }
-    /** Descripción: Ejecuta la operación «relationFragment» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: relation: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String relationFragment(MetaRelation relation, MetaModel metamodel){
-        String target = metamodel.classes().stream().filter(value -> value.id().equals(relation.targetTypeId())).map(MetaClass::name).findFirst().orElse("Element");
-        boolean many = relation.targetMultiplicity() != null && (relation.targetMultiplicity().unbounded() || relation.targetMultiplicity().upperBound() != null && relation.targetMultiplicity().upperBound() > 1);
-        boolean optional = relation.targetMultiplicity() == null || relation.targetMultiplicity().lowerBound() == 0;
-        String assignment = relation.name() + (many ? "+=" : "=") + "[" + target + ":ID]";
-        if(many){return " ('" + relation.name() + "' " + assignment + ")*";}
-        if(optional){return " ('" + relation.name() + "' " + assignment + ")?";}
-        return " '" + relation.name() + "' " + assignment;
+    /** Descripción: Construye relaciones tipadas conservando las cardinalidades obligatorias. Entradas: relación y metamodelo. Salida: fragmento de gramática de la relación. */
+    private String relationFragment(MetaRelation relation, MetaModel metamodel){
+        String target=metamodel.classes().stream().filter(value->value.id().equals(relation.targetTypeId())).map(MetaClass::name).findFirst().orElse("Element");
+        return LangiumMultiplicityEmitter.fragment(relation.name(),"["+target+":ID]",relation.targetMultiplicity());
     }
     /** Descripción: Ejecuta la operación «langiumType» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: type: dato de entrada necesario para la operación; metamodel: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String langiumType(MetaTypeReference type, MetaModel metamodel){
         if(type == null){return "STRING";}
@@ -208,8 +211,8 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
     }
 
     /** Descripción: Genera el módulo Langium y sustituye el DocumentUpdateHandler compartido por el lifecycle HYDRA. Entradas: languageName. Salida: fuente TypeScript del módulo. */ private String moduleSource(String languageName){return """
-            import type { LangiumServices, Module, PartialLangiumServices } from 'langium';
-            import { createDefaultModule, createDefaultSharedModule, inject } from 'langium/lsp';
+            import { inject, type Module } from 'langium';
+            import { createDefaultModule, createDefaultSharedModule, type DefaultSharedModuleContext, type LangiumServices, type LangiumSharedServices, type PartialLangiumServices } from 'langium/lsp';
             import { %sGeneratedModule, %sGeneratedSharedModule } from './generated/module.js';
             import { %sValidator, registerValidationChecks } from './%s-validator.js';
             import { HydraCodeActionProvider } from './hydra-code-action-provider.js';
@@ -218,9 +221,9 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
             export type %sServices=LangiumServices & %sAddedServices;
             export const %sModule:Module<PartialLangiumServices & %sAddedServices>={validation:{%sValidator:()=>new %sValidator()},lsp:{CodeActionProvider:()=>new HydraCodeActionProvider()}};
             const HydraSharedModule:any={lsp:{DocumentUpdateHandler:(services:any)=>new HydraDocumentUpdateHandler(services)}};
-            export function create%sServices(context:any){const shared=inject(createDefaultSharedModule(context),%sGeneratedSharedModule,HydraSharedModule);const services=inject(createDefaultModule({shared}),%sGeneratedModule,%sModule);shared.ServiceRegistry.register(services);registerValidationChecks(services);return {shared,%s:services};}
+            export function create%sServices(context:DefaultSharedModuleContext):{shared:LangiumSharedServices;%s:%sServices}{const shared=inject(createDefaultSharedModule(context),%sGeneratedSharedModule,HydraSharedModule);const services=inject(createDefaultModule({shared}),%sGeneratedModule,%sModule);shared.ServiceRegistry.register(services);registerValidationChecks(services);return {shared,%s:services};}
             """.formatted(languageName, languageName, languageName, languageName.toLowerCase(), languageName, languageName, languageName,
-                    languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName);}
+                    languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName, languageName);}
     /** Descripción: Genera el límite de validación Langium sin asumir una regla Model artificial en grammar-first. Entradas: languageName: nombre del lenguaje; metamodelBacked: indica si la gramática fue derivada del metamodelo canónico. Salida: fuente TypeScript del validador. */ private String validatorSource(String languageName, boolean metamodelBacked){
         if(!metamodelBacked) return """
             import type { ValidationChecks } from 'langium';
@@ -281,13 +284,13 @@ public class LangiumTechnologyAdapter implements TechnologyAdapter {
             import {hydraLanguageRuntime} from './hydra-language-runtime.js';
             export class HydraEventBridge { publishAfterCommit(uri:string,state:string,trigger='LANGIUM_COMMIT'){return hydraLanguageRuntime.commit(uri,state,trigger);}history(uri:string){return hydraLanguageRuntime.events(uri);} }
             """;}
-    /** Descripción: Ejecuta la operación «mainSource» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: languageName: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String mainSource(String languageName){return """
+    /** Descripción: Ejecuta la operación «mainSource» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: languageName: dato de entrada necesario para la operación; langiumVersion: línea de Langium, que fija la entrada Node de vscode-languageserver (10.x la publica como «./node» en su mapa exports; 9.x como el fichero node.js). Salida: devuelve el resultado definido por el contrato del método. */ private String mainSource(String languageName, String langiumVersion){return """
             import { NodeFileSystem } from 'langium/node';
-            import { createConnection, ProposedFeatures } from 'vscode-languageserver/node.js';
+            import { createConnection, ProposedFeatures } from 'vscode-languageserver/%s';
             import { startLanguageServer } from 'langium/lsp';
             import { create%sServices } from './language/%s-module.js';
             const connection=createConnection(ProposedFeatures.all);const services=create%sServices({connection,...NodeFileSystem});startLanguageServer(services.shared);
-            """.formatted(languageName, languageName.toLowerCase(), languageName);}
+            """.formatted(langiumVersion.startsWith("3.") ? "node.js" : "node", languageName, languageName.toLowerCase(), languageName);}
     /** Host-neutral VS Code/web extension boundary with an explicit runtime toggle hook. */ /** Descripción: Ejecuta la operación «extensionSource» correspondiente a la responsabilidad de LangiumTechnologyAdapter. Entradas: languageName: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String extensionSource(String languageName){return """
             import { hydraRuntimeActivation } from './language/hydra-runtime-activation.js';
             export const languageId='%s';

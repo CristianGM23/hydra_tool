@@ -56,4 +56,13 @@ describe('editor definition V2.4 normalization', () => {
     it('does not discard explicit image and container configuration', () => {
         expect(normalizeNodeMapping({ ...legacyMapping, shape: 'PROJECT_IMAGE', imageAssetPath: 'assets/notation/root.svg', imageFit: 'COVER', container: true, containmentRelationIds: ['relation:Organization:employees'], containerPadding: 30 })).toMatchObject({ imageAssetPath: 'assets/notation/root.svg', imageFit: 'COVER', container: true, containmentRelationIds: ['relation:Organization:employees'], containerPadding: 30 });
     });
+    it('tolerates a null semanticEdge returned by the server for edge mappings and edge tools', () => {
+        const source = createEmptyEditorDefinition('organization');
+        const edgeMapping = { id: 'edge:one', styles: {}, annotations: {}, semanticEdge: null } as never;
+        const edgeTool = { id: 'tool:edge', kind: 'CREATE_EDGE', representationIds: [], semanticEdge: null } as never;
+        const withNulls = { ...source, representations: [{ ...source.representations[0], edgeMappings: [edgeMapping] }], palette: { groups: [], tools: [edgeTool] } };
+        const normalized = normalizeEditorDefinitionShape(withNulls as never);
+        expect(normalized.representations[0].edgeMappings[0].semanticEdge).toBeUndefined();
+        expect((normalized.palette.tools[0] as { semanticEdge?: unknown }).semanticEdge).toBeUndefined();
+    });
 });

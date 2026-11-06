@@ -1,0 +1,5 @@
+- grammar_author_metamodel.c: la decisión «existente o importar» se ve en pantalla (metamodelo sembrado en el selector, menú de importación con fichero y carpeta; líneas 55-58) y las dos ramas se recorren hasta el disco (ex y im).
+- grammar_author_metamodel.ex: elegir 'LINKED' y un metamodelo guardado; GET y fichero de la gramática traen su id (líneas 66-68).
+- grammar_author_metamodel.im: subir un .metamodel.json por el campo de fichero deja el metamodelo en GET /api/canonical-metamodels y en disco y la gramática guardada lo enlaza (líneas 77-81).
+- grammar_author_metamodel.cl: 'No linked metamodel' devuelve el modo a GRAMMAR_FIRST con metamodelId vacío en GET y en disco; ambos metamodelos siguen guardados (líneas 88-92).
+- Nota: el aviso de guardado de la gramática no se afirma en pantalla (queda en una pestaña inferior); la confirmación es el oráculo del backend.

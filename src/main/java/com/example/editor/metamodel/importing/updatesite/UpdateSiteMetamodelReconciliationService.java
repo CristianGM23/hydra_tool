@@ -141,6 +141,9 @@ public class UpdateSiteMetamodelReconciliationService {
                 candidateId = request.conflictCandidateIds().getOrDefault(key, "");
                 if(candidateId.isBlank() && !conflict.blocking()) candidateId = conflict.recommendedCandidateId();
             }
+            if(!conflicts.containsKey(key) && !state.models().get(candidateId).elements().containsKey(key)) {
+                candidateId = firstProviderOf(key, state.models());
+            }
             if(candidateId.isBlank()) throw new IllegalArgumentException("A reconciliation decision is required for " + key);
             CandidateModel candidate = state.models().get(candidateId);
             if(candidate == null || !candidate.elements().containsKey(key)) throw new IllegalArgumentException("Candidate " + candidateId + " does not provide " + key);
@@ -156,6 +159,15 @@ public class UpdateSiteMetamodelReconciliationService {
         annotations.put("hydra.reconciliation.conflictsResolved", Integer.toString(state.report().conflicts().size()));
         return new MetaModel(primary.model().schemaVersion(), targetId, primary.model().name(), classes, enums, dataTypes,
                 relations, annotations);
+    }
+
+    /** Descripción: Elige, para un elemento que el candidato primario no aporta y que no tiene conflicto, el candidato que sí lo aporta con mayor confianza, mayor puntuación e identificador estable. Entradas: key: clave del elemento; models: modelos candidatos recuperados. Salida: identificador del candidato proveedor o cadena vacía si ninguno lo aporta. */
+    /** Descripción: Ejecuta la operación «firstProviderOf» correspondiente a la responsabilidad de ReconciliationState. Entradas: key: dato de entrada necesario para la operación; models: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private String firstProviderOf(String key, Map<String, CandidateModel> models) {
+        return models.values().stream().filter(value -> value.elements().containsKey(key))
+                .min(Comparator.comparingInt((CandidateModel value) -> confidenceRank(value.candidate().confidence()))
+                        .thenComparing((CandidateModel value) -> -value.candidate().score())
+                        .thenComparing(value -> value.candidate().id()))
+                .map(value -> value.candidate().id()).orElse("");
     }
 
     /** Descripción: Ejecuta la operación «index» correspondiente a la responsabilidad de ReconciliationState. Entradas: model: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private Map<String, ElementValue> index(MetaModel model) {

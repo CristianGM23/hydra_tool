@@ -1,0 +1,97 @@
+[
+  {
+    "id": "java:com.example.editor.project.recovery.ExternalImportRollbackCompensationIntegrationTests",
+    "name": {
+      "es": "Una importación externa fallida deja los almacenes canónicos exactamente como estaban",
+      "en": "A failed external import leaves the canonical stores exactly as they were"
+    },
+    "type": "INTEGRATION",
+    "layer": "platform",
+    "caps": [
+      "recovery",
+      "project",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "x_recover_external_project",
+        "stages": [
+          "pers",
+          "rb",
+          "d2"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "recovery_persist_rollback",
+        "stages": [
+          "a2",
+          "a3"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryController.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportCompensationService.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportJournal.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportJournalStore.java",
+      "src/main/java/com/example/editor/project/recovery/ExternalImportListener.java",
+      "src/main/java/com/example/editor/definition/assets/EditorVisualAssetService.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring real con todos los almacenes en un directorio temporal; el fixture Sirius empaquetado como ZIP completo y como ZIP solo con el metamodelo.",
+      "en": "Real Spring context with every store in a temporary directory; the Sirius fixture packaged as a full ZIP and as a metamodel-only ZIP."
+    },
+    "setup": {
+      "es": "MockMvc sobre la aplicación completa. Los fallos se inyectan con espías de Mockito sobre ProjectApplicationService (falla la subida del informe de materialización) y sobre EditorDefinitionApplicationService (falla el primer borrado de editor); el resto es real. Los casos son ordenados.",
+      "en": "MockMvc over the whole application. Failures are injected with Mockito spies on ProjectApplicationService (the materialization report upload fails) and EditorDefinitionApplicationService (the first editor delete fails); everything else is real. Cases are ordered."
+    },
+    "executes": {
+      "es": "Importa por /api/external-project-recovery/import con y sin huella confirmada, con la huella de otro contenido, con un fallo después de materializar, con un fallo durante la propia compensación, sobre un metamodelo ya importado y repitiendo la importación.",
+      "en": "Imports through /api/external-project-recovery/import with and without a confirmed fingerprint, with the fingerprint of other content, with a failure after materialization, with a failure during the compensation itself, over an already imported metamodel and repeating the import."
+    },
+    "asserts": {
+      "es": "Sin confirmación 400 y con la de otro contenido 409, sin proyecto ni documentos; tras un fallo el SHA-256 de todos los ficheros canónicos es idéntico al previo y no quedan pendientes; si la compensación falla el error lo dice y el reintento termina limpio; un metamodelo preexistente nunca se borra y sus capas vuelven a su estado previo; la compensación repetida no cambia nada.",
+      "en": "No confirmation gives 400 and another content's fingerprint 409, with no project or documents; after a failure the SHA-256 of every canonical file equals the previous one; if the compensation fails the error says so and the retry finishes clean; a pre-existing metamodel is never deleted and its layers are restored; repeating the compensation changes nothing."
+    },
+    "behavior": {
+      "es": "Importar un proyecto externo es todo o nada sobre los documentos canónicos: si algo falla, se deshace solo lo que la importación creó o sustituyó.",
+      "en": "Importing an external project is all-or-nothing over the canonical documents: if anything fails, only what the import created or replaced is undone."
+    },
+    "rule": {
+      "es": "Un fallo nunca deja documentos de la importación ni borra los que ya existían.",
+      "en": "A failure never leaves import documents behind nor deletes those that already existed."
+    },
+    "scenario": {
+      "es": "Importación fallida tras materializar metamodelo, editor, reglas y figuras del fixture Sirius.",
+      "en": "Failed import after materializing the metamodel, editor, rules and figures of the Sirius fixture."
+    },
+    "result": {
+      "es": "Los almacenes canónicos quedan byte a byte como antes.",
+      "en": "The canonical stores are byte for byte as before."
+    },
+    "expected": {
+      "es": "Estado idéntico y sin compensaciones pendientes.",
+      "en": "Identical state and no pending compensation."
+    },
+    "guarantee": {
+      "es": "La limpieza se basa en el estado real de cada recurso, no en una lista en memoria.",
+      "en": "The clean-up is based on the real state of each resource, not on an in-memory list."
+    },
+    "limits": {
+      "es": "Los reinicios reales se prueban aparte, con procesos separados. No cubre el registro de proyectos ni la auditoría, que no se compensan. Fallos inyectados con espías, no fallos reales de disco.",
+      "en": "Real restarts are tested separately, with separate processes. It does not cover the project registry or the audit log, which are not compensated. Failures are injected with spies, not real disk faults."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Contexto completo y almacenes reales; el oráculo es el SHA-256 de cada fichero antes y después.",
+      "en": "Full context and real stores; the oracle is the SHA-256 of every file before and after."
+    },
+    "external": "none",
+    "confidence": "ANALYZED",
+    "src": []
+  }
+]

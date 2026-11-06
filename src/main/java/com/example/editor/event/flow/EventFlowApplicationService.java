@@ -63,11 +63,11 @@ public class EventFlowApplicationService {
         return checkModel(metamodelId, model);
     }
     /** Descripción: Obtiene la información correspondiente a «list» dentro de EventFlowApplicationService. Entradas: no requiere parámetros de entrada. Salida: devuelve el resultado definido por el contrato del método. */ public List<EventFlowSummary> list() {
-        return repository.listMetamodelIds().stream().map(id -> {
-            StoredCanonicalDocument<EventFlowModel> stored = repository.findByMetamodelId(id).orElseThrow();
-            int nodes = stored.document().flows().stream().mapToInt(flow -> flow.nodes().size()).sum();
-            return new EventFlowSummary(stored.document().id(), id, stored.document().flows().size(), nodes, stored.etag());
-        }).toList();
+        return repository.listMetamodelIds().stream().map(id -> summary(id).orElseThrow()).toList();
+    }
+    /** Descripción: Resume los flujos de un solo metamodelo leyendo únicamente su documento, de modo que un documento ilegible de otro metamodelo no lo impide (preparación de Home). Entradas: metamodelId: identificador del metamodelo o del contexto semántico. Salida: el mismo resumen que list, o vacío si no hay flujos. */ public Optional<EventFlowSummary> summary(String metamodelId) {
+        return repository.findByMetamodelId(metamodelId).map(stored -> new EventFlowSummary(stored.document().id(), metamodelId, stored.document().flows().size(),
+                stored.document().flows().stream().mapToInt(flow -> flow.nodes().size()).sum(), stored.etag()));
     }
     /** Descripción: Elimina o libera el recurso gestionado por «delete» de forma controlada. Entradas: metamodelId: identificador que delimita el recurso objetivo; etag: dato de entrada necesario para la operación. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ public void delete(String metamodelId, String etag) {
         requireMetamodel(metamodelId);
@@ -101,7 +101,7 @@ public class EventFlowApplicationService {
     }
     /** Descripción: Valida las condiciones necesarias para «requireMetamodel» y rechaza entradas no válidas. Entradas: id: identificador que delimita el recurso objetivo. Salida: no devuelve valor; completa la operación o comunica el fallo mediante el contrato existente. */ private void requireMetamodel(String id) {
         try { metamodelService.findById(id); }
-        catch(MetamodelApplicationException exception) { throw new EventFlowApplicationException(EventFlowApplicationException.Reason.NOT_FOUND, "Metamodel was not found: " + id, exception); }
+        catch(MetamodelApplicationException exception) { if(exception.isCorruptConfiguration()) throw exception; if(exception.getReason() == MetamodelApplicationException.Reason.STORAGE_ERROR || exception.getReason() == MetamodelApplicationException.Reason.VALIDATION_ERROR) throw new EventFlowApplicationException(EventFlowApplicationException.Reason.STORAGE_ERROR, exception.getMessage(), exception); throw new EventFlowApplicationException(EventFlowApplicationException.Reason.NOT_FOUND, "Metamodel was not found: " + id, exception); }
     }
     /** Descripción: Ejecuta la operación «response» correspondiente a la responsabilidad de EventFlowApplicationService. Entradas: stored: dato de entrada necesario para la operación; report: dato de entrada necesario para la operación. Salida: devuelve el resultado definido por el contrato del método. */ private EventFlowSaveResponse response(StoredCanonicalDocument<EventFlowModel> stored, EventFlowCheckReport report) {
         return new EventFlowSaveResponse(stored.document(), stored.etag(), report);

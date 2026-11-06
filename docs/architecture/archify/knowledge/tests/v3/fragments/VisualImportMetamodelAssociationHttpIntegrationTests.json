@@ -1,0 +1,96 @@
+[
+  {
+    "id": "java:com.example.editor.definition.importing.VisualImportMetamodelAssociationHttpIntegrationTests",
+    "name": {
+      "es": "Asociar una definición visual Sirius con su metamodelo por la API",
+      "en": "Associate a Sirius visual definition with its metamodel through the API"
+    },
+    "type": "INTEGRATION",
+    "layer": "definition",
+    "caps": ["model_editor", "metamodel"],
+    "procs": [
+      {"id": "model_editor_visual_import", "stages": ["as", "d1"], "match": "direct"}
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/definition/web/VisualDefinitionImportController.java",
+      "src/main/java/com/example/editor/definition/importing/VisualImportMetamodelResolver.java",
+      "src/main/java/com/example/editor/definition/importing/VisualValidationAssociationService.java",
+      "src/main/java/com/example/editor/definition/importing/VisualDefinitionImportService.java"
+    ],
+    "pre": {
+      "es": "Fixture src/test/resources/fixtures/sirius-complete (.odesign, fuente Java y .ecore); directorio temporal vacío para metamodelos, validaciones y editores.",
+      "en": "Fixture src/test/resources/fixtures/sirius-complete (.odesign, Java source and .ecore); empty temporary directory for metamodels, validations and editors."
+    },
+    "setup": {
+      "es": "Contexto Spring completo con controlador, resolutor, servicio de importación y almacenes reales; solo el transporte web es el de pruebas, que no cambia la lógica. Pasos ordenados: la vista previa no escribe, la confirmación guarda y el modo de metamodelo ya existente encuentra lo guardado.",
+      "en": "Full Spring context with real controller, resolver, import service and stores; only the web transport is the test one, which does not change the logic. Ordered steps: preview does not write, confirmation saves and the existing-metamodel mode finds what was saved."
+    },
+    "executes": {
+      "es": "Multipart a /api/canonical-metamodels/{id}/editors/imports/sirius con .odesign, fuente Java y .ecore en modos EXTERNAL y EXISTING, y JSON a commit-associations (sin y con detalles de validación) construido con la propia vista previa.",
+      "en": "Multipart to /api/canonical-metamodels/{id}/editors/imports/sirius with .odesign, Java source and .ecore in EXTERNAL and EXISTING modes, and JSON to commit-associations (without and with validation details) built from the preview itself."
+    },
+    "asserts": {
+      "es": "Vista previa EXTERNAL: formato ecore, no persistido, clases esperadas y tres reglas nativas, sin ficheros; sin metamodelo o modo desconocido da 400; confirmar sin validaciones guarda solo el metamodelo; con detalles guarda las tres reglas con id estable; EXISTING lo encuentra persistido y un id inexistente da 4xx.",
+      "en": "EXTERNAL preview: ecore format, not persisted, expected classes and three native rules, no files; no metamodel or unknown mode gives 400; confirming without validations saves only the metamodel; with details it saves the three rules with a stable id; EXISTING finds it persisted and an unknown id gives 4xx."
+    },
+    "behavior": {
+      "es": "Al importar una definición visual Sirius, su metamodelo se identifica y se muestra sin guardar nada hasta que se confirma; al confirmar se guarda, y después puede asociarse como metamodelo ya existente.",
+      "en": "When importing a Sirius visual definition, its metamodel is identified and shown without saving anything until confirmed; once confirmed it is saved, and afterwards it can be associated as an existing metamodel."
+    },
+    "rule": {
+      "es": "Sin metamodelo asociado la importación se rechaza en lugar de adivinar; la vista previa no guarda; confirmar guarda el metamodelo y, solo si hay detalles, las reglas de validación.",
+      "en": "Without an associated metamodel the import is refused instead of guessing; preview does not save; confirming saves the metamodel and, only when there are details, the validation rules."
+    },
+    "scenario": {
+      "es": "Subir el fixture Sirius con su .ecore como metamodelo externo, rechazar peticiones sin metamodelo o con modo desconocido, confirmar sin y con validaciones, y repetir la importación asociándola al metamodelo ya guardado.",
+      "en": "Upload the Sirius fixture with its .ecore as an external metamodel, refuse requests without a metamodel or with an unknown mode, confirm without and with validations, and repeat the import associating it with the already saved metamodel."
+    },
+    "result": {
+      "es": "El disco temporal queda vacío tras la vista previa y los rechazos; tras confirmar contiene el metamodelo con las clases esperadas y, con detalles, el documento de validaciones con las tres reglas nativas.",
+      "en": "The temporary disk is empty after the preview and the refusals; after confirming it holds the metamodel with the expected classes and, with details, the validation document with the three native rules."
+    },
+    "expected": {
+      "es": "Las aserciones sobre asociación, disco y códigos de respuesta se cumplen en los cinco pasos ordenados.",
+      "en": "Assertions on association, disk and response codes hold across the five ordered steps."
+    },
+    "guarantee": {
+      "es": "La asociación de una definición visual importada con su metamodelo funciona por la API y respeta la regla de vista previa frente a confirmación.",
+      "en": "Associating an imported visual definition with its metamodel works through the API and respects the preview-versus-confirm rule."
+    },
+    "limits": {
+      "es": "No se comprueba el modo con metamodelo empaquetado en un ZIP junto a la definición: el punto de entrada de Sirius exige un fichero .odesign y no admite ese ZIP. Tampoco GMF, draw.io ni Sirius Web, ni el guardado posterior del editor.",
+      "en": "The mode with a metamodel packaged in a ZIP next to the definition is not checked: the Sirius entry point requires a .odesign file and does not accept that ZIP. GMF, draw.io, Sirius Web and the later editor save are not covered either."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Controlador, resolutor y almacenes reales, oráculo en el fichero de expectativas y en disco, y casos de rechazo reales.",
+      "en": "Real controller, resolver and stores, oracle in the expectations file and on disk, and real refusal cases."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "aMissingMetamodelOrAnUnknownModeIsRejectedWithoutWriting",
+        "scenario": {"es": "Importar sin metamodelo externo y con un modo desconocido.", "en": "Import without an external metamodel and with an unknown mode."},
+        "result": {"es": "Respuesta 400 y nada guardado.", "en": "400 response and nothing saved."}
+      },
+      {
+        "n": "existingModeUsesTheStoredMetamodelAndRejectsAnUnknownId",
+        "scenario": {"es": "Asociar al metamodelo ya guardado y a uno inexistente.", "en": "Associate with the already saved metamodel and with a missing one."},
+        "result": {"es": "El guardado figura como existente; el inexistente da 4xx.", "en": "The saved one is reported as existing; the missing one gives 4xx."}
+      }
+    ],
+    "src": [
+      {"path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationHttpIntegrationTests.java", "line": 138},
+      {"path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationHttpIntegrationTests.java", "line": 143},
+      {"path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationHttpIntegrationTests.java", "line": 140},
+      {"path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationHttpIntegrationTests.java", "line": 151},
+      {"path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationHttpIntegrationTests.java", "line": 174},
+      {"path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationHttpIntegrationTests.java", "line": 187},
+      {"path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationHttpIntegrationTests.java", "line": 193},
+      {"path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationHttpIntegrationTests.java", "line": 206},
+      {"path": "src/test/java/com/example/editor/definition/importing/VisualImportMetamodelAssociationHttpIntegrationTests.java", "line": 211}
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

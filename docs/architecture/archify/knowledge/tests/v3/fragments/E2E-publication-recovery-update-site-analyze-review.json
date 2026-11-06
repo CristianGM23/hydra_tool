@@ -1,0 +1,99 @@
+[
+  {
+    "id": "pw:e2e/real/publication/recovery-update-site-analyze-review.spec.ts",
+    "name": {
+      "es": "Recuperar desde un update-site de extremo a extremo: origen, capas, análisis, elección de candidato y filtros de evidencia",
+      "en": "Recovering from an update site end to end: source, layers, analysis, candidate choice and evidence filters"
+    },
+    "type": "END_TO_END",
+    "layer": "delivery",
+    "caps": ["recovery"],
+    "procs": [
+      { "id": "recovery_author_wizard", "stages": ["a", "b", "f"], "match": "direct" },
+      { "id": "recovery_author_workspace", "stages": ["a", "b"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/update-site-import-center/UpdateSiteImportCenter.tsx",
+      "frontend/src/update-site-import-center/UpdateSiteSourceStep.tsx",
+      "frontend/src/update-site-import-center/UpdateSiteImportCenterPanels.tsx",
+      "frontend/src/update-site-import-center/UpdateSiteEvidencePanel.tsx",
+      "frontend/src/update-site-import-center/api.ts",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryController.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportApplicationService.java",
+      "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerRecoveryService.java"
+    ],
+    "pre": {
+      "es": "Servidor real con almacenamiento temporal propio; el proyecto de ejemplo de Sirius del repositorio se sube como carpeta desde el navegador.",
+      "en": "Real server with its own temporary storage; the repository's Sirius sample project is uploaded as a folder from the browser."
+    },
+    "setup": {
+      "es": "Navegador real, interfaz en inglés, sin simulaciones. El análisis independiente usa los mismos ficheros y opciones en una llamada directa al servidor real.",
+      "en": "Real browser, interface in English, no simulations. The independent analysis uses the same files and options in a direct call to the real server."
+    },
+    "executes": {
+      "es": "Abre #/update-site-imports en modo guiado, sube la carpeta del proyecto de ejemplo, desmarca 'Recover mappings', pulsa 'Analyze repository', abre 'Recovery', elige otro candidato y pulsa 'Analyze selected candidate', abre 'Evidence' y filtra por texto y por confianza.",
+      "en": "Opens #/update-site-imports in guided mode, uploads the sample project folder, unticks 'Recover mappings', presses 'Analyze repository', opens 'Recovery', picks another candidate and presses 'Analyze selected candidate', opens 'Evidence' and filters by text and by confidence."
+    },
+    "asserts": {
+      "es": "La respuesta del servidor al navegador no trae mapeos y coincide con la llamada directa, y la pantalla muestra esos recuentos; cada candidato muestra nivel, método, confianza y justificación iguales a los reales; el candidato elegido se reanaliza; el número de filas de evidencia tras cada filtro es el calculado con la evidencia real; ningún documento de los almacenes cambia.",
+      "en": "The server's answer to the browser has no mappings and matches the direct call, and the screen shows those counts; each candidate shows level, method, confidence and rationale equal to the real ones; the chosen candidate is reanalyzed; the number of evidence rows after each filter is the one computed from the real evidence; no stored document changes."
+    },
+    "behavior": {
+      "es": "Una persona sube un update-site, decide qué capas recuperar, analiza, compara los candidatos de recuperación con su confianza y justificación, elige otro y consulta la evidencia filtrándola.",
+      "en": "A person uploads an update site, decides which layers to recover, analyzes, compares the recovery candidates with their confidence and rationale, picks another and consults the evidence by filtering it."
+    },
+    "rule": {
+      "es": "Las capas desmarcadas no se recuperan, cambiar de candidato exige reanalizar y analizar nunca guarda nada.",
+      "en": "Unticked layers are not recovered, changing the candidate requires reanalysis and analyzing never saves anything."
+    },
+    "scenario": {
+      "es": "Carpeta completa del proyecto de ejemplo con metamodelo, definición visual, validaciones y modelos; análisis sin mapeos y revisión de candidatos y evidencia.",
+      "en": "Complete sample project folder with metamodel, visual definition, validations and models; analysis without mappings and review of candidates and evidence."
+    },
+    "result": {
+      "es": "La pantalla refleja el análisis real: capas, candidatos con su confianza y evidencia filtrada con los mismos recuentos, sin escribir en disco.",
+      "en": "The screen reflects the real analysis: layers, candidates with their confidence and filtered evidence with the same counts, without writing to disk."
+    },
+    "expected": {
+      "es": "Una ejecución correcta respeta la decisión de capas, lista los candidatos reales, reanaliza el elegido y filtra la evidencia con los recuentos del servidor.",
+      "en": "A passing run respects the layer decision, lists the real candidates, reanalyzes the chosen one and filters the evidence with the server's counts."
+    },
+    "guarantee": {
+      "es": "Lo que el asistente de recuperación muestra tras analizar un update-site coincide con el análisis del servidor real y respeta las capas elegidas.",
+      "en": "What the recovery wizard shows after analyzing an update site matches the real server's analysis and respects the chosen layers."
+    },
+    "limits": {
+      "es": "El análisis sí crea una caché interna por contenido (excluida de la comparación). No prueba Git ni p2 remoto, ni importa, reconcilia o materializa. Los filtros son texto y confianza, no nivel, origen o método. Con un solo candidato no se ejerce la elección.",
+      "en": "Analysis does create an internal content-addressed cache (excluded from the comparison). It does not test the Git or remote p2 source, nor import, reconcile or materialize. The available filters are text and confidence, not level, origin or method separately. If the sample had a single candidate the choice is not exercised."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acción real en el asistente, servidor real y oráculo independiente (análisis directo recalculado) sobre origen, capas, candidatos y filtros.",
+      "en": "Real action in the wizard, real server and an independent oracle (recomputed direct analysis) on source, layers, candidates and filters."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "origen, plan de capas, análisis, elección de candidato y filtros de evidencia",
+        "scenario": { "es": "Se sube la carpeta, se quitan los mapeos, se analiza, se cambia de candidato y se filtra la evidencia.", "en": "The folder is uploaded, mappings are removed, the analysis runs, the candidate is changed and the evidence is filtered." },
+        "result": { "es": "Capas, candidatos y recuentos de evidencia coinciden con el análisis real independiente.", "en": "Layers, candidates and evidence counts match the independent real analysis." }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.metamodel.importing.updatesite.UpdateSiteRecoveryHttpLifecycleIntegrationTests"
+    ],
+    "src": [
+      { "path": "frontend/e2e/real/publication/recovery-update-site-analyze-review.spec.ts", "line": 43 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-analyze-review.spec.ts", "line": 46 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-analyze-review.spec.ts", "line": 51 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-analyze-review.spec.ts", "line": 59 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-analyze-review.spec.ts", "line": 64 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-analyze-review.spec.ts", "line": 83 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-analyze-review.spec.ts", "line": 103 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-analyze-review.spec.ts", "line": 107 },
+      { "path": "frontend/e2e/real/publication/recovery-update-site-analyze-review.spec.ts", "line": 116 }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]

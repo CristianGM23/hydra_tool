@@ -1,0 +1,158 @@
+[
+  {
+    "id": "pw:e2e/real/validation/rule-form-authoring.spec.ts",
+    "name": {
+      "es": "Formulario completo de reglas en el navegador real: identidad, contexto, momentos, mensaje y condición",
+      "en": "Full rule form in a real browser: identity, context, triggers, message and condition"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "caps": [
+      "validation",
+      "persistence"
+    ],
+    "procs": [
+      {
+        "id": "validation_author_form",
+        "stages": [
+          "idc",
+          "tg"
+        ],
+        "match": "direct"
+      },
+      {
+        "id": "validation_author_form",
+        "stages": [
+          "ex"
+        ],
+        "match": "indirect"
+      }
+    ],
+    "pre": {
+      "es": "Un metamodelo guardado con Person (edad y nombre) y Company, sembrado con la API real.",
+      "en": "A saved metamodel with Person (age and name) and Company, seeded through the real API."
+    },
+    "executes": {
+      "es": "Un navegador real crea un grupo y una regla en el formulario completo, rellena identidad y ámbito, marca un momento extra, escribe el mensaje, construye una condición con nodos de varios tipos en modo avanzado, guarda, recarga la página y reabre la regla. Otra prueba recorre los 13 tipos de nodo.",
+      "en": "A real browser creates a group and a rule in the full form, fills identity and scope, ticks an extra trigger, types the message, builds a condition with several node types in advanced mode, saves, reloads and reopens the rule. Another test walks through the 13 node types."
+    },
+    "asserts": {
+      "es": "El servidor devuelve y guarda en disco la regla con nombre, código, gravedad, grupo, ámbito, momentos y mensaje, y una condición con la estructura construida; al recargar, el formulario muestra los mismos valores.",
+      "en": "The server returns and stores on disk the rule with name, code, severity, group, scope, triggers and message, and a condition with the built structure; after reloading, the form shows the same values."
+    },
+    "behavior": {
+      "es": "Lo que la persona rellena en el formulario completo es exactamente lo que HYDRA guarda y vuelve a mostrar, incluida la condición construida paso a paso.",
+      "en": "What the designer fills in the full form is exactly what HYDRA saves and shows again, including the condition built step by step."
+    },
+    "rule": {
+      "es": "Los momentos marcados y el mensaje se guardan con la regla.",
+      "en": "Ticked triggers and the message are saved with the rule."
+    },
+    "scenario": {
+      "es": "Regla de edad con grupo propio, condición «edad mayor o igual que 0 Y nombre definido».",
+      "en": "Age rule with its own group, condition 'age at least 0 AND name defined'."
+    },
+    "result": {
+      "es": "Regla y condición guardadas y reabiertas con los mismos valores.",
+      "en": "Rule and condition saved and reopened with the same values."
+    },
+    "expected": {
+      "es": "Datos del servidor y del disco iguales a lo escrito.",
+      "en": "Server and disk data equal to what was typed."
+    },
+    "guarantee": {
+      "es": "La identidad, el contexto, los momentos y el mensaje del formulario completo se persisten de verdad.",
+      "en": "Identity, context, triggers and message of the full form are really persisted."
+    },
+    "limits": {
+      "es": "La condición con los 13 tipos de nodo se construye una sola vez, con una función y una consulta concretas; no se prueban otros operadores ni funciones. No se ejecuta la regla contra un modelo ni se comprueba el resultado que daría la condición. El recorrido de los 13 tipos de nodo queda como test pendiente: el guardado no se completó en la ejecución real.",
+      "en": "The condition with the 13 node types is built once, with one particular function and query; other operators and functions are not tested. The rule is not run against a model and the result the condition would give is not checked. The 13-node-type journey is kept as a pending test: the save did not complete in the real run."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones reales de usuario, servidor real, comprobación independiente en API y disco y reapertura tras recargar.",
+      "en": "Real user actions, real server, independent API and disk checks and reopening after reload."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "formulario y condición",
+        "scenario": {
+          "es": "Rellenar el formulario y construir la condición.",
+          "en": "Fill the form and build the condition."
+        },
+        "result": {
+          "es": "Todo guardado y reabierto igual.",
+          "en": "Everything saved and reopened the same."
+        }
+      },
+      {
+        "n": "13 tipos de nodo",
+        "scenario": {
+          "es": "Elegir cada tipo de nodo como raíz.",
+          "en": "Choose each node type as the root."
+        },
+        "result": {
+          "es": "Los 13 tipos se ofrecen y se pintan.",
+          "en": "All 13 types are offered and rendered."
+        }
+      }
+    ],
+    "related": [],
+    "src": [
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 59
+      },
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 60
+      },
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 63
+      },
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 69
+      },
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 74
+      },
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 86
+      },
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 106
+      },
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 209
+      },
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 218
+      },
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 225
+      },
+      {
+        "path": "frontend/e2e/real/validation/rule-form-authoring.spec.ts",
+        "line": 229
+      }
+    ],
+    "prod": [
+      "frontend/src/validation-designer/ValidationRuleEditor.tsx",
+      "frontend/src/validation-designer/ExpressionBuilder.tsx",
+      "frontend/src/validation-designer/ValidationRuleManager.tsx",
+      "frontend/src/validation-designer/ValidationDesigner.tsx",
+      "frontend/src/validation/validationApi.ts",
+      "frontend/src/validation/api.ts"
+    ],
+    "confidence": "ANALYZED"
+  }
+]

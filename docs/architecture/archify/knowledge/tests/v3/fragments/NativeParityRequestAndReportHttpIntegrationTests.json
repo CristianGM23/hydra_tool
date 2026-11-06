@@ -1,0 +1,151 @@
+[
+  {
+    "id": "java:com.example.editor.integration.parity.NativeParityRequestAndReportHttpIntegrationTests",
+    "external": "none",
+    "strength": "STRONG",
+    "confidence": "ANALYZED",
+    "ambiguous": null,
+    "name": {
+      "es": "Petición de certificación nativa y su informe, sin herramientas nativas",
+      "en": "Native certification request and its report, with no native tools"
+    },
+    "type": "INTEGRATION",
+    "layer": "delivery",
+    "layers2": [
+      "quality"
+    ],
+    "caps": [
+      "integration",
+      "toolchains"
+    ],
+    "procs": [
+      {
+        "id": "integration_native_parity",
+        "stages": [
+          "req",
+          "to",
+          "cmp",
+          "ko"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "src/main/java/com/example/editor/integration/parity/NativeParityCertificationRequest.java",
+      "src/main/java/com/example/editor/integration/parity/NativeParityEvidenceAssessor.java",
+      "src/main/java/com/example/editor/integration/parity/NativeParityCertificationReport.java",
+      "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+      "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java"
+    ],
+    "pre": {
+      "es": "Contexto Spring completo con todos los directorios en una carpeta temporal; el único ejecutable permitido es el de control de versiones, así que la verificación nativa no puede lanzarse.",
+      "en": "Full Spring context with every folder in a temporary directory; the only allowed executable is the version-control one, so native verification cannot be launched."
+    },
+    "setup": {
+      "es": "El compilador de la integración está envuelto por un espía que delega en el real solo para contar invocaciones. Metamodelo y perfil creados por la API real.",
+      "en": "The integration compiler is wrapped by a spy that delegates to the real one only to count invocations. Metamodel and profile created through the real API."
+    },
+    "executes": {
+      "es": "POST de certificación nativa por el controlador, la fachada de aplicación, el compilador, la validación y el evaluador de evidencias reales, con listas de capacidades vacía, repetida, desconocida, de 15 y de 16 elementos y con plazos 0, 900 y 901.",
+      "en": "Native certification POST through the real controller, application facade, compiler, validation and evidence assessor, with empty, repeated, unknown, 15-item and 16-item capability lists and with timeouts 0, 900 and 901."
+    },
+    "asserts": {
+      "es": "Las listas inválidas y el plazo de 901 dan 400 sin compilar y sin crear espacios de trabajo; 900 y 0 se aceptan; las quince capacidades compilan una sola vez y se informan en orden; el informe no certificado nombra una capacidad sin verificar y otra fallida con sus motivos literales.",
+      "en": "Invalid lists and the 901 timeout give 400 without compiling and without creating workspaces; 900 and 0 are accepted; the fifteen capabilities compile exactly once and are reported in order; the uncertified report names an unverified and a failed capability with their literal reasons."
+    },
+    "behavior": {
+      "es": "Al pedir una certificación nativa se eligen capacidades válidas y un plazo razonable; el proyecto se compila una sola vez y, si no se puede demostrar todo, el informe explica qué quedó sin verificar y qué falló.",
+      "en": "When asking for a native certification you choose valid capabilities and a reasonable timeout; the project is compiled once and, if everything cannot be proven, the report explains what stayed unverified and what failed."
+    },
+    "rule": {
+      "es": "La lista de capacidades no puede estar vacía, repetirse ni superar las quince; el plazo máximo es de quince minutos y por defecto tres; nunca se certifica lo que no se ha podido demostrar.",
+      "en": "The capability list cannot be empty, repeat or exceed fifteen; the maximum timeout is fifteen minutes and the default is three; what could not be proven is never certified."
+    },
+    "scenario": {
+      "es": "Peticiones inválidas, plazos límite, una petición con las quince capacidades y otra con una capacidad sin prueba disponible y la compilación nativa, sin ninguna herramienta nativa en el entorno.",
+      "en": "Invalid requests, boundary timeouts, a request with all fifteen capabilities and another with a capability that has no proof available plus the native build, with no native tool in the environment."
+    },
+    "result": {
+      "es": "Rechazos 400 que no compilan nada ni crean carpetas; aceptación de los plazos válidos; una compilación por petición; y un informe con certificado falso, cero demostradas, una sin verificar y una fallida.",
+      "en": "400 rejections that compile nothing and create no folders; acceptance of valid timeouts; one compilation per request; and a report with certified false, zero proven, one unverified and one failed."
+    },
+    "expected": {
+      "es": "Códigos HTTP, número de compilaciones, contenido de las carpetas de trabajo antes y después y valores del informe coinciden con los literales escritos en la prueba.",
+      "en": "HTTP codes, number of compilations, content of the work folders before and after and report values match the literals written in the test."
+    },
+    "guarantee": {
+      "es": "Evidencia real de que la petición se valida antes de compilar, de que se compila una sola vez y de que el informe no certificado es explícito, sin ejecutar ninguna herramienta nativa.",
+      "en": "Real evidence that the request is validated before compiling, that it compiles once and that the uncertified report is explicit, without running any native tool."
+    },
+    "limits": {
+      "es": "No demuestra el caso certificado ni ejecuta la verificación nativa; el plazo efectivo de 180 segundos solo se observa en la propia petición y no por su efecto en la ejecución; el contador de compilaciones usa un espía.",
+      "en": "It does not prove the certified case or run native verification; the effective 180-second timeout is observed only on the request itself and not by its effect on execution; the compilation counter uses a spy."
+    },
+    "strengthWhy": {
+      "es": "Cadena HTTP real, oráculos literales y de disco independientes y varios rechazos reales; el espía solo cuenta y delega.",
+      "en": "Real HTTP chain, independent literal and disk oracles and several real rejections; the spy only counts and delegates."
+    },
+    "cases": [
+      {
+        "n": "invalidCapabilityListsAreRejectedWithoutCompilingOrCreatingWorkspaces",
+        "scenario": {
+          "es": "Lista vacía, repetida, desconocida y de 16 elementos.",
+          "en": "Empty, repeated, unknown and 16-item lists."
+        },
+        "result": {
+          "es": "400 en todas, cero compilaciones y las carpetas de trabajo sin cambios.",
+          "en": "400 on all, zero compilations and work folders unchanged."
+        }
+      },
+      {
+        "n": "uncertifiedReportNamesTheUnverifiedAndTheFailedCapability",
+        "scenario": {
+          "es": "Una capacidad sin prueba disponible y la compilación nativa sin herramientas.",
+          "en": "A capability with no proof available and the native build without tools."
+        },
+        "result": {
+          "es": "No certificado: una sin verificar y una fallida con su motivo literal.",
+          "en": "Not certified: one unverified and one failed with its literal reason."
+        }
+      }
+    ],
+    "src": [
+      {
+        "path": "src/test/java/com/example/editor/integration/parity/NativeParityRequestAndReportHttpIntegrationTests.java",
+        "line": 115
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/parity/NativeParityRequestAndReportHttpIntegrationTests.java",
+        "line": 118
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/parity/NativeParityRequestAndReportHttpIntegrationTests.java",
+        "line": 130
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/parity/NativeParityRequestAndReportHttpIntegrationTests.java",
+        "line": 137
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/parity/NativeParityRequestAndReportHttpIntegrationTests.java",
+        "line": 141
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/parity/NativeParityRequestAndReportHttpIntegrationTests.java",
+        "line": 153
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/parity/NativeParityRequestAndReportHttpIntegrationTests.java",
+        "line": 166
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/parity/NativeParityRequestAndReportHttpIntegrationTests.java",
+        "line": 172
+      },
+      {
+        "path": "src/test/java/com/example/editor/integration/parity/NativeParityRequestAndReportHttpIntegrationTests.java",
+        "line": 177
+      }
+    ]
+  }
+]

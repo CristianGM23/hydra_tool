@@ -1,0 +1,88 @@
+[
+  {
+    "id": "pw:e2e/real/gamification/feedback-policy.spec.ts",
+    "name": {
+      "es": "Política de avisos de gamificación: editar, guardar y ver el efecto con backend real",
+      "en": "Gamification notice policy: edit, save and see the effect with a real backend"
+    },
+    "type": "END_TO_END",
+    "layer": "behavior",
+    "caps": ["gamification"],
+    "procs": [
+      { "id": "gamification_author_policy", "stages": ["sf", "mx", "dt", "sv", "art"], "match": "direct" }
+    ],
+    "prod": [
+      "frontend/src/gamification-designer/GamificationFeedbackPolicyEditor.tsx",
+      "frontend/src/gamification-designer/GamificationDesigner.tsx",
+      "frontend/src/gamification-designer/api.ts",
+      "src/main/java/com/example/editor/gamification/web/CanonicalGamificationController.java",
+      "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+      "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackPolicyResolver.java",
+      "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackProjector.java",
+      "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+      "src/main/java/com/example/editor/gamification/persistence/JsonGamificationDefinitionRepository.java"
+    ],
+    "pre": {
+      "es": "Metamodelo y catálogo con una regla de una sola aplicación sembrados por la API real; una concesión y un rechazo reales previos.",
+      "en": "Metamodel and catalog with a single-application rule seeded through the real API; one earlier real grant and one real refusal."
+    },
+    "setup": {
+      "es": "Sin simulaciones de la API. La siembra y los eventos usan la API real; los ajustes los hace el usuario en el editor.",
+      "en": "No API simulation. Seeding and events use the real API; the user makes the settings in the editor."
+    },
+    "executes": {
+      "es": "En el editor de avisos fija superficies, duración fuera de rango, máximo visible, ventanas y detalle, guarda; después pone una duración válida, guarda de nuevo y se emite un evento real para leer su aviso.",
+      "en": "In the notice editor it sets surfaces, an out-of-range duration, maximum visible, windows and detail, saves; then sets a valid duration, saves again and a real event is emitted to read its notice."
+    },
+    "asserts": {
+      "es": "Las anotaciones del fichero del backend coinciden con lo escrito; los avisos reales pasan de valores por defecto a la política guardada (duración acotada a 30 s, rechazo visible, puntos y progreso ocultos); el aviso nuevo lleva 2 s; la pantalla recargada muestra lo guardado.",
+      "en": "The annotations in the backend file match what was typed; real notices go from defaults to the saved policy (duration capped at 30 s, refusal visible, points and progress hidden); the new notice carries 2 s; the reloaded screen shows what was saved."
+    },
+    "behavior": {
+      "es": "Los ajustes de avisos que el usuario guarda viajan con el catálogo y gobiernan la presentación de los avisos siguientes.",
+      "en": "The notice settings the user saves travel with the catalog and govern how later notices are presented."
+    },
+    "rule": {
+      "es": "La duración se acota entre 1 y 30 segundos aunque se guarde otro valor; los rechazos solo se muestran si se activa; los ajustes se aplican a los avisos siguientes.",
+      "en": "Duration is bounded between 1 and 30 seconds even if another value is saved; refusals are only shown if enabled; settings apply to later notices."
+    },
+    "scenario": {
+      "es": "Línea base con valores por defecto y rechazo oculto; primer guardado con 99999 ms y detalle reducido; segundo guardado con 2000 ms; evento de otra persona.",
+      "en": "Baseline with defaults and hidden refusal; first save with 99999 ms and reduced detail; second save with 2000 ms; event from another person."
+    },
+    "result": {
+      "es": "Antes: 4 s, tres visibles, rechazo oculto. Después: toast y estado, 30 s, dos visibles, ventanas 10 s y 2 s, rechazo visible; tras el segundo guardado, 2 s.",
+      "en": "Before: 4 s, three visible, refusal hidden. After: toast and status, 30 s, two visible, windows 10 s and 2 s, refusal visible; after the second save, 2 s."
+    },
+    "expected": {
+      "es": "Disco y avisos del servidor reflejan cada ajuste editado en la interfaz.",
+      "en": "Disk and server notices reflect each setting edited in the interface."
+    },
+    "guarantee": {
+      "es": "El editor de política guarda ajustes que el servidor aplica a los avisos siguientes, con los límites del servidor.",
+      "en": "The policy editor saves settings that the server applies to later notices, with the server's limits."
+    },
+    "limits": {
+      "es": "Solo cubre los ajustes globales del editor; los ajustes por regla se prueban en la jornada del JSON fuente. No hay selector de superficies con casillas: se escribe una lista.",
+      "en": "It only covers the editor's global settings; per-rule settings are tested in the source JSON journey. There is no checkbox surface selector: a list is typed."
+    },
+    "strength": "STRONG",
+    "strengthWhy": {
+      "es": "Acciones de usuario reales, backend real, contraste antes y después con los avisos reales y lectura independiente del fichero guardado.",
+      "en": "Real user actions, real backend, before and after comparison with real notices and independent reading of the saved file."
+    },
+    "external": "none",
+    "cases": [],
+    "related": ["java:com.example.editor.gamification.GamificationCatalogPolicyLifecycleIntegrationTests", "java:com.example.editor.gamification.GamificationRuntimeMatchAndFeedbackPolicyIntegrationTests"],
+    "src": [
+      { "path": "frontend/e2e/real/gamification/feedback-policy.spec.ts", "line": 24 },
+      { "path": "frontend/e2e/real/gamification/feedback-policy.spec.ts", "line": 28 },
+      { "path": "frontend/e2e/real/gamification/feedback-policy.spec.ts", "line": 49 },
+      { "path": "frontend/e2e/real/gamification/feedback-policy.spec.ts", "line": 59 },
+      { "path": "frontend/e2e/real/gamification/feedback-policy.spec.ts", "line": 62 },
+      { "path": "frontend/e2e/real/gamification/feedback-policy.spec.ts", "line": 67 },
+      { "path": "frontend/e2e/real/gamification/feedback-policy.spec.ts", "line": 71 }
+    ],
+    "confidence": "ANALYZED"
+  }
+]

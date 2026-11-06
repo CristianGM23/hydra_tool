@@ -200,7 +200,7 @@ class UpdateSiteLayerMaterializationServiceTests {
         assertThatThrownBy(() -> materializer.materialize(List.of(new UpdateSiteInputFile("site.zip", new byte[]{1})),
                 new UpdateSiteLayerMaterializationRequest("library", "", "generic-editor", "Recovered", false, true,
                         UpdateSiteLayerSelection.all())))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("full fidelity");
         verify(editors, never()).create(eq("library"), any());
         verify(metamodels).delete("library", "m-etag");

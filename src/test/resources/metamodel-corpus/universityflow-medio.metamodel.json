@@ -1,0 +1,1598 @@
+{
+ "schemaVersion": "2.1",
+ "id": "universityflow-medio",
+ "name": "UniversityFlow (medio)",
+ "classes": [
+  {
+   "id": "universityflow-medio-university",
+   "name": "University",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Root container of one university"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-university-name",
+     "name": "name",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-person",
+   "name": "Person",
+   "kind": "ABSTRACT_CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Anybody with an academic identity"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-person-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-person-fullname",
+     "name": "fullName",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-person-email",
+     "name": "email",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-student",
+   "name": "Student",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Person enrolled in a degree"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-student-admittedon",
+     "name": "admittedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-student-state",
+     "name": "state",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "universityflow-medio-enum-studentstate",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-student-credits",
+     "name": "credits",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-lecturer",
+   "name": "Lecturer",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Person who teaches"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-lecturer-category",
+     "name": "category",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "universityflow-medio-enum-lecturercategory",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-lecturer-maxhours",
+     "name": "maxHours",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-lecturer-assignedhours",
+     "name": "assignedHours",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-faculty",
+   "name": "Faculty",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Organisational unit offering degrees"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-faculty-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-faculty-name",
+     "name": "name",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-department",
+   "name": "Department",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Unit that owns subjects and staff"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-department-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-department-name",
+     "name": "name",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-degree",
+   "name": "Degree",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Programme leading to a title"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-degree-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-degree-name",
+     "name": "name",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-degree-totalcredits",
+     "name": "totalCredits",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-degree-level",
+     "name": "level",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "universityflow-medio-enum-degreelevel",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-subject",
+   "name": "Subject",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Course unit of a degree"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-subject-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-subject-name",
+     "name": "name",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-subject-credits",
+     "name": "credits",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-subject-year",
+     "name": "year",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-subject-semester",
+     "name": "semester",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-subject-mandatory",
+     "name": "mandatory",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "BOOLEAN",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-group",
+   "name": "Group",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Teaching group of a subject"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-group-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-group-capacity",
+     "name": "capacity",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-group-enrolled",
+     "name": "enrolled",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-group-language",
+     "name": "language",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-enrolment",
+   "name": "Enrolment",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Student enrolled in a subject group"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-enrolment-enrolledon",
+     "name": "enrolledOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enrolment-status",
+     "name": "status",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "universityflow-medio-enum-enrolmentstatus",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enrolment-grade",
+     "name": "grade",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DECIMAL",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 0,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enrolment-attempt",
+     "name": "attempt",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-academicyear",
+   "name": "AcademicYear",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Year of the academic calendar"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-academicyear-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-academicyear-startson",
+     "name": "startsOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-academicyear-endson",
+     "name": "endsOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-classroom",
+   "name": "Classroom",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Physical teaching space"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-classroom-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-classroom-seats",
+     "name": "seats",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "INTEGER",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-classroom-lab",
+     "name": "lab",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "BOOLEAN",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-restriction",
+   "name": "Restriction",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Enrolment restriction (incompatibility or quota)"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-restriction-code",
+     "name": "code",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-restriction-description",
+     "name": "description",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-notification",
+   "name": "Notification",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "Message to students or staff"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-notification-subject",
+     "name": "subject",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "STRING",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-notification-channel",
+     "name": "channel",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "universityflow-medio-enum-channel",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-notification-sent",
+     "name": "sent",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "BOOLEAN",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-statechange",
+   "name": "StateChange",
+   "kind": "CLASS",
+   "operations": [],
+   "annotations": {
+    "hydra.battery.purpose": "History of academic state changes"
+   },
+   "attributes": [
+    {
+     "id": "universityflow-medio-statechange-fromstate",
+     "name": "fromState",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "universityflow-medio-enum-studentstate",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-statechange-tostate",
+     "name": "toState",
+     "type": {
+      "kind": "ENUM",
+      "targetId": "universityflow-medio-enum-studentstate",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-statechange-changedon",
+     "name": "changedOn",
+     "type": {
+      "kind": "PRIMITIVE",
+      "targetId": "DATE",
+      "externalName": ""
+     },
+     "multiplicity": {
+      "lowerBound": 1,
+      "upperBound": 1
+     },
+     "ordered": true,
+     "unique": true,
+     "defaultValue": "",
+     "annotations": {}
+    }
+   ]
+  }
+ ],
+ "enums": [
+  {
+   "id": "universityflow-medio-enum-studentstate",
+   "name": "StudentState",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "universityflow-medio-enum-studentstate-applicant",
+     "name": "APPLICANT",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-studentstate-active",
+     "name": "ACTIVE",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-studentstate-suspended",
+     "name": "SUSPENDED",
+     "value": 2,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-studentstate-graduated",
+     "name": "GRADUATED",
+     "value": 3,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-studentstate-withdrawn",
+     "name": "WITHDRAWN",
+     "value": 4,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-enum-lecturercategory",
+   "name": "LecturerCategory",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "universityflow-medio-enum-lecturercategory-assistant",
+     "name": "ASSISTANT",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-lecturercategory-associate",
+     "name": "ASSOCIATE",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-lecturercategory-professor",
+     "name": "PROFESSOR",
+     "value": 2,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-lecturercategory-visiting",
+     "name": "VISITING",
+     "value": 3,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-enum-degreelevel",
+   "name": "DegreeLevel",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "universityflow-medio-enum-degreelevel-bachelor",
+     "name": "BACHELOR",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-degreelevel-master",
+     "name": "MASTER",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-degreelevel-phd",
+     "name": "PHD",
+     "value": 2,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-enum-enrolmentstatus",
+   "name": "EnrolmentStatus",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "universityflow-medio-enum-enrolmentstatus-requested",
+     "name": "REQUESTED",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-enrolmentstatus-confirmed",
+     "name": "CONFIRMED",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-enrolmentstatus-passed",
+     "name": "PASSED",
+     "value": 2,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-enrolmentstatus-failed",
+     "name": "FAILED",
+     "value": 3,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-enrolmentstatus-cancelled",
+     "name": "CANCELLED",
+     "value": 4,
+     "annotations": {}
+    }
+   ]
+  },
+  {
+   "id": "universityflow-medio-enum-channel",
+   "name": "Channel",
+   "annotations": {},
+   "literals": [
+    {
+     "id": "universityflow-medio-enum-channel-email",
+     "name": "EMAIL",
+     "value": 0,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-channel-portal",
+     "name": "PORTAL",
+     "value": 1,
+     "annotations": {}
+    },
+    {
+     "id": "universityflow-medio-enum-channel-sms",
+     "name": "SMS",
+     "value": 2,
+     "annotations": {}
+    }
+   ]
+  }
+ ],
+ "dataTypes": [],
+ "relations": [
+  {
+   "id": "universityflow-medio-university-rel-faculties",
+   "name": "faculties",
+   "sourceTypeId": "universityflow-medio-university",
+   "targetTypeId": "universityflow-medio-faculty",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-faculty-rel-departments",
+   "name": "departments",
+   "sourceTypeId": "universityflow-medio-faculty",
+   "targetTypeId": "universityflow-medio-department",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-faculty-rel-degrees",
+   "name": "degrees",
+   "sourceTypeId": "universityflow-medio-faculty",
+   "targetTypeId": "universityflow-medio-degree",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-degree-rel-subjects",
+   "name": "subjects",
+   "sourceTypeId": "universityflow-medio-degree",
+   "targetTypeId": "universityflow-medio-subject",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-subject-rel-groups",
+   "name": "groups",
+   "sourceTypeId": "universityflow-medio-subject",
+   "targetTypeId": "universityflow-medio-group",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-subject-rel-prerequisites",
+   "name": "prerequisites",
+   "sourceTypeId": "universityflow-medio-subject",
+   "targetTypeId": "universityflow-medio-subject",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {
+    "hydra.battery.purpose": "recursive prerequisite graph"
+   }
+  },
+  {
+   "id": "universityflow-medio-subject-rel-department",
+   "name": "department",
+   "sourceTypeId": "universityflow-medio-subject",
+   "targetTypeId": "universityflow-medio-department",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-university-rel-people",
+   "name": "people",
+   "sourceTypeId": "universityflow-medio-university",
+   "targetTypeId": "universityflow-medio-person",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-student-rel-degree",
+   "name": "degree",
+   "sourceTypeId": "universityflow-medio-student",
+   "targetTypeId": "universityflow-medio-degree",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-lecturer-rel-department",
+   "name": "department",
+   "sourceTypeId": "universityflow-medio-lecturer",
+   "targetTypeId": "universityflow-medio-department",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-group-rel-lecturers",
+   "name": "lecturers",
+   "sourceTypeId": "universityflow-medio-group",
+   "targetTypeId": "universityflow-medio-lecturer",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-group-rel-classroom",
+   "name": "classroom",
+   "sourceTypeId": "universityflow-medio-group",
+   "targetTypeId": "universityflow-medio-classroom",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-university-rel-enrolments",
+   "name": "enrolments",
+   "sourceTypeId": "universityflow-medio-university",
+   "targetTypeId": "universityflow-medio-enrolment",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-enrolment-rel-student",
+   "name": "student",
+   "sourceTypeId": "universityflow-medio-enrolment",
+   "targetTypeId": "universityflow-medio-student",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-enrolment-rel-group",
+   "name": "group",
+   "sourceTypeId": "universityflow-medio-enrolment",
+   "targetTypeId": "universityflow-medio-group",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-enrolment-rel-year",
+   "name": "year",
+   "sourceTypeId": "universityflow-medio-enrolment",
+   "targetTypeId": "universityflow-medio-academicyear",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-university-rel-years",
+   "name": "years",
+   "sourceTypeId": "universityflow-medio-university",
+   "targetTypeId": "universityflow-medio-academicyear",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-university-rel-classrooms",
+   "name": "classrooms",
+   "sourceTypeId": "universityflow-medio-university",
+   "targetTypeId": "universityflow-medio-classroom",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-degree-rel-restrictions",
+   "name": "restrictions",
+   "sourceTypeId": "universityflow-medio-degree",
+   "targetTypeId": "universityflow-medio-restriction",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-restriction-rel-subjects",
+   "name": "subjects",
+   "sourceTypeId": "universityflow-medio-restriction",
+   "targetTypeId": "universityflow-medio-subject",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 2,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {
+    "hydra.battery.purpose": "incompatible subjects"
+   }
+  },
+  {
+   "id": "universityflow-medio-university-rel-notifications",
+   "name": "notifications",
+   "sourceTypeId": "universityflow-medio-university",
+   "targetTypeId": "universityflow-medio-notification",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-notification-rel-recipients",
+   "name": "recipients",
+   "sourceTypeId": "universityflow-medio-notification",
+   "targetTypeId": "universityflow-medio-person",
+   "kind": "REFERENCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 1,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-student-rel-history",
+   "name": "history",
+   "sourceTypeId": "universityflow-medio-student",
+   "targetTypeId": "universityflow-medio-statechange",
+   "kind": "CONTAINMENT",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": null
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-student-inheritance-person",
+   "name": "Student->Person",
+   "sourceTypeId": "universityflow-medio-student",
+   "targetTypeId": "universityflow-medio-person",
+   "kind": "INHERITANCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  },
+  {
+   "id": "universityflow-medio-lecturer-inheritance-person",
+   "name": "Lecturer->Person",
+   "sourceTypeId": "universityflow-medio-lecturer",
+   "targetTypeId": "universityflow-medio-person",
+   "kind": "INHERITANCE",
+   "sourceMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "targetMultiplicity": {
+    "lowerBound": 0,
+    "upperBound": 1
+   },
+   "oppositeRelationId": "",
+   "ordered": false,
+   "unique": true,
+   "annotations": {}
+  }
+ ],
+ "annotations": {
+  "hydra.battery.domain": "universityflow",
+  "hydra.battery.level": "medio",
+  "hydra.battery.purpose": "Academic management and approval workflows"
+ }
+}

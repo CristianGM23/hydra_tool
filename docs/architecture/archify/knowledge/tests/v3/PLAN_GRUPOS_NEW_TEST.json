@@ -1,0 +1,1566 @@
+[
+ {
+  "group": "event-model-authoring-persistence",
+  "stages": 11,
+  "pkg": [
+   1
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.event.EventModelAuthoringPersistenceIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/event/EventModelApplicationService.java",
+   "src/main/java/com/example/editor/event/EventModelChecker.java",
+   "src/main/java/com/example/editor/event/persistence/JsonEventDefinitionModelRepository.java",
+   "src/main/java/com/example/editor/event/persistence/JsonEventBindingModelRepository.java",
+   "src/main/java/com/example/editor/event/web/CanonicalEventModelController.java",
+   "src/main/java/com/example/editor/event/EventFieldDefinition.java"
+  ],
+  "scenario": "Con EventModelApplicationService + repos JSON reales sobre @TempDir: (1) crear tipos/campos/enlaces validos y verificar el JSON crudo en disco; (2) replace con ETag obsoleto -> conflicto y fichero intacto, con ETag correcto -> persiste; (3) modelo con errores (origen/destino desconocido, reservado, campo obligatorio sin mapear, duplicados) -> codigos de diagnostico exactos y WARNING (FOREIGN_NAMESPACE) que no bloquea; (4) JSON crudo con nombre en blanco, namespace que empieza por cifra, ENUM sin enumTypeId, copia con dos origenes -> rechazo; con enumTypeId -> guarda.",
+  "stageIds": [
+   "events_author_connect.a5",
+   "events_author_form.d1",
+   "events_author_form.a7",
+   "events_author_form.a8",
+   "events_author_source.a3",
+   "events_define.a1",
+   "events_define.a2",
+   "events_define.a3",
+   "events_define.a4",
+   "events_define.a5",
+   "events_define.a6"
+  ]
+ },
+ {
+  "group": "repos-file-transfer-loopback",
+  "stages": 11,
+  "pkg": [
+   2
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.remote.storage.RemoteGithubLoopbackTransferIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/remote/storage/RemoteProjectTransferService.java",
+   "src/main/java/com/example/editor/remote/storage/RemoteStorageService.java",
+   "src/main/java/com/example/editor/remote/storage/provider/GitHubRemoteStorageProvider.java",
+   "src/main/java/com/example/editor/remote/storage/provider/RemoteStorageHttpClient.java",
+   "src/main/java/com/example/editor/remote/storage/RemotePathPolicy.java",
+   "src/main/java/com/example/editor/remote/storage/RemoteStorageLocationResolver.java"
+  ],
+  "scenario": "Servidor loopback que emula la API de contenidos de GitHub (GET/PUT con sha, 409/422 por sha obsoleto, 404, 422 si existe) y perfil GITHUB con baseUrl=http://127.0.0.1:puerto. RemoteProjectTransferService real exporta (ZIP completo y una capa) con ProjectApplicationService real sobre backend local en @TempDir, modifica en el servidor, re-exporta con expectedVersion obsoleta, prueba CREATE_ONLY/UPDATE_ONLY/OVERWRITE e importa a un proyecto nuevo.",
+  "stageIds": [
+   "repos_author_transfer.a",
+   "repos_author_transfer.b",
+   "repos_author_transfer.c",
+   "repos_author_transfer.d",
+   "repos_author_transfer.r",
+   "repos_connect_sync.a5",
+   "repos_file_transfer.a",
+   "repos_file_transfer.b",
+   "repos_file_transfer.c",
+   "repos_file_transfer.d",
+   "repos_file_transfer.r"
+  ]
+ },
+ {
+  "group": "event-flow-authoring-persistence",
+  "stages": 10,
+  "pkg": [
+   1
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.event.flow.EventFlowAuthoringPersistenceIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/event/flow/EventFlowApplicationService.java",
+   "src/main/java/com/example/editor/event/flow/EventFlowChecker.java",
+   "src/main/java/com/example/editor/event/flow/persistence/JsonEventFlowModelRepository.java",
+   "src/main/java/com/example/editor/event/flow/runtime/EventFlowCompiler.java",
+   "src/main/java/com/example/editor/event/flow/diagram/EventFlowDiagramService.java",
+   "src/main/java/com/example/editor/event/flow/FlowNodeKind.java"
+  ],
+  "scenario": "Con EventFlowApplicationService + JsonEventFlowModelRepository + EventFlowChecker reales: (1) guardar un flujo valido con disparadores, variables, reintentos, plazos y compensaciones y comprobar el JSON crudo; (2) intentar guardar flujos con 0 o 2 START, decision sin rama TRUE/FALSE, JOIN con una sola entrada, nodo huerfano, disparador desconocido -> create/replace rechazan (INVALID_REQUEST) y el fichero no cambia; checkDraft devuelve los codigos exactos; (3) un tipo de cada familia de FlowNodeKind (29) se guarda y compila; (4) guardar posiciones de cajas con EventFlowDiagramService y releerlas; (5) reload + EventFlowRuntimeService.compile/start del flujo guardado y compile del invalido -> NOT_EXECUTABLE.",
+  "stageIds": [
+   "events_author_flow.a4",
+   "events_author_flow.a6",
+   "events_compose_flow.a1",
+   "events_compose_flow.a2",
+   "events_compose_flow.a3",
+   "events_compose_flow.a4",
+   "events_compose_flow.a5",
+   "events_compose_flow.a6",
+   "events_compose_flow.a7",
+   "events_compose_flow.a8"
+  ]
+ },
+ {
+  "group": "textual-session-real-lifecycle",
+  "stages": 10,
+  "pkg": [
+   4
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.textual.TextualModelSessionRealLifecycleIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/textual/runtime/TextualModelSessionService.java",
+   "src/main/java/com/example/editor/textual/runtime/NeutralTextualModelParser.java",
+   "src/main/java/com/example/editor/textual/runtime/NeutralGrammarSyntaxContract.java",
+   "src/main/java/com/example/editor/textual/interaction/TextualInteractionFacade.java",
+   "src/main/java/com/example/editor/textual/interaction/TextualLanguageFeatureService.java",
+   "src/main/java/com/example/editor/textual/web/TextualModelSessionController.java"
+  ],
+  "scenario": "Contexto Spring (@SpringBootTest + MockMvc, dsl.textual-models.* y dsl.grammar.* en @TempDir) o cableado manual: crear una gramatica real y compilarla, definir el editor textual, crear sesion textual y recorrer /parse: (1) borrador valido -> modelo semantico y sourceMap; (2) borrador roto -> draftValid=false, diagnosticos con severidad/rango y quickFixReplacement cuando procede, ultimo modelo valido conservado; (3) GET /interactions/* sobre el borrador roto -> rechazo; (4) aplicar el reemplazo del quick fix en el test y reparsear revision+1 -> diagnostico desaparece; (5) con borrador valido: capabilities, completion, rename (solo plan), format (ediciones sin persistir), symbols; (6) /save -> lastCommittedRevision==draftRevision; save de borrador roto -> 409/IllegalState; save con regla de validacion compartida que falla -> rechazo; revision antigua o misma revision con otro contenido -> rechazo.",
+  "stageIds": [
+   "grammar_author_textmodel.pa",
+   "grammar_author_textmodel.sv",
+   "grammar_diagnostics_actions.d",
+   "grammar_diagnostics_actions.ra",
+   "grammar_language_service.a",
+   "grammar_language_service.rn",
+   "grammar_language_service.fm",
+   "grammar_language_service.er",
+   "grammar_textual_editing.pa",
+   "grammar_textual_editing.sv"
+  ]
+ },
+ {
+  "group": "standalone-distribution-real-http-flow",
+  "stages": 10,
+  "pkg": [
+   7
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.standalone.distribution.StandaloneDistributionHttpFlowIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionController.java",
+   "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionApplicationService.java",
+   "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPlanner.java",
+   "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionMaterializer.java",
+   "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionValidationService.java",
+   "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPackager.java"
+  ],
+  "scenario": "SpringBootTest RANDOM_PORT con hydra.standalone-distribution.allowed-root=@TempDir (DynamicPropertySource) y cliente java.net.http real: POST /api/standalone-distributions/plan, /materialize, escribir index.html, /validate, /package (ZIP + cabecera X-HYDRA-Distribution-SHA256); /release-readiness sobre fuentes sin compilar (invalido) y tras crear dist/ compilado (valido) y /package-release-source; perfil en blanco, editorDirectory con ../ o enlace simbolico y .env sensible rechazados.",
+  "stageIds": [
+   "publication_author_distribution.pv",
+   "publication_author_distribution.mv",
+   "publication_author_distribution.pk",
+   "publication_standalone_distribution.pr",
+   "publication_standalone_distribution.pl",
+   "publication_standalone_distribution.mt",
+   "publication_standalone_distribution.va",
+   "publication_standalone_distribution.rd",
+   "publication_standalone_distribution.pk",
+   "publication_standalone_distribution.pr2"
+  ]
+ },
+ {
+  "group": "update-site-recovery-real-http-lifecycle",
+  "stages": 10,
+  "pkg": [
+   7
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.metamodel.importing.updatesite.UpdateSiteRecoveryHttpLifecycleIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteMaterializationController.java",
+   "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteLayerMaterializationService.java",
+   "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteImportApplicationService.java",
+   "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteRecoveryController.java",
+   "src/main/java/com/example/editor/project/recovery/ExternalProjectSemanticMaterializationService.java",
+   "src/main/java/com/example/editor/project/recovery/ExternalValidationRecoveryService.java"
+  ],
+  "scenario": "SpringBootTest RANDOM_PORT con StorageProperties (metamodelos, editores, validaciones, assets) en @TempDir; subir como multipart el fixture src/test/resources/fixtures/sirius-complete: POST /api/update-site-imports/analyze, /reconcile, /materialize con persist=false (nada en disco), seleccion parcial de capas, persist=true (metamodelo, editor y reglas guardados), repetir con overwrite=false (conflicto), y POST /materialize/rollback con los etag devueltos; GET de metamodelo/editor/validaciones antes y despues.",
+  "stageIds": [
+   "recovery_author_wizard.d",
+   "recovery_author_workspace.d",
+   "recovery_author_workspace.f",
+   "recovery_author_workspace.g",
+   "recovery_author_workspace.h",
+   "recovery_lifecycle.a1",
+   "recovery_lifecycle.a3",
+   "recovery_lifecycle.a4",
+   "recovery_lifecycle.a6",
+   "recovery_persist_rollback.d3"
+  ]
+ },
+ {
+  "group": "quickfix-apply-undo-redo-real-validation",
+  "stages": 10,
+  "pkg": [
+   9
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.validation.quickfix.QuickFixApplyUndoRedoRuntimeIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/validation/quickfix/QuickFixRuntimeService.java",
+   "src/main/java/com/example/editor/validation/action/CanonicalActionExecutor.java",
+   "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrator.java",
+   "src/main/java/com/example/editor/validation/quickfix/CanonicalModelChangeAnalyzer.java",
+   "src/main/java/com/example/editor/operation/runtime/CanonicalModelRuntimeAdapter.java"
+  ],
+  "scenario": "QuickFixRuntimeService con cadena real: ModelDocumentService EMF (introspection.ecore), repos JSON de expresiones/acciones/validaciones, ValidationRuntimeApplicationService y ValidationOrchestrator reales, InMemoryCanonicalEventBus con suscriptor. Dos reglas (una con quick fix). resolve sin informe previo -> lanza validacion completa; preview no cambia el modelo; apply -> modelo cambia, diagnostico desaparece, la otra regla no se reejecuta (incremental), estado APPLIED_RESOLVED, eventos started/applied; arg desconocido/faltante rechazado; accion con precondicion falsa/atomica que falla a mitad -> modelo identico (XMI) y evento failed; undo/redo revalidan y reflejan hasUndo/hasRedo; apply nuevo vacia redo; UndoPolicy NONE no guarda historial; NO_CHANGES y APPLIED_UNRESOLVED.",
+  "stageIds": [
+   "validation_apply_quickfix.list",
+   "validation_apply_quickfix.par",
+   "validation_apply_quickfix.pv",
+   "validation_apply_quickfix.ap",
+   "validation_apply_quickfix.rb",
+   "validation_apply_quickfix.rv",
+   "validation_apply_quickfix.st",
+   "validation_apply_quickfix.hist",
+   "validation_apply_quickfix.evq",
+   "validation_apply_quickfix.undo"
+  ]
+ },
+ {
+  "group": "gamification-catalog-policy",
+  "stages": 9,
+  "pkg": [
+   2
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.gamification.GamificationCatalogPolicyLifecycleIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+   "src/main/java/com/example/editor/gamification/GamificationChecker.java",
+   "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackPolicyResolver.java",
+   "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackProjector.java",
+   "src/main/java/com/example/editor/gamification/diagram/GamificationDiagramService.java"
+  ],
+  "scenario": "GamificationApplicationService real con repositorios JSON en @TempDir: (a) crear catalogo con anotaciones hydra.feedback.* (superficies, durationMillis, maxVisible, ventanas, showPoints) mas diagrama via GamificationDiagramService, releer de disco; (b) intentar guardar nivel sin tipo de puntos / ids duplicados / limite diario sin maximo y comprobar rechazo sin persistir; (c) checkDraft devuelve errores y avisos; (d) conceder un premio via GamificationRuntimeService y leer feedback() con la politica guardada.",
+  "stageIds": [
+   "gamification_author_form.lv",
+   "gamification_author_form.ck",
+   "gamification_author_guided.c",
+   "gamification_author_guided.sv",
+   "gamification_author_policy.sf",
+   "gamification_author_policy.mx",
+   "gamification_author_policy.dt",
+   "gamification_author_policy.sv",
+   "gamification_author_policy.art"
+  ]
+ },
+ {
+  "group": "generated-projects-real-process-lifecycle",
+  "stages": 9,
+  "pkg": [
+   3
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.generated.project.GeneratedProjectLifecycleRealProcessIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleService.java",
+   "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleController.java",
+   "src/main/java/com/example/editor/generated/project/GeneratedProjectRuntimeProfileCatalog.java",
+   "src/main/java/com/example/editor/generated/project/GeneratedProjectRegistryStore.java",
+   "src/main/java/com/example/editor/integration/compatibility/ExternalToolchainCommandRunner.java"
+  ],
+  "scenario": "MockMvc standalone sobre GeneratedProjectLifecycleController con GeneratedProjectLifecycleService real, GeneratedProjectRegistryStore real y ExternalToolchainCommandRunner -> ExternalToolProcessRunner real (politica por defecto). Perfil con ejecutables permitidos (node/npm, p.ej. langium con package.json cuyos scripts escriben marcadores con node -e): POST register; execute dryRun -> PLANNED con los comandos; execute real GENERATE+VALIDATE+OPEN -> PASSED con marcadores creados por el proceso real; variante con script que sale con codigo 1 -> VALIDATE FAILED con exitCode 1, siguientes etapas SKIPPED y opcional LAUNCH SKIPPED sin allowOptionalStages; relativeDirectory con ../ y symlink rechazado; registro persistido en disco. Hallazgo a verificar: el perfil standalone-web usa cmd/sh que NO estan en hydra.security.external-process.allowed-executables (application.properties l.808), asi que su ejecucion real seria rechazada: el test lo documentara o forzara la correccion.",
+  "stageIds": [
+   "generated_projects_author_wizard.rg",
+   "generated_projects_author_wizard.pj",
+   "generated_projects_author_wizard.pv",
+   "generated_projects_author_wizard.ru",
+   "generated_projects_lifecycle.rg",
+   "generated_projects_lifecycle.ge",
+   "generated_projects_lifecycle.va",
+   "generated_projects_lifecycle.op",
+   "generated_projects_lifecycle.la"
+  ]
+ },
+ {
+  "group": "g-session-event-reward",
+  "stages": 9,
+  "pkg": [
+   11
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.gamification.EditorSessionEventToRewardIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java",
+   "src/main/java/com/example/editor/definition/runtime/session/EditorSessionEventPublisher.java",
+   "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java",
+   "src/main/java/com/example/editor/event/runtime/EventBindingRuntimeService.java",
+   "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+   "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackProjector.java"
+  ],
+  "scenario": "EditorModelSessionService real con EditorSessionEventPublisher + InMemoryCanonicalEventBus reales, EventBindingRuntimeService y GamificationRuntimeService reales con JsonGamificationRuntimeRepository en tmp, reglas reales. Crear sesion, crear elemento y guardar: se publican core.model.* y se concede el premio; repetir el mismo evento id no duplica; regla con limite de repeticion rechaza con 0 puntos y motivo; evento sin regla no puntua; publicacion de eventos desactivada: no hay evento.",
+  "stageIds": [
+   "x_event_flow_to_reward.build",
+   "x_event_flow_to_reward.sv",
+   "x_event_flow_to_reward.bus",
+   "x_event_flow_to_reward.bind",
+   "x_event_flow_to_reward.match",
+   "x_event_flow_to_reward.act",
+   "x_event_flow_to_reward.pub",
+   "x_event_flow_to_reward.fb",
+   "x_project_lifecycle_overview.me"
+  ]
+ },
+ {
+  "group": "session-event-publication",
+  "stages": 7,
+  "pkg": [
+   2
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.definition.runtime.session.EditorSessionEventPublicationIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java",
+   "src/main/java/com/example/editor/definition/runtime/session/EditorSessionEventPublisher.java",
+   "src/main/java/com/example/editor/definition/runtime/session/EditorSessionPendingEventBuffer.java",
+   "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java",
+   "src/main/java/com/example/editor/event/runtime/EventBindingRuntimeService.java"
+  ],
+  "scenario": "Sesion real (EditorModelSessionService + EditorSessionEventPublisher + EditorSessionPendingEventBuffer + InMemoryCanonicalEventBus + EventBindingRuntimeService) con tres planes: (1) publishEvents=false; (2) autosave=true; (3) autosave=false con copia de trabajo. Suscriptores reales al bus (uno falla). Crear elemento, editar, guardar (save), descartar en otra sesion.",
+  "stageIds": [
+   "events_publish_session.d1",
+   "events_publish_session.a1",
+   "events_publish_session.d2",
+   "events_publish_session.a3",
+   "events_publish_session.a4",
+   "events_publish_session.a5",
+   "events_publish_session.a8"
+  ]
+ },
+ {
+  "group": "integration-profile-delivery-http",
+  "stages": 7,
+  "pkg": [
+   4
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.integration.web.IntegrationProfileDeliveryHttpIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/integration/IntegrationProfileApplicationService.java",
+   "src/main/java/com/example/editor/integration/IntegrationProfileChecker.java",
+   "src/main/java/com/example/editor/integration/workflow/TechnologyDeliveryReadinessService.java",
+   "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+   "src/main/java/com/example/editor/integration/verification/TechnologyProjectValidationService.java",
+   "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java"
+  ],
+  "scenario": "@SpringBootTest + MockMvc con dsl.integrations.* en @TempDir: crear un metamodelo canonico real, PUT del perfil (id, nombre vacio -> id, tecnologia y modo) y GET releido; POST /check con perfil invalido (sin tecnologia / artefacto inexistente) -> errores con causa; GET readiness: con errores COMPILE/VALIDATE/PREVIEW/APPLY BLOQUEADOS, tras corregir READY, EXECUTE siempre EXTERNAL; POST /technology/compile -> ZIP real que se descomprime; POST /technology/validate en modo estructural -> informe PASSED con recuento de pasos nativos disponibles.",
+  "stageIds": [
+   "integration_author_wizard.vf",
+   "integration_author_wizard.dl",
+   "integration_deliver.conf",
+   "integration_deliver.ana",
+   "integration_deliver.ver",
+   "integration_deliver.exe",
+   "integration_deliver.exp"
+  ]
+ },
+ {
+  "group": "native-run-and-parity-e2e",
+  "stages": 7,
+  "pkg": [
+   8
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.transformation.nativeexec.TransformationNativeRunAndParityEndToEndIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeParityService.java",
+   "src/main/java/com/example/editor/transformation/parity/TransformationParityService.java",
+   "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeExecutor.java",
+   "src/main/java/com/example/editor/transformation/parity/TransformationParityComparator.java",
+   "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeSupport.java"
+  ],
+  "scenario": "TransformationNativeParityService con TransformationExportService, TransformationRuntimeService, TransformationTextGenerationService, TransformationParityComparator y TransformationNativeRuntimeExecutor reales (puente fixture como proceso real, politica real): M2M identidad -> MATCHED; puente fixture que altera un valor -> MISMATCHED con diferencia con ruta; M2T -> compara ficheros; lenguaje/tipo no admitido -> INVALID_EVIDENCE; export incompatible -> EXPORT_BLOCKED sin lanzar proceso (raiz de workspaces vacia); sin sourceModel -> INVALID_EVIDENCE; motor no configurado -> NOT_CONFIGURED; timeout del puente -> proceso terminado.",
+  "stageIds": [
+   "transformation_export_native.rd",
+   "transformation_export_native.run",
+   "transformation_parity.ev",
+   "transformation_parity.cp",
+   "transformation_parity.ru",
+   "transformation_parity.kd",
+   "transformation_parity.cm"
+  ]
+ },
+ {
+  "group": "transformation-sync-session-lifecycle",
+  "stages": 7,
+  "pkg": [
+   9
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.transformation.sync.TransformationSynchronizationSessionLifecycleIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionService.java",
+   "src/main/java/com/example/editor/transformation/sync/JsonTransformationSynchronizationSessionRepository.java",
+   "src/main/java/com/example/editor/transformation/runtime/TransformationIncrementalSynchronizationEngine.java",
+   "src/main/java/com/example/editor/transformation/runtime/TransformationRuntimeService.java"
+  ],
+  "scenario": "Sesion real con JsonTransformationSynchronizationSessionRepository en @TempDir, TransformationRuntimeService/TransformationApplicationService reales (regla Person<->Person bidireccional). create(SOURCE) -> rev1+checkpoint; sin cambios -> noOp sin subir revision; editar un lado -> propaga solo el elemento afectado, rev2; ambos lados cambian el mismo elemento con politica de parada -> blocked sin excepcion ni avance; con politica source-wins -> gana la fuente y el perdedor se descarta; rebase(desde TARGET) -> rev+1; restore(rev1) -> rev nueva con baselines del checkpoint 1; ETag incorrecto -> PRECONDITION_FAILED.",
+  "stageIds": [
+   "transformation_sync.cr",
+   "transformation_sync.sy",
+   "transformation_sync.blk",
+   "transformation_sync.ap",
+   "transformation_sync.rev",
+   "transformation_sync.rb",
+   "transformation_sync.rs"
+  ]
+ },
+ {
+  "group": "quickfix-definition-real-persistence-check",
+  "stages": 7,
+  "pkg": [
+   9
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.validation.action.QuickFixDefinitionPersistenceAndCheckIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/validation/action/ActionModelChecker.java",
+   "src/main/java/com/example/editor/validation/action/ActionModelApplicationService.java",
+   "src/main/java/com/example/editor/validation/action/web/CanonicalActionController.java",
+   "src/main/java/com/example/editor/validation/validation/ValidationModelChecker.java"
+  ],
+  "scenario": "MockMvc standalone sobre CanonicalActionController + ActionModelApplicationService + ActionModelChecker + JSON repos reales (@TempDir), y ValidationModelApplicationService real. Define accion con nombre/descripcion, politica por defecto (ATOMIC/REQUIRED) y explicita (BEST_EFFORT/NONE), precondicion existente, parametros, varias operaciones (10 clases); POST/GET y reabrir repo desde disco. Casos negativos del checker: accion inexistente, precondicion inexistente o no booleana, recursion directa, accion sin operaciones (salvo reviewOnly). Regla con quickFixIds duplicados rechazada; regla valida enlazada a la accion y verificada con QuickFixRuntimeService.resolve.",
+  "stageIds": [
+   "validation_define_quickfix.id",
+   "validation_define_quickfix.pol",
+   "validation_define_quickfix.pre",
+   "validation_define_quickfix.par",
+   "validation_define_quickfix.op",
+   "validation_define_quickfix.lnk",
+   "validation_define_quickfix.chk"
+  ]
+ },
+ {
+  "group": "validation-rule-definition-rejections",
+  "stages": 7,
+  "pkg": [
+   10
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.validation.validation.ValidationRuleDefinitionRejectionsIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/validation/validation/ValidationModelChecker.java",
+   "src/main/java/com/example/editor/validation/validation/ValidationModelApplicationService.java",
+   "src/main/java/com/example/editor/validation/validation/persistence/JsonValidationModelRepository.java"
+  ],
+  "scenario": "Con repositorios JSON reales en @TempDir (metamodelo, expresiones, acciones, validaciones) guardar via ValidationModelApplicationService.create/update: reglas con contexto invalido (CLASS sin clase, ATTRIBUTE con atributo de otra clase, RELATION ajena), disparadores incompatibles con modo manual/completa, Quick Fix duplicado o inexistente, condicion con expresion inexistente o de tipo no booleano, y documentos guardados en orden incorrecto (validacion antes que expresion/accion); luego una regla valida.",
+  "stageIds": [
+   "validation_define_rule.ctx",
+   "validation_define_rule.msg",
+   "validation_define_rule.trg",
+   "validation_define_rule.cnd",
+   "validation_define_rule.qf",
+   "validation_define_rule.sv",
+   "validation_define_rule.chk"
+  ]
+ },
+ {
+  "group": "event-binding-runtime-real-chain",
+  "stages": 6,
+  "pkg": [
+   1
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.event.runtime.EventBindingRuntimeRealChainIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/event/runtime/EventBindingRuntimeService.java",
+   "src/main/java/com/example/editor/event/runtime/EventBindingValueResolver.java",
+   "src/main/java/com/example/editor/event/bus/InMemoryCanonicalEventBus.java",
+   "src/main/java/com/example/editor/event/EventModelApplicationService.java",
+   "src/main/java/com/example/editor/event/expression/CanonicalEventExpressionContext.java"
+  ],
+  "scenario": "EventBindingRuntimeService con bus real, EventModelApplicationService + repos JSON reales, ExpressionModelRepository JSON real y ExpressionEvaluator real (ExpressionTypeChecker real). Enlaces: (a) condicion BOOLEAN verdadera/falsa sobre el payload; (b) tres copias (ruta, expresion, valor fijo); (c) dos enlaces A->B y B->A para provocar el bucle y comprobar el corte exacto a profundidad 32; (d) enlace desactivado (enabled=false) ignorado; (e) politicas SKIP/REPORT/DISABLE_BINDING con una expresion rota: el enlace DISABLE deja de actuar tras el primer fallo aunque se arregle el modelo, y refresh(scope) lo reactiva; SKIP/REPORT siguen intentando; REPORT escribe aviso (ListAppender de logback).",
+  "stageIds": [
+   "events_binding_runtime.d0",
+   "events_binding_runtime.a1",
+   "events_binding_runtime.d1",
+   "events_binding_runtime.a2",
+   "events_binding_runtime.a3",
+   "events_binding_runtime.a4"
+  ]
+ },
+ {
+  "group": "metamodel-import-http-pipeline",
+  "stages": 6,
+  "pkg": [
+   5
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.metamodel.importing.MetamodelImportHttpPipelineIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/metamodel/importing/MetamodelImportController.java",
+   "src/main/java/com/example/editor/metamodel/importing/MetamodelImportAnalysisJobService.java",
+   "src/main/java/com/example/editor/metamodel/importing/MetamodelImportStagingService.java",
+   "src/main/java/com/example/editor/metamodel/importing/MetamodelImportService.java"
+  ],
+  "scenario": "@SpringBootTest + MockMvc multipart con dirs dsl.* en @TempDir. Por cada formato representativo (Ecore sample.ecore, JSON neutro, SQL DDL, PlantUML/Markdown, Java) y formatId explicito o auto: POST /analysis-jobs, sondeo GET /analysis-jobs/{id} hasta COMPLETED, comprobar propuesta, POST /analysis-jobs/{id}/import. Casos extra: sin llamar a import no se persiste nada; import sobre id existente sin overwrite -> conflicto, con overwrite=true -> reemplazo; strict=true bloquea reconstruccion con perdida.",
+  "stageIds": [
+   "metamodel_author_import.src",
+   "metamodel_author_import.str",
+   "metamodel_author_import.an",
+   "metamodel_author_import.d1",
+   "metamodel_author_import.art",
+   "metamodel_define_save.imp"
+  ]
+ },
+ {
+  "group": "release-gate-real-collaborators-attestation",
+  "stages": 6,
+  "pkg": [
+   7
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.release.HydraReleaseGateRealCollaboratorsIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/release/HydraReleaseGateService.java",
+   "src/main/java/com/example/editor/release/HydraReleaseGateController.java",
+   "src/main/java/com/example/editor/release/HydraFinalVerifiedPublicationService.java",
+   "src/main/java/com/example/editor/portability/CapabilityPackageChecker.java",
+   "src/main/java/com/example/editor/performance/CapabilityPerformanceService.java",
+   "src/main/java/com/example/editor/metamodel/importing/updatesite/UpdateSiteP2MirrorService.java"
+  ],
+  "scenario": "SpringBootTest RANDOM_PORT con almacenes en tmp: POST /api/release-gates con un paquete de capacidad real (checker, fusion semantica, espejo p2 sobre repositorio local de fixture, banco de adaptadores y rendimiento reales) en tres variantes: todo exigido y superado, un fallo exigido (espejo/banco/rendimiento) y requisitos opcionales; GET /{id} y GET /{id}/html; manipular el JSON almacenado en disco; intentar publicacion verificada /api/publications/final-verified con gate fallido.",
+  "stageIds": [
+   "publication_generate_publish.gt",
+   "recovery_author_governance.a",
+   "recovery_author_governance.b",
+   "recovery_author_governance.c",
+   "recovery_author_governance.d",
+   "recovery_author_governance.r"
+  ]
+ },
+ {
+  "group": "language-to-published-editor-pipeline",
+  "stages": 6,
+  "pkg": [
+   10
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.pipeline.LanguageToPublishedEditorPipelineIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java",
+   "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+   "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java",
+   "src/main/java/com/example/editor/codegen/ModelCodeGenerationService.java",
+   "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionApplicationService.java"
+  ],
+  "scenario": "En @TempDir: gramatica Langium -> analisis/metamodelo candidato -> metamodelo guardado -> sesion de modelo con operaciones (crear elemento, aplicar Quick Fix declarada y no declarada) -> ModelCodeGenerationService -> StandaloneDistributionApplicationService.materialize+package; sin registrar/validar el proyecto con toolchain nativa.",
+  "stageIds": [
+   "x_language_to_published_editor.g1",
+   "x_language_to_published_editor.m1",
+   "x_language_to_published_editor.se",
+   "x_language_to_published_editor.fx",
+   "x_language_to_published_editor.gen",
+   "x_language_to_published_editor.pub"
+  ]
+ },
+ {
+  "group": "technology-integration-lifecycle",
+  "stages": 6,
+  "pkg": [
+   10
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.integration.workflow.TechnologyIntegrationLifecycleIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/integration/IntegrationProfileApplicationService.java",
+   "src/main/java/com/example/editor/integration/workflow/TechnologyDeliveryReadinessService.java",
+   "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+   "src/main/java/com/example/editor/integration/workflow/TechnologyWorkflowService.java",
+   "src/main/java/com/example/editor/integration/roundtrip/RoundTripManifest.java"
+  ],
+  "scenario": "@TempDir con repositorios reales: crear metamodelo y perfil (rechazar sin tecnologia/entrega), TechnologyDeliveryReadinessService.load/check, compilar y generar, preview de inyeccion sobre un proyecto host de temporal, apply con registro de reversion, rollback, y sync (ROUND_TRIP_SYNC) tras modificar un fichero.",
+  "stageIds": [
+   "x_integrate_technology_native.prof",
+   "x_integrate_technology_native.chk",
+   "x_integrate_technology_native.gen",
+   "x_integrate_technology_native.pre",
+   "x_integrate_technology_native.app",
+   "x_integrate_technology_native.rt"
+  ]
+ },
+ {
+  "group": "g-meta-delete-cascade",
+  "stages": 6,
+  "pkg": [
+   11
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.metamodel.lifecycle.MetamodelCascadeDeletionRealStoreIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/metamodel/lifecycle/MetamodelDeletionJournal.java",
+   "src/main/java/com/example/editor/metamodel/deletion/MetamodelDependentArtifactCleanupService.java",
+   "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java"
+  ],
+  "scenario": "Proyecto en tmp con metamodelo canonico real y artefactos dependientes reales (editor, eventos/bindings, gamificacion, expresiones) en repositorios JSON reales. Borrar un elemento principal: el journal se abre, se borra el elemento y se limpian los tres tipos de dependientes. Variante: fallo inyectado en un limpiador a mitad, el journal queda pendiente y el segundo arranque reanuda y completa.",
+  "stageIds": [
+   "x_metamodel_save_and_cascade.prep",
+   "x_metamodel_save_and_cascade.prim",
+   "x_metamodel_save_and_cascade.c_ed",
+   "x_metamodel_save_and_cascade.c_ev",
+   "x_metamodel_save_and_cascade.c_gm",
+   "x_metamodel_save_and_cascade.rec"
+  ]
+ },
+ {
+  "group": "quickfix-lifecycle",
+  "stages": 6,
+  "pkg": [
+   12
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.validation.quickfix.QuickFixRuntimeServiceLifecycleIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/validation/quickfix/QuickFixRuntimeService.java",
+   "src/main/java/com/example/editor/validation/action/CanonicalActionExecutor.java",
+   "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrator.java",
+   "src/main/java/com/example/editor/validation/quickfix/CanonicalModelChangeAnalyzer.java"
+  ],
+  "scenario": "Con orquestador de validación, repositorio de acciones, modelo vivo y bus de eventos reales (patrón de QuickFixRuntimeServiceResolveIntegrationTests ampliado): validar un modelo con diagnóstico, preview (modelo intacto), apply (diagnóstico desaparece tras revalidación incremental, evento publicado), apply fallido (rollback atómico), undo/redo, y apply tras undo vacía redo.",
+  "stageIds": [
+   "x_validate_fix_revalidate_reward.pick",
+   "x_validate_fix_revalidate_reward.pv",
+   "x_validate_fix_revalidate_reward.ap",
+   "x_validate_fix_revalidate_reward.rv",
+   "x_validate_fix_revalidate_reward.evt",
+   "x_validate_fix_revalidate_reward.undo"
+  ]
+ },
+ {
+  "group": "repos-oauth-loopback",
+  "stages": 5,
+  "pkg": [
+   2
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.remote.auth.RemoteOAuthLoopbackExchangeIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/remote/auth/RemoteAuthService.java",
+   "src/main/java/com/example/editor/remote/auth/RemoteOAuthHttpClient.java",
+   "src/main/java/com/example/editor/remote/auth/EncryptedFileRemoteCredentialVault.java",
+   "src/main/java/com/example/editor/remote/auth/provider/GitHubOAuthProvider.java",
+   "src/main/java/com/example/editor/remote/auth/RemotePkce.java"
+  ],
+  "scenario": "RemoteAuthService real con RemoteOAuthHttpClient real, EncryptedFileRemoteCredentialVault en @TempDir y un com.sun.net.httpserver.HttpServer en 127.0.0.1 como IdP (tokenUrl/deviceUrl por RemoteAuthProperties.Provider, allowLoopbackHttp=true). Flujo codigo+PKCE: start -> callback complete(state, code) -> credential(); flujo dispositivo: start -> poll pendiente -> poll autorizado. Casos: state reutilizado, IdP 400.",
+  "stageIds": [
+   "repos_connect_sync.a2",
+   "repos_oauth_connect.a2",
+   "repos_oauth_connect.a3",
+   "repos_oauth_connect.a4",
+   "repos_oauth_connect.r"
+  ]
+ },
+ {
+  "group": "grammar-draft-analysis-pipeline",
+  "stages": 5,
+  "pkg": [
+   3
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.grammar.application.GrammarDraftAnalysisPipelineIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/grammar/web/GrammarController.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarAnalysisCoordinator.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarRuleGraphAnalyzer.java",
+   "src/main/java/com/example/editor/grammar/visualization/GrammarClassDiagramProjectionService.java"
+  ],
+  "scenario": "GrammarAnalysisCoordinator real (perfiles/providers ANTLR+Langium+Xtext reales, sin toolchain nativa) + GrammarClassDiagramProjectionService, via MockMvc standalone sobre GrammarController (/analyze-draft, /class-diagram-draft, /{id}/code-actions). Borradores: (a) valido; (b) referencia ausente con candidato; (c) referencia ambigua/obsoleta o correspondencia semantica desajustada; (d) recursion por la izquierda -> ERROR bloqueante vs recursion por la derecha -> sin error; (e) regla sin uso. Se comprueba diagnosticos, codeActions, metadatos de grafo (recursion.leftCount) y que la proyeccion de clases deduce las clases/atributos/referencias declaradas y no escribe nada en disco.",
+  "stageIds": [
+   "grammar_analyze_generate.fast",
+   "grammar_analyze_generate.rg",
+   "grammar_analyze_generate.rf",
+   "grammar_analyze_generate.pj",
+   "grammar_author_monaco.an"
+  ]
+ },
+ {
+  "group": "grammar-look-customization-persistence",
+  "stages": 5,
+  "pkg": [
+   3
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.grammar.application.GrammarLookCustomizationPersistenceIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/grammar/core/GrammarTextualEditorCustomization.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java"
+  ],
+  "scenario": "GrammarApplicationService real: guardar una gramatica cuyos settings llevan hydra.textual.* (fuente/tamano, keywords, estilos por rol RULE/TERMINAL, hovers) con valores validos y peligrosos (javascript:, clave invalida, desconocida). Releer de disco y restaurar con GrammarTextualEditorCustomization: valores acotados/saneados y claves ajenas conservadas. Despues compilar con GrammarCompilationService con y sin settings de aspecto: el proyecto generado y los ficheros resultantes son identicos (No afecta a la compilacion).",
+  "stageIds": [
+   "grammar_author_look.f",
+   "grammar_author_look.k",
+   "grammar_author_look.ro",
+   "grammar_author_look.h",
+   "grammar_author_look.sv"
+  ]
+ },
+ {
+  "group": "editor-session-real-lifecycle",
+  "stages": 5,
+  "pkg": [
+   6
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.definition.runtime.session.EditorModelSessionRealStackLifecycleIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java",
+   "src/main/java/com/example/editor/definition/runtime/session/EditorSessionQuickFixRuntime.java",
+   "src/main/java/com/example/editor/definition/runtime/session/persistence/JsonEditorModelSessionRepository.java",
+   "src/main/java/com/example/editor/validation/runtime/ValidationRuntimeApplicationService.java"
+  ],
+  "scenario": "Con editor y metamodelo reales en tmp: crear sesion (validacion ON_OPEN segun politica), crear nodos/arista y editar un campo con etags encadenados, validar manualmente (diagnostico por nombre vacio), aplicar el Quick Fix real y comprobar revalidacion incremental, guardar y reabrir la sesion con una instancia nueva del repositorio JSON.",
+  "stageIds": [
+   "model_editor_session.op",
+   "model_editor_session.ed",
+   "model_editor_session.va",
+   "model_editor_session.qf",
+   "model_editor_session.sv"
+  ]
+ },
+ {
+  "group": "toolchain-managed-lifecycle",
+  "stages": 5,
+  "pkg": [
+   8
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.transformation.nativeexec.TransformationToolchainManagedLifecycleIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/transformation/nativeexec/TransformationToolchainProvisioningService.java",
+   "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeExecutor.java",
+   "src/main/java/com/example/editor/transformation/nativeexec/TransformationNativeRuntimeCommandResolver.java"
+  ],
+  "scenario": "Con distribucion de confianza en @TempDir: catalog() lista un paquete valido v1 y v2 y marca installable=false uno con SHA-256 manipulado; install v1 (INSTALLED), install v2 con expectedCurrent=v1 (UPDATED), con expectedCurrent erroneo rechaza; uninstall (REMOVED) y reinstall; bundle de administrador no se pisa ni se elimina (blocked). Ademas executor.diagnose real: motor con comando explicito del puente fixture -> READY; comando inexistente -> no listo.",
+  "stageIds": [
+   "toolchains_check_install.a2",
+   "toolchains_check_install.d2",
+   "toolchains_check_install.a3",
+   "toolchains_engine_lifecycle.c",
+   "toolchains_engine_lifecycle.d"
+  ]
+ },
+ {
+  "group": "g-standalone-dist-e2e",
+  "stages": 5,
+  "pkg": [
+   11
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.standalone.distribution.StandaloneDistributionEndToEndIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionApplicationService.java",
+   "src/main/java/com/example/editor/standalone/distribution/StandaloneDistributionPackager.java",
+   "src/main/java/com/example/editor/standalone/distribution/StandaloneProductionReadinessService.java"
+  ],
+  "scenario": "Perfil real: plan, materializacion, validacion y empaquetado con StandaloneDistributionApplicationService. ZIP reproducible; secretos (.env, clave privada) y enlaces simbolicos (si el SO lo permite) rechazados; validacion con errores no empaqueta.",
+  "stageIds": [
+   "x_project_lifecycle_overview.dl",
+   "x_project_lifecycle_overview.r",
+   "x_generate_certify_distribute.dist",
+   "x_generate_certify_distribute.sec",
+   "x_generate_certify_distribute.zip"
+  ]
+ },
+ {
+  "group": "event-flow-dispatch-real-chain",
+  "stages": 4,
+  "pkg": [
+   1
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.event.flow.runtime.EventFlowDispatchRealChainIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeService.java",
+   "src/main/java/com/example/editor/event/flow/runtime/EventFlowCompiler.java",
+   "src/main/java/com/example/editor/event/flow/runtime/EventFlowConditionEvaluator.java",
+   "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeNodeExecutor.java",
+   "src/main/java/com/example/editor/event/flow/runtime/EventFlowRuntimeDeploymentRegistry.java"
+  ],
+  "scenario": "EventFlowRuntimeService real (sin Mockito) con EventFlowConditionEvaluator real y bus real: (1) el primer evento de un ambito autodespliega, stop(scope) bloquea el rearranque, start(scope) lo reactiva (compilaciones reales, estado y trazas); (2) dos flujos con disparadores distintos y uno enabled=false: un evento ejecuta solo el flujo coincidente y habilitado; (3) un nodo con conditionExpressionId falso -> traza FILTERED y token descartado, verdadero -> COMPLETED; (4) WAIT_FOR_EVENT queda en espera y el evento esperado con la misma clave de agrupacion lo reanuda; (5) un ABSENCE vigilado se cancela al llegar su evento y un tick posterior no emite nada (contraste con el caso ya STRONG que si emite).",
+  "stageIds": [
+   "events_execute_flow.d0",
+   "events_execute_flow.a1",
+   "events_execute_flow.a2",
+   "events_execute_flow.d1"
+  ]
+ },
+ {
+  "group": "repos-profile-lifecycle",
+  "stages": 4,
+  "pkg": [
+   2
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.remote.storage.RemoteProfileLifecycleIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/remote/storage/RemoteStorageProfileManager.java",
+   "src/main/java/com/example/editor/remote/storage/RemoteStorageProperties.java",
+   "src/main/java/com/example/editor/remote/git/GitRemoteUrlResolver.java"
+  ],
+  "scenario": "RemoteStorageProfileManager real sobre un fichero de registro en @TempDir: upsert de un perfil por cada uno de los 6 proveedores (con baseUrl personalizada y tamano maximo de artefacto), reabrir con una instancia nueva, listar, borrar; ademas GitRemoteUrlResolver.resolve para los 6 tipos.",
+  "stageIds": [
+   "repos_author_connection.d",
+   "repos_author_connection.r",
+   "repos_connect_sync.a1",
+   "repos_connect_sync.d1"
+  ]
+ },
+ {
+  "group": "readiness-real-pipeline",
+  "stages": 4,
+  "pkg": [
+   5
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.integration.workflow.TechnologyDeliveryReadinessRealPipelineIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/integration/workflow/TechnologyDeliveryReadinessService.java",
+   "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+   "src/main/java/com/example/editor/integration/IntegrationProfileChecker.java"
+  ],
+  "scenario": "@SpringBootTest + MockMvc con todos los directorios dsl.* en @TempDir. Crea por servicios reales un metamodelo valido y un perfil EMF (o la tecnologia con COMPILE_ARCHIVE cuyos artefactos requeridos sean resolubles). Casos: (a) perfil valido -> GET .../technology/readiness; (b) mismo perfil tras borrar un artefacto requerido -> blockers UNRESOLVED_REQUIRED_ARTIFACT y GENERATE/VERIFY/PREVIEW/APPLY bloqueados; (c) perfil con soporte PARTIAL/aviso -> READY_WITH_WARNINGS; (d) tecnologia de proyeccion -> NOT_APPLICABLE sin compilar.",
+  "stageIds": [
+   "integration_readiness.load",
+   "integration_readiness.diag",
+   "integration_readiness.comp",
+   "integration_readiness.stg"
+  ]
+ },
+ {
+  "group": "metamodel-save-gate-http",
+  "stages": 4,
+  "pkg": [
+   5
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.metamodel.web.MetamodelAuthoringSaveGateHttpIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/metamodel/web/CanonicalMetamodelController.java",
+   "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+   "src/main/java/com/example/editor/metamodel/canonical/JsonCanonicalMetamodelRepository.java",
+   "src/main/java/com/example/editor/metamodel/validation/MetamodelValidationApplicationService.java"
+  ],
+  "scenario": "@SpringBootTest + MockMvc, dirs dsl.* y dsl.metamodel.validation.receipt-root en @TempDir (@DynamicPropertySource), hydra.instance-lock.enabled=false. (1) PUT/POST metamodelo con ciclo de herencia y nombres duplicados -> 4xx con codigos del validador y NO fichero en disco; (2) corregir y guardar -> 201 con ETag y fichero; (3) PUT con ETag obsoleto -> 412 y contenido intacto; (4) POST validate de lo guardado -> receipt valido.",
+  "stageIds": [
+   "metamodel_author_wizard.va",
+   "metamodel_author_wizard.sv",
+   "metamodel_define_save.ok",
+   "metamodel_define_save.fix"
+  ]
+ },
+ {
+  "group": "metamodel-delete-cascade-http",
+  "stages": 4,
+  "pkg": [
+   5
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.metamodel.lifecycle.MetamodelDeleteCascadeHttpIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/metamodel/lifecycle/MetamodelLifecycleService.java",
+   "src/main/java/com/example/editor/metamodel/lifecycle/MetamodelDeletionJournalService.java",
+   "src/main/java/com/example/editor/metamodel/deletion/MetamodelDependentArtifactCleanupService.java"
+  ],
+  "scenario": "@SpringBootTest + MockMvc con dirs dsl.* en @TempDir. Siembra por servicios reales: metamodelo, diagrama, reglas de validacion, eventos, editor definition, perfil de integracion, notacion y export. (1) GET deletion-impact; (2) DELETE /lifecycle con ETag obsoleto -> 412, journal ABORTED, todo intacto; (3) DELETE con ETag valido -> todo borrado, journal COMPLETED; (4) recuperacion: recrear residuos + journal RECOVERY_REQUIRED (o PREPARED con canonico ausente, como un crash) y POST /deletion-recovery -> pendientes vacios y COMPLETED sin repetir el borrado primario.",
+  "stageIds": [
+   "metamodel_delete_cascade.prep",
+   "metamodel_delete_cascade.prim",
+   "metamodel_delete_cascade.rec",
+   "metamodel_delete_cascade.ab"
+  ]
+ },
+ {
+  "group": "t2m-preview-real-grammar",
+  "stages": 4,
+  "pkg": [
+   8
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.transformation.textmodel.TransformationTextToModelRealGrammarIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/transformation/textmodel/TransformationTextToModelService.java",
+   "src/main/java/com/example/editor/transformation/textmodel/GrammarTransformationTextParserGateway.java",
+   "src/main/java/com/example/editor/grammar/runtime/LastKnownGoodGrammarService.java"
+  ],
+  "scenario": "Compilar y activar una gramatica Langium real (como GrammarCompilationServiceEndToEndIntegrationTests) y construir GrammarTransformationTextParserGateway + TransformationTextToModelService reales: preview(T2M con grammarId activo, ruta model.hydra, texto valido) devuelve modelo semantico con los nodos; texto invalido devuelve diagnosticos y modelo nulo; gramatica sin asignar o inactiva falla; con postTransformationId M2M real proyecta el modelo (si el binding semantico a metamodelo lo permite).",
+  "stageIds": [
+   "transformation_author_text2model.gr",
+   "transformation_author_text2model.pt",
+   "transformation_author_text2model.po",
+   "transformation_author_text2model.ck"
+  ]
+ },
+ {
+  "group": "external-validation-import-real-persistence",
+  "stages": 4,
+  "pkg": [
+   9
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.project.recovery.ExternalValidationImportPersistenceIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/project/recovery/ExternalValidationRecoveryService.java",
+   "src/main/java/com/example/editor/validation/importing/SafeExternalConstraintTranslator.java",
+   "src/main/java/com/example/editor/validation/validation/ValidationModelApplicationService.java",
+   "src/main/java/com/example/editor/validation/action/ActionModelApplicationService.java"
+  ],
+  "scenario": "ExternalValidationRecoveryService con ExpressionModel/ActionModel/ValidationModelApplicationService reales sobre repositorios JSON en @TempDir y el fixture /fixtures/sirius-complete (.odesign y .evl). Se importa, se relee desde disco con servicios nuevos, se compila el ValidationModel con ValidationCompiler, y se comprueba: reglas traducibles activas FULL e incrementales; ProgressRange enlazada a la accion 'Clamp progress to 100'; reglas con guarda (NoSelfLoop) y acciones no demostrables conservadas desactivadas EXTERNAL/reviewOnly con aviso; enlaces no resueltos reportados; ficheros enormes/binarios omitidos.",
+  "stageIds": [
+   "validation_author_import.ex",
+   "validation_author_import.cv",
+   "validation_author_import.pt",
+   "validation_author_import.lk"
+  ]
+ },
+ {
+  "group": "textual-model-session-real-compilation",
+  "stages": 4,
+  "pkg": [
+   10
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.textual.runtime.TextualModelSessionRealCompilationIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java",
+   "src/main/java/com/example/editor/textual/runtime/TextualModelSessionService.java",
+   "src/main/java/com/example/editor/textual/persistence/JsonTextualModelSessionRepository.java",
+   "src/main/java/com/example/editor/textual/web/TextualModelSessionController.java"
+  ],
+  "scenario": "Con el montaje real de GrammarCompilationServiceEndToEndIntegrationTests en @TempDir: analizar gramatica con recursion por la izquierda (bloquea) y sin ella; compilar y activar; crear TextualModelSession real; analizar texto valido, texto sintacticamente roto, revision antigua y misma revision con otro contenido; guardar; validar el modelo semantico y rechazar un modelo invalido.",
+  "stageIds": [
+   "x_grammar_to_text_model.an",
+   "x_grammar_to_text_model.parse",
+   "x_grammar_to_text_model.sv",
+   "x_grammar_to_text_model.t2m"
+  ]
+ },
+ {
+  "group": "g-recovery-import-e2e",
+  "stages": 4,
+  "pkg": [
+   11
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.project.recovery.ExternalProjectRecoveryEndToEndIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryController.java",
+   "src/main/java/com/example/editor/project/recovery/ExternalProjectRecoveryService.java",
+   "src/main/java/com/example/editor/project/recovery/ExternalValidationRecoveryService.java",
+   "src/main/java/com/example/editor/project/recovery/ExternalProjectImportService.java"
+  ],
+  "scenario": "Subir un proyecto externo de fixture a ExternalProjectRecoveryController (SpringBootTest RANDOM_PORT) con servicios reales: plan, aceptar, reglas EVL/OCL recuperadas persistidas en review-required/disabled, perfil de integracion sugerido persistido y ligado al proyecto abierto.",
+  "stageIds": [
+   "x_recover_external_project.src",
+   "x_recover_external_project.rev",
+   "x_recover_external_project.integ",
+   "x_recover_external_project.pj"
+  ]
+ },
+ {
+  "group": "transformation-sync-session",
+  "stages": 4,
+  "pkg": [
+   12
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.transformation.sync.TransformationSynchronizationSessionRealRuntimeTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionService.java",
+   "src/main/java/com/example/editor/transformation/sync/TransformationSynchronizationSessionRepository.java",
+   "src/main/java/com/example/editor/transformation/runtime/TransformationIncrementalSynchronizationEngine.java",
+   "src/main/java/com/example/editor/transformation/runtime/TransformationSynchronizationConsistencyValidator.java",
+   "src/main/java/com/example/editor/transformation/runtime/TransformationRuntimeService.java"
+  ],
+  "scenario": "Con repositorio de sesiones real sobre directorio temporal y una transformación bidireccional modelo a modelo con rastro: create (revisión 1, líneas base y checkpoint), edición de un lado, de ambos con conflicto bajo políticas STOP/SOURCE_WINS/TARGET_WINS, synchronize (revisión+1, propagación solo de emparejados), recarga desde disco, history/restore y rechazo por línea base/huella incoherente o etag obsoleto.",
+  "stageIds": [
+   "x_transformation_run_and_sync.ses",
+   "x_transformation_run_and_sync.sy",
+   "x_transformation_run_and_sync.ap",
+   "x_transformation_run_and_sync.sv"
+  ]
+ },
+ {
+  "group": "gamification-check-save-gate-and-levels",
+  "stages": 3,
+  "pkg": [
+   3
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.gamification.GamificationCheckSaveGateAndLevelsIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/gamification/web/CanonicalGamificationController.java",
+   "src/main/java/com/example/editor/gamification/GamificationApplicationService.java",
+   "src/main/java/com/example/editor/gamification/GamificationChecker.java"
+  ],
+  "scenario": "MockMvc standalone sobre CanonicalGamificationController con GamificationApplicationService real (repos Json en @TempDir, metamodelo/eventos reales). (1) POST check con catalogo defectuoso: duplicados, evento/punto/recompensa inexistentes, penalizacion con recompensa, regla sin efecto, regla sin limite, nivel duplicado y nivel con tipo de puntos inexistente -> 200 con los codigos esperados. (2) Catalogo con solo avisos (UNBOUNDED_RULE/COOLDOWN_REQUIRED) -> POST create 2xx y el JSON queda en disco con niveles incluidos. (3) Catalogo con un ERROR -> create rechazado (4xx) y nada persiste. (4) check-saved coincide con checkDraft.",
+  "stageIds": [
+   "gamification_author_source.ck",
+   "gamification_define.lvl",
+   "gamification_define.chk"
+  ]
+ },
+ {
+  "group": "grammar-identity-save-gate",
+  "stages": 3,
+  "pkg": [
+   3
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.grammar.application.GrammarIdentitySaveGateIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarToolchainProfileService.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java"
+  ],
+  "scenario": "GrammarApplicationService real (repo JSON en @TempDir, providers reales) sobre GrammarDefinitionModel: id invalido (espacios, digito inicial, 1 caracter) y nombre en blanco -> IllegalArgumentException y nada guardado; nombre duplicado -> rechazo; perfil de herramientas inexistente o incompatible con la tecnologia/lenguaje destino -> rechazo (profiles.require, descriptor de provider); entryRule en blanco -> 'entryRule is required'; entrada valida -> guarda y relee. GET toolchain-profiles lista los perfiles ofrecidos. Analisis de borradores con regla de entrada explicita vs inferida -> metadatos entryRule.method distintos.",
+  "stageIds": [
+   "grammar_author_identity.id",
+   "grammar_author_identity.tc",
+   "grammar_author_identity.er"
+  ]
+ },
+ {
+  "group": "technology-injection-sync-rollback",
+  "stages": 3,
+  "pkg": [
+   4
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.integration.web.TechnologyInjectionSyncRollbackHttpIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+   "src/main/java/com/example/editor/integration/injection/SafeTechnologyInjectionService.java",
+   "src/main/java/com/example/editor/integration/roundtrip/RoundTripSyncService.java",
+   "src/main/java/com/example/editor/integration/roundtrip/resolution/RoundTripResolutionWorkflowService.java",
+   "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java"
+  ],
+  "scenario": "Mismo contexto Spring/MockMvc con perfil guardado y injection.allowed-root=@TempDir: POST /preview -> plan READY y el directorio destino sigue vacio; POST /apply -> ficheros generados en disco + manifiesto .hydra/injections/manifests; apply sin preview READY (destino con fichero manual en conflicto) -> BLOCKED/rechazo sin escribir; editar a mano un fichero gestionado y cambiar el perfil -> POST /sync/preview con conflicto y bloqueado; resolver con /sync/resolve/apply; POST /rollback/{manifestId} -> el destino vuelve al estado inicial.",
+  "stageIds": [
+   "integration_deliver.pre",
+   "integration_deliver.app",
+   "integration_deliver.rt"
+  ]
+ },
+ {
+  "group": "native-parity-certify-real-path",
+  "stages": 3,
+  "pkg": [
+   4
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.integration.parity.NativeParityCertificationRealPathIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/integration/parity/NativeParityCertificationRequest.java",
+   "src/main/java/com/example/editor/integration/parity/NativeParityEvidenceAssessor.java",
+   "src/main/java/com/example/editor/integration/compiler/TechnologyIntegrationApplicationService.java",
+   "src/main/java/com/example/editor/integration/web/TechnologyIntegrationController.java"
+  ],
+  "scenario": "Contexto Spring/MockMvc: POST /native-parity/certify con (a) lista vacia, (b) capacidades repetidas, (c) timeout 901 -> 400/IllegalArgument; (d) las 15 capacidades validas con timeout 0 -> se usa 180; (e) perfil EMF con capacidad GRAPHICAL_EDITOR (sin prueba en NativeParityProofCatalog) y timeout 5 -> ruta real certifyNativeParity: compile una vez (MockitoSpyBean sobre TechnologyCompilerService.compile con delegado real, times(1)) + validacion NATIVE_REQUIRED real -> certified=false, resultado UNVERIFIED con motivo 'No generator-owned native behavioral fixture'.",
+  "stageIds": [
+   "integration_native_parity.req",
+   "integration_native_parity.to",
+   "integration_native_parity.cmp"
+  ]
+ },
+ {
+  "group": "metamodel-generation-gate-real",
+  "stages": 3,
+  "pkg": [
+   5
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.metamodel.export.project.MetamodelCompleteProjectExportGateIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/metamodel/export/project/MetamodelCompleteProjectExportService.java",
+   "src/main/java/com/example/editor/metamodel/web/MetamodelProjectExportController.java",
+   "src/main/java/com/example/editor/metamodel/validation/MetamodelValidationApplicationService.java",
+   "src/main/java/com/example/editor/metamodel/export/project/MetamodelProjectArtifactAssembler.java"
+  ],
+  "scenario": "@SpringBootTest + MockMvc, dirs dsl.* y receipt-root en @TempDir. (1) guardar metamodelo valido y POST /api/metamodels/{id}/project-exports/emf-eclipse sin validar -> 4xx 'requires a successful current metamodel validation', sin ZIP; (2) POST validar (validateStored) -> export 200 ZIP; (3) modificar y guardar el metamodelo -> export rechazado (receipt obsoleto); (4) revalidar -> export OK; (5) metamodelo con errores -> validateStored no habilita generacion.",
+  "stageIds": [
+   "metamodel_export_generate.chk",
+   "metamodel_export_generate.fix",
+   "metamodel_export_generate.gen"
+  ]
+ },
+ {
+  "group": "portability-merge-decision-apply-rollback-real",
+  "stages": 3,
+  "pkg": [
+   6
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.portability.merge.CapabilitySemanticMergeDecisionApplyRollbackIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeService.java",
+   "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionService.java"
+  ],
+  "scenario": "Paquete existente en disco (capas de metamodelo/validaciones) y paquete recuperado con conflictos de escalar, entidad solo-recuperada y referencia sin resolver; preview() sin persistir, luego apply(persist=true) con decisiones KEEP_EXISTING/USE_RECOVERED/MERGE/SKIP, intento de apply con plan no aplicable y rollback() con CapabilityLayerTransactionService real.",
+  "stageIds": [
+   "portability_package_merge.a2",
+   "portability_package_merge.a3",
+   "portability_package_merge.a4"
+  ]
+ },
+ {
+  "group": "project-capability-configuration-reopen",
+  "stages": 3,
+  "pkg": [
+   6
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.project.ProjectCapabilityConfigurationReopenIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/project/storage/LocalDirectoryProjectStorage.java",
+   "src/main/java/com/example/editor/project/ProjectCapabilityDependencies.java",
+   "src/main/java/com/example/editor/project/storage/ProjectIndexService.java",
+   "src/main/java/com/example/editor/project/ProjectApplicationService.java"
+  ],
+  "scenario": "Crear proyecto en tmp, configure() activando VISUAL_EDITOR/QUICK_FIXES (el servidor arrastra METAMODEL_DESIGN, EDITOR_DEFINITIONS, VALIDATIONS), modo FREE y artefacto principal; cerrar; reabrir con una instancia nueva de LocalDirectoryProjectStorage via recent+open; comprobar arbol logico (grupo inactivo marcado) y directorios.",
+  "stageIds": [
+   "project_author_areas.r",
+   "project_open_organize.a1",
+   "project_open_organize.a4"
+  ]
+ },
+ {
+  "group": "native-export-real",
+  "stages": 3,
+  "pkg": [
+   8
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.transformation.export.TransformationExportServiceRealIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/transformation/export/TransformationExportService.java",
+   "src/main/java/com/example/editor/transformation/export/TransformationLanguageAdapterRegistry.java",
+   "src/main/java/com/example/editor/transformation/export/TransformationDirectionalExportView.java",
+   "src/main/java/com/example/editor/transformation/export/AtlTransformationLanguageAdapter.java"
+  ],
+  "scenario": "TransformationExportService real con TransformationLanguageAdapterRegistry real y metamodelo guardado: M2M valido exportado a ATL/ETL/JAVA FORWARD devuelve ficheros con ruta/contenido y fidelidad; REVERSE en M2M no bidireccional -> REVERSE_REQUIRES_BIDIRECTIONAL; M2T/T2M con REVERSE -> DIRECTION_NOT_SUPPORTED; ATL con M2T -> UNSUPPORTED_KIND; definicion invalida -> CANONICAL_* sin ficheros; bidireccional REVERSE exporta la vista inversa.",
+  "stageIds": [
+   "transformation_export_native.lg",
+   "transformation_export_native.cp",
+   "transformation_export_native.ex"
+  ]
+ },
+ {
+  "group": "validation-orchestrator-real-engine",
+  "stages": 3,
+  "pkg": [
+   10
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.validation.orchestration.ValidationOrchestratorRealEngineIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/validation/orchestration/ValidationOrchestrator.java",
+   "src/main/java/com/example/editor/validation/orchestration/DefaultValidationBlockingPolicy.java",
+   "src/main/java/com/example/editor/validation/runtime/ValidationRuntimeApplicationService.java"
+  ],
+  "scenario": "Metamodelo, expresion, regla y modelo reales en @TempDir; ValidationOrchestrator con ValidationRuntimeApplicationService real, DefaultValidationBlockingPolicy real y un bus de eventos real con listener capturador. Ejecuta validate(FULL), edita el modelo para corregir un problema y valida INCREMENTAL/SELECTION; con gate NONE, SAVE y EXPORT.",
+  "stageIds": [
+   "validation_execute.cons",
+   "validation_execute.ev",
+   "validation_execute.blk"
+  ]
+ },
+ {
+  "group": "g-meta-save-audit",
+  "stages": 3,
+  "pkg": [
+   11
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.metamodel.application.CanonicalMetamodelSaveValidationAuditIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/metamodel/application/CanonicalMetamodelApplicationService.java",
+   "src/main/java/com/example/editor/metamodel/validation/MetamodelValidationApplicationService.java",
+   "src/main/java/com/example/editor/persistence/LocalCanonicalDocumentStoreFactory.java",
+   "src/main/java/com/example/editor/audit/AuditCanonicalDocumentMutationObserver.java"
+  ],
+  "scenario": "CanonicalMetamodelApplicationService real + validador neutral real + LocalCanonicalDocumentStoreFactory con AuditCanonicalDocumentMutationObserver real y JsonlAuditLogStore en tmp. (1) guardar metamodelo con herencia ciclica: se rechaza, no aparece fichero de documento ni linea de auditoria. (2) guardar metamodelo valido: documento en disco con version/etag. (3) segundo guardado con etag obsoleto: conflicto y disco intacto. (4) guardado correcto: una linea JSONL metamodel.document.created/updated.",
+  "stageIds": [
+   "x_metamodel_save_and_cascade.val",
+   "x_metamodel_save_and_cascade.doc",
+   "x_metamodel_save_and_cascade.aud"
+  ]
+ },
+ {
+  "group": "g-project-lifecycle-fs",
+  "stages": 3,
+  "pkg": [
+   11
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.project.ProjectLifecycleRealFilesystemIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/project/storage/ProjectIndexService.java"
+  ],
+  "scenario": "ProjectIndexService real sobre raiz temporal: sin proyecto reciente crea uno nuevo con su arbol; con reciente lo continua; abrir proyecto destino; activar areas (logicalRoot) y reabrir tras reiniciar el servicio (indice persistido).",
+  "stageIds": [
+   "x_package_and_move_capabilities.t0",
+   "x_project_lifecycle_overview.n1",
+   "x_project_lifecycle_overview.ar"
+  ]
+ },
+ {
+  "group": "g-capability-layer-apply",
+  "stages": 3,
+  "pkg": [
+   11
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.portability.transaction.CapabilityLayerApplyRealStoreIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/portability/merge/CapabilitySemanticMergeService.java",
+   "src/main/java/com/example/editor/portability/transaction/CapabilityLayerTransactionService.java",
+   "src/main/java/com/example/editor/persistence/CanonicalDocumentStore.java",
+   "src/main/java/com/example/editor/persistence/LocalCanonicalDocumentStoreFactory.java",
+   "src/main/java/com/example/editor/audit/JsonlAuditLogStore.java"
+  ],
+  "scenario": "Proyecto destino en tmp con capa existente; paquete de capacidad real con una capa en conflicto y otra libre. Previsualizar: CapabilitySemanticMergeService informa del choque; aplicar via CapabilityLayerTransactionService con store local real y observador de auditoria real: documentos con control de version en disco, version obsoleta rechazada sin escritura parcial, una linea de auditoria por documento.",
+  "stageIds": [
+   "x_package_and_move_capabilities.m1",
+   "x_package_and_move_capabilities.p1",
+   "x_package_and_move_capabilities.r2"
+  ]
+ },
+ {
+  "group": "gamification-runtime-match-and-feedback-policy",
+  "stages": 2,
+  "pkg": [
+   3
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.gamification.GamificationRuntimeMatchAndFeedbackPolicyIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/gamification/runtime/GamificationRuntimeService.java",
+   "src/main/java/com/example/editor/gamification/runtime/GamificationEventMatcher.java",
+   "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackPolicyResolver.java",
+   "src/main/java/com/example/editor/gamification/feedback/GamificationFeedbackProjector.java"
+  ],
+  "scenario": "Runtime real (GamificationRuntimeService.process) con catalogo cargado por repos JSON reales y metamodelo real: reglas activas e inactivas, de distinto tipo de evento y con condiciones (EQUALS, GREATER_THAN, EXISTS, condicion vacia). Se publican eventos y se comprueba que solo puntua la regla activa cuyo tipo y condicion encajan; ledger/estado refleja puntos exactos. Segundo bloque (pol): anotaciones hydra.feedback.* globales y por regla persistidas via servicio -> runtime.feedback(metamodel, actor, n) muestra/oculta/limita los avisos segun la politica.",
+  "stageIds": [
+   "gamification_award.match",
+   "gamification_define.pol"
+  ]
+ },
+ {
+  "group": "grammar-save-compile-progress",
+  "stages": 2,
+  "pkg": [
+   4
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.grammar.application.GrammarAuthoringSaveCompileProgressIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/grammar/application/GrammarApplicationService.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarCompilationProgressService.java",
+   "src/main/java/com/example/editor/grammar/web/GrammarCompilationController.java",
+   "src/main/java/com/example/editor/grammar/web/GrammarController.java"
+  ],
+  "scenario": "Cableado real (igual que GrammarCompilationServiceEndToEndIntegrationTests.wire): (1) create + replace de una gramatica Langium con If-Match correcto y con etag obsoleto; (2) tras guardar, listar compilaciones y comprobar que no existe ninguna ni activa (Guardar no compila); (3) compile con activateOnSuccess=false -> snapshot SUCCESS sin activacion; (4) compile con activateOnSuccess=true y requestId fijo -> activa; (5) consultar GrammarCompilationProgressService.find(requestId) -> SUCCESS 12/12 etapas; (6) compile de una gramatica rota -> progreso FAILED con etapa y version activa intacta.",
+  "stageIds": [
+   "grammar_author_save_compile.sv",
+   "grammar_author_save_compile.pg"
+  ]
+ },
+ {
+  "group": "grammar-analyzer-fix-loop",
+  "stages": 2,
+  "pkg": [
+   4
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.grammar.GrammarAnalyzerDiagnosticsFixLoopIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/grammar/application/GrammarSourceAnalyzer.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarRuleGraphAnalyzer.java",
+   "src/main/java/com/example/editor/grammar/diagnostic/GrammarCodeAction.java",
+   "src/main/java/com/example/editor/grammar/diagnostic/GrammarDiagnosticCatalog.java"
+  ],
+  "scenario": "GrammarSourceAnalyzer real sobre tres gramaticas: (a) Langium grammar-first sin metamodelo, (b) ANTLR grammar-first, (c) Langium enlazada a metamodelo -> comprobar la confianza de las correspondencias candidatas (0,72 / 0,60 / 0,82) y que quedan marcadas como candidatas; luego recursion directa por la izquierda -> codeAction quickfix.grammar.left-recursion con safeAutomatic coherente; recursion indirecta -> sin codeAction automatica; referencia no encontrada -> codeAction; aplicar los edits (aplicador independiente en el test) y reanalizar -> sin errores.",
+  "stageIds": [
+   "grammar_define_language.an",
+   "grammar_diagnostics_actions.sa"
+  ]
+ },
+ {
+  "group": "visual-import-metamodel-association-real",
+  "stages": 2,
+  "pkg": [
+   6
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.definition.importing.VisualImportMetamodelAssociationRealStackIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/definition/importing/VisualImportMetamodelResolver.java",
+   "src/main/java/com/example/editor/definition/importing/VisualDefinitionImportService.java",
+   "src/main/java/com/example/editor/definition/importing/VisualValidationAssociationService.java"
+  ],
+  "scenario": "Importar el fixture sirius-complete con VisualImportMetamodelResolver real + MetamodelImportService real en los tres modos (EXISTING, EXTERNAL con .ecore, EMBEDDED con ZIP), caso de metamodelos ambiguos y sin metamodelo; comprobar que la vista previa no escribe nada y que commit() persiste metamodelo/validaciones; guardar luego la definicion con EditorDefinitionApplicationService.",
+  "stageIds": [
+   "model_editor_visual_import.as",
+   "model_editor_visual_import.d1"
+  ]
+ },
+ {
+  "group": "m2t-generation-real",
+  "stages": 2,
+  "pkg": [
+   8
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.transformation.text.TransformationTextGenerationServiceIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/transformation/text/TransformationTextGenerationService.java",
+   "src/main/java/com/example/editor/transformation/text/CanonicalTextGenerationRuntime.java",
+   "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java"
+  ],
+  "scenario": "TransformationTextGenerationService real sobre metamodelo/modelo de ExpressionTestFixtures: regla con plantilla de ruta/contenido con marcas {{id}}, {{classId}}, {{attr:<feature>}} genera un artefacto por elemento con ruta y contenido renderizados; regla desactivada no genera; colision de ruta con overwrite FAIL lanza excepcion; ruta insegura bloqueada; definicion con errores bloqueantes rechazada; reglas guardadas con la definicion se releen via create().",
+  "stageIds": [
+   "transformation_author_generation.ed",
+   "transformation_author_generation.en"
+  ]
+ },
+ {
+  "group": "m2m-check-and-save",
+  "stages": 2,
+  "pkg": [
+   8
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.transformation.TransformationDefinitionCheckAndSaveGateIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/transformation/TransformationApplicationService.java",
+   "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java",
+   "src/main/java/com/example/editor/transformation/persistence/JsonTransformationRepository.java"
+  ],
+  "scenario": "Con TransformationApplicationService real (como SaveIntegrationTests): M2M con regla duplicada/alias repetido/tipo origen desconocido/asignacion mal tipada -> create lanza INVALID_REQUEST y nada persiste; M2M valido con solo AVISO (atributo obligatorio destino sin asignar) -> se guarda y check() informa WARNING con valid=true; bidireccional sin regla de vuelta -> error y no guarda; T2M sin gramatica -> bloqueado, T2M con gramatica -> guardado y config releida (grammarId, ruta, postTransformationId).",
+  "stageIds": [
+   "transformation_author_mapping.ck",
+   "transformation_define.chk"
+  ]
+ },
+ {
+  "group": "g-generated-project-register",
+  "stages": 2,
+  "pkg": [
+   11
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.generated.project.GeneratedProjectRegistryPersistenceIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleService.java"
+  ],
+  "scenario": "GeneratedProjectLifecycleService real con GeneratedProjectRegistryStore en tmp: registrar proyecto bajo la raiz configurada, reiniciar el servicio y recuperarlo; directorio fuera de la raiz rechazado sin entrada.",
+  "stageIds": [
+   "x_generate_certify_distribute.reg",
+   "x_generate_certify_distribute.pj"
+  ]
+ },
+ {
+  "group": "transformation-export-parity",
+  "stages": 2,
+  "pkg": [
+   12
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.transformation.export.TransformationExportParityRealRuntimeTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/transformation/export/TransformationExportService.java",
+   "src/main/java/com/example/editor/transformation/parity/TransformationParityService.java",
+   "src/main/java/com/example/editor/transformation/parity/TransformationParityComparator.java"
+  ],
+  "scenario": "Exportar una transformación real a cada lenguaje a un directorio temporal, comprobar ficheros generados y bloqueo/diagnósticos para tipos incompatibles; ejecutar paridad con motor HYDRA frente a un resultado esperado y un caso divergente (veredicto no coincide) y un caso con exportación bloqueada (evidencia no válida).",
+  "stageIds": [
+   "x_transformation_run_and_sync.exp",
+   "x_transformation_run_and_sync.par"
+  ]
+ },
+ {
+  "group": "grammar-compile-then-download-zip",
+  "stages": 1,
+  "pkg": [
+   3
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.grammar.web.GrammarCompileThenDownloadZipIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/grammar/web/GrammarCompilationController.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarGeneratedProjectArchiveService.java",
+   "src/main/java/com/example/editor/grammar/application/GrammarCompilationService.java"
+  ],
+  "scenario": "Cablear GrammarCompilationService real (como en GrammarCompilationServiceEndToEndIntegrationTests.wire) y GrammarCompilationController (jobs=null, solo endpoints no asincronos) con MockMvc standalone. Compilar una gramatica Langium valida (POST /compile), luego GET del zip del snapshot: 200, Content-Type application/zip, Content-Disposition con <grammar>-<snapshot>-language-services.zip, entradas = claves de snapshot.generatedProject().files() en orden portable y contenido identico. Segundo caso: gramatica con error bloqueante -> snapshot fallido -> descarga rechazada (IllegalArgumentException/4xx) y sin zip.",
+  "stageIds": [
+   "grammar_author_download.dl"
+  ]
+ },
+ {
+  "group": "editor-runtime-compile-real",
+  "stages": 1,
+  "pkg": [
+   6
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.definition.runtime.EditorRuntimeCompileRealDefinitionIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/definition/runtime/EditorRuntimeApplicationService.java",
+   "src/main/java/com/example/editor/definition/runtime/EditorDefinitionCompiler.java",
+   "src/main/java/com/example/editor/definition/runtime/web/EditorRuntimeController.java"
+  ],
+  "scenario": "Guardar un editor valido con EditorDefinitionApplicationService real (metamodelo y editor JSON en tmp), compilarlo con EditorRuntimeApplicationService+EditorDefinitionCompiler reales; repetir (cache hit), editar y guardar el editor (nuevo etag, recompilacion) y compilar un editor con error bloqueante.",
+  "stageIds": [
+   "model_editor_author_runtime.cmp"
+  ]
+ },
+ {
+  "group": "generated-project-registry-persistence",
+  "stages": 1,
+  "pkg": [
+   7
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.generated.project.GeneratedProjectRegistryPersistenceTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/generated/project/GeneratedProjectLifecycleService.java",
+   "src/main/java/com/example/editor/generated/project/GeneratedProjectRegistryStore.java"
+  ],
+  "scenario": "GeneratedProjectLifecycleService real con GeneratedProjectRegistryStore en @TempDir: register de un proyecto con perfil conocido; se crea una SEGUNDA instancia de servicio+almacen sobre los mismos directorios y se comprueba que registry() lo devuelve; re-register con mismo id lo reemplaza; perfil desconocido y directorio fuera de la raiz se rechazan; execute(OPEN) real sobre el directorio registrado.",
+  "stageIds": [
+   "publication_generate_publish.reg"
+  ]
+ },
+ {
+  "group": "request-hardening-filter-real-http",
+  "stages": 1,
+  "pkg": [
+   7
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.security.input.HydraRequestHardeningFilterHttpIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/security/input/HydraRequestHardeningFilter.java",
+   "src/main/java/com/example/editor/security/input/HydraInputPolicy.java",
+   "src/main/java/com/example/editor/security/input/HydraInputSecurityProperties.java"
+  ],
+  "scenario": "SpringBootTest RANDOM_PORT (propiedades hydra.security.input.* reducidas: max-request-uri-characters, max-structured-request-bytes) y HttpClient real contra /api/...: URI con %2e%2e/%00/%0d, URI y query demasiado largas, parametro con <script> o caracter de control, cabecera enorme, cuerpo JSON mayor que el maximo hacia un POST con efecto (p.ej. /api/standalone-distributions/materialize), y una peticion normal a /api/system/status.",
+  "stageIds": [
+   "security_filter_sandbox.a"
+  ]
+ },
+ {
+  "group": "runtime-execute-draft",
+  "stages": 1,
+  "pkg": [
+   8
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.transformation.runtime.TransformationRuntimeServiceExecuteDraftIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/transformation/runtime/TransformationRuntimeService.java",
+   "src/main/java/com/example/editor/transformation/runtime/TransformationPlanCompiler.java",
+   "src/main/java/com/example/editor/transformation/runtime/CanonicalTransformationRuntime.java",
+   "src/main/java/com/example/editor/transformation/TransformationDefinitionChecker.java"
+  ],
+  "scenario": "TransformationRuntimeService real (cableado como en TransformationRuntimeServiceBatchSynchronizationTests) con metamodelo ExpressionTestFixtures guardado: executeDraft(definicion valida, modelo Alice/Bob, FORWARD) devuelve modelo destino; definicion con regla de tipo origen desconocido o politica no soportada lanza TransformationExecutionException sin ejecutar nada.",
+  "stageIds": [
+   "transformation_execute.in"
+  ]
+ },
+ {
+  "group": "request-hardening-filter-http",
+  "stages": 1,
+  "pkg": [
+   10
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.security.input.HydraRequestHardeningFilterHttpIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/security/input/HydraRequestHardeningFilter.java",
+   "src/main/java/com/example/editor/security/process/HydraExternalProcessRunner.java"
+  ],
+  "scenario": "@SpringBootTest(webEnvironment=RANDOM_PORT) con java.net.http.HttpClient: enviar peticiones con traversal en la ruta, caracteres de control, cuerpo/cabeceras sobredimensionadas y una valida a un endpoint inocuo; comprobar codigos de rechazo y que ningun proceso externo se lanza.",
+  "stageIds": [
+   "x_remote_repository_exchange.sec"
+  ]
+ },
+ {
+  "group": "canonical-store-version-conflict",
+  "stages": 1,
+  "pkg": [
+   10
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.persistence.CanonicalDocumentStoreVersionConflictIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/persistence/CanonicalDocumentStore.java"
+  ],
+  "scenario": "CanonicalDocumentStore real sobre @TempDir: guardar documento v1; dos escritores concurrentes con la misma version esperada; guardar con version obsoleta; releer desde instancia nueva.",
+  "stageIds": [
+   "x_remote_repository_exchange.p1"
+  ]
+ },
+ {
+  "group": "native-parity-request-policy",
+  "stages": 1,
+  "pkg": [
+   10
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.integration.parity.NativeParityRequestPolicyIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/integration/parity/NativeParityCertificationRequest.java",
+   "src/main/java/com/example/editor/integration/parity/NativeParityProofCatalog.java"
+  ],
+  "scenario": "Contexto Spring con MockMvc real sobre el endpoint de certificacion de paridad: pruebas desconocidas, comandos con metacaracteres de shell, timeout 0/-1/900/901 y una peticion valida con prueba registrada pero ejecutor deshabilitado.",
+  "stageIds": [
+   "x_integrate_technology_native.sec"
+  ]
+ },
+ {
+  "group": "g-hardening-filter-http",
+  "stages": 1,
+  "pkg": [
+   11
+  ],
+  "effort": "S",
+  "fqn": "com.example.editor.security.input.HydraRequestHardeningFilterHttpIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/security/input/HydraRequestHardeningFilter.java"
+  ],
+  "scenario": "SpringBootTest(RANDOM_PORT) con filtro real: POST real al endpoint de importacion con cuerpo sobredimensionado, path traversal y content-type invalido responde 4xx y el controlador no se invoca; peticion valida pasa.",
+  "stageIds": [
+   "x_package_and_move_capabilities.sec"
+  ]
+ },
+ {
+  "group": "g-codegen-compile",
+  "stages": 1,
+  "pkg": [
+   11
+  ],
+  "effort": "L",
+  "fqn": "com.example.editor.codegen.ModelCodeGenerationCompilableOutputIntegrationTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/codegen/ModelCodeGenerationService.java"
+  ],
+  "scenario": "Generar el codigo de un metamodelo y modelo reales con ModelCodeGenerationService y renderers reales a tmp; compilar con javax.tools si el destino es Java (o verificar sintaxis con el toolchain disponible).",
+  "stageIds": [
+   "x_generate_certify_distribute.gen"
+  ]
+ },
+ {
+  "group": "editor-session-save-events",
+  "stages": 1,
+  "pkg": [
+   12
+  ],
+  "effort": "M",
+  "fqn": "com.example.editor.definition.runtime.session.EditorModelSessionSaveEventRetentionTests",
+  "prodUnderTest": [
+   "src/main/java/com/example/editor/definition/runtime/session/EditorModelSessionService.java"
+  ],
+  "scenario": "Abrir sesión con guardado manual, aplicar ediciones, comprobar que no hay eventos publicados, guardar y ver que salen; repetir cerrando sin guardar y comprobar descarte; persistido en disco.",
+  "stageIds": [
+   "x_validate_fix_revalidate_reward.sv"
+  ]
+ }
+]

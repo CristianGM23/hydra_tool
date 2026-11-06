@@ -1,0 +1,7 @@
+- metamodel_author_canvas.pal: los cinco botones de la paleta crean sus elementos y el fichero guardado trae las 4 clases (con su clase de elemento), el enumerado y el tipo de datos (líneas 62-64).
+- metamodel_author_canvas.d1 (rechazo): sin elegir clase de relación, los clics entre puertos no crean nada (líneas 51 y 65: sin aviso de creación y relations=[] en disco y GET).
+- metamodel_author_canvas.kind / .cc: REFERENCE, CONTAINMENT y DEPENDENCY por clic-clic; el tipo elegido se guarda con extremos y puertos (líneas 92-105).
+- metamodel_author_canvas.val (rechazo): herencia clase-interfaz, implementación entre clases y herencia cíclica muestran el aviso (líneas 117-132) y solo INHERITANCE e IMPLEMENTATION válidas llegan al disco (líneas 143-150).
+- metamodel_author_canvas.art: el metamodelo dibujado queda guardado y lo devuelve la API (líneas 67-68, 150).
+- metamodel_author_canvas.ed (direct): cuarto test; el nodo no tiene campos (línea 159), el nombre y un atributo se escriben en el panel y lo guardado en disco y por la API lo refleja, sin tocar la otra clase (líneas 175-179).
+- NO reclamadas: d2 y dr. El arrastre entre puertos no creó la relación en dos pasadas reales (el puerto de destino se resalta pero no se conecta; la captura no lo explica), así que no hay prueba de que ambos gestos sean equivalentes. El test de arrastre se ha eliminado.

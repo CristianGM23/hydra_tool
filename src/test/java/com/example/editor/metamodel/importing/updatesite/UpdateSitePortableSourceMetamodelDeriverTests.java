@@ -79,4 +79,23 @@ class UpdateSitePortableSourceMetamodelDeriverTests {
         assertThat(model.classes()).extracting(value -> value.name()).contains("User", "Project");
         assertThat(model.relations()).extracting(value -> value.name()).contains("owner", "members");
     }
+
+    @Test
+    void recoversGoStandardTimeFieldsAsDates() {
+        // What HYDRA's own Go exporter emits for DATE attributes (import "time"; field time.Time / []time.Time).
+        String source = """
+                package model
+                import "time"
+                type Session struct {
+                    StartsOn time.Time `json:\"startsOn\"`
+                    Holidays []time.Time `json:\"holidays,omitempty\"`
+                }
+                type Exam struct {
+                    HeldOn *time.Time `json:\"heldOn,omitempty\"`
+                }
+                """;
+        var model = deriver.derive(UpdateSiteArtifactKind.GO_SOURCE, source.getBytes(StandardCharsets.UTF_8), "go-time", "model/model.go");
+        assertThat(model.classes()).flatExtracting(value -> value.attributes()).extracting(value -> value.type().kind().name() + ":" + value.type().targetId())
+                .containsOnly("PRIMITIVE:DATE");
+    }
 }

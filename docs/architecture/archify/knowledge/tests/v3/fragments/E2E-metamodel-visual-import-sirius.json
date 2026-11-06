@@ -1,0 +1,152 @@
+[
+  {
+    "id": "pw:e2e/real/metamodel/visual-import-sirius.spec.ts",
+    "name": {
+      "es": "Importar una definición visual de Sirius de extremo a extremo: elegir la tecnología y analizar sin guardar",
+      "en": "Importing a Sirius visual definition end to end: choose the technology and analyze without saving"
+    },
+    "type": "END_TO_END",
+    "layer": "definition",
+    "layers2": [
+      "delivery"
+    ],
+    "caps": [
+      "model_editor",
+      "metamodel"
+    ],
+    "procs": [
+      {
+        "id": "model_editor_visual_import",
+        "stages": [
+          "tc"
+        ],
+        "match": "direct"
+      }
+    ],
+    "prod": [
+      "frontend/src/editor-definition/VisualDefinitionImportDialog.tsx",
+      "frontend/src/editor-definition/api.ts",
+      "frontend/src/application-shell/IndependentCapabilityWorkbench.tsx",
+      "src/main/java/com/example/editor/definition/web/VisualDefinitionImportController.java",
+      "src/main/java/com/example/editor/definition/importing/VisualDefinitionImportService.java",
+      "src/main/java/com/example/editor/definition/importing/VisualDefinitionImportAnalyzer.java"
+    ],
+    "pre": {
+      "es": "Backend real con almacenamiento temporal propio; el metamodelo del proyecto de ejemplo de Sirius se importa por la API real como paso previo.",
+      "en": "Real backend with its own temporary storage; the metamodel of the Sirius sample project is imported through the real API as a prior step."
+    },
+    "setup": {
+      "es": "Playwright con Chromium, ventana de 1700x1000, sin simulaciones; los ficheros salen del proyecto de ejemplo del repositorio. Se observa la petición que envía el navegador y se repite la llamada contra la API real como oráculo.",
+      "en": "Playwright with Chromium, a 1700x1000 window, no simulations; the files come from the repository's sample project. The request sent by the browser is observed and the call is repeated against the real API as the oracle."
+    },
+    "executes": {
+      "es": "Abre #/editors, elige el metamodelo en 'Active semantic context', pulsa 'Import visual definition', recorre las tecnologías de 'Technology' hasta Sirius Desktop, sube el .odesign y los servicios .java y pulsa 'Analyze deeply and recover'.",
+      "en": "Opens #/editors, picks the metamodel in 'Active semantic context', presses 'Import visual definition', walks the 'Technology' options until Sirius Desktop, uploads the .odesign and the .java services and presses 'Analyze deeply and recover'."
+    },
+    "asserts": {
+      "es": "La petición POST va a /api/canonical-metamodels/{id}/editors/imports/sirius con associationMode=EXISTING y responde 200; la respuesta que recibe el navegador trae el metamodelo elegido y la misma tecnología que devuelve una llamada directa a la API real; la lista de editores y data/editors no cambian.",
+      "en": "The POST request goes to /api/canonical-metamodels/{id}/editors/imports/sirius with associationMode=EXISTING and answers 200; the response the browser receives carries the chosen metamodel and the same technology as a direct call to the real API; the editor list and data/editors do not change."
+    },
+    "behavior": {
+      "es": "Una persona elige Sirius Desktop como origen, sube la definición visual y sus servicios y obtiene un análisis en el que se reconoce esa tecnología, sin que se guarde ningún editor.",
+      "en": "A person picks Sirius Desktop as the source, uploads the visual definition and its services and gets an analysis that recognizes that technology, without any editor being saved."
+    },
+    "rule": {
+      "es": "La tecnología elegida decide qué importador analiza los ficheros y el análisis previo no guarda nada.",
+      "en": "The chosen technology decides which importer analyzes the files and the preview analysis saves nothing."
+    },
+    "scenario": {
+      "es": "Con el metamodelo del proyecto de ejemplo ya guardado, se abre el diálogo de importación visual, se cambia de tecnología y se vuelve a Sirius Desktop, se suben los ficheros y se analiza.",
+      "en": "With the sample project's metamodel already stored, the visual import dialog is opened, the technology is changed and set back to Sirius Desktop, the files are uploaded and analyzed."
+    },
+    "result": {
+      "es": "El análisis se hace con el importador de Sirius para el metamodelo elegido, devuelve la tecnología reconocida y no deja ningún editor guardado.",
+      "en": "The analysis is run with the Sirius importer for the chosen metamodel, returns the recognized technology and leaves no editor stored."
+    },
+    "expected": {
+      "es": "Una ejecución correcta analiza con la tecnología elegida, coincide con la llamada directa al servidor y no persiste nada.",
+      "en": "A passing run analyzes with the chosen technology, matches the direct call to the server and persists nothing."
+    },
+    "guarantee": {
+      "es": "Elegir la tecnología de origen en el diálogo dirige el análisis al importador correcto en un navegador real contra el servidor real.",
+      "en": "Choosing the source technology in the dialog directs the analysis to the right importer in a real browser against the real server."
+    },
+    "limits": {
+      "es": "Sirius Desktop se analiza con los ficheros del proyecto de ejemplo; Sirius Web, GMF y draw.io solo se prueban en qué importador recibe la petición, con ficheros mínimos cuyo resultado no se afirma. No confirma la importación ni comprueba lo que la pantalla muestra del resultado; para Sirius Desktop la ruta se refuerza con la llamada directa al servidor.",
+      "en": "Sirius Desktop is analyzed with the sample project's files; Sirius Web, GMF and draw.io are only tested for which importer receives the request, with minimal files whose result is not asserted. It does not confirm the import or check what the screen shows of the result; for Sirius Desktop the path is reinforced with the direct server call."
+    },
+    "strength": "MEDIUM",
+    "strengthWhy": {
+      "es": "Acción real y oráculo independiente; la elección se prueba para las cuatro tecnologías, pero solo Sirius Desktop se contrasta con una llamada directa y no se afirma el resultado en pantalla.",
+      "en": "Real action and an independent oracle; the choice is tested for all four technologies, but only Sirius Desktop is cross-checked with a direct call and the on-screen result is not asserted."
+    },
+    "external": "none",
+    "cases": [
+      {
+        "n": "elegir Sirius Desktop envía el análisis al importador de Sirius con el metamodelo elegido y la vista previa no guarda nada",
+        "scenario": {
+          "es": "Se cambia de tecnología y se vuelve a Sirius Desktop, se suben el .odesign y los servicios y se analiza.",
+          "en": "The technology is changed and set back to Sirius Desktop, the .odesign and services are uploaded and analyzed."
+        },
+        "result": {
+          "es": "La petición va al importador de Sirius, la tecnología coincide con la llamada directa y no se guarda ningún editor.",
+          "en": "The request goes to the Sirius importer, the technology matches the direct call and no editor is saved."
+        }
+      },
+      {
+        "n": "cada tecnología elegida en el diálogo envía el análisis a su propio importador y ninguna guarda editores",
+        "scenario": {
+          "es": "Se elige draw.io, GMF y Sirius Web, se sube un fichero mínimo de cada una y se analiza.",
+          "en": "draw.io, GMF and Sirius Web are chosen, a minimal file of each is uploaded and analyzed."
+        },
+        "result": {
+          "es": "Cada petición viaja al importador de su tecnología y no se guarda ningún editor.",
+          "en": "Each request goes to its own technology's importer and no editor is saved."
+        }
+      }
+    ],
+    "related": [
+      "java:com.example.editor.definition.importing.VisualImportMetamodelAssociationRealStackIntegrationTests"
+    ],
+    "src": [
+      {
+        "path": "frontend/e2e/real/metamodel/visual-import-sirius.spec.ts",
+        "line": 39
+      },
+      {
+        "path": "frontend/e2e/real/metamodel/visual-import-sirius.spec.ts",
+        "line": 41
+      },
+      {
+        "path": "frontend/e2e/real/metamodel/visual-import-sirius.spec.ts",
+        "line": 51
+      },
+      {
+        "path": "frontend/e2e/real/metamodel/visual-import-sirius.spec.ts",
+        "line": 53
+      },
+      {
+        "path": "frontend/e2e/real/metamodel/visual-import-sirius.spec.ts",
+        "line": 67
+      },
+      {
+        "path": "frontend/e2e/real/metamodel/visual-import-sirius.spec.ts",
+        "line": 72
+      },
+      {
+        "path": "frontend/e2e/real/metamodel/visual-import-sirius.spec.ts",
+        "line": 73
+      },
+      {
+        "path": "frontend/e2e/real/metamodel/visual-import-sirius.spec.ts",
+        "line": 118
+      },
+      {
+        "path": "frontend/e2e/real/metamodel/visual-import-sirius.spec.ts",
+        "line": 125
+      }
+    ],
+    "ambiguous": null,
+    "confidence": "ANALYZED"
+  }
+]
